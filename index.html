@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE V17.3 - MAIN</title>
+    <title>DCA ENGINE V17.3 - FINAL</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
@@ -25,14 +25,18 @@
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(255,255,255,0.05); }
 
-        .chart-container { width: 100%; height: 320px; background: #000; }
+        .chart-container { width: 100%; height: 420px; background: #000; }
+        
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid #2d3339; text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .control-box input { background: transparent; border: none; color: white; font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .control-box input { background: transparent; border: none; color: white; font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
         .dash { margin: 12px; padding: 20px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 24px; border: 2px solid var(--dir-color); text-align: center; }
-        .avg-large { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--warning); display: block; margin: 10px 0; }
+        .avg-large { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--warning); display: block; margin: 8px 0; }
+        .dash-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .dash-item span { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .dash-val { font-size: 14px; font-weight: 900; }
 
         .levels-grid { padding: 0 12px; display: grid; grid-template-columns: 1fr; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; }
@@ -42,7 +46,7 @@
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: #e74c3c; color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
         
-        .history-section { padding: 20px; margin-top: 10px; border-top: 1px solid #2d3339; }
+        .history-section { padding: 20px; border-top: 1px solid #2d3339; }
         #historyTable { width: 100%; color: white; font-size: 11px; border-collapse: collapse; }
         #historyTable th { text-align: left; color: var(--dir-color); padding: 8px; }
         #historyTable td { padding: 8px; border-bottom: 1px solid #1a1e24; }
@@ -59,17 +63,21 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC3L" onblur="updateCoin()"></div>
+        <div class="control-box">
+            <label>MONEDA</label>
+            <input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
+        </div>
         <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
         <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
-        <div style="display:flex; justify-content:space-around; margin-bottom:10px;">
-            <div><span style="font-size:10px; color:var(--dir-color);">INVERSIÓN</span><div id="resInv" style="font-size:18px; font-weight:900;">$0.00</div></div>
-            <div><span style="font-size:10px; color:var(--dir-color);">TARGET SELL</span><div id="resTarget" style="font-size:18px; font-weight:900; color:var(--success)">0.0000</div></div>
+        <div class="dash-info">
+            <div class="dash-item"><span>INVERSIÓN</span><div id="resInv" class="dash-val">$0.00</div></div>
+            <div class="dash-item"><span>COMPRAS</span><div id="resCount" class="dash-val">0 / 16</div></div>
+            <div class="dash-item"><span>TARGET SELL</span><div id="resTarget" class="dash-val" style="color:var(--success)">0.0000</div></div>
         </div>
-        <span style="font-size:10px; opacity:0.6;">PRECIO PROMEDIO (AVG)</span>
+        <span style="font-size:10px; opacity:0.6; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
         <span id="resAvg" class="avg-large">0.000000</span>
     </div>
 
@@ -155,6 +163,7 @@
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
+            document.getElementById('resCount').textContent = `${s.buys.length} / 16`;
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
         }
 
@@ -204,8 +213,25 @@
         function loadChart(coin) {
             const symbol = coin ? `GATEIO:${coin.replace('_', '')}USDT` : 'GATEIO:BTC3LUSDT';
             new TradingView.widget({
-                "autosize": true, "symbol": symbol, "interval": "60", "theme": "dark", "style": "1",
-                "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708"
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "60",
+                "theme": "dark",
+                "style": "1",
+                "container_id": "tv_chart",
+                "hide_top_toolbar": false,
+                "withdateranges": true,
+                "allow_symbol_change": true,
+                "enabled_features": ["header_widgetdom_nodes"],
+                "interval": "60",
+                "time_frames": [
+                    { text: "15m", resolution: "15", description: "15 Minutos" },
+                    { text: "30m", resolution: "30", description: "30 Minutos" },
+                    { text: "1h", resolution: "60", description: "1 Hora" },
+                    { text: "4h", resolution: "240", description: "4 Horas" },
+                    { text: "1d", resolution: "D", description: "1 Día" }
+                ],
+                "backgroundColor": "#050708"
             });
         }
 
