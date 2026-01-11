@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>DCA ENGINE PRO</title>
     
-    <link rel="apple-touch-icon" href="https://cryptologos.cc/logos/bitcoin-btc-logo.png">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DCA ENGINE">
+    <link rel="apple-touch-icon" href="https://cryptologos.cc/logos/bitcoin-btc-logo.png">
     <meta name="theme-color" content="#050708">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
@@ -26,7 +28,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); }
         
-        /* HEADER CON LOGO DINÁMICO */
+        /* HEADER */
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); transition: 0.3s; }
         .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); transition: 0.3s; }
         
@@ -40,9 +42,9 @@
         .up-mkt { color: var(--neon-green); }
         .down-mkt { color: var(--neon-red); }
 
-        .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: 11px; transition: 0.3s; }
+        .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: 11px; }
 
-        /* BARRA DE TEMPORALIDADES (RESTAURADA) */
+        /* BARRA DE TEMPORALIDADES */
         .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 8px; border-bottom: 1px solid #1a1e23; }
         .tf-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; cursor: pointer; }
         .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 6px; }
