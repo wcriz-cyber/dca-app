@@ -21,16 +21,19 @@
             --bg: #050708; --surface: #12151a; --primary: #3498db; --success: #0ecb81;
             --warning: #f1c40f; --accent: #ffb4ab; --text: #f0f2f5; --danger: #e74c3c;
             --dir-color: #3498db;
-            --neon-green: #00ff95; /* Color Verde Brillante Solicitado */
         }
-        body.mode-long { --dir-color: #0ecb81; --primary: #0ecb81; }
-        body.mode-short { --dir-color: #f6465d; --primary: #f6465d; }
+        /* Colores Neón para Long/Short */
+        body.mode-long { --dir-color: #00ff95; --primary: #0ecb81; }
+        body.mode-short { --dir-color: #ff3e3e; --primary: #f6465d; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); }
+        
+        /* LOGO CON COLOR DINÁMICO */
+        .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); transition: color 0.3s ease; }
+        
         .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 6px 12px; border-radius: 10px; border: 1px solid #f7931a; }
         .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: 12px; text-transform: uppercase; }
 
@@ -51,11 +54,6 @@
 
         .dash { margin: 12px; padding: 20px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 24px; border: 2px solid var(--dir-color); text-align: center; }
         .avg-large { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--warning); display: block; margin: 10px 0; }
-
-        /* OBJETIVO DE VENTA MEJORADO */
-        .target-container { margin-top:10px; border-top:1px solid #222; padding-top:15px; }
-        .target-label { font-size: 11px; color: var(--neon-green); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-        .target-val { font-size: 38px; color: var(--neon-green); font-family: 'Roboto Mono'; font-weight: 900; display: block; text-shadow: 0 0 15px rgba(0, 255, 149, 0.4); margin-top: 5px; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 85px; }
@@ -102,10 +100,9 @@
         </div>
         <span style="font-size:10px; opacity:0.6; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
         <span id="resAvg" class="avg-large">0.000000</span>
-        
-        <div class="target-container">
-            <span class="target-label">Objetivo de Venta</span>
-            <b id="resTarget" class="target-val">0.000000</b>
+        <div style="margin-top:10px; border-top:1px solid #222; padding-top:15px;">
+            <span style="font-size:11px; color:#00ff95; font-weight:900; text-transform:uppercase;">OBJETIVO DE VENTA</span><br>
+            <b id="resTarget" style="font-size:38px; color:#00ff95; font-family:'Roboto Mono'; text-shadow:0 0 15px rgba(0,255,149,0.4)">0.000000</b>
         </div>
     </div>
 
