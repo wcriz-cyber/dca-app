@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE V17.28 - FULL REPORT</title>
+    <title>DCA ENGINE V17.29 - TV FEED</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -20,16 +20,9 @@
         .logo-row { display: flex; justify-content: space-between; padding: 10px 15px; align-items: center; }
         .logo-area { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
         
-        .slider-wrapper { overflow: hidden; width: 100%; background: #000; }
-        .price-slider { display: flex; gap: 12px; padding: 12px; overflow-x: auto; scrollbar-width: none; }
-        .price-slider::-webkit-scrollbar { display: none; }
+        /* CARRUSEL TRADINGVIEW */
+        .slider-wrapper { overflow: hidden; width: 100%; height: 62px; background: #000; border-bottom: 1px solid #222; }
         
-        .crypto-card { 
-            flex: 0 0 auto; background: #1a1e23; border: 1px solid #2d3339; 
-            padding: 10px; border-radius: 12px; min-width: 120px; position: relative;
-        }
-        .del-btn { position: absolute; top: 5px; right: 5px; color: var(--danger); font-size: 12px; background: none; border: none; font-weight: 900; }
-
         .dash { margin: 15px; padding: 20px; background: #12151a; border-radius: 20px; border: 2px solid var(--dir-color); text-align: center; }
         .avg-large { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--warning); display: block; }
 
@@ -53,7 +46,6 @@
 
         .btn-release { width: 90%; margin: 20px auto; display: block; padding: 20px; border-radius: 15px; background: var(--danger); color: white; font-weight: 900; font-family: 'Orbitron'; border: none; cursor: pointer; }
         
-        /* HISTORIAL */
         .history-section { padding: 15px; background: #0a0c10; border-top: 2px solid #222; margin-top: 20px; }
         .hist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .btn-export-all { background: var(--success); color: #000; border: none; padding: 8px 12px; border-radius: 8px; font-size: 10px; font-weight: 900; cursor: pointer; font-family: 'Orbitron'; }
@@ -66,15 +58,33 @@
 
     <header class="app-header">
         <div class="logo-row">
-            <div class="logo-area">DCA ENGINE V17.28</div>
-            <div style="font-size:8px; color:var(--success);">• BYBIT LIVE FEED</div>
+            <div class="logo-area">DCA ENGINE V17.29</div>
+            <div style="font-size:8px; color:var(--primary);">• TRADINGVIEW FEED</div>
         </div>
         <div class="slider-wrapper">
-            <div class="price-slider" id="priceSlider"></div>
+            <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                {
+                "symbols": [
+                    {"proName": "GATEIO:BTC3LUSDT", "title": "BTC 3L"},
+                    {"proName": "GATEIO:ETH3LUSDT", "title": "ETH 3L"},
+                    {"proName": "BYBIT:SUIUSDT", "title": "SUI"},
+                    {"proName": "BYBIT:BNBUSDT", "title": "BNB"},
+                    {"proName": "BYBIT:AVAXUSDT", "title": "AVAX"}
+                ],
+                "showSymbolLogo": true,
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "displayMode": "compact",
+                "locale": "es"
+                }
+                </script>
+            </div>
         </div>
     </header>
 
-    <div id="tv_chart" style="width:100%; height:320px;"></div>
+    <div id="tv_chart" style="width:100%; height:340px;"></div>
 
     <div class="controls">
         <div class="control-box"><label>ACTIVO</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
@@ -83,7 +93,7 @@
     </div>
 
     <div class="dash">
-        <span style="font-size:10px; color:#848e9c; font-weight:900;">AVG PRICE</span>
+        <span style="font-size:10px; color:#848e9c; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
         <span id="resAvg" class="avg-large">0.000000</span>
         <div style="display:flex; justify-content:space-around; margin-top:15px; border-top:1px solid #222; padding-top:10px;">
             <div><small style="display:block; font-size:8px; font-weight:900;">INVESTED</small><b id="resInv" style="font-size:16px;">$0.00</b></div>
@@ -109,10 +119,8 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const fixed = ['BTCUSDT', 'ETHUSDT', 'SUIUSDT', 'BNBUSDT', 'AVAXUSDT'];
-        let custom = JSON.parse(localStorage.getItem('dca_c_v28')) || [];
-        let history = JSON.parse(localStorage.getItem('dca_h_v28')) || [];
-        let slots = JSON.parse(localStorage.getItem('dca_s_v28')) || [{ name:'BTC3L', price:0, capital:10, buys:[] }];
+        let history = JSON.parse(localStorage.getItem('dca_h_v29')) || [];
+        let slots = JSON.parse(localStorage.getItem('dca_s_v29')) || [{ name:'BTC3L', price:0, capital:10, buys:[] }];
 
         const strategy = [
             { c: 0.00, m: 1.0 }, { c: 0.10, m: 1.0 }, { c: 0.15, m: 1.5 }, { c: 0.15, m: 1.5 },
@@ -129,40 +137,12 @@
         }
 
         function init() {
-            renderSlider();
             loadChart(slots[0].name);
-            setInterval(fetchBybit, 5000);
-            fetchBybit();
+            document.getElementById('coinInput').value = slots[0].name;
             renderHistory();
             calculate();
         }
 
-        function renderSlider() {
-            const slider = document.getElementById('priceSlider');
-            const list = [...fixed, ...custom];
-            slider.innerHTML = list.map((s, i) => `
-                <div class="crypto-card" onclick="setSearch('${s}')">
-                    <span class="c-name">${s.replace('USDT','')}</span>
-                    <span id="p-${s}" class="c-val">---</span>
-                    ${i >= 5 ? `<button class="del-btn" onclick="event.stopPropagation(); removeCoin(${i-5})">✕</button>` : ''}
-                </div>
-            `).join('') + (list.length < 20 ? `<div onclick="addCoin()" style="flex:0 0 auto; padding:12px; color:#444; font-size:10px; font-weight:900; cursor:pointer;">+ ADD</div>` : '');
-        }
-
-        async function fetchBybit() {
-            const list = [...new Set([...fixed, ...custom])];
-            for (const s of list) {
-                try {
-                    const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${s}`);
-                    const d = await r.json();
-                    if(d.result?.list[0]) {
-                        document.querySelectorAll(`[id="p-${s}"]`).forEach(el => el.textContent = parseFloat(d.result.list[0].lastPrice).toFixed(4));
-                    }
-                } catch(e) {}
-            }
-        }
-
-        function setSearch(s) { document.getElementById('coinInput').value = s; updateCoin(); }
         function updateCoin() {
             const v = document.getElementById('coinInput').value.toUpperCase();
             slots[0].name = v;
@@ -242,29 +222,25 @@
                 date: new Date().toLocaleString() 
             };
             
-            // Descarga Individual Detallada
             let csv = `REPORTE DCA,${s.name},FECHA,${res.date}\n\nNIVEL,PRECIO,USD,PROFIT%\n`;
             s.buys.forEach(idx => {
                 let p = s.price; for(let k=1; k<=idx; k++) p *= (1 - strategy[k].c);
                 csv += `${idx+1},${p.toFixed(6)},${strategy[idx].m * s.capital},${getMult(idx)*100}%\n`;
             });
-            csv += `\nRESUMEN: INVERSION ${res.spent} | PROFIT ${res.profit}`;
             downloadCSV(csv, `Cierre_${s.name}.csv`);
 
             history.unshift(res);
-            localStorage.setItem('dca_h_v28', JSON.stringify(history));
-            slots[0] = { name:'BTC3L', price:0, capital:10, buys:[] };
+            localStorage.setItem('dca_h_v29', JSON.stringify(history));
+            slots[0].buys = []; slots[0].price = 0;
             document.getElementById('baseInput').value = "";
             save(); renderHistory(); calculate();
         }
 
         function exportFullHistory() {
-            if(history.length === 0) return alert("No hay historial para exportar");
-            let csv = `HISTORIAL CONSOLIDADO DCA\n\nFECHA CIERRE,ACTIVO,INVERSION TOTAL,PROFIT GANADO,AVG PRECIO\n`;
-            history.forEach(h => {
-                csv += `${h.date},${h.name},${h.spent},${h.profit},${h.avg}\n`;
-            });
-            downloadCSV(csv, `Historial_Completo_DCA.csv`);
+            if(history.length === 0) return alert("Historial vacío");
+            let csv = `HISTORIAL CONSOLIDADO DCA\n\nFECHA,ACTIVO,INVERSION,PROFIT,AVG\n`;
+            history.forEach(h => { csv += `${h.date},${h.name},${h.spent},${h.profit},${h.avg}\n`; });
+            downloadCSV(csv, `DCA_Historial_Total.csv`);
         }
 
         function downloadCSV(content, filename) {
@@ -276,18 +252,12 @@
         }
 
         function renderHistory() {
-            document.getElementById('historyBody').innerHTML = history.slice(0, 15).map(h => `
-                <tr><td>${h.name}</td><td>${h.spent}</td><td style="color:var(--success)">${h.profit}</td><td>${h.date.split(',')[0]}</td></tr>
+            document.getElementById('historyBody').innerHTML = history.slice(0, 10).map(h => `
+                <tr><td>${h.name}</td><td>${h.spent}</td><td style="color:var(--success)">${h.profit}</td><td>${h.date.split(' ')[0]}</td></tr>
             `).join('');
         }
 
-        function addCoin() {
-            const c = prompt("Símbolo Bybit:");
-            if(c && custom.length < 15) { custom.push(c.toUpperCase()); localStorage.setItem('dca_c_v28', JSON.stringify(custom)); renderSlider(); }
-        }
-
-        function removeCoin(idx) { custom.splice(idx, 1); localStorage.setItem('dca_c_v28', JSON.stringify(custom)); renderSlider(); }
-        function save() { localStorage.setItem('dca_s_v28', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_s_v29', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
