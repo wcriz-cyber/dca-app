@@ -24,10 +24,18 @@
         body.mode-short { --dir-color: #f6465d; --primary: #f6465d; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; overflow-x: hidden; }
         
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); }
+        /* MENU LATERAL */
+        #sideMenu { position: fixed; left: -280px; top: 0; width: 280px; height: 100%; background: var(--surface); z-index: 1000; transition: 0.3s; border-right: 2px solid var(--dir-color); overflow-y: auto; padding-top: 50px; }
+        #sideMenu.open { left: 0; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; z-index: 999; }
+        .etf-item { padding: 15px; border-bottom: 1px solid #2d3339; display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; cursor: pointer; }
+        .etf-item:active { background: #222; }
+        .etf-price { color: var(--warning); font-family: 'Roboto Mono'; }
+
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); position: sticky; top: 0; z-index: 10; }
+        .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); cursor: pointer; }
         .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 6px 12px; border-radius: 10px; border: 1px solid #f7931a; }
         .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-family: 'Orbitron'; font-weight: 900; font-size: 12px; text-transform: uppercase; }
 
@@ -61,14 +69,22 @@
 </head>
 <body onload="init()">
 
+    <div id="sideMenu">
+        <h3 style="padding: 20px; color: var(--dir-color); font-family: 'Orbitron'; font-size: 14px;">ETFs GATE.IO</h3>
+        <div id="etfList">
+            <p style="padding: 20px; opacity: 0.5;">Cargando precios...</p>
+        </div>
+    </div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
     <header class="app-header">
-        <div class="logo-area">DCA ENGINE PRO</div>
+        <div class="logo-area" onclick="toggleMenu()">☰ DCA ENGINE PRO</div>
         <div class="btc-live-box">
             <span id="btcPrice" style="color:#f7931a; font-weight:900; font-family:'Roboto Mono'; font-size:15px;">$--,---</span>
         </div>
     </header>
 
-    <div id="decisionBar" class="decision-bar">ESPERANDO ACTIVO</div>
+    <div id="decisionBar" class="decision-bar">ESPERANDO ACTIVO (GATE.IO)</div>
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
@@ -82,7 +98,7 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA (GATE.IO)</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onkeydown="if(event.key==='Enter') updateCoin()" onblur="updateCoin()"></div>
         <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
         <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
@@ -110,17 +126,21 @@
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
             { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
             { c: 0.20, m: 2.0, g: 1.00, p: "-48%" }, { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
-            { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
-            { c: 0.30, m: 3.0, g: 1.50, p: "-84%" }, { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
-            { c: 0.35, m: 3.5, g: 1.50, p: "-93%" }, { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
-            { c: 0.40, m: 4.0, g: 2.00, p: "-97%" }, { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
-            { c: 0.50, m: 5.0, g: 2.00, p: "-99%" }, { c: 0.50, m: 5.0, g: 2.00, p: "-99.5%" }
+            { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" }
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_3_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_4_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        const listETFs = ['BTC3L', 'BTC3S', 'ETH3L', 'ETH3S', 'SOL3L', 'SOL3S', 'ADA3L', 'ADA3S', 'XRP3L', 'XRP3S', 'DOGE3L', 'DOGE3S'];
 
-        function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
+        function init() { 
+            fetchBTC(); 
+            renderNav(); 
+            selectSlot(0); 
+            setInterval(fetchBTC, 5000);
+            setInterval(fetchETFsPrices, 10000);
+            fetchETFsPrices();
+        }
 
         async function fetchBTC() {
             try {
@@ -130,28 +150,58 @@
             } catch(e) {}
         }
 
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('overlay');
+            const isOpen = menu.classList.toggle('open');
+            overlay.style.display = isOpen ? 'block' : 'none';
+        }
+
+        async function fetchETFsPrices() {
+            try {
+                const res = await fetch('https://api.gateio.ws/api/v4/spot/tickers');
+                const data = await res.json();
+                const container = document.getElementById('etfList');
+                let html = '';
+                listETFs.forEach(etf => {
+                    const info = data.find(t => t.currency_pair === etf + '_USDT');
+                    if(info) {
+                        html += `
+                        <div class="etf-item" onclick="selectFromMenu('${etf}', ${info.last})">
+                            <span>${etf}</span>
+                            <span class="etf-price">${parseFloat(info.last).toFixed(4)}</span>
+                        </div>`;
+                    }
+                });
+                container.innerHTML = html;
+            } catch(e) {}
+        }
+
+        function selectFromMenu(name, price) {
+            document.getElementById('coinInput').value = name;
+            document.getElementById('baseInput').value = price;
+            updateCoin();
+            toggleMenu();
+        }
+
         async function updateCoin() {
             const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) {
-                slots[activeIdx].name = v;
-                // MEJORA: Búsqueda directa en GATE.IO para ETFs
-                try {
-                    const pair = v.includes('_') ? v : v+'_USDT';
-                    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${pair}`);
-                    const data = await res.json();
-                    if(data && data[0] && data[0].last) {
-                        const marketPrice = parseFloat(data[0].last);
-                        document.getElementById('baseInput').value = marketPrice;
-                        slots[activeIdx].price = marketPrice;
-                        // Auto-activar Nivel 1 si es una moneda nueva
-                        if(slots[activeIdx].buys.length === 0) {
-                            slots[activeIdx].buys = [0];
-                        }
-                    }
-                } catch(e) { console.log("Precio no encontrado en Gate.io"); }
-                
-                save(); renderNav(); loadChart(v); calculate();
-            }
+            if(!v) return;
+            slots[activeIdx].name = v;
+            
+            try {
+                const pair = v.includes('_') ? v : v+'_USDT';
+                const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${pair}`);
+                const data = await res.json();
+                if(data && data[0] && data[0].last) {
+                    const marketPrice = parseFloat(data[0].last);
+                    document.getElementById('baseInput').value = marketPrice;
+                    slots[activeIdx].price = marketPrice;
+                    if(slots[activeIdx].buys.length === 0) slots[activeIdx].buys = [0];
+                }
+            } catch(e) { console.log("Error Gate.io"); }
+            
+            save(); renderNav(); loadChart(v); calculate();
         }
 
         function calculate() {
@@ -174,12 +224,12 @@
                 if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
-                    <button class="panic-btn" onclick="panicFill(${i})">RELLENAR HASTA AQUÍ</button>
+                    <button class="panic-btn" onclick="panicFill(${i})">RELLENAR</button>
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1" onclick="toggleLvl(${i})">
-                        <div style="font-size:10px; color:var(--dir-color); font-weight:900; margin-bottom:4px;">ORDEN NIVEL ${i+1}</div>
+                        <div style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</div>
                         <b style="font-size:20px;">${cp.toFixed(6)}</b><br>
-                        <span style="font-size:11px; opacity:0.7;">MONTO: $${mUSD.toFixed(1)}</span>
+                        <span style="font-size:11px; opacity:0.7;">$${mUSD.toFixed(1)}</span>
                     </div>
                     <span class="level-drop-tag">${lvl.p}</span>
                 </div>`;
@@ -208,11 +258,9 @@
         function updateTheme(n) {
             document.body.classList.remove('mode-long', 'mode-short');
             const bar = document.getElementById('decisionBar');
-            if(n.endsWith('L')) {
-                document.body.classList.add('mode-long'); bar.textContent = "MODO LONG (VERDE)";
-            } else if(n.endsWith('S')) {
-                document.body.classList.add('mode-short'); bar.textContent = "MODO SHORT (ROJO)";
-            } else bar.textContent = "ESPERANDO ACTIVO (GATE.IO)";
+            if(n.endsWith('L')) { document.body.classList.add('mode-long'); bar.textContent = "MODO LONG (VERDE)"; }
+            else if(n.endsWith('S')) { document.body.classList.add('mode-short'); bar.textContent = "MODO SHORT (ROJO)"; }
+            else bar.textContent = "ESPERANDO ACTIVO (GATE.IO)";
         }
 
         function selectSlot(i) {
@@ -226,28 +274,13 @@
         function releaseSlot() {
             const s = slots[activeIdx];
             if(!s.name || s.buys.length === 0) return;
-            if(confirm(`¿Liquidar ${s.name} y descargar Excel?`)) {
-                const now = new Date();
-                const dStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
-                let csv = `REPORTE DE CIERRE - ${s.name}\nFECHA DE CIERRE,${dStr}\n\nNIVEL,PRECIO,MONTO EJECUTADO\n`;
-                s.buys.forEach(idx => {
-                    let levelPrice = s.price;
-                    for(let k=1; k<=idx; k++) levelPrice *= (1 - strategy[k].c);
-                    csv += `${idx+1},${levelPrice.toFixed(6)},${(strategy[idx].m * s.capital)}\n`;
-                });
-                csv += `\nINVERSION TOTAL,,${document.getElementById('resInv').textContent}\nPROFIT ESTIMADO,,${document.getElementById('resProf').textContent}`;
-                const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `Cierre_${s.name}.csv`;
-                a.click();
+            if(confirm(`¿Liquidar ${s.name}?`)) {
                 slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
                 save(); selectSlot(activeIdx);
             }
         }
 
         function loadChart(coin) {
-            // Asegurar que TradingView busque en Gate.io
             const symbol = coin ? `GATEIO:${coin.replace('_', '')}USDT` : 'GATEIO:BTC3LUSDT';
             new TradingView.widget({
                 "autosize": true, "symbol": symbol, "interval": activeTF,
@@ -267,7 +300,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v18_3_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v18_4_slots', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
