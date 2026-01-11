@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE V17.32 - TOTAL FIX</title>
+    <title>DCA COMMAND V17.33</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,50 +16,41 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
         
+        /* HEADER & SLIDER */
         .app-header { background: var(--surface); border-bottom: 2px solid var(--dir-color); position: sticky; top: 0; z-index: 100; }
         .logo-row { display: flex; justify-content: space-between; padding: 10px 15px; align-items: center; }
         .logo-area { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
-        
-        /* CARRUSEL LENTO Y GRANDE */
         .slider-wrapper { overflow: hidden; width: 100%; background: #000; padding: 12px 0; border-bottom: 1px solid #222; }
-        .price-slider { display: flex; gap: 15px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
-        .price-slider::-webkit-scrollbar { display: none; }
-        
-        .crypto-card { 
-            flex: 0 0 auto; background: #1a1e23; border: 1px solid #2d3339; 
-            padding: 12px 18px; border-radius: 12px; min-width: 145px; position: relative; text-align: center;
-        }
-        .c-name { font-size: 11px; font-weight: 900; color: #848e9c; display: block; margin-bottom: 4px; }
+        .price-slider { display: flex; gap: 15px; padding: 0 15px; overflow-x: auto; scrollbar-width: none; }
+        .crypto-card { flex: 0 0 auto; background: #1a1e23; border: 1px solid #2d3339; padding: 12px 18px; border-radius: 12px; min-width: 145px; text-align: center; position: relative; }
         .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 18px; color: #fff; }
-        .del-btn { position: absolute; top: 2px; right: 5px; color: var(--danger); font-size: 14px; background: none; border: none; font-weight: 900; }
 
-        /* REFRESH BAR */
-        .chart-controls { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 5px 15px; border-bottom: 1px solid #222; }
-        .refresh-btn { background: #222; color: var(--text); border: 1px solid #444; padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 900; cursor: pointer; }
-        .refresh-btn:active { background: var(--dir-color); color: #000; }
+        /* SLOTS */
+        .slots-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px 15px; background: #000; }
+        .slot-btn { background: #1a1e23; border: 1px solid #333; color: #666; padding: 8px 0; border-radius: 6px; font-size: 10px; font-weight: 900; cursor: pointer; }
+        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
 
+        /* TIMEFRAMES */
+        .tf-bar { display: flex; justify-content: center; gap: 10px; background: #080a0d; padding: 8px; border-bottom: 1px solid #222; }
+        .tf-btn { background: transparent; border: 1px solid #333; color: #848e9c; padding: 5px 12px; border-radius: 4px; font-size: 10px; font-weight: 900; }
+        .tf-btn.active { background: var(--dir-color); color: #000; border-color: var(--dir-color); }
+
+        /* DASHBOARD */
         .dash { margin: 15px; padding: 25px; background: #12151a; border-radius: 20px; border: 2px solid var(--dir-color); text-align: center; }
         .avg-large { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--warning); display: block; }
 
-        /* NIVELES MÁS GRANDES */
+        /* LEVELS */
         .levels-container { padding: 12px; display: grid; gap: 12px; }
-        .level-card { 
-            background: var(--surface); border-radius: 15px; padding: 22px; 
-            display: flex; align-items: center; justify-content: space-between; border: 2px solid #2d3339;
-        }
+        .level-card { background: var(--surface); border-radius: 15px; padding: 22px; display: flex; align-items: center; justify-content: space-between; border: 2px solid #2d3339; }
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.08); }
-
         .lvl-check { width: 30px; height: 30px; border: 2px solid #444; border-radius: 6px; margin-right: 15px; display: flex; align-items: center; justify-content: center; }
         .active .lvl-check { background: var(--dir-color); border-color: var(--dir-color); color: #000; }
         .active .lvl-check::after { content: "✓"; font-weight: 900; font-size: 20px; }
 
-        .fill-btn { background: var(--dir-color); color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-size: 11px; font-weight: 900; }
-
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
         .control-box { background: var(--surface); padding: 12px; border-radius: 12px; border: 1px solid #2d3339; text-align: center; }
-        .control-box label { font-size: 9px; font-weight: 900; color: var(--dir-color); display: block; margin-bottom: 5px; }
         .control-box input { background: transparent; border: none; color: white; width: 100%; text-align: center; font-weight: 900; font-size: 17px; outline: none; }
-
+        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 22px; border-radius: 18px; background: var(--danger); color: white; font-weight: 900; font-family: 'Orbitron'; border: none; font-size: 15px; }
     </style>
 </head>
@@ -67,24 +58,30 @@
 
     <header class="app-header">
         <div class="logo-row">
-            <div class="logo-area">DCA ENGINE V17.32</div>
-            <div id="chartStatus" style="font-size:9px; color:var(--success);">• READY</div>
+            <div class="logo-area">DCA COMMAND V17.33</div>
+            <button class="tf-btn" style="border-color:var(--success); color:var(--success)" onclick="refreshChart()">RELOAD ↻</button>
         </div>
         <div class="slider-wrapper">
             <div class="price-slider" id="priceSlider"></div>
         </div>
     </header>
 
-    <div class="chart-controls">
-        <span id="currentSymb" style="font-size:10px; font-weight:900; color:#848e9c;">---</span>
-        <button class="refresh-btn" onclick="refreshChart()">REFRESCAR GRÁFICO ↻</button>
+    <div class="slots-bar" id="slotsBar"></div>
+
+    <div class="tf-bar">
+        <button class="tf-btn" onclick="setTF('15')">15M</button>
+        <button class="tf-btn" onclick="setTF('30')">30M</button>
+        <button class="tf-btn active" onclick="setTF('60')">1H</button>
+        <button class="tf-btn" onclick="setTF('240')">4H</button>
+        <button class="tf-btn" onclick="setTF('D')">1D</button>
     </div>
-    <div id="tv_chart_container" style="width:100%; height:360px; background:#000;"></div>
+
+    <div id="tv_chart_container" style="width:100%; height:380px;"></div>
 
     <div class="controls">
-        <div class="control-box"><label>ACTIVO</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
-        <div class="control-box"><label>ENTRADA</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
-        <div class="control-box"><label>BASE USD</label><input type="number" id="capitalInput" value="10" oninput="calculate()"></div>
+        <div class="control-box"><label style="font-size:9px;color:var(--dir-color)">ACTIVO</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
+        <div class="control-box"><label style="font-size:9px;color:var(--dir-color)">ENTRADA</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
+        <div class="control-box"><label style="font-size:9px;color:var(--dir-color)">BASE USD</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
@@ -98,92 +95,83 @@
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
-    
-    <button class="btn-release" onclick="releasePosition()">LIQUIDAR Y EXPORTAR TODO</button>
+    <button class="btn-release" onclick="releasePosition()">LIQUIDAR POSICIÓN ACTUAL</button>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const fixed = ['BTCUSDT', 'ETHUSDT', 'SUIUSDT', 'BNBUSDT', 'AVAXUSDT'];
-        let custom = JSON.parse(localStorage.getItem('dca_c_v32')) || [];
-        let history = JSON.parse(localStorage.getItem('dca_h_v32')) || [];
-        let slots = JSON.parse(localStorage.getItem('dca_s_v32')) || [{ name:'BTC3L', price:0, capital:10, buys:[] }];
-        let lastCoin = 'BTCUSDT';
+        let activeSlot = 0;
+        let currentTF = '60';
+        let slots = JSON.parse(localStorage.getItem('dca_v33_slots')) || Array(5).fill(null).map((_, i) => ({
+            id: i, name: fixed[i] || 'BTCUSDT', price: 0, capital: 10, buys: []
+        }));
 
         function init() {
             renderSlider();
-            loadChart(slots[0].name);
+            renderSlots();
+            loadChart();
             setInterval(fetchPrices, 4000);
             fetchPrices();
+            syncUI();
+        }
+
+        function renderSlots() {
+            const bar = document.getElementById('slotsBar');
+            bar.innerHTML = slots.map((s, i) => `
+                <button class="slot-btn ${activeSlot === i ? 'active' : ''}" onclick="selectSlot(${i})">
+                    SLOT ${i+1}<br><small>${s.name.replace('USDT','')}</small>
+                </button>
+            `).join('');
+        }
+
+        function selectSlot(i) {
+            activeSlot = i;
+            renderSlots();
+            syncUI();
+            loadChart();
+        }
+
+        function syncUI() {
+            const s = slots[activeSlot];
+            document.getElementById('coinInput').value = s.name;
+            document.getElementById('baseInput').value = s.price || '';
+            document.getElementById('capitalInput').value = s.capital || 10;
             calculate();
         }
 
-        function renderSlider() {
-            const slider = document.getElementById('priceSlider');
-            const list = [...fixed, ...custom];
-            slider.innerHTML = list.map((s, i) => `
-                <div class="crypto-card" onclick="handleCardClick('${s}')">
-                    <span class="c-name">${s.replace('USDT','')}</span>
-                    <span id="p-${s}" class="c-val">---</span>
-                    ${i >= 5 ? `<button class="del-btn" onclick="event.stopPropagation(); removeCoin(${i-5})">✕</button>` : ''}
-                </div>
-            `).join('') + `<div onclick="addCoin()" style="flex:0 0 auto; padding:15px; color:#444; border:1px dashed #444; border-radius:12px; font-weight:900; cursor:pointer;">+ ADD</div>`;
-        }
-
-        async function fetchPrices() {
-            const list = [...new Set([...fixed, ...custom])];
-            for (const s of list) {
-                try {
-                    const cleanS = s.includes('USDT') ? s : s + 'USDT';
-                    const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${cleanS}`);
-                    const d = await r.json();
-                    if(d.result?.list[0]) {
-                        document.querySelectorAll(`[id="p-${s}"]`).forEach(el => {
-                            el.textContent = parseFloat(d.result.list[0].lastPrice).toFixed(s.includes('BTC') ? 2 : 4);
-                        });
-                    }
-                } catch(e) {}
-            }
-        }
-
-        function handleCardClick(s) {
-            const current = document.getElementById('coinInput').value;
-            if(current === s) { setSearch(lastCoin); } 
-            else { lastCoin = current; setSearch(s); }
-        }
-
-        function setSearch(s) { document.getElementById('coinInput').value = s; updateCoin(); }
-
         function updateCoin() {
-            const v = document.getElementById('coinInput').value.toUpperCase();
-            slots[0].name = v;
-            save(); loadChart(v); calculate();
+            slots[activeSlot].name = document.getElementById('coinInput').value.toUpperCase();
+            save(); renderSlots(); loadChart();
         }
 
-        function refreshChart() { loadChart(slots[0].name); }
+        function setTF(tf) {
+            currentTF = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            loadChart();
+        }
 
-        function loadChart(coin) {
-            let exch = "BYBIT";
-            let symb = coin.toUpperCase();
-            if (symb.includes('3L') || symb.includes('3S') || symb.includes('5L')) exch = "GATEIO";
-            if (!symb.includes('USDT')) symb += 'USDT';
-            
-            document.getElementById('currentSymb').textContent = `${exch}:${symb}`;
-            
+        function loadChart() {
+            const coin = slots[activeSlot].name;
+            let exch = (coin.includes('3L') || coin.includes('3S')) ? "GATEIO" : "BYBIT";
+            let symb = coin.includes('USDT') ? coin : coin + 'USDT';
+
             new TradingView.widget({
-                "autosize": true, "symbol": `${exch}:${symb}`, "interval": "60",
+                "autosize": true, "symbol": `${exch}:${symb}`, "interval": currentTF,
                 "theme": "dark", "style": "1", "container_id": "tv_chart_container",
                 "hide_top_toolbar": true, "backgroundColor": "#050708"
             });
         }
 
         function calculate() {
-            const s = slots[0];
+            const s = slots[activeSlot];
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 10;
+            save();
+
             const grid = document.getElementById('levelsGrid');
             if(!s.price) { grid.innerHTML = ""; return; }
 
-            let spent = 0, tokens = 0, currentP = s.price, lastLvl = -1;
             const strategy = [
                 { c: 0.00, m: 1.0 }, { c: 0.10, m: 1.0 }, { c: 0.15, m: 1.5 }, { c: 0.15, m: 1.5 },
                 { c: 0.20, m: 2.0 }, { c: 0.20, m: 2.0 }, { c: 0.25, m: 2.5 }, { c: 0.25, m: 2.5 },
@@ -191,7 +179,8 @@
                 { c: 0.40, m: 4.0 }, { c: 0.40, m: 4.0 }, { c: 0.50, m: 5.0 }, { c: 0.50, m: 5.0 }
             ];
 
-            let html = '';
+            let spent = 0, tokens = 0, currentP = s.price, lastLvl = -1, html = '';
+
             strategy.forEach((lvl, i) => {
                 if(i > 0) currentP *= (1 - lvl.c);
                 const isBought = s.buys.includes(i);
@@ -207,49 +196,64 @@
                             <div style="font-size:22px; font-weight:900; font-family:'Roboto Mono';">${currentP.toFixed(6)}</div>
                         </div>
                     </div>
-                    <button class="fill-btn" onclick="event.stopPropagation(); fillTo(${i})">FILL</button>
+                    <button class="tf-btn" style="border-color:var(--dir-color)" onclick="event.stopPropagation(); fillTo(${i})">FILL</button>
                 </div>`;
             });
 
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
             const finalMult = lastLvl < 4 ? 0.5 : (lastLvl < 8 ? 1.0 : (lastLvl < 12 ? 1.5 : 2.0));
-            
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resProfit').textContent = `$${(spent * finalMult).toFixed(2)}`;
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + finalMult)).toFixed(6) : '0.000000';
-            
             document.body.className = (s.name.includes('L') || s.name.includes('3L')) ? 'mode-long' : 'mode-short';
         }
 
         function toggleLvl(i) {
-            const b = slots[0].buys;
-            slots[0].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
-            save(); calculate();
+            const b = slots[activeSlot].buys;
+            slots[activeSlot].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
+            calculate();
         }
 
         function fillTo(i) {
             let n = []; for(let j=0; j<=i; j++) n.push(j);
-            slots[0].buys = n; save(); calculate();
+            slots[activeSlot].buys = n; calculate();
         }
 
+        function renderSlider() {
+            const slider = document.getElementById('priceSlider');
+            slider.innerHTML = fixed.map(s => `
+                <div class="crypto-card" onclick="setSearch('${s}')">
+                    <span style="font-size:11px; font-weight:900; color:#848e9c; display:block;">${s.replace('USDT','')}</span>
+                    <span id="p-${s}" class="c-val">---</span>
+                </div>
+            `).join('');
+        }
+
+        async function fetchPrices() {
+            for (const s of fixed) {
+                try {
+                    const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${s}`);
+                    const d = await r.json();
+                    if(d.result?.list[0]) {
+                        document.querySelectorAll(`[id="p-${s}"]`).forEach(el => {
+                            el.textContent = parseFloat(d.result.list[0].lastPrice).toFixed(s.includes('BTC') ? 2 : 4);
+                        });
+                    }
+                } catch(e) {}
+            }
+        }
+
+        function setSearch(s) { document.getElementById('coinInput').value = s; updateCoin(); }
+        function save() { localStorage.setItem('dca_v33_slots', JSON.stringify(slots)); }
+        function refreshChart() { loadChart(); }
         function releasePosition() {
-            const s = slots[0]; if(!s.name || s.buys.length === 0) return;
-            let csv = `ACTIVO,${s.name},FECHA,${new Date().toLocaleString()}\nINVERSION,${document.getElementById('resInv').textContent}\nPROFIT,${document.getElementById('resProfit').textContent}\nAVG,${document.getElementById('resAvg').textContent}`;
-            const b = new Blob(["\ufeff"+csv], {type: 'text/csv'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(b); a.download = `Reporte_${s.name}.csv`; a.click();
-            slots[0].buys = []; slots[0].price = 0; save(); calculate();
+            if(confirm("¿Liquidar esta posición?")) {
+                slots[activeSlot].buys = []; slots[activeSlot].price = 0;
+                save(); syncUI();
+            }
         }
-
-        function addCoin() {
-            const c = prompt("Símbolo:");
-            if(c) { custom.push(c.toUpperCase()); localStorage.setItem('dca_c_v32', JSON.stringify(custom)); renderSlider(); }
-        }
-
-        function removeCoin(idx) { custom.splice(idx, 1); localStorage.setItem('dca_c_v32', JSON.stringify(custom)); renderSlider(); }
-        function save() { localStorage.setItem('dca_s_v32', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
