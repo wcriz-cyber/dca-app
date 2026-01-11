@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA COMMAND V17.20 - BYBIT & GATE.IO</title>
+    <title>DCA ENGINE V17.21 - DETAILED EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,14 +16,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
         
-        /* HEADER Y CARRUSEL INFINITO REAL */
         .app-header { background: var(--surface); border-bottom: 2px solid var(--dir-color); position: sticky; top: 0; z-index: 100; }
         .logo-row { display: flex; justify-content: space-between; padding: 10px 15px; align-items: center; }
         .logo-area { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
         
+        /* CARRUSEL SUAVE */
         .slider-wrapper { overflow: hidden; width: 100%; background: #000; position: relative; }
         .price-slider { 
-            display: flex; gap: 10px; padding: 10px;
+            display: flex; gap: 12px; padding: 12px;
             overflow-x: auto; scroll-behavior: smooth;
             scrollbar-width: none;
         }
@@ -31,18 +31,32 @@
         
         .crypto-card { 
             flex: 0 0 auto; background: #1a1e23; border: 1px solid #2d3339; 
-            padding: 10px; border-radius: 12px; min-width: 125px; 
-            text-align: left;
+            padding: 10px; border-radius: 12px; min-width: 130px; 
+            text-align: left; transition: transform 0.2s;
         }
         .c-name { font-size: 10px; font-weight: 900; color: #848e9c; }
         .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; color: #fff; display: block; }
         .c-perc { font-size: 10px; font-weight: 900; }
         .up { color: var(--success); } .down { color: var(--danger); }
 
-        /* DASHBOARD */
+        /* DASHBOARD PROFIT */
         .dash { margin: 15px; padding: 20px; background: #12151a; border-radius: 20px; border: 2px solid var(--dir-color); text-align: center; }
         .avg-large { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--warning); display: block; }
+        .profit-badge { color: var(--success); font-weight: 900; font-size: 16px; font-family: 'Roboto Mono'; }
+
+        .levels-container { padding: 12px; display: grid; gap: 8px; }
+        .level-card { 
+            background: var(--surface); border-radius: 12px; padding: 14px; 
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid #2d3339;
+        }
+        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.06); }
+        .lvl-check { width: 22px; height: 22px; border: 2px solid #444; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+        .active .lvl-check::after { content: "✓"; color: #000; font-weight: 900; }
+        .active .lvl-check { background: var(--dir-color); border-color: var(--dir-color); }
         
+        .fill-btn { background: var(--dir-color); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-size: 9px; font-weight: 900; cursor: pointer; }
+
         .chart-container { width: 100%; height: 300px; background: #000; }
         .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
         .tf-btn { color: #555; font-weight: 900; font-size: 11px; background: none; border: none; padding: 8px; }
@@ -53,24 +67,9 @@
         .control-box label { font-size: 8px; font-weight: 900; color: var(--dir-color); display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; width: 100%; text-align: center; font-weight: 700; outline: none; font-size: 14px; }
 
-        /* TARJETAS CLÁSICAS DE NIVELES */
-        .levels-container { padding: 12px; display: grid; gap: 8px; }
-        .level-card { 
-            background: var(--surface); border-radius: 12px; padding: 14px; 
-            display: flex; align-items: center; justify-content: space-between;
-            border: 1px solid #2d3339;
-        }
-        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.06); }
-        .lvl-check { width: 22px; height: 22px; border: 2px solid #444; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
-        .active .lvl-check { background: var(--dir-color); border-color: var(--dir-color); color: #000; font-weight: 900; }
-        .active .lvl-check::after { content: "✓"; }
-        .fill-btn { background: var(--dir-color); color: #000; border: none; padding: 6px 12px; border-radius: 6px; font-size: 9px; font-weight: 900; }
+        .btn-release { width: 90%; margin: 20px auto; display: block; padding: 20px; border-radius: 15px; background: var(--danger); color: white; font-weight: 900; font-family: 'Orbitron'; border: none; cursor: pointer; }
 
-        .btn-release { width: 90%; margin: 20px auto; display: block; padding: 20px; border-radius: 15px; background: var(--danger); color: white; font-weight: 900; font-family: 'Orbitron'; border: none; }
-
-        /* TABLA DE HISTORIAL */
         .history-section { padding: 15px; margin-top: 10px; border-top: 1px solid #222; }
-        .history-title { font-family: 'Orbitron'; font-size: 10px; color: var(--warning); margin-bottom: 10px; display: block; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 10px; color: #848e9c; }
         .history-table th { text-align: left; padding: 8px; border-bottom: 1px solid #333; color: var(--dir-color); }
         .history-table td { padding: 8px; border-bottom: 1px solid #1a1a1a; }
@@ -80,8 +79,8 @@
 
     <header class="app-header">
         <div class="logo-row">
-            <div class="logo-area">DCA COMMAND V17.20</div>
-            <div style="font-size:8px; color:var(--success);">• BYBIT LIVE FEED</div>
+            <div class="logo-area">DCA COMMAND V17.21</div>
+            <div style="font-size:8px; color:var(--success);">• BYBIT LIVE</div>
         </div>
         <div class="slider-wrapper">
             <div class="price-slider" id="priceSlider"></div>
@@ -98,7 +97,7 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>ACTIVO (GATE)</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value=this.value.toUpperCase()" onblur="updateCoin()"></div>
+        <div class="control-box"><label>ACTIVO (GATE)</label><input type="text" id="coinInput" oninput="this.value=this.value.toUpperCase()" onblur="updateCoin()"></div>
         <div class="control-box"><label>P. ENTRADA</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
         <div class="control-box"><label>BASE USD</label><input type="number" id="capitalInput" value="10" oninput="calculate()"></div>
     </div>
@@ -106,26 +105,22 @@
     <div class="dash">
         <span style="font-size:10px; color:#848e9c; font-weight: 900;">PRECIO PROMEDIO (AVG)</span>
         <span id="resAvg" class="avg-large">0.000000</span>
-        <div style="display:flex; justify-content:space-between; margin-top:15px; border-top:1px solid #222; padding-top:10px;">
-            <div><small style="display:block; font-size:8px; font-weight:900;">INVERTIDO</small><b id="resInv" style="font-size: 18px;">$0.00</b></div>
-            <div><small style="display:block; font-size:8px; color:var(--warning); font-weight:900;">TARGET</small><b id="resTarget" style="color:var(--dir-color); font-size: 18px;">0.000000</b></div>
+        <div style="display:flex; justify-content:space-around; margin-top:15px; border-top:1px solid #222; padding-top:10px;">
+            <div><small style="display:block; font-size:8px; font-weight:900;">INVERTIDO</small><b id="resInv" style="font-size: 16px;">$0.00</b></div>
+            <div><small style="display:block; font-size:8px; color:var(--success); font-weight:900;">PROFIT EST.</small><b id="resProfit" class="profit-badge">$0.00</b></div>
+            <div><small style="display:block; font-size:8px; color:var(--warning); font-weight:900;">TARGET</small><b id="resTarget" style="color:var(--dir-color); font-size: 16px;">0.000000</b></div>
         </div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
     
-    <button class="btn-release" onclick="releasePosition()">LIQUIDAR Y EXPORTAR</button>
+    <button class="btn-release" onclick="releasePosition()">LIQUIDAR Y EXCEL DETALLADO</button>
 
     <div class="history-section">
-        <span class="history-title">OPERACIONES CERRADAS</span>
+        <span style="font-family:'Orbitron'; font-size:10px; color:var(--warning); margin-bottom:10px; display:block;">ÚLTIMOS CIERRES</span>
         <table class="history-table">
             <thead>
-                <tr>
-                    <th>ACTIVO</th>
-                    <th>INVERTIDO</th>
-                    <th>AVG</th>
-                    <th>FECHA</th>
-                </tr>
+                <tr><th>ACTIVO</th><th>INVERTIDO</th><th>AVG</th><th>FECHA</th></tr>
             </thead>
             <tbody id="historyBody"></tbody>
         </table>
@@ -133,11 +128,11 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const bybitBase = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT', 'XRPUSDT', 'BNBUSDT', 'ADAUSDT', 'LINKUSDT'];
-        let customCoins = JSON.parse(localStorage.getItem('dca_custom_list')) || [];
-        let history = JSON.parse(localStorage.getItem('dca_history_v20')) || [];
+        const bybitBase = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT', 'XRPUSDT', 'LINKUSDT', 'AVAXUSDT', 'NEARUSDT', 'APTUSDT', 'ARBUSDT'];
+        let customCoins = JSON.parse(localStorage.getItem('dca_custom_list_v21')) || [];
+        let history = JSON.parse(localStorage.getItem('dca_history_v21')) || [];
         let activeTF = '60', activeIdx = 0;
-        let slots = JSON.parse(localStorage.getItem('dca_slots_v20')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_slots_v21')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         const strategy = [
             { c: 0.00, m: 1.0, g: 0.015 }, { c: 0.10, m: 1.0, g: 0.015 }, { c: 0.15, m: 1.5, g: 0.02 },
@@ -157,8 +152,9 @@
             
             const slider = document.getElementById('priceSlider');
             slider.addEventListener('scroll', () => {
-                if (slider.scrollLeft >= (slider.scrollWidth - slider.clientWidth - 5)) {
-                    slider.scrollLeft = 5;
+                const maxScroll = slider.scrollWidth - slider.clientWidth;
+                if (slider.scrollLeft >= maxScroll - 5) {
+                    setTimeout(() => slider.scrollLeft = 5, 200); 
                 }
             });
         }
@@ -166,14 +162,14 @@
         function renderSlider() {
             const slider = document.getElementById('priceSlider');
             const list = [...bybitBase, ...customCoins];
-            const fullList = [...list, ...list]; // Duplicado para loop
+            const fullList = [...list, ...list, ...list]; 
             slider.innerHTML = fullList.map(s => `
                 <div class="crypto-card" onclick="setSearch('${s}')">
                     <span class="c-name">${s.replace('USDT','')}</span>
                     <span id="p-${s}" class="c-val">---</span>
                     <span id="perc-${s}" class="c-perc">0.00%</span>
                 </div>
-            `).join('') + `<div onclick="addCoin()" style="flex:0 0 auto; padding:12px; color:#444; font-size:10px; font-weight:900; cursor:pointer;">+ ADD</div>`;
+            `).join('') + `<div onclick="addCoin()" style="flex:0 0 auto; padding:12px; color:#444; font-size:10px; font-weight:900; cursor:pointer; border:1px dashed #444; border-radius:12px;">+ ADD</div>`;
         }
 
         async function fetchBybit() {
@@ -225,12 +221,16 @@
             const s = slots[activeIdx];
             if(!s.price) { grid.innerHTML = ""; return; }
             
-            let html = '', spent = 0, tokens = 0, lastG = 0, currentP = s.price;
+            let html = '', spent = 0, tokens = 0, profit = 0, currentP = s.price;
             strategy.forEach((lvl, i) => {
                 if(i > 0) currentP *= (1 - lvl.c);
                 const isBought = s.buys.includes(i);
                 const mUSD = lvl.m * s.capital;
-                if(isBought) { spent += mUSD; tokens += (mUSD / currentP); lastG = lvl.g; }
+                if(isBought) { 
+                    spent += mUSD; 
+                    tokens += (mUSD / currentP); 
+                    profit = (spent * lvl.g); 
+                }
                 
                 html += `
                 <div class="level-card ${isBought ? 'active' : ''}" onclick="toggleLvl(${i})">
@@ -250,7 +250,8 @@
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
+            document.getElementById('resProfit').textContent = `$${profit.toFixed(2)}`;
+            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + (profit/spent))).toFixed(6) : '0.000000';
             
             document.body.className = (s.name.includes('L') || s.name.includes('3L')) ? 'mode-long' : 'mode-short';
         }
@@ -262,9 +263,8 @@
         }
 
         function fillTo(i) {
-            let newBuys = [];
-            for(let j=0; j<=i; j++) newBuys.push(j);
-            slots[activeIdx].buys = newBuys;
+            let n = []; for(let j=0; j<=i; j++) n.push(j);
+            slots[activeIdx].buys = n;
             save(); calculate();
         }
 
@@ -272,23 +272,31 @@
             const s = slots[activeIdx];
             if(!s.name || s.buys.length === 0) return;
             
-            const record = {
-                name: s.name,
-                spent: document.getElementById('resInv').textContent,
-                avg: document.getElementById('resAvg').textContent,
-                date: new Date().toLocaleDateString()
-            };
+            const time = new Date().toLocaleString();
+            let csv = `REPORTE DETALLADO DCA - ${s.name}\n`;
+            csv += `FECHA DE CIERRE,${time}\n\n`;
+            csv += `NIVEL,PRECIO EJECUCION,INVERSION USD,GANANCIA ESP %\n`;
             
+            let cp = s.price;
+            s.buys.forEach(idx => {
+                let p = s.price; for(let k=1; k<=idx; k++) p *= (1 - strategy[k].c);
+                csv += `${idx+1},${p.toFixed(6)},${strategy[idx].m * s.capital},${(strategy[idx].g * 100)}%\n`;
+            });
+            
+            csv += `\nRESUMEN FINAL\n`;
+            csv += `TOTAL INVERTIDO,${document.getElementById('resInv').textContent}\n`;
+            csv += `PRECIO PROMEDIO,${document.getElementById('resAvg').textContent}\n`;
+            csv += `PROFIT ESTIMADO,${document.getElementById('resProfit').textContent}\n`;
+
+            const record = { name: s.name, spent: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent, date: new Date().toLocaleDateString() };
             history.unshift(record);
-            localStorage.setItem('dca_history_v20', JSON.stringify(history));
+            localStorage.setItem('dca_history_v21', JSON.stringify(history));
             renderHistory();
 
-            // Exportar CSV
-            let csv = `REPORTE DCA - ${s.name}\nINVERTIDO,${record.spent}\nAVG,${record.avg}\nFECHA,${record.date}`;
             const blob = new Blob(["\ufeff"+csv], {type: 'text/csv'});
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `Cierre_${s.name}.csv`;
+            a.download = `DETALLE_${s.name}_${new Date().getTime()}.csv`;
             a.click();
 
             slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
@@ -303,7 +311,7 @@
 
         function addCoin() {
             const c = prompt("Bybit Symbol (e.g. DOGEUSDT):");
-            if(c) { customCoins.push(c.toUpperCase()); localStorage.setItem('dca_custom_list', JSON.stringify(customCoins)); renderSlider(); }
+            if(c) { customCoins.push(c.toUpperCase()); localStorage.setItem('dca_custom_list_v21', JSON.stringify(customCoins)); renderSlider(); }
         }
 
         function updateTF(tf, btn) {
@@ -313,7 +321,7 @@
             loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_slots_v20', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_slots_v21', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
