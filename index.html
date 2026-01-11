@@ -82,7 +82,7 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+        <div class="control-box"><label>MONEDA (GATE.IO)</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
         <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
         <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
@@ -118,7 +118,7 @@
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_1_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_3_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
 
@@ -134,16 +134,21 @@
             const v = document.getElementById('coinInput').value.trim().toUpperCase();
             if(v) {
                 slots[activeIdx].name = v;
-                // MEJORA: Buscar precio automático al elegir moneda
+                // MEJORA: Búsqueda directa en GATE.IO para ETFs
                 try {
-                    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${v.includes('USDT') ? v : v+'USDT'}`);
+                    const pair = v.includes('_') ? v : v+'_USDT';
+                    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${pair}`);
                     const data = await res.json();
-                    if(data.price) {
-                        const marketPrice = parseFloat(data.price);
+                    if(data && data[0] && data[0].last) {
+                        const marketPrice = parseFloat(data[0].last);
                         document.getElementById('baseInput').value = marketPrice;
                         slots[activeIdx].price = marketPrice;
+                        // Auto-activar Nivel 1 si es una moneda nueva
+                        if(slots[activeIdx].buys.length === 0) {
+                            slots[activeIdx].buys = [0];
+                        }
                     }
-                } catch(e) { console.log("Precio no encontrado en Binance"); }
+                } catch(e) { console.log("Precio no encontrado en Gate.io"); }
                 
                 save(); renderNav(); loadChart(v); calculate();
             }
@@ -159,7 +164,7 @@
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateTheme(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:20px;">Ingresa Moneda y Precio Base</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:20px;">Ingresa Moneda (ej. BTC3L)</p>'; return; }
             
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             strategy.forEach((lvl, i) => {
@@ -207,7 +212,7 @@
                 document.body.classList.add('mode-long'); bar.textContent = "MODO LONG (VERDE)";
             } else if(n.endsWith('S')) {
                 document.body.classList.add('mode-short'); bar.textContent = "MODO SHORT (ROJO)";
-            } else bar.textContent = "ESPERANDO ACTIVO (L/S)";
+            } else bar.textContent = "ESPERANDO ACTIVO (GATE.IO)";
         }
 
         function selectSlot(i) {
@@ -242,8 +247,10 @@
         }
 
         function loadChart(coin) {
+            // Asegurar que TradingView busque en Gate.io
+            const symbol = coin ? `GATEIO:${coin.replace('_', '')}USDT` : 'GATEIO:BTC3LUSDT';
             new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${coin || 'BTC3L'}USDT`, "interval": activeTF,
+                "autosize": true, "symbol": symbol, "interval": activeTF,
                 "theme": "dark", "style": "1", "container_id": "tv_chart", "hide_top_toolbar": true, "hide_legend": true,
                 "backgroundColor": "#050708", "hide_side_toolbar": true
             });
@@ -260,7 +267,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v18_1_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v18_3_slots', JSON.stringify(slots)); }
     </script>
 </body>
-        </html>
+</html>
