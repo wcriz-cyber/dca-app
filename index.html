@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
     <title>DCA ENGINE PRO</title>
     
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/5968/5968260.png">
     <meta name="theme-color" content="#050708">
-    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DCA ENGINE"> <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="DCA ENGINE">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
@@ -70,7 +68,7 @@
         </div>
     </header>
 
-    <div id="decisionBar" class="decision-bar">ESPERANDO ACTIVO (L/S)</div>
+    <div id="decisionBar" class="decision-bar">ESPERANDO ACTIVO</div>
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
@@ -120,7 +118,7 @@
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v17_9_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_1_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
 
@@ -132,9 +130,23 @@
             } catch(e) {}
         }
 
-        function updateCoin() {
+        async function updateCoin() {
             const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
+            if(v) {
+                slots[activeIdx].name = v;
+                // MEJORA: Buscar precio automático al elegir moneda
+                try {
+                    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${v.includes('USDT') ? v : v+'USDT'}`);
+                    const data = await res.json();
+                    if(data.price) {
+                        const marketPrice = parseFloat(data.price);
+                        document.getElementById('baseInput').value = marketPrice;
+                        slots[activeIdx].price = marketPrice;
+                    }
+                } catch(e) { console.log("Precio no encontrado en Binance"); }
+                
+                save(); renderNav(); loadChart(v); calculate();
+            }
         }
 
         function calculate() {
@@ -222,7 +234,7 @@
                 const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(blob);
-                a.download = `Reporte_${s.name}.csv`;
+                a.download = `Cierre_${s.name}.csv`;
                 a.click();
                 slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
                 save(); selectSlot(activeIdx);
@@ -248,7 +260,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v17_9_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v18_1_slots', JSON.stringify(slots)); }
     </script>
 </body>
-</html>
+        </html>
