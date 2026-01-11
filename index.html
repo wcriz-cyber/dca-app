@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA COMMAND V17.11 - PRO ENGINE</title>
+    <title>DCA COMMAND V17.13 - BYBIT EDITION</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg: #050708; --surface: #12151a; --primary: #3498db; --success: #0ecb81;
-            --warning: #f1c40f; --text: #f0f2f5; --danger: #e74c3c; --dir-color: #3498db;
+            --warning: #f1c40f; --text: #f0f2f5; --danger: #f6465d; --dir-color: #3498db;
         }
         body.mode-long { --dir-color: #0ecb81; --primary: #0ecb81; }
         body.mode-short { --dir-color: #f6465d; --primary: #f6465d; }
@@ -18,54 +18,45 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; transition: 0.3s; overflow-x: hidden; }
         
-        /* HEADER Y SLIDER INFINITO */
+        /* HEADER Y SLIDER INFINITO BYBIT */
         .app-header { background: var(--surface); border-bottom: 3px solid var(--dir-color); padding-top: 10px; position: sticky; top: 0; z-index: 100; }
         .logo-row { display: flex; justify-content: space-between; padding: 0 15px 5px 15px; align-items: center; }
         .logo-area { font-family: 'Orbitron'; font-size: 10px; font-weight: 900; color: var(--dir-color); }
         
         .price-slider { 
-            display: flex; 
-            overflow-x: auto; 
-            gap: 10px; 
-            padding: 10px 15px 15px 15px;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
+            display: flex; overflow-x: auto; gap: 10px; padding: 10px 15px 15px 15px;
+            scroll-snap-type: x mandatory; scrollbar-width: none;
         }
         .price-slider::-webkit-scrollbar { display: none; }
         
         .crypto-card { 
-            flex: 0 0 auto; 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid #2d3339; 
-            padding: 10px 15px; 
-            border-radius: 12px; 
-            min-width: 115px;
-            text-align: center;
-            position: relative;
-            cursor: pointer;
+            flex: 0 0 auto; background: rgba(255,255,255,0.03); border: 1px solid #2d3339; 
+            padding: 10px 12px; border-radius: 12px; min-width: 125px; text-align: center;
+            position: relative; cursor: pointer; transition: 0.2s;
         }
-        .c-name { font-size: 9px; font-weight: 900; color: var(--dir-color); display: block; }
-        .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 13px; color: #fff; }
-        .remove-c { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; border: none; font-weight: 900; }
+        .c-name { font-size: 9px; font-weight: 900; color: #848e9c; display: block; }
+        .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 13px; color: #fff; display: block; margin: 2px 0; }
+        .c-perc { font-size: 10px; font-weight: 900; }
+        .up { color: var(--success) !important; }
+        .down { color: var(--danger) !important; }
+
+        .remove-c { 
+            position: absolute; top: -5px; right: -5px; background: var(--danger); 
+            color: white; border-radius: 50%; width: 18px; height: 18px; 
+            font-size: 10px; border: none; font-weight: 900; z-index: 10;
+        }
 
         .add-card { 
-            flex: 0 0 auto; 
-            border: 2px dashed #444; 
-            padding: 10px 25px; 
-            border-radius: 12px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 24px; 
-            color: #444; 
-            cursor: pointer;
+            flex: 0 0 auto; border: 2px dashed #444; padding: 10px 25px; 
+            border-radius: 12px; display: flex; align-items: center; 
+            justify-content: center; font-size: 24px; color: #444; cursor: pointer;
         }
 
-        /* MODAL DE ANÁLISIS */
+        /* MODAL ANALIZADOR */
         .analysis-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: none; flex-direction: column; }
         .analysis-modal.open { display: flex; }
         .modal-header { padding: 12px; background: #12151a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--dir-color); }
-        .close-btn { background: #e74c3c; color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; }
+        .close-btn { background: var(--danger); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; }
 
         /* DASHBOARD CORE */
         .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 6px; font-family: 'Orbitron'; font-weight: 900; font-size: 10px; }
@@ -100,7 +91,7 @@
 
     <div id="analysisModal" class="analysis-modal">
         <div class="modal-header">
-            <span id="analysisTitle" style="font-family:'Orbitron'; color:var(--success); font-weight:900; font-size:12px;">CARGANDO...</span>
+            <span id="analysisTitle" style="font-family:'Orbitron'; color:var(--success); font-weight:900; font-size:12px;">BYBIT PRO ANALYZER</span>
             <button class="close-btn" onclick="closeAnalysis()">CERRAR [X]</button>
         </div>
         <div id="full_analysis_chart"></div>
@@ -108,14 +99,13 @@
 
     <header class="app-header">
         <div class="logo-row">
-            <div class="logo-area">DCA ENGINE V17.11</div>
-            <div id="status" style="font-size:7px; color:var(--success); font-weight:900;">PRICES LIVE</div>
+            <div class="logo-area">DCA COMMAND V17.13</div>
+            <div style="font-size:7px; color:var(--success); font-weight:900;">BYBIT CLOUD LIVE</div>
         </div>
-        <div class="price-slider" id="priceSlider">
-            </div>
+        <div class="price-slider" id="priceSlider"></div>
     </header>
 
-    <div id="decisionBar" class="decision-bar">ESPERANDO ACTIVO (L/S)</div>
+    <div id="decisionBar" class="decision-bar">ESPERANDO SELECCIÓN...</div>
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
@@ -129,15 +119,15 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
         <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
         <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
         <div style="display:flex; justify-content:space-around; margin-bottom:5px;">
-            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv" style="font-size:18px; font-weight:900;">$0.00</div></div>
-            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">PROFIT EST.</span><div id="resProf" style="font-size:18px; font-weight:900; color:var(--dir-color)">$0.00</div></div>
+            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv">$0.00</div></div>
+            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">PROFIT EST.</span><div id="resProf" style="color:var(--dir-color)">$0.00</div></div>
         </div>
         <span style="font-size:9px; opacity:0.6; font-weight:900;">AVG PRICE</span>
         <span id="resAvg" class="avg-large">0.000000</span>
@@ -148,12 +138,12 @@
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y EXPORTAR REPORTE</button>
+    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y EXPORTAR EXCEL</button>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         const baseCoins = ['BTCUSDT', 'ETHUSDT', 'SUIUSDT', 'SOLUSDT', 'BNBUSDT'];
-        let customCoins = JSON.parse(localStorage.getItem('dca_custom_coins_v11')) || [];
+        let customCoins = JSON.parse(localStorage.getItem('dca_custom_v13')) || [];
         
         const strategy = [
             { c: 0.00, m: 1.0, g: 0.50 }, { c: 0.10, m: 1.0, g: 0.50 }, { c: 0.15, m: 1.5, g: 0.50 },
@@ -164,110 +154,80 @@
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v17_11_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_slots_v13')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         function init() { 
-            renderSlider();
-            renderNav(); 
-            selectSlot(0); 
-            fetchPrices(); 
-            setInterval(fetchPrices, 5000); 
+            renderSlider(); renderNav(); selectSlot(0); 
+            fetchBybitPrices(); setInterval(fetchBybitPrices, 5000); 
         }
 
-        // CARROUSEL INFINITO PERSONALIZABLE
         function renderSlider() {
             const slider = document.getElementById('priceSlider');
-            const allCoins = [...baseCoins, ...customCoins];
-            let html = allCoins.map(sym => `
-                <div class="crypto-card" onclick="openAnalysis('${sym}')">
+            const all = [...baseCoins, ...customCoins];
+            let html = all.map(sym => `
+                <div class="crypto-card" id="card-${sym}" onclick="openAnalysis('${sym}')">
                     ${!baseCoins.includes(sym) ? `<button class="remove-c" onclick="event.stopPropagation(); removeCoin('${sym}')">×</button>` : ''}
                     <span class="c-name">${sym.replace('USDT','')}</span>
-                    <span id="price-${sym}" class="c-val">$ ---</span>
+                    <span id="p-${sym}" class="c-val">---</span>
+                    <span id="perc-${sym}" class="c-perc">0.00%</span>
                 </div>
             `).join('');
-            
-            if (allCoins.length < 20) {
-                html += `<div class="add-card" onclick="addCoinPrompt()">+</div>`;
-            }
+            if (all.length < 20) html += `<div class="add-card" onclick="addCoin()">+</div>`;
             slider.innerHTML = html;
         }
 
-        function addCoinPrompt() {
-            const name = prompt("Escribe el símbolo (ej: XRP, ADA, DOGE):");
-            if (name) {
-                const sym = name.toUpperCase().trim() + 'USDT';
-                if (!customCoins.includes(sym) && !baseCoins.includes(sym)) {
-                    customCoins.push(sym);
-                    localStorage.setItem('dca_custom_coins_v11', JSON.stringify(customCoins));
-                    renderSlider();
-                    fetchPrices();
+        async function fetchBybitPrices() {
+            const all = [...baseCoins, ...customCoins];
+            for (const s of all) {
+                try {
+                    // Usando API de Bybit para tickers
+                    const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${s}`);
+                    const d = await r.json();
+                    if(d.result && d.result.list.length > 0) {
+                        const data = d.result.list[0];
+                        const price = parseFloat(data.lastPrice);
+                        const perc = parseFloat(data.price24hPcnt) * 100;
+                        
+                        const elP = document.getElementById(`p-${s}`);
+                        const elPerc = document.getElementById(`perc-${s}`);
+                        
+                        if(elP) {
+                            elP.textContent = price < 1 ? `$${price.toFixed(4)}` : `$${price.toLocaleString()}`;
+                            elP.className = 'c-val ' + (perc >= 0 ? 'up' : 'down');
+                        }
+                        if(elPerc) {
+                            elPerc.textContent = (perc >= 0 ? '+' : '') + perc.toFixed(2) + '%';
+                            elPerc.className = 'c-perc ' + (perc >= 0 ? 'up' : 'down');
+                        }
+                    }
+                } catch(e) { console.error("Bybit Error", e); }
+            }
+        }
+
+        function addCoin() {
+            const n = prompt("Símbolo en Bybit (ej: XRP):");
+            if (n) {
+                const s = n.toUpperCase().trim() + 'USDT';
+                if (![...baseCoins, ...customCoins].includes(s)) {
+                    customCoins.push(s); localStorage.setItem('dca_custom_v13', JSON.stringify(customCoins));
+                    renderSlider(); fetchBybitPrices();
                 }
             }
         }
 
-        function removeCoin(sym) {
-            customCoins = customCoins.filter(c => c !== sym);
-            localStorage.setItem('dca_custom_coins_v11', JSON.stringify(customCoins));
+        function removeCoin(s) {
+            customCoins = customCoins.filter(c => c !== s);
+            localStorage.setItem('dca_custom_v13', JSON.stringify(customCoins));
             renderSlider();
         }
 
-        async function fetchPrices() {
-            const all = [...baseCoins, ...customCoins];
-            for (const sym of all) {
-                try {
-                    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
-                    const data = await res.json();
-                    const p = parseFloat(data.price);
-                    const el = document.getElementById(`price-${sym}`);
-                    if (el) el.textContent = p < 1 ? `$${p.toFixed(4)}` : `$${p.toLocaleString()}`;
-                } catch(e) {}
-            }
-        }
-
-        // EXPORTACIÓN EXCEL (CSV)
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(!s.name || s.buys.length === 0) { alert("El slot está vacío."); return; }
-            
-            if(confirm(`¿Liquidar ${s.name} y descargar Reporte?`)) {
-                let csv = `REPORTE DCA ENGINE - ${s.name}\n`;
-                csv += `FECHA,${new Date().toLocaleString()}\n\n`;
-                csv += `NIVEL,PRECIO COMPRA,MONTO USD\n`;
-                
-                let totalSpent = 0;
-                s.buys.forEach(idx => {
-                    let levelPrice = s.price;
-                    for(let k=1; k<=idx; k++) levelPrice *= (1 - strategy[k].c);
-                    const mUSD = strategy[idx].m * s.capital;
-                    totalSpent += mUSD;
-                    csv += `${idx+1},${levelPrice.toFixed(6)},${mUSD}\n`;
-                });
-                
-                csv += `\nINVERSION TOTAL,,${totalSpent.toFixed(2)}\n`;
-                csv += `PRECIO PROMEDIO FINAL,,${document.getElementById('resAvg').textContent}\n`;
-                
-                const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `Reporte_${s.name}.csv`;
-                link.click();
-                
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
-                save(); 
-                selectSlot(activeIdx);
-            }
-        }
-
-        // ANALIZADOR TV
-        function openAnalysis(symbol) {
-            document.getElementById('analysisTitle').textContent = `ANALIZANDO: ${symbol}`;
+        function openAnalysis(s) {
+            document.getElementById('analysisTitle').textContent = `BYBIT: ${s}`;
             document.getElementById('analysisModal').classList.add('open');
             new TradingView.widget({
-                "autosize": true, "symbol": `BINANCE:${symbol}`, "interval": activeTF,
+                "autosize": true, "symbol": `BYBIT:${s}.P`, "interval": activeTF,
                 "theme": "dark", "style": "1", "container_id": "full_analysis_chart",
-                "hide_side_toolbar": false, "allow_symbol_change": true,
-                "studies": [ "RSI@tv-basicstudies", "BB@tv-basicstudies" ],
-                "backgroundColor": "#050708"
+                "studies": [ "RSI@tv-basicstudies", "BB@tv-basicstudies" ]
             });
         }
 
@@ -292,8 +252,7 @@
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateTheme(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:20px;">Esperando datos...</p>'; return; }
-            
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:20px;">Configura el Activo</p>'; return; }
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             strategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
@@ -306,7 +265,7 @@
                     <div style="flex:1">
                         <div style="font-size:9px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1} ${on ? '✓' : ''}</div>
                         <b style="font-size:18px;">${cp.toFixed(6)}</b><br>
-                        <span style="font-size:10px; opacity:0.6;">COMPRA: $${mUSD.toFixed(1)}</span>
+                        <span style="font-size:10px; opacity:0.6;">INVERSIÓN: $${mUSD.toFixed(1)}</span>
                     </div>
                 </div>`;
             });
@@ -316,6 +275,26 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
+        }
+
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(!s.name || s.buys.length === 0) return alert("Slot vacío");
+            if(confirm(`¿Liquidar ${s.name} y generar Reporte?`)) {
+                let csv = `REPORTE DCA BYBIT - ${s.name}\nFECHA,${new Date().toLocaleString()}\nNIVEL,PRECIO,USD\n`;
+                let spent = 0;
+                s.buys.forEach(idx => {
+                    let lp = s.price; for(let k=1; k<=idx; k++) lp *= (1 - strategy[k].c);
+                    const usd = strategy[idx].m * s.capital; spent += usd;
+                    csv += `${idx+1},${lp.toFixed(6)},${usd}\n`;
+                });
+                csv += `TOTAL,,${spent.toFixed(2)}\nAVG,,${document.getElementById('resAvg').textContent}`;
+                const b = new Blob(["\ufeff" + csv], { type: 'text/csv' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(b); a.download = `Reporte_${s.name}.csv`; a.click();
+                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
+                save(); selectSlot(activeIdx);
+            }
         }
 
         function toggleLvl(i) {
@@ -332,8 +311,9 @@
         function updateTheme(n) {
             document.body.classList.remove('mode-long', 'mode-short');
             const bar = document.getElementById('decisionBar');
-            if(n.endsWith('L')) { document.body.classList.add('mode-long'); bar.textContent = "ESTRATEGIA LONG ACTIVADA"; }
-            else if(n.endsWith('S')) { document.body.classList.add('mode-short'); bar.textContent = "ESTRATEGIA SHORT ACTIVADA"; }
+            if(n.endsWith('L')) { document.body.classList.add('mode-long'); bar.textContent = "ESTRATEGIA LONG"; }
+            else if(n.endsWith('S')) { document.body.classList.add('mode-short'); bar.textContent = "ESTRATEGIA SHORT"; }
+            else { bar.textContent = "SELECCIONE ACTIVO"; }
         }
 
         function selectSlot(i) {
@@ -344,9 +324,9 @@
             renderNav(); loadChart(s.name); calculate();
         }
 
-        function loadChart(coin) {
+        function loadChart(c) {
             new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${coin || 'BTC3L'}USDT`, "interval": activeTF,
+                "autosize": true, "symbol": `BYBIT:${c || 'BTCUSDT'}.P`, "interval": activeTF,
                 "theme": "dark", "style": "1", "container_id": "tv_chart", "hide_top_toolbar": true, 
                 "hide_legend": true, "backgroundColor": "#050708", "hide_side_toolbar": true
             });
@@ -363,7 +343,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v17_11_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_slots_v13', JSON.stringify(slots)); }
     </script>
 </body>
-</html>
+    </html>
