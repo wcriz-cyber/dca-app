@@ -3,349 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE V17.17 - BYBIT & GATE.IO HYBRID</title>
-    
+    <title>DCA ENGINE V17.18 - FULL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
-    
     <style>
         :root {
             --bg: #050708; --surface: #12151a; --primary: #3498db; --success: #0ecb81;
             --warning: #f1c40f; --text: #f0f2f5; --danger: #f6465d; --dir-color: #3498db;
         }
-        body.mode-long { --dir-color: #0ecb81; --primary: #0ecb81; }
-        body.mode-short { --dir-color: #f6465d; --primary: #f6465d; }
+        body.mode-long { --dir-color: #0ecb81; }
+        body.mode-short { --dir-color: #f6465d; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
         
-        /* HEADER Y CARRUSEL PEQUEÑO (SOLO BYBIT) */
+        /* HEADER Y CARRUSEL INFINITO */
         .app-header { background: var(--surface); border-bottom: 2px solid var(--dir-color); position: sticky; top: 0; z-index: 100; }
-        .logo-row { display: flex; justify-content: space-between; padding: 8px 15px; align-items: center; }
-        .logo-area { font-family: 'Orbitron'; font-size: 10px; font-weight: 900; color: var(--dir-color); }
+        .logo-row { display: flex; justify-content: space-between; padding: 10px 15px; align-items: center; }
+        .logo-area { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
         
-        .slider-wrapper { overflow: hidden; width: 100%; background: #000; padding: 10px 0; }
+        .slider-wrapper { overflow: hidden; width: 100%; background: #000; position: relative; }
         .price-slider { 
-            display: flex; gap: 10px; padding: 0 15px;
+            display: flex; gap: 10px; padding: 10px;
             overflow-x: auto; scroll-behavior: smooth;
             scrollbar-width: none;
         }
         .price-slider::-webkit-scrollbar { display: none; }
         
         .crypto-card { 
-            flex: 0 0 auto; background: #12151a; border: 1px solid #2d3339; 
-            padding: 8px 12px; border-radius: 10px; min-width: 110px; 
-            text-align: left; cursor: pointer; position: relative;
+            flex: 0 0 auto; background: #1a1e23; border: 1px solid #2d3339; 
+            padding: 10px; border-radius: 12px; min-width: 125px; 
+            text-align: left; position: relative;
         }
-        .c-name { font-size: 9px; font-weight: 900; color: #848e9c; display: block; }
-        .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 13px; color: #fff; display: block; }
+        .c-name { font-size: 10px; font-weight: 900; color: #848e9c; }
+        .c-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; color: #fff; display: block; }
         .c-perc { font-size: 10px; font-weight: 900; }
-        
-        .up { color: var(--success) !important; }
-        .down { color: var(--danger) !important; }
+        .up { color: var(--success); } .down { color: var(--danger); }
 
-        .remove-btn { 
-            position: absolute; top: 2px; right: 2px; background: none; 
-            color: #444; border: none; font-size: 12px; font-weight: 900;
+        .btn-add-coin { background: var(--surface); border: 1px dashed #444; color: #666; padding: 10px 20px; border-radius: 12px; font-weight: 900; font-size: 10px; cursor: pointer; flex: 0 0 auto; }
+
+        /* NIVELES */
+        .levels-container { padding: 12px; display: grid; gap: 10px; }
+        .level-card { 
+            background: var(--surface); border-radius: 15px; padding: 15px; 
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid #2d3339; transition: 0.2s;
         }
+        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.05); }
+        .lvl-info { flex: 1; }
+        .lvl-check { width: 24px; height: 24px; border: 2px solid #444; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: 900; }
+        .active .lvl-check { background: var(--dir-color); border-color: var(--dir-color); color: #000; }
+        .active .lvl-check::after { content: "✓"; }
+
+        .fill-btn { background: #333; color: #fff; border: none; padding: 5px 10px; border-radius: 5px; font-size: 9px; font-weight: 900; }
 
         /* DASHBOARD */
-        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 6px; }
-        .tf-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #848e9c; font-size: 10px; font-weight: 900; }
-        .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 5px; }
+        .dash { margin: 15px; padding: 20px; background: #12151a; border-radius: 20px; border: 2px solid var(--dir-color); text-align: center; }
+        .avg-large { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--warning); display: block; }
         
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); }
+        .chart-container { width: 100%; height: 300px; background: #000; }
+        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
+        .tf-btn { color: #555; font-weight: 900; font-size: 11px; background: none; border: none; }
+        .tf-btn.active { color: var(--dir-color); }
 
-        .chart-container { width: 100%; height: 260px; background: #000; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid #2d3339; text-align: center; }
+        .control-box input { background: transparent; border: none; color: white; width: 100%; text-align: center; font-weight: 700; outline: none; }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
-        .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid #2d3339; text-align: center; }
-        .control-box label { font-size: 7px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
-        .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-
-        .dash { margin: 10px; padding: 15px; background: #12151a; border-radius: 20px; border: 2px solid var(--dir-color); text-align: center; }
-        .avg-large { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--warning); display: block; }
-
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 14px; padding: 15px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.03); }
-        .panic-btn { position: absolute; top: 8px; right: 10px; font-size: 7px; background: var(--dir-color); color: #000; border: none; padding: 3px 6px; border-radius: 4px; font-weight: 900; }
-        
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 11px; }
-
-        /* TABLA DE CERRADOS */
-        .history-section { padding: 15px; margin-top: 10px; border-top: 1px solid #222; }
-        .history-title { font-family: 'Orbitron'; font-size: 10px; color: var(--warning); margin-bottom: 10px; display: block; }
-        table { width: 100%; border-collapse: collapse; font-size: 10px; color: #848e9c; }
-        th { text-align: left; padding: 8px; border-bottom: 1px solid #333; color: var(--dir-color); }
-        td { padding: 8px; border-bottom: 1px solid #1a1a1a; }
+        .btn-release { width: 90%; margin: 20px auto; display: block; padding: 20px; border-radius: 15px; background: var(--danger); color: white; font-weight: 900; font-family: 'Orbitron'; border: none; }
     </style>
 </head>
 <body onload="init()">
 
     <header class="app-header">
         <div class="logo-row">
-            <div class="logo-area">DCA ENGINE V17.17</div>
-            <div style="font-size:7px; color:var(--success); font-weight:900;">• BYBIT CAROUSEL | GATE.IO CHART</div>
+            <div class="logo-area">DCA COMMAND V17.18</div>
+            <div id="status" style="font-size:8px; color:var(--success);">• BYBIT LIVE</div>
         </div>
         <div class="slider-wrapper">
             <div class="price-slider" id="priceSlider"></div>
         </div>
     </header>
 
-    <div id="decisionBar" style="background:var(--dir-color); color:#000; text-align:center; padding:5px; font-family:'Orbitron'; font-weight:900; font-size:10px;">SELECCIONE ACTIVO</div>
-
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
         <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
         <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
         <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
     </div>
 
-    <nav id="slotNav" class="slot-nav"></nav>
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box">
-            <label>BUSCAR (GATE.IO)</label>
-            <input type="text" id="coinInput" placeholder="BTC3L" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
-        </div>
-        <div class="control-box"><label>P. ENTRADA</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
-        <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
+        <div class="control-box"><label style="font-size:8px; color:var(--dir-color)">ACTIVO (GATE)</label><input type="text" id="coinInput" oninput="this.value=this.value.toUpperCase()" onblur="updateCoin()"></div>
+        <div class="control-box"><label style="font-size:8px; color:var(--dir-color)">P. ENTRADA</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
+        <div class="control-box"><label style="font-size:8px; color:var(--dir-color)">BASE USD</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
-        <div style="display:flex; justify-content:space-around; margin-bottom:8px;">
-            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">INVERTIDO</span><div id="resInv" style="font-size:18px; font-weight:900;">$0.00</div></div>
-            <div><span style="font-size:9px; color:var(--dir-color); font-weight:900;">PROFIT</span><div id="resProf" style="font-size:18px; font-weight:900; color:var(--dir-color)">$0.00</div></div>
-        </div>
-        <span style="font-size:9px; opacity:0.6; font-weight:900;">PRECIO AVG</span>
+        <span style="font-size:10px; color:#848e9c;">PRECIO PROMEDIO ACTUAL</span>
         <span id="resAvg" class="avg-large">0.000000</span>
-        <div style="margin-top:8px; border-top:1px solid #2d3339; padding-top:8px;">
-            <span style="font-size:9px; color:var(--warning); font-weight:900;">TARGET VENTA</span><br>
-            <b id="resTarget" style="font-size:22px; color:var(--dir-color)">0.000000</b>
+        <div style="display:flex; justify-content:space-between; margin-top:15px; border-top:1px solid #222; padding-top:10px;">
+            <div><small style="display:block; font-size:8px;">INVERTIDO</small><b id="resInv">$0.00</b></div>
+            <div><small style="display:block; font-size:8px; color:var(--dir-color);">OBJETIVO</small><b id="resTarget" style="color:var(--dir-color);">0.000000</b></div>
         </div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y REGISTRAR</button>
-
-    <div class="history-section">
-        <span class="history-title">OPERACIONES CERRADAS</span>
-        <table id="historyTable">
-            <thead>
-                <tr>
-                    <th>ACTIVO</th>
-                    <th>INVERTIDO</th>
-                    <th>AVG</th>
-                    <th>FECHA</th>
-                </tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-        </table>
-    </div>
+    
+    <button class="btn-release" onclick="releasePosition()">LIQUIDAR Y DESCARGAR EXCEL</button>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const bybitBase = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT'];
-        let customBybit = JSON.parse(localStorage.getItem('dca_bybit_list')) || [];
-        let history = JSON.parse(localStorage.getItem('dca_history')) || [];
-        
+        const baseCoins = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'SUIUSDT'];
+        let customCoins = JSON.parse(localStorage.getItem('dca_coins_v18')) || [];
+        let activeTF = '60';
+        let activeIdx = 0;
+        let slots = JSON.parse(localStorage.getItem('dca_slots_v18')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+
         const strategy = [
-            { c: 0.00, m: 1.0, g: 0.50 }, { c: 0.10, m: 1.0, g: 0.50 }, { c: 0.15, m: 1.5, g: 0.50 },
-            { c: 0.15, m: 1.5, g: 0.50 }, { c: 0.20, m: 2.0, g: 1.00 }, { c: 0.20, m: 2.0, g: 1.00 },
-            { c: 0.25, m: 2.5, g: 1.00 }, { c: 0.25, m: 2.5, g: 1.00 }, { c: 0.30, m: 3.0, g: 1.50 },
-            { c: 0.30, m: 3.0, g: 1.50 }, { c: 0.35, m: 3.5, g: 1.50 }, { c: 0.35, m: 3.5, g: 1.50 },
-            { c: 0.40, m: 4.0, g: 2.00 }, { c: 0.40, m: 4.0, g: 2.00 }, { c: 0.50, m: 5.0, g: 2.00 }, { c: 0.50, m: 5.0, g: 2.00 }
+            { c: 0.00, m: 1.0, g: 0.015 }, { c: 0.10, m: 1.0, g: 0.015 }, { c: 0.15, m: 1.5, g: 0.02 },
+            { c: 0.15, m: 1.5, g: 0.02 }, { c: 0.20, m: 2.0, g: 0.025 }, { c: 0.20, m: 2.0, g: 0.025 },
+            { c: 0.25, m: 2.5, g: 0.03 }, { c: 0.25, m: 2.5, g: 0.03 }, { c: 0.30, m: 3.0, g: 0.04 },
+            { c: 0.30, m: 3.0, g: 0.04 }, { c: 0.35, m: 3.5, g: 0.05 }, { c: 0.35, m: 3.5, g: 0.05 },
+            { c: 0.40, m: 4.0, g: 0.06 }, { c: 0.40, m: 4.0, g: 0.06 }, { c: 0.50, m: 5.0, g: 0.08 }, { c: 0.50, m: 5.0, g: 0.08 }
         ];
 
-        let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_slots_v17')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
-
-        function init() { 
-            renderSlider(); renderNav(); renderHistory(); selectSlot(0); 
-            fetchBybit(); setInterval(fetchBybit, 5000);
+        function init() {
+            renderSlider();
+            loadChart(slots[0].name);
+            fetchBybit();
+            setInterval(fetchBybit, 5000);
+            calculate();
             
+            // Suavizado del carrusel infinito
             const slider = document.getElementById('priceSlider');
             slider.addEventListener('scroll', () => {
-                if (slider.scrollLeft >= (slider.scrollWidth - slider.clientWidth - 5)) {
-                    slider.scrollLeft = 5;
-                }
+                if (slider.scrollLeft <= 0) slider.scrollLeft = slider.scrollWidth / 2;
+                if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) slider.scrollLeft = slider.scrollWidth / 4;
             });
         }
 
-        // --- CARRUSEL BYBIT ---
         function renderSlider() {
             const slider = document.getElementById('priceSlider');
-            const all = [...bybitBase, ...customBybit];
-            slider.innerHTML = all.map(sym => `
-                <div class="crypto-card" onclick="setCoin('${sym}')">
-                    <button class="remove-btn" onclick="event.stopPropagation(); removeBybit('${sym}')">×</button>
-                    <span class="c-name">${sym.replace('USDT','')}</span>
-                    <span id="p-${sym}" class="c-val">---</span>
-                    <span id="perc-${sym}" class="c-perc">0.00%</span>
+            const list = [...baseCoins, ...customCoins];
+            // Duplicamos lista para efecto infinito visual
+            const fullList = [...list, ...list];
+            slider.innerHTML = fullList.map(s => `
+                <div class="crypto-card" onclick="setSearch('${s}')">
+                    <span class="c-name">${s.replace('USDT','')}</span>
+                    <span id="p-${s}" class="c-val">---</span>
+                    <span id="perc-${s}" class="c-perc">0.00%</span>
                 </div>
-            `).join('') + `<div onclick="addBybit()" style="flex:0 0 auto; padding:12px; color:#444; font-size:10px; font-weight:900;">+ BYBIT</div>`;
+            `).join('') + `<div class="btn-add-coin" onclick="addCoin()">+ ADD</div>`;
         }
 
         async function fetchBybit() {
-            const all = [...bybitBase, ...customBybit];
-            for (const s of all) {
+            const list = [...new Set([...baseCoins, ...customCoins])];
+            for (const s of list) {
                 try {
                     const r = await fetch(`https://api.bybit.com/v5/market/tickers?category=linear&symbol=${s}`);
                     const d = await r.json();
-                    if(d.result && d.result.list[0]) {
+                    if(d.result?.list[0]) {
                         const t = d.result.list[0];
                         const price = parseFloat(t.lastPrice);
                         const perc = parseFloat(t.price24hPcnt) * 100;
-                        const elP = document.getElementById(`p-${s}`);
-                        const elPerc = document.getElementById(`perc-${s}`);
-                        if(elP) {
-                            elP.textContent = price < 1 ? price.toFixed(4) : price.toLocaleString();
-                            elP.className = 'c-val ' + (perc >= 0 ? 'up' : 'down');
-                        }
-                        if(elPerc) {
-                            elPerc.textContent = (perc >= 0 ? '+' : '') + perc.toFixed(2) + '%';
-                            elPerc.className = 'c-perc ' + (perc >= 0 ? 'up' : 'down');
-                        }
+                        document.querySelectorAll(`[id="p-${s}"]`).forEach(el => el.textContent = price.toFixed(4));
+                        document.querySelectorAll(`[id="perc-${s}"]`).forEach(el => {
+                            el.textContent = (perc >= 0 ? '+' : '') + perc.toFixed(2) + '%';
+                            el.className = 'c-perc ' + (perc >= 0 ? 'up' : 'down');
+                        });
                     }
                 } catch(e) {}
             }
         }
 
-        // --- BÚSQUEDA Y GRÁFICO GATE.IO ---
-        function setCoin(c) { document.getElementById('coinInput').value = c; updateCoin(); }
+        function setSearch(s) { document.getElementById('coinInput').value = s; updateCoin(); }
 
         function updateCoin() {
-            const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
+            const v = document.getElementById('coinInput').value;
+            slots[activeIdx].name = v;
+            save(); loadChart(v); calculate();
         }
 
-        function loadChart(c) {
-            let symbol = c || 'BTC3L';
+        function loadChart(coin) {
+            let symbol = coin || 'BTC3L';
             if(!symbol.includes('USDT')) symbol += 'USDT';
-            
-            // SIEMPRE GATEIO para los gráficos de velas (ETFs)
             new TradingView.widget({
-                "autosize": true,
-                "symbol": `GATEIO:${symbol}`,
-                "interval": activeTF,
-                "theme": "dark", "style": "1", "container_id": "tv_chart",
-                "hide_top_toolbar": true, "hide_legend": true, "backgroundColor": "#050708", "hide_side_toolbar": true
+                "autosize": true, "symbol": `GATEIO:${symbol}`, "interval": activeTF,
+                "theme": "dark", "style": "1", "container_id": "tv_chart", "hide_top_toolbar": true, "hide_legend": true,
+                "backgroundColor": "#050708", "hide_side_toolbar": true
             });
         }
 
-        // --- LÓGICA ENGINE ---
         function calculate() {
             const s = slots[activeIdx];
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 10;
-            save(); renderLevels();
+            renderLevels();
         }
 
         function renderLevels() {
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; margin-top:20px; font-size:10px;">INGRESE PRECIO ENTRADA</p>'; return; }
-            let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
+            const grid = document.getElementById('levelsGrid');
+            const s = slots[activeIdx];
+            if(!s.price) { grid.innerHTML = ""; return; }
+            
+            let html = '', spent = 0, tokens = 0, lastG = 0, currentP = s.price;
+            
             strategy.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
-                const on = s.buys.includes(i);
+                if(i > 0) currentP *= (1 - lvl.c);
+                const isBought = s.buys.includes(i);
                 const mUSD = lvl.m * s.capital;
-                if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
+                if(isBought) { spent += mUSD; tokens += (mUSD / currentP); lastG = lvl.g; }
+                
                 html += `
-                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <button class="panic-btn" onclick="event.stopPropagation(); panicFill(${i})">FILL</button>
-                    <div style="flex:1">
-                        <div style="font-size:9px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1} ${on ? '✓' : ''}</div>
-                        <b style="font-size:18px;">${cp.toFixed(6)}</b><br>
-                        <span style="font-size:10px; opacity:0.6;">$${mUSD.toFixed(1)}</span>
+                <div class="level-card ${isBought ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div class="lvl-check"></div>
+                    <div class="lvl-info">
+                        <span style="font-size:9px; color:#666;">NIVEL ${i+1}</span>
+                        <div style="font-weight:900;">${currentP.toFixed(6)}</div>
+                        <span style="font-size:10px; opacity:0.6;">Monto: $${mUSD.toFixed(1)}</span>
                     </div>
+                    <button class="fill-btn" onclick="event.stopPropagation(); fillTo(${i})">FILL</button>
                 </div>`;
             });
             grid.innerHTML = html;
+            
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
+            document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
             
-            document.body.classList.remove('mode-long', 'mode-short');
-            if(s.name.includes('L') || s.name.includes('3L')) document.body.classList.add('mode-long');
-            if(s.name.includes('S') || s.name.includes('3S')) document.body.classList.add('mode-short');
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(!s.name || s.buys.length === 0) return;
-            
-            const record = {
-                name: s.name,
-                spent: document.getElementById('resInv').textContent,
-                avg: document.getElementById('resAvg').textContent,
-                date: new Date().toLocaleDateString()
-            };
-            
-            history.unshift(record);
-            localStorage.setItem('dca_history', JSON.stringify(history));
-            renderHistory();
-
-            slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
-            save(); selectSlot(activeIdx);
-        }
-
-        function renderHistory() {
-            document.getElementById('historyBody').innerHTML = history.slice(0, 5).map(h => `
-                <tr>
-                    <td>${h.name}</td>
-                    <td>${h.spent}</td>
-                    <td>${h.avg}</td>
-                    <td>${h.date}</td>
-                </tr>
-            `).join('');
+            document.body.className = (s.name.includes('L') || s.name.includes('3L')) ? 'mode-long' : 'mode-short';
         }
 
         function toggleLvl(i) {
-            const b = slots[activeIdx].buys;
-            slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
-            save(); renderLevels();
+            const buys = slots[activeIdx].buys;
+            slots[activeIdx].buys = buys.includes(i) ? buys.filter(x => x !== i) : [...buys, i];
+            save(); calculate();
         }
 
-        function panicFill(i) {
-            let n = []; for(let j=0; j<=i; j++) n.push(j);
-            slots[activeIdx].buys = n; save(); renderLevels();
+        function fillTo(i) {
+            let newBuys = [];
+            for(let j=0; j<=i; j++) newBuys.push(j);
+            slots[activeIdx].buys = newBuys;
+            save(); calculate();
         }
 
-        function selectSlot(i) {
-            activeIdx = i; const s = slots[i];
-            document.getElementById('coinInput').value = s.name;
-            document.getElementById('baseInput').value = s.price || '';
-            document.getElementById('capitalInput').value = s.capital;
-            renderNav(); loadChart(s.name); calculate();
+        function addCoin() {
+            const c = prompt("Símbolo Bybit (ej: DOGEUSDT):");
+            if(c && customCoins.length < 16) {
+                customCoins.push(c.toUpperCase());
+                localStorage.setItem('dca_coins_v18', JSON.stringify(customCoins));
+                renderSlider();
+            }
         }
 
-        function renderNav() {
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
-                <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>
-            `).join('');
+        function releasePosition() {
+            const s = slots[activeIdx];
+            if(!s.name || s.buys.length === 0) return alert("Sin posición activa");
+            
+            let csv = `REPORTE DCA - ${s.name}\nNivel,Precio,Monto USD\n`;
+            let cp = s.price;
+            s.buys.forEach(idx => {
+                let p = s.price; for(let k=1; k<=idx; k++) p *= (1 - strategy[k].c);
+                csv += `${idx+1},${p.toFixed(6)},${strategy[idx].m * s.capital}\n`;
+            });
+            csv += `\nTOTAL INVERTIDO,${document.getElementById('resInv').textContent}\nPROMEDIO,${document.getElementById('resAvg').textContent}`;
+            
+            const blob = new Blob(["\ufeff"+csv], {type: 'text/csv'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Cierre_${s.name}_${new Date().getTime()}.csv`;
+            a.click();
+            
+            slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
+            save(); calculate();
         }
 
         function updateTF(tf, btn) {
-            activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); loadChart(slots[activeIdx].name);
+            activeTF = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            loadChart(slots[activeIdx].name);
         }
 
-        function addBybit() {
-            const n = prompt("Símbolo Bybit (ej: BTCUSDT):");
-            if(n) { customBybit.push(n.toUpperCase()); localStorage.setItem('dca_bybit_list', JSON.stringify(customBybit)); renderSlider(); fetchBybit(); }
-        }
-
-        function removeBybit(s) {
-            customBybit = customBybit.filter(x => x !== s); localStorage.setItem('dca_bybit_list', JSON.stringify(customBybit)); renderSlider();
-        }
-
-        function save() { localStorage.setItem('dca_slots_v17', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_slots_v18', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
