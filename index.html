@@ -15,10 +15,10 @@
         :root {
             --bg: #050708;
             --surface: #12151a;
-            --success: #00ff95; /* Verde Neón */
-            --danger: #ff3e3e;  /* Rojo Neón */
-            --warning: #ffee00; /* Amarillo Brillante */
-            --primary: #00e5ff; /* Cyan */
+            --success: #00ff95; /* Verde Neón Intenso */
+            --danger: #ff3e3e;  /* Rojo Neón Intenso */
+            --warning: #ffee00;
+            --primary: #00e5ff;
             --text: #ffffff;
             --dir-color: var(--primary);
         }
@@ -29,7 +29,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; overflow-x: hidden; }
 
-        /* HEADER */
+        /* HEADER REDISEÑADO */
         .app-header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color);
@@ -44,7 +44,7 @@
             display: flex; align-items: center; gap: 10px; 
             background: #1a1e23; padding: 8px 12px; 
             border-radius: 14px; border: 2px solid #2d3339;
-            min-width: 175px; justify-content: flex-end; cursor: pointer;
+            min-width: 180px; justify-content: flex-end; cursor: pointer;
         }
         .ticker-icon { width: 24px; height: 24px; }
         .price-live { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
@@ -57,39 +57,37 @@
 
         /* DASHBOARD */
         .dash { margin: 15px; padding: 20px; background: #000; border-radius: 28px; border: 2px solid var(--dir-color); text-align: center; }
-        .avg-large { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; color: var(--warning); display: block; margin: 8px 0; text-shadow: 0 0 10px rgba(255,238,0,0.2); }
+        .avg-large { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; color: var(--warning); display: block; margin: 8px 0; }
+        
+        /* OBJETIVO DE VENTA GIGANTE */
         .target-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
         .target-label { font-size: 12px; color: var(--success); font-weight: 900; }
         .target-val { font-size: 40px; color: var(--success); font-weight: 900; font-family: 'Roboto Mono'; display: block; text-shadow: 0 0 15px rgba(0,255,149,0.4); }
 
-        /* NAVEGACIÓN Y CONTROLES */
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px; }
         .slot-btn { padding: 14px 0; text-align: center; border-radius: 10px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid #333; color: #fff; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(255,255,255,0.05); }
 
-        .chart-container { width: 100%; height: 300px; background: #000; }
+        .chart-container { width: 100%; height: 320px; background: #000; }
 
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid #333; text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 15px; font-weight: 900; width: 100%; text-align: center; outline: none; }
 
-        /* TARJETAS DE NIVELES RESTAURADAS */
+        /* TARJETAS DE NIVELES */
         .levels-container { padding: 0 15px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { 
             background: var(--surface); border-radius: 18px; padding: 18px; 
             display: flex; align-items: center; border: 1px solid #2d3339; 
-            position: relative; overflow: hidden;
+            position: relative;
         }
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.03); }
-        
         .check-box { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
-        
         .level-info { flex: 1; }
-        .level-title { font-size: 10px; color: var(--dir-color); font-weight: 900; margin-bottom: 2px; }
+        .level-title { font-size: 10px; color: var(--dir-color); font-weight: 900; }
         .level-price { font-size: 20px; font-weight: 900; font-family: 'Roboto Mono'; display: block; }
         .level-monto { font-size: 11px; opacity: 0.6; font-weight: 700; }
-        
         .level-drop-tag { position: absolute; bottom: 12px; right: 15px; font-size: 12px; font-weight: 900; color: var(--danger); }
         .panic-btn { position: absolute; top: 12px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
 
@@ -148,7 +146,7 @@
         ];
         let currentIdx = 0;
         let activeIdx = 0;
-        let slots = JSON.parse(localStorage.getItem('dca_v18_7_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_8_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         const strategy = [
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
@@ -280,7 +278,7 @@
             }
         }
 
-        function save() { localStorage.setItem('dca_v18_7_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v18_8_slots', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
