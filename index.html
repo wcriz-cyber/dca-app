@@ -134,6 +134,17 @@
             align-items: center;
         }
 
+        .leverage-badge {
+            font-size: 8px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+            font-weight: 900;
+        }
+
+        .badge-3x { background: rgba(52, 152, 219, 0.2); color: #3498db; border: 1px solid #3498db; }
+        .badge-5x { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+
         .etf-change {
             font-size: 11px;
             font-weight: 900;
@@ -271,6 +282,8 @@
             <button class="filter-btn active" onclick="filterETFs('all')">TODOS</button>
             <button class="filter-btn" onclick="filterETFs('L')">LONG</button>
             <button class="filter-btn" onclick="filterETFs('S')">SHORT</button>
+            <button class="filter-btn" onclick="filterETFs('3x')">3x</button>
+            <button class="filter-btn" onclick="filterETFs('5x')">5x</button>
         </div>
         <div id="etfList" class="etf-list">
             <div class="etf-loading">Cargando datos de ETFs...</div>
@@ -542,8 +555,15 @@
         function filterETFs(type) {
             currentFilter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent.includes(type === 'all' ? 'TODOS' : type));
+                btn.classList.remove('active');
             });
+            
+            // Activar el botón correspondiente
+            const activeBtn = document.querySelector(`.filter-btn[onclick*="${type}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+            
             renderETFList();
         }
 
@@ -558,18 +578,20 @@
                 
                 etfData = data.filter(item => {
                     const symbol = item.currency_pair;
-                    // Filtrar ETFs (terminan con 3L o 3S) y que sean contra USDT
-                    return (symbol.endsWith('3L_USDT') || symbol.endsWith('3S_USDT'));
+                    // Filtrar ETFs (incluye 3L, 3S, 5L, 5S) y que sean contra USDT
+                    return (symbol.endsWith('3L_USDT') || symbol.endsWith('3S_USDT') || 
+                           symbol.endsWith('5L_USDT') || symbol.endsWith('5S_USDT'));
                 })
                 .map(item => ({
                     symbol: item.currency_pair.replace('_USDT', ''),
                     price: parseFloat(item.last),
                     change: parseFloat(item.change_percentage),
-                    volume: parseFloat(item.quote_volume)
+                    volume: parseFloat(item.quote_volume),
+                    leverage: item.currency_pair.includes('3L') || item.currency_pair.includes('3S') ? '3x' : '5x'
                 }))
                 .filter(item => item.change < 0) // Solo los que han caído
                 .sort((a, b) => a.change - b.change) // Orden descendente por caída
-                .slice(0, 50); // Limitar a 50 resultados
+                .slice(0, 60); // Limitar a 60 resultados
                 
                 // Si no hay datos de Gate.io, usar datos de Binance como fallback
                 if (etfData.length === 0) {
@@ -592,19 +614,22 @@
                 
                 etfData = data.filter(item => {
                     const symbol = item.symbol;
-                    return (symbol.includes('UP') || symbol.includes('DOWN') || 
-                            symbol.endsWith('L') || symbol.endsWith('S')) && 
-                           symbol.endsWith('USDT');
+                    return ((symbol.includes('UP') || symbol.includes('DOWN') || 
+                            symbol.endsWith('3L') || symbol.endsWith('3S') ||
+                            symbol.endsWith('5L') || symbol.endsWith('5S')) && 
+                           symbol.endsWith('USDT'));
                 })
                 .map(item => ({
                     symbol: item.symbol.replace('USDT', ''),
                     price: parseFloat(item.lastPrice),
                     change: parseFloat(item.priceChangePercent),
-                    volume: parseFloat(item.quoteVolume)
+                    volume: parseFloat(item.quoteVolume),
+                    leverage: (item.symbol.includes('3L') || item.symbol.includes('3S')) ? '3x' : 
+                             (item.symbol.includes('5L') || item.symbol.includes('5S')) ? '5x' : '3x'
                 }))
                 .filter(item => item.change < 0)
                 .sort((a, b) => a.change - b.change)
-                .slice(0, 50);
+                .slice(0, 60);
                 
                 renderETFList();
                 
@@ -616,12 +641,19 @@
         }
 
         function getExampleETFData() {
-            const symbols = ['BTC3L', 'BTC3S', 'ETH3L', 'ETH3S', 'ADA3L', 'ADA3S', 'DOT3L', 'DOT3S', 'SOL3L', 'SOL3S'];
+            const symbols = [
+                'BTC3L', 'BTC3S', 'BTC5L', 'BTC5S',
+                'ETH3L', 'ETH3S', 'ETH5L', 'ETH5S',
+                'ADA3L', 'ADA3S', 'ADA5L', 'ADA5S',
+                'DOT3L', 'DOT3S', 'DOT5L', 'DOT5S',
+                'SOL3L', 'SOL3S', 'SOL5L', 'SOL5S'
+            ];
             return symbols.map(symbol => ({
                 symbol: symbol,
                 price: Math.random() * 100,
                 change: -Math.random() * 30,
-                volume: Math.random() * 1000000
+                volume: Math.random() * 1000000,
+                leverage: symbol.includes('3') ? '3x' : '5x'
             })).sort((a, b) => a.change - b.change);
         }
 
@@ -634,16 +666,27 @@
             }
             
             let filteredData = etfData;
+            
+            // Aplicar filtros según la selección
             if (currentFilter === 'L') {
                 filteredData = etfData.filter(item => item.symbol.endsWith('L'));
             } else if (currentFilter === 'S') {
                 filteredData = etfData.filter(item => item.symbol.endsWith('S'));
+            } else if (currentFilter === '3x') {
+                filteredData = etfData.filter(item => item.leverage === '3x');
+            } else if (currentFilter === '5x') {
+                filteredData = etfData.filter(item => item.leverage === '5x');
             }
             
             const html = filteredData.map(etf => `
                 <div class="etf-item" onclick="selectETF('${etf.symbol}')">
                     <div class="etf-symbol">
-                        <span>${etf.symbol}</span>
+                        <div>
+                            <span>${etf.symbol}</span>
+                            <span class="leverage-badge badge-${etf.leverage === '3x' ? '3x' : '5x'}">
+                                ${etf.leverage}
+                            </span>
+                        </div>
                         <span class="etf-change ${etf.change < 0 ? 'change-negative' : 'change-positive'}">
                             ${etf.change.toFixed(2)}%
                         </span>
