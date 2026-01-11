@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA COMMAND PRO V17.8</title>
+    
+    <title>DCA ENGINE PRO</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DCA ENGINE"> <meta name="mobile-web-app-capable" content="yes">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
@@ -61,7 +64,7 @@
 <body onload="init()">
 
     <header class="app-header">
-        <div class="logo-area">DCA COMMAND V17.8</div>
+        <div class="logo-area">DCA ENGINE PRO</div>
         <div class="btc-live-box">
             <span id="btcPrice" style="color:#f7931a; font-weight:900; font-family:'Roboto Mono'; font-size:15px;">$--,---</span>
         </div>
@@ -117,7 +120,7 @@
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v17_8_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v17_9_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
 
@@ -245,7 +248,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v17_8_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v17_9_slots', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
