@@ -20,6 +20,7 @@
             --warning: #f1c40f; --accent: #ffb4ab; --text: #f0f2f5; --danger: #e74c3c;
             --dir-color: #3498db;
         }
+        /* El color --dir-color afectará al Logo y a los bordes dinámicamente */
         body.mode-long { --dir-color: #00ff95; --primary: #0ecb81; }
         body.mode-short { --dir-color: #ff3e3e; --primary: #f6465d; }
 
@@ -27,6 +28,7 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
+        /* El logo ahora usa var(--dir-color) para cambiar con el activo */
         .logo-area { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); transition: color 0.3s ease; text-transform: uppercase; }
         
         .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 6px 12px; border-radius: 10px; border: 1px solid #f7931a; }
@@ -116,7 +118,7 @@
         ];
 
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v19_final_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v19_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
         function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
 
@@ -184,8 +186,11 @@
 
         function updateTheme(n) {
             document.body.classList.remove('mode-long', 'mode-short');
-            if(n.endsWith('L')) document.body.classList.add('mode-long');
-            else if(n.endsWith('S')) document.body.classList.add('mode-short');
+            if(n.endsWith('L')) {
+                document.body.classList.add('mode-long');
+            } else if(n.endsWith('S')) {
+                document.body.classList.add('mode-short');
+            }
         }
 
         function selectSlot(i) {
@@ -238,7 +243,7 @@
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
-        function save() { localStorage.setItem('dca_v19_final_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v19_slots', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
