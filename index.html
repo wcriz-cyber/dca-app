@@ -3,70 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DCA COMMAND V17.0 - PRO</title>
+    <title>DCA COMMAND V17.1 - AUTO</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #050708; --surface: #12151a; --primary: #3498db; --success: #0ecb81; --warning: #f1c40f; --accent: #ffb4ab; --text: #f0f2f5; --danger: #e74c3c; }
         body.theme-long { --primary: #3498db; --accent: #0ecb81; }
         body.theme-short { --primary: #e67e22; --accent: #e74c3c; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; transition: 0.3s; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; }
         
-        .app-header { display: grid; grid-template-columns: 0.8fr 1.4fr 0.8fr; align-items: center; padding: 12px 10px; background: var(--surface); border-bottom: 2px solid var(--primary); }
-        .btc-live-box { display: flex; align-items: center; justify-content: center; background: rgba(255, 147, 26, 0.1); padding: 6px; border-radius: 10px; border: 1px solid #f7931a; }
-        .btc-icon { width: 16px; margin-right: 5px; }
+        /* HEADER REESTRUCTURADO */
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--primary); }
+        .logo-area { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--primary); }
+        .mode-badge { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 900; background: var(--primary); color: white; }
+        .btc-price-val { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: #F7931A; }
 
-        .radar-bar { background: #0c0f12; padding: 12px; border-bottom: 1px solid #2d3339; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .radar-status { font-size: 11px; font-weight: 900; text-align: center; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05); }
-        .radar-active { background: var(--success); color: #000; }
+        /* BUSCADOR DE MONEDAS */
+        .search-container { position: relative; width: 100%; }
+        .coin-list { position: absolute; top: 100%; left: 0; width: 100%; background: #1c2026; border: 1px solid #3498db; z-index: 100; max-height: 200px; overflow-y: auto; display: none; border-radius: 0 0 10px 10px; }
+        .coin-item { padding: 10px; font-size: 13px; border-bottom: 1px solid #2d3339; }
+        .coin-item:active { background: var(--primary); }
 
-        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 8px; }
-        .tf-btn { flex: 1; padding: 8px; border: none; background: transparent; color: #848e9c; font-size: 10px; font-weight: 900; }
-        .tf-btn.active { background: var(--primary); color: white; border-radius: 4px; }
+        /* INDICADORES DINÁMICOS */
+        .change-pill { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 900; margin-top: 5px; }
+        .up { background: rgba(14, 203, 129, 0.1); color: var(--success); }
+        .down { background: rgba(231, 76, 60, 0.1); color: var(--danger); }
 
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
-        .slot-btn.active { border-color: var(--primary); color: var(--primary); }
+        .dash { margin: 10px; padding: 20px; background: linear-gradient(135deg, #0b1a27 0%, #050a0f 100%); border-radius: 24px; border: 1px solid #1a2a3a; text-align: center; }
+        .avg-large { font-family: 'Roboto Mono'; font-size: 35px; font-weight: 900; color: var(--warning); display: block; }
 
-        .chart-container { width: 100%; height: 280px; background: #000; }
-
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
-        .control-box { background: var(--surface); padding: 8px; border-radius: 10px; border: 1px solid #2d3339; text-align: center; }
-        .control-box label { font-size: 7px; color: var(--primary); font-weight: 900; display: block; }
-        .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-
-        .dash { margin: 10px; padding: 15px; background: linear-gradient(135deg, #0b1a27 0%, #050a0f 100%); border-radius: 20px; border: 1px solid #1a2a3a; text-align: center; }
-        .recovery-info { font-size: 10px; color: var(--warning); margin-top: 5px; font-weight: 900; }
-
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 12px; padding: 12px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; }
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; }
+        .level-card { background: var(--surface); border-radius: 16px; padding: 15px; border: 1px solid #2d3339; position: relative; display: flex; justify-content: space-between; align-items: center; }
         .level-card.active { border-color: var(--success); background: #1c2724; }
-        .panic-btn { position: absolute; top: 5px; right: 50px; font-size: 7px; background: var(--primary); color: white; border: none; padding: 3px 6px; border-radius: 4px; font-weight: 900; }
 
-        .backup-zone { display: flex; gap: 10px; padding: 10px; justify-content: center; }
-        .btn-small { font-size: 9px; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #222; color: #fff; font-weight: 900; }
-
-        .btn-release { width: 90%; margin: 15px auto; display: block; padding: 16px; border-radius: 12px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; }
+        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; }
+        
+        /* RESTO DEL CSS SE MANTIENE DE V17.0 */
+        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
+        .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        .tf-btn.active { background: var(--primary); color: white; border-radius: 6px; }
+        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 900; background: var(--surface); color: var(--text); border: 1px solid #2d3339; }
+        .slot-btn.active { border-color: var(--primary); color: var(--primary); }
+        .chart-container { width: 100%; height: 300px; background: #000; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid #2d3339; text-align: center; }
+        .control-box label { font-size: 8px; color: var(--primary); font-weight: 900; display: block; margin-bottom: 4px; }
+        .control-box input { background: transparent; border: none; color: white; font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
     </style>
 </head>
 <body onload="init()">
 
     <header class="app-header">
-        <div class="logo-area">DCA V17.0</div>
-        <div class="btc-live-box">
-            <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" class="btc-icon">
+        <div class="logo-area">DCA V17.1</div>
+        <div id="directionLabel" class="mode-badge">GATE.IO</div>
+        <div class="btc-live">
             <span id="btcPrice" class="btc-price-val">$--,---</span>
         </div>
-        <div id="directionLabel" class="mode-label">GATE.IO</div>
     </header>
-
-    <div class="radar-bar">
-        <div style="display:flex; flex-direction:column;">
-            <label style="font-size:8px; font-weight:900; color:var(--primary)">MAX RECIENTE</label>
-            <input type="number" id="maxPriceInput" style="background:#000; border:1px solid #3498db; color:#fff; text-align:center; border-radius:4px;" oninput="calculate()">
-        </div>
-        <div id="radarStatus" class="radar-status">ESPERANDO MÁX...</div>
-    </div>
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
@@ -80,35 +74,28 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC3L" onblur="searchCoin()"></div>
+        <div class="control-box search-container">
+            <label>ETF MONEDA</label>
+            <input type="text" id="coinInput" placeholder="BUSCAR..." oninput="filterCoins()">
+            <div id="coinList" class="coin-list"></div>
+        </div>
         <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" step="any" oninput="calculate()"></div>
-        <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
+        <div class="control-box"><label>CAPI. $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
-        <div style="display:flex; justify-content:space-around;">
-            <div><span style="font-size:9px; color:var(--primary)">INV. TOTAL</span><div id="resInv" style="font-weight:900">$0.00</div></div>
-            <div><span style="font-size:9px; color:var(--primary)">PROFIT</span><div id="resProf" style="font-weight:900; color:var(--success)">$0.00</div></div>
-        </div>
-        <div style="margin:10px 0;">
-            <span style="font-size:9px; opacity:0.6;">PRECIO PROMEDIO (AVG)</span>
-            <div id="resAvg" style="font-family:'Roboto Mono'; font-size:28px; font-weight:900; color:var(--warning)">0.000000</div>
-            <div id="recoveryCalc" class="recovery-info">FALTA 0% PARA AVG</div>
-        </div>
-        <div style="border-top:1px solid #222; padding-top:10px;">
-            <span style="font-size:9px; color:var(--accent)">OBJETIVO VENTA</span><br>
-            <b id="resTarget" style="font-size:22px; color:var(--accent)">0.000000</b>
+        <div id="change24h" class="change-pill">CARGANDO 24H...</div>
+        <span style="display:block; font-size:10px; color:var(--primary); margin-top:10px; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
+        <span id="resAvg" class="avg-large">0.000000</span>
+        <div style="display:flex; justify-content:space-around; margin-top:15px; border-top:1px solid #222; padding-top:15px;">
+            <div><span style="font-size:9px; color:var(--primary)">INVERSIÓN</span><div id="resInv" style="font-weight:900">$0.00</div></div>
+            <div><span style="font-size:9px; color:var(--accent)">OBJETIVO</span><div id="resTarget" style="font-weight:900; color:var(--accent)">0.000000</div></div>
         </div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y REPORTE EXCEL</button>
-
-    <div class="backup-zone">
-        <button class="btn-small" onclick="exportBackup()">EXPORTAR CONFIG</button>
-        <button class="btn-small" onclick="importBackup()">IMPORTAR CONFIG</button>
-    </div>
+    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y EXPORTAR REPORTE</button>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
@@ -123,41 +110,69 @@
             { c: 0.50, m: 5.0, g: 2.00, p: "-99%" }, { c: 0.50, m: 5.0, g: 2.00, p: "-99.5%" }
         ];
 
-        let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v17_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[], max:0 }));
+        let activeIdx = 0, activeTF = '60', allCoins = [];
+        let slots = JSON.parse(localStorage.getItem('dca_v17_1_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
 
-        function init() { fetchBTC(); renderNav(); selectSlot(0); setInterval(fetchBTC, 5000); }
+        async function init() {
+            await fetchETFs();
+            renderNav();
+            selectSlot(0);
+            setInterval(updateMarketData, 10000);
+        }
 
-        async function fetchBTC() {
+        async function fetchETFs() {
             try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr');
                 const data = await res.json();
-                document.getElementById('btcPrice').textContent = `$${Math.round(data.price).toLocaleString()}`;
+                // Filtramos solo para simular una lista (usando binance como referencia de nombres si gate falla)
+                allCoins = data.map(i => i.symbol.replace('USDT','')).filter(s => s.includes('3L') || s.includes('3S'));
+            } catch(e) { allCoins = ['BTC3L', 'BTC3S', 'ETH3L', 'ETH3S', 'SOL3L', 'SOL3S']; }
+        }
+
+        async function updateMarketData() {
+            try {
+                const resBtc = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+                const dataBtc = await resBtc.json();
+                document.getElementById('btcPrice').textContent = `$${Math.round(dataBtc.price).toLocaleString()}`;
+
+                const currentCoin = slots[activeIdx].name;
+                if(currentCoin) {
+                    const resChange = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${currentCoin}USDT`);
+                    const dataChange = await resChange.json();
+                    const perc = parseFloat(dataChange.priceChangePercent);
+                    const el = document.getElementById('change24h');
+                    el.textContent = `${perc > 0 ? '▲' : '▼'} ${perc.toFixed(2)}% (24H)`;
+                    el.className = `change-pill ${perc > 0 ? 'up' : 'down'}`;
+                }
             } catch(e) {}
+        }
+
+        function filterCoins() {
+            const val = document.getElementById('coinInput').value.toUpperCase();
+            const list = document.getElementById('coinList');
+            if(!val) { list.style.display = 'none'; return; }
+            const matches = allCoins.filter(c => c.includes(val)).slice(0,10);
+            list.innerHTML = matches.map(c => `<div class="coin-item" onclick="setCoin('${c}')">${c}</div>`).join('');
+            list.style.display = 'block';
+        }
+
+        function setCoin(c) {
+            document.getElementById('coinInput').value = c;
+            document.getElementById('coinList').style.display = 'none';
+            slots[activeIdx].name = c;
+            save(); renderNav(); loadChart(c); updateMarketData();
         }
 
         function calculate() {
             const s = slots[activeIdx];
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 10;
-            s.max = parseFloat(document.getElementById('maxPriceInput').value) || 0;
-            
-            const radar = document.getElementById('radarStatus');
-            if(s.max > 0 && s.price > 0) {
-                const drop = ((s.max - s.price) / s.max) * 100;
-                radar.textContent = `CAÍDA: ${drop.toFixed(1)}%`;
-                if(drop >= 50) { 
-                    radar.classList.add('radar-active');
-                    // Simulación de detección de rebote 5% (basado en precio base)
-                    if(s.price > (s.max * 0.55)) radar.textContent += " | REBOTE DETECTADO!";
-                } else radar.classList.remove('radar-active');
-            }
             save(); renderLevels();
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            if(!s.price) { grid.innerHTML = ''; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3;">Ingresa Moneda y Precio Base</p>'; return; }
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             strategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
@@ -165,27 +180,20 @@
                 const mUSD = lvl.m * s.capital;
                 if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
                 html += `
-                <div class="level-card ${on ? 'active' : ''}">
-                    <button class="panic-btn" onclick="panicFill(${i})">RELLENAR HASTA AQUÍ</button>
-                    <div style="flex:1" onclick="toggleLvl(${i})">
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div>
                         <div style="font-size:10px; color:var(--primary); font-weight:900;">NIVEL ${i+1} (${lvl.p})</div>
-                        <b style="font-size:16px;">${cp.toFixed(6)}</b><br>
-                        <span style="font-size:10px; opacity:0.6;">ORDEN: $${mUSD.toFixed(1)}</span>
+                        <b style="font-size:18px;">${cp.toFixed(6)}</b><br>
+                        <span style="font-size:10px; opacity:0.6;">MONTO: $${mUSD.toFixed(1)}</span>
                     </div>
-                    <input type="checkbox" class="check-box" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                    <input type="checkbox" class="check-box" ${on ? 'checked' : ''} style="width:25px; height:25px; accent-color:var(--success)">
                 </div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            
-            if(avg > 0 && s.price > 0) {
-                const rec = ((avg - s.price) / s.price) * 100;
-                document.getElementById('recoveryCalc').textContent = `RECUERACIÓN NECESARIA: ${rec > 0 ? rec.toFixed(1) : 0}% PARA EL AVG`;
-            }
             updateTheme(s.name);
         }
 
@@ -195,62 +203,12 @@
             save(); renderLevels();
         }
 
-        function panicFill(i) {
-            let newBuys = [];
-            for(let j=0; j<=i; j++) newBuys.push(j);
-            slots[activeIdx].buys = newBuys;
-            save(); renderLevels();
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(!s.name || s.buys.length === 0) return;
-            if(confirm("¿Liquidar y exportar Excel detallado?")) {
-                let csv = "NIVEL,PRECIO,INVERSION\n";
-                let cp = s.price;
-                s.buys.forEach(idx => {
-                    let levelPrice = s.price;
-                    for(let k=1; k<=idx; k++) levelPrice *= (1 - strategy[k].c);
-                    csv += `Nivel ${idx+1},${levelPrice.toFixed(6)},${(strategy[idx].m * s.capital)}\n`;
-                });
-                csv += `\nTOTAL,,${document.getElementById('resInv').textContent}\nPROFIT,,${document.getElementById('resProf').textContent}`;
-                
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = `DETALLE_${s.name}_${new Date().toLocaleDateString()}.csv`;
-                a.click();
-                
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[], max:0 };
-                save(); selectSlot(activeIdx);
-            }
-        }
-
-        function exportBackup() {
-            const data = btoa(JSON.stringify(slots));
-            prompt("Copia este código para tu copia de seguridad:", data);
-        }
-
-        function importBackup() {
-            const code = prompt("Pega el código de tu copia de seguridad:");
-            if(code) {
-                slots = JSON.parse(atob(code));
-                save(); location.reload();
-            }
-        }
-
         function selectSlot(i) {
             activeIdx = i; const s = slots[i];
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
-            document.getElementById('maxPriceInput').value = s.max || '';
-            renderNav(); loadChart(s.name); calculate();
-        }
-
-        function searchCoin() {
-            const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); }
+            renderNav(); loadChart(s.name); calculate(); updateMarketData();
         }
 
         function updateTF(tf, btn) {
@@ -263,19 +221,33 @@
             new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${coin || 'BTC3L'}USDT`, "interval": activeTF, "theme": "dark", "style": "1", "container_id": "tv_chart", "hide_top_toolbar": true, "hide_legend": true, "backgroundColor": "#050708", "hide_side_toolbar": true });
         }
 
+        function updateTheme(n) {
+            document.body.classList.remove('theme-long', 'theme-short');
+            const l = document.getElementById('directionLabel');
+            if(n.toUpperCase().endsWith('L')) { document.body.classList.add('theme-long'); l.textContent = "LONG ACTIVE"; }
+            else if(n.toUpperCase().endsWith('S')) { document.body.classList.add('theme-short'); l.textContent = "SHORT ACTIVE"; }
+            else l.textContent = "GATE.IO";
+        }
+
         function renderNav() {
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join('');
         }
 
-        function updateTheme(n) {
-            document.body.classList.remove('theme-long', 'theme-short');
-            const l = document.getElementById('directionLabel');
-            if(n.toUpperCase().endsWith('L')) { document.body.classList.add('theme-long'); l.textContent = "LONG"; }
-            else if(n.toUpperCase().endsWith('S')) { document.body.classList.add('theme-short'); l.textContent = "SHORT"; }
-            else l.textContent = "GATE.IO";
-        }
+        function save() { localStorage.setItem('dca_v17_1_slots', JSON.stringify(slots)); }
 
-        function save() { localStorage.setItem('dca_v17_slots', JSON.stringify(slots)); }
+        function releaseSlot() {
+            if(confirm("¿Liquidar y descargar reporte CSV?")) {
+                const s = slots[activeIdx];
+                let csv = `Moneda,Inversion,AVG\n${s.name},${document.getElementById('resInv').textContent},${document.getElementById('resAvg').textContent}`;
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `Cierre_${s.name}.csv`;
+                a.click();
+                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
+                save(); selectSlot(activeIdx);
+            }
+        }
     </script>
 </body>
 </html>
