@@ -31,7 +31,14 @@
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
         .logo-area { font-family: 'Orbitron'; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 2px; }
-        .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 6px 12px; border-radius: 10px; border: 1px solid #f7931a; }
+        
+        /* Estilos del Ticker de Precios */
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); padding: 6px 12px; border-radius: 12px; border: 1px solid #333; min-width: 150px; justify-content: center; transition: 0.5s; }
+        .ticker-symbol { font-weight: 900; font-size: 14px; color: var(--warning); }
+        .ticker-price { font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; color: #fff; }
+        .ticker-pct { font-size: 10px; font-weight: 900; padding: 2px 4px; border-radius: 4px; }
+        .pct-up { color: var(--success); }
+        .pct-down { color: var(--danger); }
 
         .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-weight: 900; font-size: 11px; letter-spacing: 1px; transition: 0.3s; }
 
@@ -63,8 +70,6 @@
         .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
         .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); opacity: 0.8; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
-
-        /* Estilo para el botón de G en la tarjeta */
         .g-badge { background: rgba(0,0,0,0.3); color: var(--dir-color); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; border: 1px solid #333; cursor: pointer; margin-left: 8px; }
 
         .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 14px; }
@@ -79,8 +84,10 @@
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        <div class="btc-live-box">
-            <span id="btcPrice" style="color:#f7931a; font-weight:900; font-family:'Roboto Mono'; font-size:15px;">$--,---</span>
+        <div class="btc-live-box" id="priceTicker">
+            <span class="ticker-symbol" id="t-sym">BTC</span>
+            <span class="ticker-price" id="t-price">$--,---</span>
+            <span class="ticker-pct" id="t-pct">0.00%</span>
         </div>
     </header>
 
@@ -142,24 +149,46 @@
         let activeIdx = 0, activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v17_9_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
+        
+        // Ticker config
+        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "BNBUSDT"];
+        let assetIdx = 0;
 
-        function init() { fetchBTC(); renderNav(); renderHistory(); selectSlot(0); setInterval(fetchBTC, 5000); }
+        function init() { 
+            fetchTicker(); 
+            renderNav(); 
+            renderHistory(); 
+            selectSlot(0); 
+            setInterval(fetchTicker, 6000); // Rotación cada 6 segundos
+        }
 
-        // Función nueva para editar G con clave
+        async function fetchTicker() {
+            try {
+                const symbol = assets[assetIdx];
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+                const data = await res.json();
+                
+                const price = parseFloat(data.lastPrice);
+                const pct = parseFloat(data.priceChangePercent);
+                const symName = symbol.replace("USDT", "");
+
+                document.getElementById('t-sym').textContent = symName;
+                document.getElementById('t-price').textContent = price > 100 ? Math.round(price).toLocaleString() : price.toFixed(2);
+                
+                const pctEl = document.getElementById('t-pct');
+                pctEl.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
+                pctEl.className = `ticker-pct ${pct >= 0 ? 'pct-up' : 'pct-down'}`;
+                
+                assetIdx = (assetIdx + 1) % assets.length;
+            } catch(e) {}
+        }
+
         function editG(i) {
             const pass = prompt("Clave:");
             if(pass === "2524") {
                 const val = prompt(`Nueva Ganancia (G) para Nivel ${i+1}:`, strategy[i].g);
                 if(val !== null) { strategy[i].g = parseFloat(val); localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate(); }
             }
-        }
-
-        async function fetchBTC() {
-            try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-                const data = await res.json();
-                document.getElementById('btcPrice').textContent = `$${Math.round(data.price).toLocaleString()}`;
-            } catch(e) {}
         }
 
         function updateCoin() {
