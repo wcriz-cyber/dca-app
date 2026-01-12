@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.8</title>
+    <title>DCA ENGINE PRO V19.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -41,7 +41,6 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
-        /* DASHBOARD */
         .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
@@ -49,12 +48,7 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
         .dash-center { text-align: center; padding: 5px 0; }
         .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); text-shadow: 0 0 10px rgba(0,255,149,0.2); }
-        .dash-bottom { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .recovery-sim { display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .recovery-sim input { width: 45%; background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 6px; padding: 6px; font-size: 13px; outline: none; }
-        .sim-res-text { font-size: 12px; font-weight: 900; color: var(--long-green); }
 
-        /* NIVELES CON ETIQUETAS MÁS GRANDES */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 90px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.04); }
@@ -66,15 +60,14 @@
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        /* BITÁCORA GIGANTE CON SCROLL */
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 450px; display: flex; flex-direction: column; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .btn-export-all { background: var(--success); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
-        #historyList { overflow-y: auto; flex: 1; padding-right: 5px; }
-        #historyList::-webkit-scrollbar { width: 5px; }
-        #historyList::-webkit-scrollbar-thumb { background: var(--dir-color); border-radius: 10px; }
+        /* BITÁCORA GIGANTE */
+        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 480px; display: flex; flex-direction: column; }
+        .history-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .h-actions { display: flex; gap: 10px; }
+        .btn-export { flex: 1; background: var(--success); color: #000; border: none; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
+        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
         
-        /* ITEM DE HISTORIAL 2X MÁS GRANDE */
+        #historyList { overflow-y: auto; flex: 1; }
         .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px 10px; border-bottom: 1px solid #222; font-size: 18px; font-family: 'Roboto Mono'; font-weight: 700; }
         .h-coin { font-family: 'Orbitron'; color: #fff; font-size: 20px; }
         .h-date { font-size: 10px; color: #848e9c; display: block; font-weight: 400; margin-top: 4px; }
@@ -87,15 +80,14 @@
         <div class="logo-area">C5X</div>
         <div class="btc-live-box" onclick="viewTickerChart()">
             <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
-            <span class="ticker-symbol" id="t-sym">BTC</span>
-            <span class="ticker-price" id="t-price">$--,---</span>
-            <span class="ticker-pct" id="t-pct">0.00%</span>
+            <span id="t-sym">BTC</span>
+            <span id="t-price">$--,---</span>
+            <span id="t-pct">0.00%</span>
         </div>
     </header>
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
         <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
         <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
         <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
@@ -115,32 +107,11 @@
 
     <div class="dash">
         <div class="dash-top-row">
-            <div>
-                <span class="dash-label">INVERSIÓN</span>
-                <div id="resInv" class="dash-val-small">$0.00</div>
-            </div>
-            <div>
-                <span class="dash-label">PRECIO AVG</span>
-                <div id="resAvg" class="dash-val-avg">0.000000</div>
-            </div>
-            <div>
-                <span class="dash-label">PROFIT EST.</span>
-                <div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div>
-            </div>
+            <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
+            <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
+            <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
         </div>
-
-        <div class="dash-center">
-            <span class="dash-label">OBJETIVO DE VENTA</span>
-            <b id="resTarget" class="target-price">0.000000</b>
-        </div>
-
-        <div class="dash-bottom">
-            <div class="recovery-sim">
-                <input type="number" id="simPrice" placeholder="Precio Obj." oninput="simulateRecovery()">
-                <div id="simResult" class="sim-res-text">$0.00 (+0%)</div>
-            </div>
-            <span class="dash-label" style="text-align:center; margin-top:5px;">PROYECTAR PROFIT</span>
-        </div>
+        <div class="dash-center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
@@ -150,7 +121,10 @@
     <div class="history-section">
         <div class="history-header">
             <span style="font-size:12px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
-            <button class="btn-export-all" onclick="exportMasterExcel()">EXCEL</button>
+            <div class="h-actions">
+                <button class="btn-export" onclick="exportMasterExcel()">DESCARGAR EXCEL</button>
+                <button class="btn-clear" onclick="clearHistory()">LIMPIAR TODO</button>
+            </div>
         </div>
         <div id="historyList"></div>
     </div>
@@ -237,7 +211,6 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            simulateRecovery();
         }
 
         function editStrategy(i) {
@@ -250,16 +223,6 @@
             }
         }
 
-        function simulateRecovery() {
-            const target = parseFloat(document.getElementById('simPrice').value);
-            const avg = parseFloat(document.getElementById('resAvg').textContent);
-            const inv = parseFloat(document.getElementById('resInv').textContent.replace('$',''));
-            if(target > 0 && avg > 0) {
-                const gainPct = ((target - avg) / avg) * 100;
-                document.getElementById('simResult').textContent = `$${(inv * (gainPct/100)).toFixed(2)} (${gainPct.toFixed(2)}%)`;
-            } else document.getElementById('simResult').textContent = "$0.00 (+0%)";
-        }
-
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length > 0 && confirm(`¿Cerrar y archivar ${s.name}?`)) {
@@ -269,25 +232,31 @@
             }
         }
 
+        function clearHistory() {
+            if(prompt("Clave de seguridad para borrar bitácora:") === "2524") {
+                if(confirm("¿Estás seguro de eliminar todo el historial local?")) {
+                    history = [];
+                    localStorage.setItem('dca_history', JSON.stringify(history));
+                    renderHistory();
+                }
+            } else {
+                alert("Clave incorrecta.");
+            }
+        }
+
         function exportMasterExcel() {
-            if(!history.length) return;
+            if(!history.length) return alert("No hay datos.");
             let csv = "MONEDA,FECHA,INVERSION,AVG,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"`).join("\n");
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `C5X_Reporte_${new Date().toLocaleDateString()}.csv`; a.click();
+            a.download = `C5X_Bitacora_${new Date().toLocaleDateString()}.csv`; a.click();
         }
 
         function renderHistory() {
             document.getElementById('historyList').innerHTML = history.map(item => `
                 <div class="history-item">
-                    <div>
-                        <span class="h-coin">${item.coin}</span>
-                        <span class="h-date">${item.date}</span>
-                    </div>
-                    <div style="text-align:right">
-                        <span style="font-size:12px; color:#848e9c;">AVG: ${item.avg}</span>
-                        <span class="h-profit">${item.prof}</span>
-                    </div>
+                    <div><span class="h-coin">${item.coin}</span><span class="h-date">${item.date}</span></div>
+                    <div style="text-align:right"><span style="font-size:12px; color:#848e9c;">AVG: ${item.avg}</span><span class="h-profit">${item.prof}</span></div>
                 </div>
             `).join('');
         }
