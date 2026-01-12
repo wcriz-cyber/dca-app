@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.6</title>
+    <title>DCA ENGINE PRO V18.7</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -20,7 +20,7 @@
         body.mode-long { --dir-color: var(--long-green); --primary: #0ecb81; }
         body.mode-short { --dir-color: #ff3e3e; --primary: #f6465d; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; padding-top: env(safe-area-inset-top); transition: 0.3s; overflow-x: hidden; }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
         .logo-area, .btc-live-box { font-family: 'Orbitron'; font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; }
@@ -41,6 +41,7 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
+        /* DASHBOARD COMPACTO */
         .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
@@ -53,20 +54,25 @@
         .recovery-sim input { width: 45%; background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 6px; padding: 6px; font-size: 13px; outline: none; }
         .sim-res-text { font-size: 12px; font-weight: 900; color: var(--long-green); }
 
+        /* NIVELES CON VALOR EN USD */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.04); }
+        .lvl-usd-badge { position: absolute; top: 10px; left: 60px; font-size: 10px; color: var(--long-green); font-weight: 900; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
         
         .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
         .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); cursor: pointer; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
-        .lvl-edit-btn { cursor: pointer; display: inline-block; }
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        /* HISTORIAL CON SLIDER INFINITO */
+        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 350px; display: flex; flex-direction: column; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .btn-export-all { background: var(--success); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+        #historyList { overflow-y: auto; flex: 1; padding-right: 5px; }
+        #historyList::-webkit-scrollbar { width: 4px; }
+        #historyList::-webkit-scrollbar-thumb { background: var(--dir-color); border-radius: 10px; }
         .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; border-bottom: 1px solid #222; font-size: 10px; }
     </style>
 </head>
@@ -74,7 +80,7 @@
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        <div class="btc-live-box" id="priceTicker" onclick="viewTickerChart()">
+        <div class="btc-live-box" onclick="viewTickerChart()">
             <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
             <span class="ticker-symbol" id="t-sym">BTC</span>
             <span class="ticker-price" id="t-price">$--,---</span>
@@ -139,7 +145,7 @@
     <div class="history-section">
         <div class="history-header">
             <span style="font-size:10px; font-weight:900; color:var(--dir-color)">BITÁCORA CERRADA</span>
-            <button class="btn-export-all" onclick="exportMasterExcel()">DESCARGAR EXCEL MAESTRO</button>
+            <button class="btn-export-all" onclick="exportMasterExcel()">DESCARGAR EXCEL</button>
         </div>
         <div id="historyList"></div>
     </div>
@@ -171,14 +177,11 @@
                 const symbol = assets[assetIdx];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
                 const data = await res.json();
-                const price = parseFloat(data.lastPrice);
-                const pct = parseFloat(data.priceChangePercent);
                 currentTickerSymbol = symbol.replace("USDT","");
                 document.getElementById('t-sym').textContent = currentTickerSymbol;
-                document.getElementById('t-price').textContent = price > 100 ? Math.round(price).toLocaleString() : price.toFixed(4);
-                const pctEl = document.getElementById('t-pct');
-                pctEl.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
-                pctEl.className = `ticker-pct ${pct >= 0 ? 'pct-up' : 'pct-down'}`;
+                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toFixed(2);
+                const pct = parseFloat(data.priceChangePercent);
+                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
                 document.getElementById('t-dot').style.background = pct > 0 ? 'var(--long-green)' : 'var(--danger)';
                 assetIdx = (assetIdx + 1) % assets.length;
             } catch(e) {}
@@ -204,22 +207,20 @@
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateTheme(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3;">Configura el Slot</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3;">Sin Datos</p>'; return; }
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             strategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
-                const on = s.buys.includes(i);
                 const mUSD = lvl.m * s.capital;
+                const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
+                    <div class="lvl-usd-badge">$${mUSD.toFixed(1)}</div>
                     <button class="panic-btn" onclick="panicFill(${i})">RELLENAR</button>
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1">
-                        <span class="lvl-edit-btn" onclick="editStrategy(${i})">
-                           <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
-                           <span style="background:rgba(255,180,0,0.2); color:var(--warning); padding:1px 4px; border-radius:4px; font-size:8px; margin-left:5px;">G: ${lvl.g}</span>
-                        </span>
+                        <span style="font-size:10px; color:var(--dir-color); font-weight:900;" onclick="editStrategy(${i})">NIVEL ${i+1} (G: ${lvl.g})</span>
                         <b style="font-size:20px; display:block;">${cp.toFixed(6)}</b>
                     </div>
                     <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
@@ -231,17 +232,16 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            simulateRecovery(); 
+            simulateRecovery();
         }
 
         function editStrategy(i) {
             if(prompt("Clave:") === "2524") {
-                const newG = prompt("Nuevo Profit (G) para este nivel:", strategy[i].g);
-                const newC = prompt("Nuevo % Caída (C) ej. 0.10:", strategy[i].c);
-                if(newG) strategy[i].g = parseFloat(newG);
-                if(newC) strategy[i].c = parseFloat(newC);
-                localStorage.setItem('c5x_strategy', JSON.stringify(strategy));
-                calculate();
+                const nG = prompt("Nuevo Profit (G):", strategy[i].g);
+                const nC = prompt("Nueva Caída (C):", strategy[i].c);
+                if(nG) strategy[i].g = parseFloat(nG);
+                if(nC) strategy[i].c = parseFloat(nC);
+                localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate();
             }
         }
 
@@ -249,39 +249,34 @@
             const target = parseFloat(document.getElementById('simPrice').value);
             const avg = parseFloat(document.getElementById('resAvg').textContent);
             const inv = parseFloat(document.getElementById('resInv').textContent.replace('$',''));
-            const res = document.getElementById('simResult');
             if(target > 0 && avg > 0) {
                 const gainPct = ((target - avg) / avg) * 100;
-                const gainUSD = inv * (gainPct / 100);
-                res.textContent = `$${gainUSD.toFixed(2)} (${gainPct.toFixed(2)}%)`;
-                res.style.color = gainPct > 0 ? 'var(--long-green)' : 'var(--danger)';
-            } else res.textContent = "$0.00 (+0%)";
+                document.getElementById('simResult').textContent = `$${(inv * (gainPct/100)).toFixed(2)} (${gainPct.toFixed(2)}%)`;
+            } else document.getElementById('simResult').textContent = "$0.00 (+0%)";
         }
 
         function releaseSlot() {
             const s = slots[activeIdx];
-            if(s.buys.length > 0 && confirm(`¿Cerrar y guardar reporte de ${s.name}?`)) {
-                const entry = { coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent, prof: document.getElementById('resProf').textContent };
-                history.unshift(entry); localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
-                save(); selectSlot(activeIdx);
+            if(s.buys.length > 0 && confirm(`¿Cerrar ${s.name}?`)) {
+                history.unshift({ coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent, prof: document.getElementById('resProf').textContent });
+                localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
+                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] }; save(); selectSlot(activeIdx);
             }
         }
 
         function exportMasterExcel() {
-            if(history.length === 0) return alert("No hay datos.");
-            let csv = "MONEDA,FECHA,INVERSION,PRECIO_AVG,PROFIT_EST\n";
-            history.forEach(h => csv += `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"\n`);
+            if(!history.length) return;
+            let csv = "MONEDA,FECHA,INVERSION,AVG,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"`).join("\n");
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `REPORTE_DCA_${new Date().toLocaleDateString()}.csv`; a.click();
+            a.download = `Reporte_DCA.csv`; a.click();
         }
 
         function renderHistory() {
             document.getElementById('historyList').innerHTML = history.map(item => `
                 <div class="history-item">
-                    <span>${item.coin} <br><small style="opacity:0.5">${item.date}</small></span>
-                    <span style="text-align:right">AVG: ${item.avg}<br><span style="color:var(--long-green)">PROF: ${item.prof}</span></span>
+                    <span>${item.coin}<br><small style="opacity:0.5">${item.date}</small></span>
+                    <span style="text-align:right">AVG: ${item.avg}<br><span style="color:var(--long-green)">${item.prof}</span></span>
                 </div>
             `).join('');
         }
@@ -293,8 +288,8 @@
         }
 
         function panicFill(i) {
-            let n = []; for(let j=0; j<=i; j++) n.push(j);
-            slots[activeIdx].buys = n; save(); renderLevels();
+            slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k);
+            save(); renderLevels();
         }
 
         function updateCoin() {
@@ -328,4 +323,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
