@@ -1,6 +1,6 @@
 {
-  "name": "DCA ENGINE PRO",
-  "short_name": "DCA ENGINE",
+  "name": "C5X DCA ENGINE",
+  "short_name": "C5X",
   "description": "Herramienta avanzada de gestión DCA para ETFs",
   "start_url": "index.html",
   "display": "standalone",
@@ -8,10 +8,10 @@
   "theme_color": "#050708",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/5968/5968260.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "images.jpeg",
+      "sizes": "450x450",
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
