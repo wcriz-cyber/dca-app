@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.4</title>
+    <title>DCA ENGINE PRO V18.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -41,17 +41,14 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
-        /* DASHBOARD REDISEÑADO (-40% tamaño) */
+        /* DASHBOARD COMPACTO */
         .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
-        
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
         .dash-val-small { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: #fff; }
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
-
         .dash-center { text-align: center; padding: 5px 0; }
         .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); text-shadow: 0 0 10px rgba(0,255,149,0.2); }
-
         .dash-bottom { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
         .recovery-sim { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .recovery-sim input { width: 45%; background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 6px; padding: 6px; font-size: 13px; outline: none; }
@@ -64,11 +61,13 @@
         .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
         .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
-        .g-badge { background: rgba(0,0,0,0.3); color: var(--dir-color); padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 900; border: 1px solid #333; cursor: pointer; margin-left: 8px; }
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
+        /* HISTORIAL Y EXPORTACIÓN MAESTRA */
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .btn-export-all { background: var(--success); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
         .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; border-bottom: 1px solid #222; font-size: 10px; }
     </style>
 </head>
@@ -136,9 +135,13 @@
 
     <main id="levelsGrid" class="levels-container"></main>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y EXPORTAR EXCEL</button>
+    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
     <div class="history-section">
+        <div class="history-header">
+            <span style="font-size:10px; font-weight:900; color:var(--dir-color)">BITÁCORA CERRADA</span>
+            <button class="btn-export-all" onclick="exportMasterExcel()">DESCARGAR EXCEL MAESTRO</button>
+        </div>
         <div id="historyList"></div>
     </div>
 
@@ -160,7 +163,6 @@
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "BNBUSDT"];
         let assetIdx = 0;
-        let currentTickerSymbol = "BTC";
 
         function init() { fetchTicker(); renderNav(); selectSlot(0); renderHistory(); setInterval(fetchTicker, 10000); }
 
@@ -171,8 +173,7 @@
                 const data = await res.json();
                 const price = parseFloat(data.lastPrice);
                 const pct = parseFloat(data.priceChangePercent);
-                currentTickerSymbol = symbol.replace("USDT", "");
-                document.getElementById('t-sym').textContent = currentTickerSymbol;
+                document.getElementById('t-sym').textContent = symbol.replace("USDT","");
                 document.getElementById('t-price').textContent = price > 100 ? Math.round(price).toLocaleString() : price.toFixed(4);
                 const pctEl = document.getElementById('t-pct');
                 pctEl.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
@@ -182,8 +183,6 @@
                 assetIdx = (assetIdx + 1) % assets.length;
             } catch(e) {}
         }
-
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
 
         function selectSlot(i) {
             activeIdx = i; const s = slots[i];
@@ -215,11 +214,8 @@
                     <button class="panic-btn" onclick="panicFill(${i})">RELLENAR</button>
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1">
-                        <div style="display:flex; align-items:center;">
-                            <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
-                            <span class="g-badge" onclick="editG(${i})">G: ${lvl.g}</span>
-                        </div>
-                        <b style="font-size:20px;">${cp.toFixed(6)}</b>
+                        <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
+                        <b style="font-size:20px; display:block;">${cp.toFixed(6)}</b>
                     </div>
                     <span class="level-drop-tag">${lvl.p}</span>
                 </div>`;
@@ -246,6 +242,47 @@
             } else res.textContent = "$0.00 (+0%)";
         }
 
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(s.buys.length > 0 && confirm(`¿Cerrar y guardar reporte de ${s.name}?`)) {
+                const entry = {
+                    coin: s.name,
+                    date: new Date().toLocaleString(),
+                    inv: document.getElementById('resInv').textContent,
+                    avg: document.getElementById('resAvg').textContent,
+                    prof: document.getElementById('resProf').textContent
+                };
+                history.unshift(entry);
+                localStorage.setItem('dca_history', JSON.stringify(history));
+                renderHistory();
+
+                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
+                save(); selectSlot(activeIdx);
+            }
+        }
+
+        function exportMasterExcel() {
+            if(history.length === 0) return alert("No hay datos en la bitácora.");
+            let csv = "MONEDA,FECHA,INVERSION,PRECIO_AVG,PROFIT_EST\n";
+            history.forEach(h => {
+                csv += `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"\n`;
+            });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `REPORTE_MAESTRO_DCA_${new Date().getMonth()+1}_${new Date().getFullYear()}.csv`;
+            a.click();
+        }
+
+        function renderHistory() {
+            document.getElementById('historyList').innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span>${item.coin} <br><small style="opacity:0.5">${item.date}</small></span>
+                    <span style="text-align:right">AVG: ${item.avg}<br><span style="color:var(--long-green)">PROF: ${item.prof}</span></span>
+                </div>
+            `).join('');
+        }
+
         function toggleLvl(i) {
             const b = slots[activeIdx].buys;
             slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
@@ -255,13 +292,6 @@
         function panicFill(i) {
             let n = []; for(let j=0; j<=i; j++) n.push(j);
             slots[activeIdx].buys = n; save(); renderLevels();
-        }
-
-        function editG(i) {
-            if(prompt("Clave:") === "2524") {
-                const v = prompt("Nueva G:", strategy[i].g);
-                if(v) { strategy[i].g = parseFloat(v); localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate(); }
-            }
         }
 
         function updateCoin() {
@@ -280,30 +310,6 @@
             document.body.classList.remove('mode-long', 'mode-short');
             if(n.endsWith('L')) document.body.classList.add('mode-long');
             else if(n.endsWith('S')) document.body.classList.add('mode-short');
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length > 0 && confirm(`¿Liquidar y Exportar ${s.name}?`)) {
-                const entry = { coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, prof: document.getElementById('resProf').textContent };
-                history.unshift(entry); localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
-                let csv = "Moneda,Fecha,Inversion,Profit_Est\n";
-                csv += `${s.name},${entry.date},${entry.inv},${entry.prof}`;
-                const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-                const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-                a.download = `Cierre_${s.name}.csv`; a.click();
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
-                save(); selectSlot(activeIdx);
-            }
-        }
-
-        function renderHistory() {
-            document.getElementById('historyList').innerHTML = history.map(item => `
-                <div class="history-item">
-                    <span>${item.coin} <br><small style="opacity:0.5">${item.date}</small></span>
-                    <span style="text-align:right">INV: ${item.inv} <br> <span style="color:var(--long-green)">PROF: ${item.prof}</span></span>
-                </div>
-            `).join('');
         }
 
         function renderNav() {
