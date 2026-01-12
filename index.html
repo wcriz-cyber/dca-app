@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X</title>
+    <title>DCA ENGINE PRO</title>
     
-    <link rel="manifest" href="manifest.json?v=15">
+    <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="images.jpeg">
     <meta name="theme-color" content="#050708">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="C5X">
+    <meta name="apple-mobile-web-app-title" content="DCA ENGINE">
     <meta name="mobile-web-app-capable" content="yes">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
@@ -19,7 +20,8 @@
         :root {
             --bg: #050708; --surface: #12151a; --primary: #3498db; --success: #0ecb81;
             --warning: #f1c40f; --accent: #ffb4ab; --text: #f0f2f5; --danger: #e74c3c;
-            --dir-color: #3498db; --long-green: #00ff95;
+            --dir-color: #3498db;
+            --long-green: #00ff95;
         }
         body.mode-long { --dir-color: var(--long-green); --primary: #0ecb81; }
         body.mode-short { --dir-color: #ff3e3e; --primary: #f6465d; }
@@ -28,49 +30,49 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-size: 28px; font-weight: 900; color: #fff; letter-spacing: 2px; }
-        .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 8px 14px; border-radius: 12px; border: 1px solid #f7931a; }
+        .logo-area { font-family: 'Orbitron'; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+        .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,147,26,0.1); padding: 6px 12px; border-radius: 10px; border: 1px solid #f7931a; }
 
-        .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 12px; font-weight: 900; font-size: 15px; letter-spacing: 1px; }
+        .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-weight: 900; font-size: 11px; letter-spacing: 1px; transition: 0.3s; }
 
-        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 12px; }
-        .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 15px; font-weight: 900; }
-        .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 8px; }
+        .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
+        .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 6px; }
 
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
-        .slot-btn { padding: 18px 0; text-align: center; border-radius: 10px; font-size: 15px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
+        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(255,255,255,0.05); }
 
-        .chart-container { width: 100%; height: 350px; background: #000; }
+        .chart-container { width: 100%; height: 300px; background: #000; }
 
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px; }
-        .control-box { background: var(--surface); padding: 14px; border-radius: 18px; border: 1px solid #2d3339; text-align: center; }
-        .control-box label { font-size: 12px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 8px; }
-        .control-box input { background: transparent; border: none; color: white; font-size: 22px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid #2d3339; text-align: center; }
+        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .control-box input { background: transparent; border: none; color: white; font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
 
-        .dash { margin: 15px; padding: 25px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 30px; border: 2px solid var(--dir-color); text-align: center; }
-        .avg-large { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--warning); display: block; margin: 8px 0; }
+        .dash { margin: 12px; padding: 20px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 24px; border: 2px solid var(--dir-color); text-align: center; }
+        .avg-large { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--warning); display: block; margin: 5px 0; opacity: 0.9; }
 
-        .target-box { margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; }
-        .target-label { font-size: 14px; color: var(--long-green); font-weight: 900; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); text-shadow: 0 0 20px rgba(0, 255, 149, 0.4); display: block; }
+        .target-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 15px; }
+        .target-label { font-size: 11px; color: var(--long-green); font-weight: 900; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); text-shadow: 0 0 15px rgba(0, 255, 149, 0.4); display: block; }
 
-        .levels-container { padding: 0 15px; display: flex; flex-direction: column; gap: 12px; }
-        .level-card { background: var(--surface); border-radius: 22px; padding: 24px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 100px; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.06); }
-        .panic-btn { position: absolute; top: 12px; right: 18px; font-size: 11px; background: var(--dir-color); color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 900; }
-        .level-drop-tag { position: absolute; bottom: 12px; right: 18px; font-size: 13px; font-weight: 900; color: var(--danger); }
-        .check-box-large { width: 36px; height: 36px; accent-color: var(--dir-color); margin-right: 20px; }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
+        .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 85px; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.04); }
+        .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
+        .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); opacity: 0.8; }
+        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
 
-        .btn-release { width: 92%; margin: 35px auto; display: block; padding: 25px; border-radius: 25px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 18px; }
+        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 14px; }
     </style>
 </head>
 <body onload="init()">
 
     <header class="app-header">
-        <div class="logo-area">C5X</div>
+        <div class="logo-area">DCA ENGINE</div>
         <div class="btc-live-box">
-            <span id="btcPrice" style="color:#f7931a; font-weight:900; font-family:'Roboto Mono'; font-size:20px;">$--,---</span>
+            <span id="btcPrice" style="color:#f7931a; font-weight:900; font-family:'Roboto Mono'; font-size:15px;">$--,---</span>
         </div>
     </header>
 
@@ -95,10 +97,10 @@
 
     <div class="dash">
         <div style="display:flex; justify-content:space-around; margin-bottom:15px;">
-            <div><span style="font-size:13px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv" style="font-size:26px; font-weight:900;">$0.00</div></div>
-            <div><span style="font-size:13px; color:var(--dir-color); font-weight:900;">PROFIT EST.</span><div id="resProf" style="font-size:26px; font-weight:900; color:var(--dir-color)">$0.00</div></div>
+            <div><span style="font-size:10px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv" style="font-size:20px; font-weight:900;">$0.00</div></div>
+            <div><span style="font-size:10px; color:var(--dir-color); font-weight:900;">PROFIT EST.</span><div id="resProf" style="font-size:20px; font-weight:900; color:var(--dir-color)">$0.00</div></div>
         </div>
-        <span style="font-size:13px; opacity:0.6; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
+        <span style="font-size:10px; opacity:0.6; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
         <span id="resAvg" class="avg-large">0.000000</span>
         <div class="target-box">
             <span class="target-label">OBJETIVO DE VENTA</span>
@@ -107,7 +109,6 @@
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
-
     <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y EXPORTAR EXCEL</button>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -164,9 +165,9 @@
                     <button class="panic-btn" onclick="panicFill(${i})">RELLENAR</button>
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1" onclick="toggleLvl(${i})">
-                        <div style="font-size:13px; color:var(--dir-color); font-weight:900; margin-bottom:4px;">NIVEL ${i+1}</div>
-                        <b style="font-size:24px;">${cp.toFixed(6)}</b><br>
-                        <span style="font-size:14px; opacity:0.7;">MONTO: $${mUSD.toFixed(1)}</span>
+                        <div style="font-size:10px; color:var(--dir-color); font-weight:900; margin-bottom:4px;">NIVEL ${i+1}</div>
+                        <b style="font-size:20px;">${cp.toFixed(6)}</b><br>
+                        <span style="font-size:11px; opacity:0.7;">MONTO: $${mUSD.toFixed(1)}</span>
                     </div>
                     <span class="level-drop-tag">${lvl.p}</span>
                 </div>`;
