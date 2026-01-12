@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V19.0</title>
+    <title>DCA ENGINE PRO V19.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -60,7 +60,6 @@
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        /* BITÁCORA GIGANTE */
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 480px; display: flex; flex-direction: column; }
         .history-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .h-actions { display: flex; gap: 10px; }
@@ -88,6 +87,7 @@
 
     <div class="tf-bar">
         <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
         <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
         <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
         <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
@@ -233,15 +233,13 @@
         }
 
         function clearHistory() {
-            if(prompt("Clave de seguridad para borrar bitácora:") === "2524") {
-                if(confirm("¿Estás seguro de eliminar todo el historial local?")) {
+            if(prompt("Clave de seguridad:") === "2524") {
+                if(confirm("¿Eliminar historial local permanentemente?")) {
                     history = [];
                     localStorage.setItem('dca_history', JSON.stringify(history));
                     renderHistory();
                 }
-            } else {
-                alert("Clave incorrecta.");
-            }
+            } else alert("Clave incorrecta.");
         }
 
         function exportMasterExcel() {
