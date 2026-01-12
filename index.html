@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.5</title>
+    <title>DCA ENGINE PRO V18.6</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -31,7 +31,7 @@
         .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 6px; }
 
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; padding: 8px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid #2d3339; color: #fff; cursor: pointer; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(255,255,255,0.05); }
 
         .chart-container { width: 100%; height: 300px; background: #000; }
@@ -41,7 +41,6 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
-        /* DASHBOARD COMPACTO */
         .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
@@ -59,12 +58,12 @@
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.04); }
         
         .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
-        .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); }
+        .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); cursor: pointer; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
+        .lvl-edit-btn { cursor: pointer; display: inline-block; }
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        /* HISTORIAL Y EXPORTACIÓN MAESTRA */
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; }
         .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn-export-all { background: var(--success); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
@@ -76,7 +75,7 @@
     <header class="app-header">
         <div class="logo-area">C5X</div>
         <div class="btc-live-box" id="priceTicker" onclick="viewTickerChart()">
-            <span class="trend-dot" id="t-dot" style="color: grey;"></span>
+            <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
             <span class="ticker-symbol" id="t-sym">BTC</span>
             <span class="ticker-price" id="t-price">$--,---</span>
             <span class="ticker-pct" id="t-pct">0.00%</span>
@@ -163,6 +162,7 @@
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "BNBUSDT"];
         let assetIdx = 0;
+        let currentTickerSymbol = "BTC";
 
         function init() { fetchTicker(); renderNav(); selectSlot(0); renderHistory(); setInterval(fetchTicker, 10000); }
 
@@ -173,16 +173,18 @@
                 const data = await res.json();
                 const price = parseFloat(data.lastPrice);
                 const pct = parseFloat(data.priceChangePercent);
-                document.getElementById('t-sym').textContent = symbol.replace("USDT","");
+                currentTickerSymbol = symbol.replace("USDT","");
+                document.getElementById('t-sym').textContent = currentTickerSymbol;
                 document.getElementById('t-price').textContent = price > 100 ? Math.round(price).toLocaleString() : price.toFixed(4);
                 const pctEl = document.getElementById('t-pct');
                 pctEl.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
                 pctEl.className = `ticker-pct ${pct >= 0 ? 'pct-up' : 'pct-down'}`;
-                const dot = document.getElementById('t-dot');
-                dot.style.color = pct > 2 ? 'var(--long-green)' : (pct < -2 ? 'var(--danger)' : 'var(--warning)');
+                document.getElementById('t-dot').style.background = pct > 0 ? 'var(--long-green)' : 'var(--danger)';
                 assetIdx = (assetIdx + 1) % assets.length;
             } catch(e) {}
         }
+
+        function viewTickerChart() { loadChart(currentTickerSymbol); }
 
         function selectSlot(i) {
             activeIdx = i; const s = slots[i];
@@ -214,10 +216,13 @@
                     <button class="panic-btn" onclick="panicFill(${i})">RELLENAR</button>
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1">
-                        <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
+                        <span class="lvl-edit-btn" onclick="editStrategy(${i})">
+                           <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
+                           <span style="background:rgba(255,180,0,0.2); color:var(--warning); padding:1px 4px; border-radius:4px; font-size:8px; margin-left:5px;">G: ${lvl.g}</span>
+                        </span>
                         <b style="font-size:20px; display:block;">${cp.toFixed(6)}</b>
                     </div>
-                    <span class="level-drop-tag">${lvl.p}</span>
+                    <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
                 </div>`;
             });
             grid.innerHTML = html;
@@ -227,6 +232,17 @@
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
             simulateRecovery(); 
+        }
+
+        function editStrategy(i) {
+            if(prompt("Clave:") === "2524") {
+                const newG = prompt("Nuevo Profit (G) para este nivel:", strategy[i].g);
+                const newC = prompt("Nuevo % Caída (C) ej. 0.10:", strategy[i].c);
+                if(newG) strategy[i].g = parseFloat(newG);
+                if(newC) strategy[i].c = parseFloat(newC);
+                localStorage.setItem('c5x_strategy', JSON.stringify(strategy));
+                calculate();
+            }
         }
 
         function simulateRecovery() {
@@ -245,33 +261,20 @@
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length > 0 && confirm(`¿Cerrar y guardar reporte de ${s.name}?`)) {
-                const entry = {
-                    coin: s.name,
-                    date: new Date().toLocaleString(),
-                    inv: document.getElementById('resInv').textContent,
-                    avg: document.getElementById('resAvg').textContent,
-                    prof: document.getElementById('resProf').textContent
-                };
-                history.unshift(entry);
-                localStorage.setItem('dca_history', JSON.stringify(history));
-                renderHistory();
-
+                const entry = { coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent, prof: document.getElementById('resProf').textContent };
+                history.unshift(entry); localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
                 slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
                 save(); selectSlot(activeIdx);
             }
         }
 
         function exportMasterExcel() {
-            if(history.length === 0) return alert("No hay datos en la bitácora.");
+            if(history.length === 0) return alert("No hay datos.");
             let csv = "MONEDA,FECHA,INVERSION,PRECIO_AVG,PROFIT_EST\n";
-            history.forEach(h => {
-                csv += `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"\n`;
-            });
+            history.forEach(h => csv += `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"\n`);
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `REPORTE_MAESTRO_DCA_${new Date().getMonth()+1}_${new Date().getFullYear()}.csv`;
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `REPORTE_DCA_${new Date().toLocaleDateString()}.csv`; a.click();
         }
 
         function renderHistory() {
