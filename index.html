@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.3</title>
+    <title>DCA ENGINE PRO V18.4</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -26,8 +26,6 @@
         .logo-area, .btc-live-box { font-family: 'Orbitron'; font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; }
         .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.03); padding: 5px 10px; border-radius: 12px; border: 1px solid #333; cursor: pointer; }
         
-        .trend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px currentColor; }
-
         .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 6px; }
@@ -43,16 +41,21 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
-        .dash { margin: 12px; padding: 20px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 24px; border: 2px solid var(--dir-color); text-align: center; position: relative; }
-        .avg-large { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--warning); display: block; margin: 5px 0; }
+        /* DASHBOARD REDISEÑADO (-40% tamaño) */
+        .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
+        
+        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
+        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
+        .dash-val-small { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: #fff; }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
 
-        .recovery-sim { margin: 15px 0; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; flex-direction: column; gap: 5px; }
-        .recovery-sim input { background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 5px; padding: 5px; font-size: 16px; outline: none; }
+        .dash-center { text-align: center; padding: 5px 0; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); text-shadow: 0 0 10px rgba(0,255,149,0.2); }
 
-        /* Tarjeta Objetivo de Venta Centrada */
-        .target-box { margin-top: 15px; border-top: 1px solid #222; padding-top: 20px; text-align: center; }
-        .target-label { font-size: 11px; color: var(--long-green); font-weight: 900; display: block; margin-bottom: 8px; letter-spacing: 1px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; margin-top: 5px; text-shadow: 0 0 10px rgba(0,255,149,0.2); }
+        .dash-bottom { margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .recovery-sim { display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .recovery-sim input { width: 45%; background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 6px; padding: 6px; font-size: 13px; outline: none; }
+        .sim-res-text { font-size: 12px; font-weight: 900; color: var(--long-green); }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 85px; }
@@ -102,22 +105,32 @@
     </div>
 
     <div class="dash">
-        <div style="display:flex; justify-content:space-around; margin-bottom:10px;">
-            <div><span style="font-size:10px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv" style="font-size:20px; font-weight:900;">$0.00</div></div>
-            <div><span style="font-size:10px; color:var(--dir-color); font-weight:900;">PROFIT EST.</span><div id="resProf" style="font-size:20px; font-weight:900; color:var(--dir-color)">$0.00</div></div>
+        <div class="dash-top-row">
+            <div>
+                <span class="dash-label">INVERSIÓN</span>
+                <div id="resInv" class="dash-val-small">$0.00</div>
+            </div>
+            <div>
+                <span class="dash-label">PRECIO AVG</span>
+                <div id="resAvg" class="dash-val-avg">0.000000</div>
+            </div>
+            <div>
+                <span class="dash-label">PROFIT EST.</span>
+                <div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div>
+            </div>
         </div>
-        <span style="font-size:10px; opacity:0.6; font-weight:900;">PRECIO PROMEDIO (AVG)</span>
-        <span id="resAvg" class="avg-large">0.000000</span>
 
-        <div class="recovery-sim">
-            <span style="font-size:9px; font-weight:900; color:var(--warning)">PROYECTAR PROFIT SI SUBE A:</span>
-            <input type="number" id="simPrice" placeholder="Precio Objetivo" oninput="simulateRecovery()">
-            <div id="simResult" style="font-size:14px; font-weight:900; color:var(--long-green)">$0.00 (+0.00%)</div>
-        </div>
-        
-        <div class="target-box">
-            <span class="target-label">OBJETIVO DE VENTA</span>
+        <div class="dash-center">
+            <span class="dash-label">OBJETIVO DE VENTA</span>
             <b id="resTarget" class="target-price">0.000000</b>
+        </div>
+
+        <div class="dash-bottom">
+            <div class="recovery-sim">
+                <input type="number" id="simPrice" placeholder="Precio Obj." oninput="simulateRecovery()">
+                <div id="simResult" class="sim-res-text">$0.00 (+0%)</div>
+            </div>
+            <span class="dash-label" style="text-align:center; margin-top:5px;">PROYECTAR PROFIT</span>
         </div>
     </div>
 
@@ -149,10 +162,7 @@
         let assetIdx = 0;
         let currentTickerSymbol = "BTC";
 
-        function init() { 
-            fetchTicker(); renderNav(); selectSlot(0); renderHistory();
-            setInterval(fetchTicker, 10000); 
-        }
+        function init() { fetchTicker(); renderNav(); selectSlot(0); renderHistory(); setInterval(fetchTicker, 10000); }
 
         async function fetchTicker() {
             try {
@@ -233,7 +243,7 @@
                 const gainUSD = inv * (gainPct / 100);
                 res.textContent = `$${gainUSD.toFixed(2)} (${gainPct.toFixed(2)}%)`;
                 res.style.color = gainPct > 0 ? 'var(--long-green)' : 'var(--danger)';
-            } else res.textContent = "$0.00 (+0.00%)";
+            } else res.textContent = "$0.00 (+0%)";
         }
 
         function toggleLvl(i) {
