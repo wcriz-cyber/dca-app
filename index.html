@@ -30,18 +30,17 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 100px; padding-top: env(safe-area-inset-top); transition: 0.3s; }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-size: 22px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+        /* Logo y Ticker con el mismo tamaño */
+        .logo-area, .btc-live-box { font-family: 'Orbitron'; font-size: 20px; font-weight: 900; color: #fff; letter-spacing: 1px; }
         
-        /* Estilos del Ticker de Precios */
-        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); padding: 6px 12px; border-radius: 12px; border: 1px solid #333; min-width: 150px; justify-content: center; transition: 0.5s; }
-        .ticker-symbol { font-weight: 900; font-size: 14px; color: var(--warning); }
-        .ticker-price { font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; color: #fff; }
-        .ticker-pct { font-size: 10px; font-weight: 900; padding: 2px 4px; border-radius: 4px; }
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.03); padding: 5px 12px; border-radius: 12px; border: 1px solid #333; cursor: pointer; }
+        .ticker-symbol { color: var(--warning); }
+        .ticker-price { font-family: 'Roboto Mono'; font-size: 14px; color: #fff; }
+        .ticker-pct { font-size: 10px; font-weight: 900; margin-left: 2px; }
         .pct-up { color: var(--success); }
         .pct-down { color: var(--danger); }
 
         .decision-bar { background: var(--dir-color); color: #000; text-align: center; padding: 8px; font-weight: 900; font-size: 11px; letter-spacing: 1px; transition: 0.3s; }
-
         .tf-bar { display: flex; justify-content: space-around; background: #000; padding: 10px; }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #000; border-radius: 6px; }
@@ -84,7 +83,7 @@
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        <div class="btc-live-box" id="priceTicker">
+        <div class="btc-live-box" id="priceTicker" onclick="viewTickerChart()">
             <span class="ticker-symbol" id="t-sym">BTC</span>
             <span class="ticker-price" id="t-price">$--,---</span>
             <span class="ticker-pct" id="t-pct">0.00%</span>
@@ -150,16 +149,16 @@
         let slots = JSON.parse(localStorage.getItem('dca_v17_9_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         
-        // Ticker config
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "BNBUSDT"];
         let assetIdx = 0;
+        let currentTickerSymbol = "BTC";
 
         function init() { 
             fetchTicker(); 
             renderNav(); 
             renderHistory(); 
             selectSlot(0); 
-            setInterval(fetchTicker, 6000); // Rotación cada 6 segundos
+            setInterval(fetchTicker, 10000); // Rotación cada 10 segundos
         }
 
         async function fetchTicker() {
@@ -170,9 +169,9 @@
                 
                 const price = parseFloat(data.lastPrice);
                 const pct = parseFloat(data.priceChangePercent);
-                const symName = symbol.replace("USDT", "");
+                currentTickerSymbol = symbol.replace("USDT", "");
 
-                document.getElementById('t-sym').textContent = symName;
+                document.getElementById('t-sym').textContent = currentTickerSymbol;
                 document.getElementById('t-price').textContent = price > 100 ? Math.round(price).toLocaleString() : price.toFixed(2);
                 
                 const pctEl = document.getElementById('t-pct');
@@ -181,6 +180,22 @@
                 
                 assetIdx = (assetIdx + 1) % assets.length;
             } catch(e) {}
+        }
+
+        // Función para ver el gráfico de la moneda del ticker
+        function viewTickerChart() {
+            loadChart(currentTickerSymbol);
+        }
+
+        function selectSlot(i) {
+            activeIdx = i; const s = slots[i];
+            document.getElementById('coinInput').value = s.name;
+            document.getElementById('baseInput').value = s.price || '';
+            document.getElementById('capitalInput').value = s.capital;
+            renderNav(); 
+            // Al tocar el slot, carga el gráfico de la moneda configurada en el slot
+            loadChart(s.name); 
+            calculate();
         }
 
         function editG(i) {
@@ -257,14 +272,6 @@
             else { bar.textContent = 'MODO NEUTRAL'; }
         }
 
-        function selectSlot(i) {
-            activeIdx = i; const s = slots[i];
-            document.getElementById('coinInput').value = s.name;
-            document.getElementById('baseInput').value = s.price || '';
-            document.getElementById('capitalInput').value = s.capital;
-            renderNav(); loadChart(s.name); calculate();
-        }
-
         function releaseSlot() {
             const s = slots[activeIdx];
             if(!s.name || s.buys.length === 0) return;
@@ -295,8 +302,11 @@
         function clearHistory() { if(confirm('¿Borrar historial?')) { history = []; localStorage.setItem('dca_history', '[]'); renderHistory(); } }
 
         function loadChart(coin) {
+            let cleanCoin = (coin || 'BTC3L').toUpperCase();
+            // Aseguramos que si viene del ticker no tenga "USDT" para el widget
+            cleanCoin = cleanCoin.replace("USDT", "");
             new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${coin || 'BTC3L'}USDT`, "interval": activeTF,
+                "autosize": true, "symbol": `GATEIO:${cleanCoin}USDT`, "interval": activeTF,
                 "theme": "dark", "style": "1", "container_id": "tv_chart", "hide_top_toolbar": true, "hide_legend": true,
                 "backgroundColor": "#050708", "hide_side_toolbar": true
             });
