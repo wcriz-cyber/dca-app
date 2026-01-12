@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>DCA ENGINE PRO V18.7</title>
+    <title>DCA ENGINE PRO V18.8</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -41,7 +41,7 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: white; font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
 
-        /* DASHBOARD COMPACTO */
+        /* DASHBOARD */
         .dash { margin: 12px; padding: 15px; background: linear-gradient(135deg, #12151a 0%, #050708 100%); border-radius: 20px; border: 2px solid var(--dir-color); position: relative; }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; opacity: 0.8; }
@@ -54,26 +54,31 @@
         .recovery-sim input { width: 45%; background: #000; border: 1px solid #333; color: var(--long-green); font-family: 'Roboto Mono'; text-align: center; border-radius: 6px; padding: 6px; font-size: 13px; outline: none; }
         .sim-res-text { font-size: 12px; font-weight: 900; color: var(--long-green); }
 
-        /* NIVELES CON VALOR EN USD */
+        /* NIVELES CON ETIQUETAS MÁS GRANDES */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 85px; }
+        .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; border: 1px solid #2d3339; position: relative; min-height: 90px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(255,255,255,0.04); }
-        .lvl-usd-badge { position: absolute; top: 10px; left: 60px; font-size: 10px; color: var(--long-green); font-weight: 900; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; }
+        .lvl-usd-badge { position: absolute; top: 8px; left: 60px; font-size: 14px; color: var(--long-green); font-weight: 900; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
         
         .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 8px; background: var(--dir-color); color: #000; border: none; padding: 4px 8px; border-radius: 6px; font-weight: 900; }
         .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; font-weight: 900; color: var(--danger); cursor: pointer; }
-        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
+        .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 15px; }
 
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        /* HISTORIAL CON SLIDER INFINITO */
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 350px; display: flex; flex-direction: column; }
-        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .btn-export-all { background: var(--success); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+        /* BITÁCORA GIGANTE CON SCROLL */
+        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid #222; max-height: 450px; display: flex; flex-direction: column; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .btn-export-all { background: var(--success); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
         #historyList { overflow-y: auto; flex: 1; padding-right: 5px; }
-        #historyList::-webkit-scrollbar { width: 4px; }
+        #historyList::-webkit-scrollbar { width: 5px; }
         #historyList::-webkit-scrollbar-thumb { background: var(--dir-color); border-radius: 10px; }
-        .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px; border-bottom: 1px solid #222; font-size: 10px; }
+        
+        /* ITEM DE HISTORIAL 2X MÁS GRANDE */
+        .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px 10px; border-bottom: 1px solid #222; font-size: 18px; font-family: 'Roboto Mono'; font-weight: 700; }
+        .h-coin { font-family: 'Orbitron'; color: #fff; font-size: 20px; }
+        .h-date { font-size: 10px; color: #848e9c; display: block; font-weight: 400; margin-top: 4px; }
+        .h-profit { color: var(--long-green); font-size: 22px; font-weight: 900; display: block; }
     </style>
 </head>
 <body onload="init()">
@@ -144,8 +149,8 @@
 
     <div class="history-section">
         <div class="history-header">
-            <span style="font-size:10px; font-weight:900; color:var(--dir-color)">BITÁCORA CERRADA</span>
-            <button class="btn-export-all" onclick="exportMasterExcel()">DESCARGAR EXCEL</button>
+            <span style="font-size:12px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
+            <button class="btn-export-all" onclick="exportMasterExcel()">EXCEL</button>
         </div>
         <div id="historyList"></div>
     </div>
@@ -221,7 +226,7 @@
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                     <div style="flex:1">
                         <span style="font-size:10px; color:var(--dir-color); font-weight:900;" onclick="editStrategy(${i})">NIVEL ${i+1} (G: ${lvl.g})</span>
-                        <b style="font-size:20px; display:block;">${cp.toFixed(6)}</b>
+                        <b style="font-size:22px; display:block; font-family:'Roboto Mono';">${cp.toFixed(6)}</b>
                     </div>
                     <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
                 </div>`;
@@ -237,8 +242,8 @@
 
         function editStrategy(i) {
             if(prompt("Clave:") === "2524") {
-                const nG = prompt("Nuevo Profit (G):", strategy[i].g);
-                const nC = prompt("Nueva Caída (C):", strategy[i].c);
+                const nG = prompt("Profit (G):", strategy[i].g);
+                const nC = prompt("Caída (C):", strategy[i].c);
                 if(nG) strategy[i].g = parseFloat(nG);
                 if(nC) strategy[i].c = parseFloat(nC);
                 localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate();
@@ -257,7 +262,7 @@
 
         function releaseSlot() {
             const s = slots[activeIdx];
-            if(s.buys.length > 0 && confirm(`¿Cerrar ${s.name}?`)) {
+            if(s.buys.length > 0 && confirm(`¿Cerrar y archivar ${s.name}?`)) {
                 history.unshift({ coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent, prof: document.getElementById('resProf').textContent });
                 localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
                 slots[activeIdx] = { name:'', price:0, capital:10, buys:[] }; save(); selectSlot(activeIdx);
@@ -269,14 +274,20 @@
             let csv = "MONEDA,FECHA,INVERSION,AVG,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}",${h.avg},"${h.prof}"`).join("\n");
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `Reporte_DCA.csv`; a.click();
+            a.download = `C5X_Reporte_${new Date().toLocaleDateString()}.csv`; a.click();
         }
 
         function renderHistory() {
             document.getElementById('historyList').innerHTML = history.map(item => `
                 <div class="history-item">
-                    <span>${item.coin}<br><small style="opacity:0.5">${item.date}</small></span>
-                    <span style="text-align:right">AVG: ${item.avg}<br><span style="color:var(--long-green)">${item.prof}</span></span>
+                    <div>
+                        <span class="h-coin">${item.coin}</span>
+                        <span class="h-date">${item.date}</span>
+                    </div>
+                    <div style="text-align:right">
+                        <span style="font-size:12px; color:#848e9c;">AVG: ${item.avg}</span>
+                        <span class="h-profit">${item.prof}</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -323,4 +334,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
