@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>C5X DCA ENGINE</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,6 +24,7 @@
             --border: #d1d5db; --header-bg: #ffffff;
         }
 
+        /* COLORES DINÁMICOS RESTAURADOS */
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
@@ -29,22 +32,36 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
         .app-header { 
-            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
-            padding: 15px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center; 
+            padding: 15px; 
+            background: var(--header-bg); 
+            border-bottom: 3px solid var(--dir-color); 
         }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; justify-self: start; }
         .btc-live-box { 
-            display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); 
-            padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); 
-            font-family: 'Orbitron'; font-size: 13px; cursor: pointer; justify-self: center; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: rgba(128,128,128,0.1); 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            font-family: 'Orbitron'; 
+            font-size: 13px; 
+            cursor: pointer; 
+            justify-self: center; 
         }
         .theme-toggle-container { justify-self: end; }
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
 
+        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; }
+        .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
-        
         .chart-container { width: 100%; height: 300px; background: #000; }
         
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
@@ -52,7 +69,7 @@
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; margin-bottom: 10px; }
 
-        /* ESTILOS DEL SLIDER DE ESTRATEGIA */
+        /* SLIDER DE ESTRATEGIA */
         .strategy-selector {
             background: rgba(0,0,0,0.2);
             border-radius: 12px;
@@ -90,15 +107,25 @@
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        <div class="btc-live-box" onclick="viewTickerChart()">
+        
+        <div class="btc-live-box" onclick="loadChart('BTC')">
             <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
             <span id="t-sym">BTC</span>
             <span id="t-price">$--,---</span>
         </div>
+
         <div class="theme-toggle-container">
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </div>
     </header>
+
+    <div class="tf-bar">
+        <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
+        <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
+        <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
+        <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
+    </div>
 
     <nav id="slotNav" class="slot-nav"></nav>
     <div id="tv_chart" class="chart-container"></div>
@@ -143,7 +170,7 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, currentStrat = 1;
+        let activeIdx = 0, currentStrat = 1, activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
         
         let strategy = [
@@ -164,25 +191,34 @@
 
         async function fetchTicker() {
             try {
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`);
                 const data = await res.json();
-                document.getElementById('t-price').textContent = parseFloat(data.price).toLocaleString();
+                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
+                const pct = parseFloat(data.priceChangePercent);
+                document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--short-red)';
             } catch(e) {}
+        }
+
+        // FUNCIÓN RESTAURADA PARA EL MODO LONG/SHORT
+        function updateBodyMode(n) {
+            document.body.classList.remove('mode-long', 'mode-short');
+            if(n.endsWith('L')) document.body.classList.add('mode-long');
+            if(n.endsWith('S')) document.body.classList.add('mode-short');
         }
 
         function changeStrategy(num) {
             if(num === currentStrat) return;
-            if(prompt("Código de Seguridad C5X:") === "2524") {
+            if(prompt("Código 2524:") === "2524") {
                 currentStrat = num;
                 document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
                 document.getElementById('strat' + num).classList.add('active');
-                // Aquí se implementarán las variaciones de las otras estrategias
                 calculate();
             }
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+            updateBodyMode(s.name); // Activa el color según la moneda
             if(!s.price) { grid.innerHTML = ''; return; }
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             
@@ -209,18 +245,25 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
         }
 
-        function toggleLvl(i) {
-            const b = slots[activeIdx].buys;
-            slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
-            save(); renderLevels();
-        }
-
         function selectSlot(i) {
             activeIdx = i; const s = slots[i];
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
             renderNav(); loadChart(s.name); calculate();
+        }
+
+        function loadChart(coin) {
+            const sym = (coin || 'BTC3L').replace('USDT','');
+            new TradingView.widget({
+                "autosize": true, "symbol": `GATEIO:${sym}USDT`, "interval": activeTF,
+                "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708"
+            });
+        }
+
+        function updateTF(tf, btn) {
+            activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
         function calculate() {
@@ -231,11 +274,22 @@
         }
 
         function releaseSlot() {
-            if(confirm("¿Liquidar operación?")) {
+            if(confirm("¿Liquidar?")) {
                 slots.splice(activeIdx, 1);
                 slots.push({ name:'', price:0, capital:10, buys:[] });
                 save(); selectSlot(0);
             }
+        }
+
+        function toggleLvl(i) {
+            const b = slots[activeIdx].buys;
+            slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
+            save(); renderLevels();
+        }
+
+        function updateCoin() {
+            const v = document.getElementById('coinInput').value.trim().toUpperCase();
+            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
         }
 
         function toggleTheme() {
@@ -245,22 +299,10 @@
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
         }
 
-        function updateCoin() {
-            const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
-        }
-
         function renderNav() {
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
                 <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>
             `).join('');
-        }
-
-        function loadChart(coin) {
-            new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": "60",
-                "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708"
-            });
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
