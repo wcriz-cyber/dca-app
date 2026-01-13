@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V17.4</title>
+    <title>C5X DCA ENGINE V17.5</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -69,20 +69,20 @@
         .level-card { 
             background: var(--surface); border-radius: 16px; padding: 15px; 
             display: flex; align-items: center; justify-content: space-between;
-            border: 1px solid var(--border); transition: 0.2s;
+            border: 1px solid var(--border); transition: 0.2s; cursor: pointer;
         }
         .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.05); border-width: 2px; }
         
-        .card-start { display: flex; align-items: center; gap: 15px; }
+        .card-start { display: flex; align-items: center; gap: 15px; pointer-events: none; }
         .custom-check {
             width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
         .level-card.active .custom-check { background: var(--dir-color); border-color: var(--dir-color); }
         .level-card.active .custom-check::after { content: '✓'; color: white; font-weight: 900; }
 
         .lvl-usd { font-family: 'Roboto Mono'; font-size: 19px; font-weight: 900; color: var(--text); }
-        .lvl-right { text-align: right; }
+        .lvl-right { text-align: right; pointer-events: none; }
         .lvl-price { font-family: 'Roboto Mono'; font-size: 17px; font-weight: 900; color: var(--text); display: block; }
         .lvl-info-row { display: flex; justify-content: flex-end; gap: 10px; font-family: 'Orbitron'; font-size: 10px; font-weight: 900; margin-top: 2px; }
         .lvl-drop { color: var(--short-red); }
@@ -91,7 +91,7 @@
         .history-section { margin: 20px 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
         .history-title { font-family: 'Orbitron'; font-size: 12px; color: var(--dir-color); margin-bottom: 10px; }
         .history-table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        .history-table td { padding: 8px; border-bottom: 1px solid var(--border); }
+        .history-table td { padding: 8px; border-bottom: 1px solid var(--border); font-family: 'Roboto Mono'; }
 
         .btn-release { width: 92%; margin: 20px auto 10px; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         .btn-excel { width: 92%; margin: 0 auto 20px; display: block; padding: 15px; border-radius: 15px; border: 1px solid var(--long-green); background: transparent; color: var(--long-green); font-weight: 900; font-family: 'Orbitron'; font-size: 11px; }
@@ -139,9 +139,9 @@
 
     <div class="dash">
         <div class="dash-top-row">
-            <div><span class="dash-label">INVERSIÓN</span><div id="resInv">$0.00</div></div>
-            <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" style="color:var(--warning)">0.00</div></div>
-            <div><span class="dash-label">PROFIT EST.</span><div id="resProf" style="color:var(--dir-color)">$0.00</div></div>
+            <div><span class="dash-label">INVERSIÓN</span><div id="resInv" style="font-family:'Roboto Mono'; font-weight:900;">$0.00</div></div>
+            <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" style="font-family:'Roboto Mono'; font-weight:900; color:var(--warning)">0.00</div></div>
+            <div><span class="dash-label">PROFIT EST.</span><div id="resProf" style="font-family:'Roboto Mono'; font-weight:900; color:var(--dir-color)">$0.00</div></div>
         </div>
         <div style="text-align:center">
             <span class="dash-label">OBJETIVO DE VENTA</span>
@@ -203,13 +203,18 @@
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base</p>'; return; }
+            
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             
             strategyData.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
+                if(on) { 
+                    spent += mUSD; 
+                    tokens += (mUSD / cp); 
+                    lastG = lvl.g; // Captura el porcentaje de beneficio del último nivel seleccionado
+                }
                 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
@@ -226,12 +231,20 @@
                     </div>
                 </div>`;
             });
+            
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
+            
+            // ACTUALIZACIÓN DASHBOARD
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG/100)).toFixed(6) : '0.000000';
-            document.getElementById('resProf').textContent = `$${(spent * (lastG/100)).toFixed(2)}`;
+            
+            // CORRECCIÓN OBJETIVO DE VENTA: Precio Promedio * (1 + Ganancia/100)
+            const targetVal = avg > 0 ? (avg * (1 + (lastG / 100))) : 0;
+            document.getElementById('resTarget').textContent = targetVal.toFixed(6);
+            
+            // Profit estimado en dólares
+            document.getElementById('resProf').textContent = `$${(spent * (lastG / 100)).toFixed(2)}`;
         }
 
         function releaseSlot() {
@@ -246,14 +259,14 @@
         }
 
         function renderHistory() {
-            document.getElementById('historyBody').innerHTML = history.slice(0,10).map(h => `<tr><td>${h.coin}</td><td style="color:var(--long-green)">${h.prof}</td><td style="text-align:right;opacity:0.5">${h.date}</td></tr>`).join('');
+            document.getElementById('historyBody').innerHTML = history.slice(0,10).map(h => `<tr><td>${h.coin}</td><td style="color:var(--long-green); font-weight:900;">${h.prof}</td><td style="text-align:right;opacity:0.5">${h.date}</td></tr>`).join('');
         }
 
         function exportToExcel() {
             let csv = "MONEDA,INVERSION,PROFIT,FECHA\n" + history.map(h => `${h.coin},${h.inv},${h.prof},${h.date}`).join("\n");
             const blob = new Blob([csv], { type: 'text/csv' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `Reporte_DCA.csv`; a.click();
+            a.download = `Reporte_C5X_DCA.csv`; a.click();
         }
 
         function loadChart(coin) {
