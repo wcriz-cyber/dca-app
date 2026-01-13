@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.7 - CASCADE</title>
+    <title>C5X DCA ENGINE V19.7</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#050708">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -13,7 +18,12 @@
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
         }
-        body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
+
+        body.light-mode {
+            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; 
+            --border: #d1d5db; --header-bg: #ffffff;
+        }
+
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
@@ -21,9 +31,15 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
         .sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 3px solid var(--dir-color); }
+
         .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 15px; background: var(--header-bg); }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 8px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 12px; cursor: pointer; }
+        #t-dot { width:10px; height:10px; border-radius:50%; }
+
+        .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; justify-self: end; }
+
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; }
         .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
@@ -39,25 +55,28 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         
-        .dash { margin: 12px; padding: 22px; background: var(--surface); border-radius: 24px; border: 2.5px solid var(--dir-color); }
-        .dash-info-top { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; font-size: 13px; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); display: block; text-align: center; letter-spacing: -1px; }
+        .dash { margin: 12px; padding: 26px; background: var(--surface); border-radius: 28px; border: 2.5px solid var(--dir-color); display: flex; flex-direction: column; gap: 15px; }
+        .dash-info-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 14px; font-size: 13.5px; color: var(--warning); }
+        .dash-info-top b { color: var(--text); font-size: 14px; }
+
+        .target-price { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); display: block; text-align: center; letter-spacing: -1.5px; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { 
-            background: var(--surface); border-radius: 20px; padding: 16px; 
-            display: flex; align-items: center; border: 1px solid var(--border); min-height: 85px;
-        }
+        .level-card { background: var(--surface); border-radius: 20px; padding: 16px; display: flex; align-items: center; border: 1px solid var(--border); min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); border-width: 2px; }
-        .check-box-large { width: 30px; height: 30px; accent-color: var(--dir-color); margin-right: 15px; }
         
+        .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 15px; }
         .lvl-grid-content { flex: 1; display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; align-items: center; }
-        .lvl-col-left, .lvl-col-right { display: flex; flex-direction: column; gap: 4px; }
-        .lvl-col-right { text-align: right; }
+        .lvl-col-left { display: flex; flex-direction: column; gap: 4px; }
+        .lvl-col-right { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+
         .val-sim { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; }
-        .tag-sim { font-size: 13px; font-weight: 900; }
+        .tag-sim { font-size: 14px; font-weight: 900; text-transform: uppercase; }
+
+        .gain-input { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border); color: var(--long-green); font-weight: 900; width: 50px; border-radius: 4px; text-align: center; font-size: 12px; padding: 2px; outline: none; }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; border: none; }
+        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
     </style>
 </head>
 <body onload="init()">
@@ -65,12 +84,19 @@
     <div class="sticky-top">
         <header class="app-header">
             <div class="logo-area">C5X</div>
-            <div id="t-price" style="font-family:'Orbitron'; font-weight:900;">0.00</div>
-            <button onclick="toggleTheme()" style="background:none; border:none; font-size:20px;">🌙</button>
+            <div class="btc-live-box" onclick="loadTickerInChart()">
+                <span id="t-dot"></span>
+                <span id="t-sym">BTC</span>
+                <span id="t-price">0.00</span>
+                <span id="t-pct" style="font-weight:900;">0%</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar">
-            <button class="tf-btn" onclick="updateTF('60', this)">1H</button>
-            <button class="tf-btn active" onclick="updateTF('240', this)">4H</button>
+            <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
+            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
         </div>
         <nav id="slotNav" class="slot-nav"></nav>
@@ -79,83 +105,121 @@
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
-        <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()"></div>
+        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
+        <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
         <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
     </div>
 
     <div class="dash">
         <div class="dash-info-top">
-            <span>Inv: <b id="resInv">$0</b></span>
-            <span>Avg: <b id="resAvg">0.00</b></span>
-            <span>Profit: <b id="resProf">$0</b></span>
+            <span>Inversión: <b id="resInv">$0</b></span>
+            <span>Promedio: <b id="resAvg">0.00</b></span>
+            <span>Ganancias: <b id="resProf">$0</b></span>
         </div>
-        <b id="resTarget" class="target-price">0.000000</b>
+        <div>
+            <span style="font-size:11px; color:var(--dir-color); font-weight:900; display:block; text-align:center; margin-bottom: 4px;">OBJETIVO DE VENTA</span>
+            <b id="resTarget" class="target-price">0.000000</b>
+        </div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR POSICIÓN</button>
+    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y GUARDAR</button>
+
+    <div class="history-section">
+        <div id="historyList"></div>
+    </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let activeIdx = 0, activeTF = '240';
+        let isLight = localStorage.getItem('theme') === 'light';
+        let activeIdx = 0, activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v19_slots')) || Array(5).fill(null).map(() => ({ 
-            name:'', price:0, capital:10, buys:[] 
+            name:'', price:0, capital:10, buys:[], customGains: Array(16).fill(0.005) 
         }));
+        let history = JSON.parse(localStorage.getItem('dca_history')) || [];
+        const tickers = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT"];
+        let tIdx = 0, currentTickerFull = "BTCUSDT";
 
         const strategy = [
-            { c: 0.00, m: 1.0, p: "0%", g: 0.005 }, { c: 0.10, m: 1.0, p: "-10%", g: 0.005 },
-            { c: 0.15, m: 1.5, p: "-23%", g: 0.005 }, { c: 0.15, m: 1.5, p: "-35%", g: 0.005 },
-            { c: 0.20, m: 2.0, p: "-48%", g: 0.005 }, { c: 0.20, m: 2.0, p: "-58%", g: 0.005 },
-            { c: 0.25, m: 2.5, p: "-69%", g: 0.005 }, { c: 0.25, m: 2.5, p: "-77%", g: 0.005 },
-            { c: 0.30, m: 3.0, p: "-84%", g: 0.005 }, { c: 0.30, m: 3.0, p: "-89%", g: 0.005 },
-            { c: 0.35, m: 3.5, p: "-93%", g: 0.005 }, { c: 0.35, m: 3.5, p: "-95%", g: 0.005 },
-            { c: 0.40, m: 4.0, p: "-97%", g: 0.005 }, { c: 0.40, m: 4.0, p: "-98%", g: 0.005 },
-            { c: 0.50, m: 5.0, p: "-99%", g: 0.005 }, { c: 0.50, m: 5.0, p: "-99.5%", g: 0.005 }
+            { c: 0.00, m: 1.0, p: "0%" }, { c: 0.10, m: 1.0, p: "-10%" },
+            { c: 0.15, m: 1.5, p: "-23%" }, { c: 0.15, m: 1.5, p: "-35%" },
+            { c: 0.20, m: 2.0, p: "-48%" }, { c: 0.20, m: 2.0, p: "-58%" },
+            { c: 0.25, m: 2.5, p: "-69%" }, { c: 0.25, m: 2.5, p: "-77%" },
+            { c: 0.30, m: 3.0, p: "-84%" }, { c: 0.30, m: 3.0, p: "-89%" },
+            { c: 0.35, m: 3.5, p: "-93%" }, { c: 0.35, m: 3.5, p: "-95%" },
+            { c: 0.40, m: 4.0, p: "-97%" }, { c: 0.40, m: 4.0, p: "-98%" },
+            { c: 0.50, m: 5.0, p: "-99%" }, { c: 0.50, m: 5.0, p: "-99.5%" }
         ];
 
-        function init() { renderNav(); selectSlot(0); }
-
-        function selectSlot(i) {
-            activeIdx = i; const s = slots[i];
-            document.getElementById('coinInput').value = s.name;
-            document.getElementById('baseInput').value = s.price || '';
-            document.getElementById('capitalInput').value = s.capital;
-            renderNav(); loadChart(s.name); calculate();
+        function init() {
+            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
+            renderNav(); selectSlot(0); renderHistory();
+            fetchTicker(); setInterval(fetchTicker, 8000);
         }
+
+        async function fetchTicker() {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${tickers[tIdx]}`);
+                const data = await res.json();
+                currentTickerFull = tickers[tIdx];
+                document.getElementById('t-sym').textContent = currentTickerFull.replace('USDT','');
+                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
+                const pct = parseFloat(data.priceChangePercent);
+                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
+                document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--short-red)';
+                document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--short-red)';
+                tIdx = (tIdx + 1) % tickers.length;
+            } catch(e) {}
+        }
+
+        function loadTickerInChart() { loadChart(currentTickerFull); }
 
         function loadChart(coin) {
             document.getElementById('tv_chart').innerHTML = '';
             new TradingView.widget({
-                "autosize": true, "symbol": `BINANCE:${coin || 'BTC'}USDT`,
+                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
                 "interval": activeTF, "theme": "dark", "container_id": "tv_chart",
-                "style": "1", "hide_top_toolbar": true
+                "style": "1", "hide_top_toolbar": true, "backgroundColor": "#050708"
             });
         }
 
-        // FUNCIÓN CLAVE: Selección en cascada (marcar anteriores automáticamente)
         function toggleLvlCascade(index) {
             const s = slots[activeIdx];
             if (s.buys.includes(index)) {
                 s.buys = s.buys.filter(i => i < index);
             } else {
                 let newBuys = [];
-                for (let i = 0; i <= index; i++) { newBuys.push(i); }
+                for (let i = 0; i <= index; i++) newBuys.push(i);
                 s.buys = newBuys;
             }
             calculate();
+        }
+
+        function updateLvlGain(index, newVal) {
+            slots[activeIdx].customGains[index] = parseFloat(newVal) / 100;
+            calculate();
+        }
+
+        function selectSlot(i) {
+            activeIdx = i; const s = slots[i];
+            if(!s.customGains) s.customGains = Array(16).fill(0.005);
+            document.getElementById('coinInput').value = s.name;
+            document.getElementById('baseInput').value = s.price || '';
+            document.getElementById('capitalInput').value = s.capital;
+            renderNav(); loadChart(s.name); calculate();
         }
 
         function calculate() {
             const s = slots[activeIdx];
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 10;
-            renderLevels(); save();
+            save(); renderLevels();
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+            updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = ''; return; }
             let spent = 0, tokens = 0, lastG = 0.005, cp = s.price, html = '';
             
@@ -163,7 +227,8 @@
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
+                const currentGain = s.customGains[i];
+                if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = currentGain; }
                 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvlCascade(${i})">
@@ -174,9 +239,11 @@
                             <span class="val-sim">$${mUSD.toFixed(1)}</span>
                         </div>
                         <div class="lvl-col-right">
-                            <span class="val-sim" style="color:var(--long-green)">+0.5%</span>
+                            <div style="display:flex; justify-content:flex-end; align-items:center; gap:5px;">
+                                <input type="number" class="gain-input" value="${(currentGain * 100).toFixed(1)}" onclick="event.stopPropagation()" onchange="updateLvlGain(${i}, this.value)">
+                                <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
+                            </div>
                             <span class="val-sim">${cp.toFixed(6)}</span>
-                            <span class="val-sim" style="color:var(--short-red); font-size:12px;">${lvl.p}</span>
                         </div>
                     </div>
                 </div>`;
@@ -189,13 +256,30 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
         }
 
-        function save() { localStorage.setItem('dca_v19_slots', JSON.stringify(slots)); }
-        function renderNav() {
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
-                <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>
-            `).join('');
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(s.buys.length > 0 && confirm(`¿Cerrar ${s.name}?`)) {
+                history.unshift({ coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, prof: document.getElementById('resProf').textContent });
+                localStorage.setItem('dca_history', JSON.stringify(history));
+                slots[activeIdx].buys = [];
+                save(); selectSlot(activeIdx); renderHistory();
+            }
         }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+        function renderHistory() {
+            document.getElementById('historyList').innerHTML = history.slice(0,10).map(h => `
+                <div style="display:grid; grid-template-columns:1fr 1fr; padding:10px 0; border-bottom:1px solid var(--border);">
+                    <div><b>${h.coin}</b><br><small>${h.date}</small></div>
+                    <div style="text-align:right; color:var(--long-green); font-weight:900;">${h.prof}</div>
+                </div>`).join('');
+        }
+
+        function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
+        function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
+        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function save() { localStorage.setItem('dca_v19_slots', JSON.stringify(slots)); }
     </script>
 </body>
 </html>
