@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V18.3</title>
+    <title>C5X DCA ENGINE V18.4</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -54,7 +54,7 @@
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 300px; background: #000; }
+        .chart-container { width: 100%; height: 260px; background: #000; }
         
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
@@ -68,72 +68,64 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        /* DISEÑO SIMÉTRICO DE TARJETAS NIVEL */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; }
+        /* TARJETAS MÁS PEQUEÑAS Y PROFESIONALES */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 6px; }
         .level-card { 
             background: var(--surface); 
-            border-radius: 20px; 
-            padding: 15px; 
+            border-radius: 12px; 
+            padding: 8px 15px; 
             display: flex; 
-            flex-direction: column;
+            align-items: center; 
+            justify-content: space-between;
             border: 1px solid var(--border); 
             position: relative; 
-            min-height: 100px;
-            justify-content: center;
+            min-height: 55px;
         }
-        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.04); border-width: 2.5px; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.06); border-width: 1.5px; }
         
-        .card-header-row { display: flex; align-items: center; margin-bottom: 5px; }
-        .lvl-tag { font-size: 10px; color: var(--dir-color); font-weight: 900; margin-left: 10px; }
+        .card-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+        .check-box-large { width: 24px; height: 24px; accent-color: var(--dir-color); cursor: pointer; }
         
         .price-display { 
             font-family: 'Roboto Mono'; 
-            font-size: 26px; 
+            font-size: 18px; 
             font-weight: 900; 
-            text-align: center; 
-            margin: 5px 0;
-            letter-spacing: -1px;
+            letter-spacing: -0.5px;
         }
 
-        .card-footer-row { 
+        .card-right { 
+            text-align: right; 
             display: flex; 
-            justify-content: space-between; 
-            align-items: flex-end; 
-            margin-top: 5px;
+            flex-direction: column; 
+            justify-content: center;
+            min-width: 80px;
         }
 
-        .lvl-usd-val { 
-            font-size: 16px; 
-            color: var(--long-green); 
+        .lvl-info-row { font-size: 9px; font-weight: 900; color: #848e9c; text-transform: uppercase; margin-bottom: 2px;}
+        .lvl-data-row { display: flex; justify-content: flex-end; gap: 8px; align-items: center; }
+        
+        .lvl-usd-val { font-size: 12px; color: var(--long-green); font-weight: 900; }
+        .level-drop-tag { font-size: 12px; font-weight: 900; color: var(--danger); cursor: pointer; }
+
+        .panic-btn { 
+            background: var(--dir-color); 
+            color: #fff; border: none; 
+            padding: 4px 8px; 
+            border-radius: 6px; 
+            font-size: 9px; 
             font-weight: 900; 
-            background: rgba(14, 203, 129, 0.1); 
-            padding: 4px 12px; 
-            border-radius: 8px; 
+            margin-left: 10px;
         }
-
-        .level-drop-tag { 
-            font-size: 16px; 
-            font-weight: 900; 
-            color: var(--danger); 
-            padding: 4px 10px;
-        }
-
-        .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); cursor: pointer; }
-        .panic-btn { position: absolute; top: 12px; right: 12px; font-size: 9px; background: var(--dir-color); color: #fff; border: none; padding: 6px 10px; border-radius: 8px; font-weight: 900; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 500px; display: flex; flex-direction: column; }
+        /* BITACORA */
+        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 400px; display: flex; flex-direction: column; }
         .h-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
-        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
         #historyList { overflow-y: auto; flex: 1; margin-top: 10px; }
-        .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); }
-        .h-main-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .h-coin { font-family: 'Orbitron'; color: var(--text); font-size: 18px; font-weight: 900; }
-        .h-profit { color: var(--long-green); font-size: 20px; font-weight: 900; text-align: right; }
-        .h-details { font-size: 11px; color: #848e9c; margin-top: 5px; display: none; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; }
-        .history-item.expanded .h-details { display: block; }
+        .history-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
     </style>
 </head>
 <body onload="init()">
@@ -183,7 +175,7 @@
     <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
     <div class="history-section">
-        <span style="font-size:12px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
+        <span style="font-size:11px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
         <div class="h-actions">
             <button class="btn-export" onclick="exportMasterExcel()">EXCEL</button>
             <button class="btn-clear" onclick="clearHistory()">LIMPIAR</button>
@@ -261,17 +253,17 @@
                 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
-                    <button class="panic-btn" onclick="panicFill(${i})">FILL</button>
-                    <div class="card-header-row">
+                    <div class="card-left">
                         <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                        <span class="lvl-tag">NIVEL ${i+1}</span>
+                        <div class="price-display">${cp.toFixed(6)}</div>
                     </div>
                     
-                    <div class="price-display">${cp.toFixed(6)}</div>
-                    
-                    <div class="card-footer-row">
-                        <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
-                        <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
+                    <div class="card-right">
+                        <div class="lvl-info-row">NIVEL ${i+1} <button class="panic-btn" onclick="panicFill(${i})">FILL</button></div>
+                        <div class="lvl-data-row">
+                            <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
+                            <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
+                        </div>
                     </div>
                 </div>`;
             });
@@ -310,15 +302,12 @@
 
         function renderHistory() {
             document.getElementById('historyList').innerHTML = history.map((item, idx) => `
-                <div class="history-item" onclick="this.classList.toggle('expanded')">
-                    <div class="h-main-row">
-                        <div><span class="h-coin">${item.coin}</span><div style="font-size:10px; opacity:0.6;">${item.date}</div></div>
-                        <div class="h-profit">${item.prof}</div>
+                <div class="history-item">
+                    <div style="display:flex; justify-content:space-between; font-weight:900;">
+                        <span>${item.coin}</span>
+                        <span style="color:var(--long-green)">${item.prof}</span>
                     </div>
-                    <div class="h-details">
-                        <b>Inversión:</b> ${item.inv} | <b>Promedio:</b> ${item.avg}<br>
-                        ${item.details.map(d => `L${d.lvl}: $${d.px} (${d.usd} USD)`).join('<br>')}
-                    </div>
+                    <div style="font-size:10px; opacity:0.6;">${item.date} | Inv: ${item.inv}</div>
                 </div>`).join('');
         }
 
