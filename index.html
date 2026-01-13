@@ -76,7 +76,6 @@
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* ESTILO PARA FORZAR MAYÚSCULAS VISUALMENTE */
         #coinInput { text-transform: uppercase; }
         input[type="number"], input[type="text"] { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
     </style>
@@ -149,23 +148,29 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, currentStrat = 1, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let activeIdx = 0, activeTF = '60';
+        
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ 
+            name:'', price:0, capital:10, buys:[], currentStrat: 1 
+        }));
         
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0;
         let currentTickerSymbol = "BTC";
 
-        let strategy = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
-            { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
-            { c: 0.20, m: 2.0, g: 1.00, p: "-48%" }, { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
-            { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
-            { c: 0.30, m: 3.0, g: 1.50, p: "-84%" }, { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
-            { c: 0.35, m: 3.5, g: 1.50, p: "-93%" }, { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
-            { c: 0.40, m: 4.0, g: 2.00, p: "-97%" }, { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
-            { c: 0.50, m: 5.0, g: 2.00, p: "-99%" }, { c: 0.50, m: 5.0, g: 2.00, p: "-99.5%" }
-        ];
+        const getStrategyData = (stratNum) => {
+            // Aquí puedes definir variaciones reales para cada estrategia si lo deseas
+            return [
+                { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
+                { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
+                { c: 0.20, m: 2.0, g: 1.00, p: "-48%" }, { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
+                { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
+                { c: 0.30, m: 3.0, g: 1.50, p: "-84%" }, { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
+                { c: 0.35, m: 3.5, g: 1.50, p: "-93%" }, { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
+                { c: 0.40, m: 4.0, g: 2.00, p: "-97%" }, { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
+                { c: 0.50, m: 5.0, g: 2.00, p: "-99%" }, { c: 0.50, m: 5.0, g: 2.00, p: "-99.5%" }
+            ];
+        };
 
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
@@ -197,21 +202,32 @@
         }
 
         function changeStrategy(num) {
-            if(num === currentStrat) return;
+            const s = slots[activeIdx];
+            if(num === s.currentStrat) return;
             if(prompt("Código 2524:") === "2524") {
-                currentStrat = num;
-                document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
-                document.getElementById('strat' + num).classList.add('active');
+                s.currentStrat = num; 
+                updateStratUI(num);
+                save();
                 calculate();
             }
+        }
+
+        function updateStratUI(num) {
+            document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
+            document.getElementById('strat' + num).classList.add('active');
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
+            updateStratUI(s.currentStrat);
+
             if(!s.price) { grid.innerHTML = ''; return; }
+            
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
-            strategy.forEach((lvl, i) => {
+            const currentStrategyData = getStrategyData(s.currentStrat);
+
+            currentStrategyData.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
@@ -240,6 +256,22 @@
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
             renderNav(); loadChart(s.name); calculate();
+        }
+
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(confirm(`¿Liquidar ${s.name}?`)) {
+                // Al liquidar, reseteamos el slot y FORZAMOS la estrategia 1
+                slots[activeIdx] = { 
+                    name: '', 
+                    price: 0, 
+                    capital: 10, 
+                    buys: [], 
+                    currentStrat: 1 // Estrategia 1 predeterminada al liberar
+                };
+                save();
+                selectSlot(activeIdx);
+            }
         }
 
         function loadChart(coin) {
@@ -284,15 +316,6 @@
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
                 <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>
             `).join('');
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(confirm(`¿Liquidar ${s.name}?`)) {
-                slots.splice(activeIdx, 1);
-                slots.push({ name:'', price:0, capital:10, buys:[] });
-                save(); selectSlot(0);
-            }
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
