@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V18.4</title>
+    <title>C5X DCA ENGINE V18.5</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -33,12 +33,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
-        /* CABECERA FIJA - ESTO ARREGLA QUE NO SE MUEVA */
+        /* CABECERA FIJA */
         .sticky-top {
             position: sticky;
             top: 0;
             z-index: 1000;
             background: var(--bg);
+            border-bottom: 3px solid var(--dir-color);
         }
 
         .app-header { 
@@ -47,7 +48,6 @@
             align-items: center; 
             padding: 15px; 
             background: var(--header-bg); 
-            border-bottom: 3px solid var(--dir-color); 
         }
         
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
@@ -57,7 +57,7 @@
 
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; justify-self: end; }
 
-        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; }
+        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
         
@@ -65,22 +65,20 @@
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 320px; background: #000; border-bottom: 1px solid var(--border); }
+        .chart-container { width: 100%; height: 350px; background: #000; }
         
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; text-align: center; }
+        .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); text-align: center;}
+        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 18px; display: flex; align-items: center; border: 1px solid var(--border); }
-        .level-card.active { border-color: var(--dir-color); border-width: 2px; }
+        .level-card.active { border-color: var(--dir-color); border-width: 2px; background: rgba(52, 152, 219, 0.05); }
         .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 18px; }
-
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
     </style>
 </head>
 <body onload="init()">
@@ -90,7 +88,7 @@
             <div class="logo-area">C5X</div>
             <div class="btc-live-box">
                 <span id="t-dot"></span>
-                <span id="t-sym" style="color:var(--dir-color); font-weight:900">...</span>
+                <span id="t-sym" style="font-weight:900; color:var(--dir-color)">...</span>
                 <span id="t-price">$--,---</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -98,6 +96,7 @@
 
         <div class="tf-bar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
             <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
@@ -115,10 +114,10 @@
     </div>
 
     <div class="dash">
-        <div id="resInv" style="display:none">$0.00</div> <span style="font-size:8px; color:var(--dir-color); display:block; text-align:center; font-weight:900">OBJETIVO DE VENTA</span>
+        <span style="font-size:8px; color:var(--dir-color); font-weight:900">OBJETIVO DE VENTA</span>
         <b id="resTarget" class="target-price">0.000000</b>
-        <div style="text-align: center; font-size: 11px; color: var(--warning); margin-top: 5px;">
-            PROMEDIO: <span id="resAvg">0.00</span> | PROFIT: <span id="resPct">0%</span>
+        <div style="font-size: 11px; margin-top: 5px; color: var(--warning); font-weight: 700;">
+            PROMEDIO: <span id="resAvg" style="font-family:'Roboto Mono'">0.00</span> | PROFIT: <span id="resPct">0%</span>
         </div>
     </div>
 
@@ -130,8 +129,7 @@
         let activeIdx = 0, activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
         
-        // LISTA DE MONEDAS PARA ACTUALIZAR EL TICKET
-        const tickers = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "LINKUSDT", "ADAUSDT", "DOTUSDT", "XRPUSDT", "MATICUSDT", "ARBUSDT", "OPUSDT"];
+        const tickers = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "LINKUSDT", "XRPUSDT", "ADAUSDT"];
         let tIdx = 0;
 
         const strategy = [
@@ -144,7 +142,7 @@
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
             renderNav(); selectSlot(0); 
-            fetchTicker(); setInterval(fetchTicker, 8000); // Rota monedas cada 8 seg
+            fetchTicker(); setInterval(fetchTicker, 7000); 
         }
 
         async function fetchTicker() {
@@ -216,16 +214,16 @@
 
         function loadChart(coin) {
             new TradingView.widget({
-                "autosize": true, 
-                "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
-                "interval": activeTF, 
-                "theme": isLight ? "light" : "dark", 
-                "container_id": "tv_chart",
-                "style": "1", // ESTO ACTIVA LAS VELAS JAPONESAS
-                "locale": "es",
-                "hide_top_toolbar": true,
-                "backgroundColor": isLight ? "#ffffff" : "#050708"
+                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
+                "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart",
+                "style": "1", // ESTO FUERZA LAS VELAS JAPONESAS
+                "locale": "es", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#050708"
             });
+        }
+
+        function updateTF(tf, btn) {
+            activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
         function toggleTheme() {
@@ -240,11 +238,6 @@
             document.body.classList.remove('mode-long', 'mode-short');
             if(n.endsWith('L')) document.body.classList.add('mode-long');
             if(n.endsWith('S')) document.body.classList.add('mode-short');
-        }
-
-        function updateTF(tf, btn) {
-            activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
 
         function renderNav() {
