@@ -33,10 +33,26 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
-        .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 15px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
+        /* CABECERA FIJA - ESTO ARREGLA QUE NO SE MUEVA */
+        .sticky-top {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: var(--bg);
+        }
+
+        .app-header { 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center; 
+            padding: 15px; 
+            background: var(--header-bg); 
+            border-bottom: 3px solid var(--dir-color); 
+        }
+        
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         
-        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; min-width: 140px; }
         #t-dot { width:8px; height:8px; border-radius:50%; background:grey; }
 
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; justify-self: end; }
@@ -57,13 +73,6 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
-        
-        /* BOTONES ESTRATEGIA EN DASHBOARD */
-        .strat-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; }
-        .strat-btn { padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); color: var(--text); font-size: 9px; font-weight: 900; }
-        .strat-btn.active { background: var(--dir-color); color: #fff; border: none; }
-
-        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; text-align: center; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
@@ -72,34 +81,31 @@
         .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 18px; }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
-        
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
-        .h-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
-        .history-item { display: grid; grid-template-columns: 1fr 1fr; padding: 15px 5px; border-bottom: 1px solid var(--border); }
     </style>
 </head>
 <body onload="init()">
 
-    <header class="app-header">
-        <div class="logo-area">C5X</div>
-        <div class="btc-live-box">
-            <span id="t-dot"></span>
-            <span id="t-sym">BTC</span>
-            <span id="t-price">$--,---</span>
-            <span id="t-pct" style="font-size:10px">0%</span>
-        </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    </header>
+    <div class="sticky-top">
+        <header class="app-header">
+            <div class="logo-area">C5X</div>
+            <div class="btc-live-box">
+                <span id="t-dot"></span>
+                <span id="t-sym" style="color:var(--dir-color); font-weight:900">...</span>
+                <span id="t-price">$--,---</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </header>
 
-    <div class="tf-bar">
-        <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-        <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
-        <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
+        <div class="tf-bar">
+            <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
+            <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
+        </div>
+
+        <nav id="slotNav" class="slot-nav"></nav>
     </div>
 
-    <nav id="slotNav" class="slot-nav"></nav>
     <div id="tv_chart" class="chart-container"></div>
 
     <div class="controls">
@@ -109,67 +115,48 @@
     </div>
 
     <div class="dash">
-        <div class="strat-selector">
-            <button class="strat-btn active" id="st1" onclick="setStrat(1)">STRAT 50%</button>
-            <button class="strat-btn" id="st2" onclick="setStrat(2)">STRAT 20%</button>
-            <button class="strat-btn" id="st3" onclick="setStrat(3)">STRAT 10%</button>
-        </div>
-        <div class="dash-top-row">
-            <div><span style="font-size:8px; color:var(--dir-color); font-weight:900">INVERSIÓN</span><div id="resInv" style="font-weight:900">$0.00</div></div>
-            <div><span style="font-size:8px; color:var(--dir-color); font-weight:900">PRECIO AVG</span><div id="resAvg" style="color:var(--warning); font-weight:900">0.00</div></div>
-            <div><span style="font-size:8px; color:var(--dir-color); font-weight:900">PROFIT %</span><div id="resPct" style="font-weight:900">0%</div></div>
-        </div>
-        <span style="font-size:8px; color:var(--dir-color); display:block; text-align:center; font-weight:900">OBJETIVO DE VENTA</span>
+        <div id="resInv" style="display:none">$0.00</div> <span style="font-size:8px; color:var(--dir-color); display:block; text-align:center; font-weight:900">OBJETIVO DE VENTA</span>
         <b id="resTarget" class="target-price">0.000000</b>
+        <div style="text-align: center; font-size: 11px; color: var(--warning); margin-top: 5px;">
+            PROMEDIO: <span id="resAvg">0.00</span> | PROFIT: <span id="resPct">0%</span>
+        </div>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR Y GUARDAR REPORTE</button>
-
-    <div class="history-section">
-        <span style="font-size:11px; font-weight:900; color:var(--dir-color)">BITÁCORA PROFESIONAL</span>
-        <div class="h-actions">
-            <button class="btn-export" onclick="exportProfessionalExcel()">DESCARGAR REPORTE EXCEL</button>
-        </div>
-        <div id="historyList"></div>
-    </div>
-
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, activeTF = '60', activeStrat = 1;
+        let activeIdx = 0, activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
-        let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         
+        // LISTA DE MONEDAS PARA ACTUALIZAR EL TICKET
+        const tickers = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "LINKUSDT", "ADAUSDT", "DOTUSDT", "XRPUSDT", "MATICUSDT", "ARBUSDT", "OPUSDT"];
+        let tIdx = 0;
+
         const strategy = [
-            { c: 0.00, m: 1.0, g1: 50, g2: 20, g3: 10, p: "0%" },    { c: 0.10, m: 1.0, g1: 50, g2: 20, g3: 10, p: "-10%" },
-            { c: 0.15, m: 1.5, g1: 50, g2: 20, g3: 10, p: "-23%" },   { c: 0.15, m: 1.5, g1: 50, g2: 20, g3: 10, p: "-35%" },
-            { c: 0.20, m: 2.0, g1: 100, g2: 40, g3: 20, p: "-48%" },  { c: 0.20, m: 2.0, g1: 100, g2: 40, g3: 20, p: "-58%" },
-            { c: 0.25, m: 2.5, g1: 100, g2: 40, g3: 20, p: "-69%" },  { c: 0.25, m: 2.5, g1: 100, g2: 40, g3: 20, p: "-77%" }
+            { c: 0.00, m: 1, g: 50, p: "0%" },    { c: 0.10, m: 1, g: 50, p: "-10%" },
+            { c: 0.15, m: 1.5, g: 50, p: "-23%" }, { c: 0.15, m: 1.5, g: 50, p: "-35%" },
+            { c: 0.20, m: 2, g: 100, p: "-48%" },  { c: 0.20, m: 2, g: 100, p: "-58%" },
+            { c: 0.25, m: 2.5, g: 100, p: "-69%" },{ c: 0.25, m: 2.5, g: 100, p: "-77%" }
         ];
 
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
-            renderNav(); selectSlot(0); renderHistory(); fetchTicker();
-            setInterval(fetchTicker, 10000);
+            renderNav(); selectSlot(0); 
+            fetchTicker(); setInterval(fetchTicker, 8000); // Rota monedas cada 8 seg
         }
 
         async function fetchTicker() {
             try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${tickers[tIdx]}`);
                 const data = await res.json();
+                document.getElementById('t-sym').textContent = tickers[tIdx].replace('USDT','');
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
                 const pct = parseFloat(data.priceChangePercent);
-                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct + "%";
                 document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
+                tIdx = (tIdx + 1) % tickers.length;
             } catch(e) {}
-        }
-
-        function setStrat(num) {
-            activeStrat = num;
-            document.querySelectorAll('.strat-btn').forEach((b, i) => b.classList.toggle('active', i+1 === num));
-            calculate();
         }
 
         function calculate() {
@@ -185,21 +172,16 @@
             if(!s.price) { grid.innerHTML = ''; return; }
             
             let totalUSD = 0, totalTokens = 0, currentP = s.price, html = '', lastG = 0;
-            
             strategy.forEach((lvl, i) => {
                 if(i > 0) currentP *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { 
-                    totalUSD += mUSD; 
-                    totalTokens += (mUSD / currentP); 
-                    lastG = activeStrat === 1 ? lvl.g1 : (activeStrat === 2 ? lvl.g2 : lvl.g3);
-                }
+                if(on) { totalUSD += mUSD; totalTokens += (mUSD / currentP); lastG = lvl.g; }
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
                     <div style="flex:1">
-                        <span style="font-size:10px; color:var(--dir-color); font-weight:900">NIVEL ${i+1} ($${mUSD.toFixed(1)})</span>
+                        <span style="font-size:10px; color:var(--dir-color); font-weight:900">NIVEL ${i+1} ($${mUSD})</span>
                         <b style="font-size:22px; display:block; font-family:'Roboto Mono'">${currentP.toFixed(6)}</b>
                     </div>
                     <span style="font-weight:900; color:var(--short-red)">${lvl.p}</span>
@@ -208,16 +190,9 @@
             grid.innerHTML = html;
             const avg = totalTokens > 0 ? (totalUSD / totalTokens) : 0;
             const target = avg > 0 ? (avg * (1 + (lastG / 100))) : 0;
-            document.getElementById('resInv').textContent = `$${totalUSD.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resPct').textContent = lastG + "%";
             document.getElementById('resTarget').textContent = target.toFixed(6);
-        }
-
-        function updateBodyMode(n) {
-            document.body.classList.remove('mode-long', 'mode-short');
-            if(n.toUpperCase().endsWith('L')) document.body.classList.add('mode-long');
-            if(n.toUpperCase().endsWith('S')) document.body.classList.add('mode-short');
         }
 
         function toggleLvl(i) {
@@ -241,9 +216,15 @@
 
         function loadChart(coin) {
             new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
-                "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart",
-                "style": "1", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#050708"
+                "autosize": true, 
+                "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
+                "interval": activeTF, 
+                "theme": isLight ? "light" : "dark", 
+                "container_id": "tv_chart",
+                "style": "1", // ESTO ACTIVA LAS VELAS JAPONESAS
+                "locale": "es",
+                "hide_top_toolbar": true,
+                "backgroundColor": isLight ? "#ffffff" : "#050708"
             });
         }
 
@@ -255,41 +236,10 @@
             loadChart(slots[activeIdx].name);
         }
 
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length > 0) {
-                history.unshift({ 
-                    coin: s.name, 
-                    date: new Date().toLocaleString(), 
-                    base: s.price,
-                    inv: document.getElementById('resInv').textContent, 
-                    avg: document.getElementById('resAvg').textContent,
-                    target: document.getElementById('resTarget').textContent 
-                });
-                localStorage.setItem('dca_history', JSON.stringify(history));
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[] };
-                save(); renderHistory(); selectSlot(activeIdx);
-            }
-        }
-
-        function renderHistory() {
-            document.getElementById('historyList').innerHTML = history.slice(0,10).map(h => `
-                <div class="history-item">
-                    <div><b>${h.coin}</b><div style="font-size:9px; opacity:0.5">${h.date}</div></div>
-                    <div style="text-align:right; font-weight:900; color:var(--long-green)">${h.inv} → ${h.target}</div>
-                </div>`).join('');
-        }
-
-        function exportProfessionalExcel() {
-            let csv = "MONEDA,FECHA,PRECIO BASE,INVERSION TOTAL,PRECIO PROMEDIO,OBJETIVO VENTA\n";
-            history.forEach(h => {
-                csv += `${h.coin},${h.date},${h.base},"${h.inv}",${h.avg},${h.target}\n`;
-            });
-            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.setAttribute("href", URL.createObjectURL(blob));
-            link.setAttribute("download", `Reporte_C5X_${new Date().getMonth()+1}.csv`);
-            link.click();
+        function updateBodyMode(n) {
+            document.body.classList.remove('mode-long', 'mode-short');
+            if(n.endsWith('L')) document.body.classList.add('mode-long');
+            if(n.endsWith('S')) document.body.classList.add('mode-short');
         }
 
         function updateTF(tf, btn) {
