@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V18.2</title>
+    <title>C5X DCA ENGINE V18.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -149,16 +149,16 @@
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         
         const strategies = [
-            // STRAT 1: CORREGIDA CON GANANCIA SEGÚN NIVELES (0.50%, 1.00%, 1.50%, 2.00%, 2.50%)
+            // STRAT 1: CON GANANCIA SEGÚN ESCALAS
             [
                 { c: 0.00, m: 1.0, g: 0.50, p: "0%" },    { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
-                { c: 0.15, m: 1.5, g: 0.50, p: "-23%" },   { c: 0.15, m: 1.5, g: 0.50, p: "-35%" }, // Niv 1-4: 0.50%
+                { c: 0.15, m: 1.5, g: 0.50, p: "-23%" },   { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
                 { c: 0.20, m: 2.0, g: 1.00, p: "-48%" },   { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
-                { c: 0.25, m: 2.5, g: 1.00, p: "-69%" },   { c: 0.25, m: 2.5, g: 1.00, p: "-77%" }, // Niv 5-8: 1.00%
+                { c: 0.25, m: 2.5, g: 1.00, p: "-69%" },   { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
                 { c: 0.30, m: 3.0, g: 1.50, p: "-84%" },   { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
-                { c: 0.35, m: 3.5, g: 1.50, p: "-93%" },   { c: 0.35, m: 3.5, g: 1.50, p: "-95%" }, // Niv 9-12: 1.50%
+                { c: 0.35, m: 3.5, g: 1.50, p: "-93%" },   { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
                 { c: 0.40, m: 4.0, g: 2.00, p: "-97%" },   { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
-                { c: 0.50, m: 5.0, g: 2.50, p: "-99%" },   { c: 0.50, m: 5.0, g: 2.50, p: "-99.5%" } // Niv 13-16: 2.0% - 2.5%
+                { c: 0.50, m: 5.0, g: 2.50, p: "-99%" },   { c: 0.50, m: 5.0, g: 2.50, p: "-99.5%" }
             ],
             // STRAT 2: MODERADA (Optimizado Swing)
             [
@@ -207,39 +207,48 @@
             
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando Precio Base...</p>'; return; }
             
-            let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
+            let totalUSD = 0;
+            let totalTokens = 0;
+            let currentPrice = s.price;
+            let appliedProfit = 0;
+            let html = '';
             
             currentStrat.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
+                if(i > 0) currentPrice *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
-                const on = s.buys.includes(i);
-                if(on) { 
-                    spent += mUSD; 
-                    tokens += (mUSD / cp); 
-                    lastG = lvl.g; // Toma el profit correspondiente al último nivel activado
+                const isSelected = s.buys.includes(i);
+                
+                if(isSelected) { 
+                    totalUSD += mUSD; 
+                    totalTokens += (mUSD / currentPrice); 
+                    appliedProfit = lvl.g; // Actualiza al último nivel activo
                 }
                 
                 html += `
-                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
+                <div class="level-card ${isSelected ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <input type="checkbox" class="check-box-large" ${isSelected ? 'checked' : ''}>
                     <div class="card-center">
                         <span class="lvl-tag">NIVEL ${i+1}</span>
                         <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
                     </div>
                     <div class="card-right">
                         <span class="lvl-drop-pct">${lvl.p}</span>
-                        <b class="lvl-price-val">${cp.toFixed(6)}</b>
+                        <b class="lvl-price-val">${currentPrice.toFixed(6)}</b>
                     </div>
                 </div>`;
             });
+
             grid.innerHTML = html;
-            const avg = tokens > 0 ? (spent / tokens) : 0;
-            document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
-            
-            const target = avg > 0 ? (avg * (1 + (lastG / 100))) : 0;
-            document.getElementById('resTarget').textContent = target.toFixed(6);
-            document.getElementById('resProf').textContent = `$${(spent * (lastG / 100)).toFixed(2)}`;
+
+            // CÁLCULO DASHBOARD DINÁMICO
+            const averagePrice = totalTokens > 0 ? (totalUSD / totalTokens) : 0;
+            const targetSalePrice = averagePrice > 0 ? (averagePrice * (1 + (appliedProfit / 100))) : 0;
+            const estimatedProfitUSD = totalUSD * (appliedProfit / 100);
+
+            document.getElementById('resInv').textContent = `$${totalUSD.toFixed(2)}`;
+            document.getElementById('resAvg').textContent = averagePrice.toFixed(6);
+            document.getElementById('resTarget').textContent = targetSalePrice.toFixed(6);
+            document.getElementById('resProf').textContent = `$${estimatedProfitUSD.toFixed(2)}`;
         }
 
         function toggleLvl(i) {
@@ -323,4 +332,4 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
     </script>
 </body>
-    </html>
+</html>
