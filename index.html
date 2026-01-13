@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V18.4</title>
+    <title>C5X DCA ENGINE V18.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -31,18 +31,14 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
         .app-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px 20px; 
-            background: var(--header-bg); 
-            border-bottom: 3px solid var(--dir-color); 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); 
         }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         .btc-live-box { 
             display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); 
             padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); 
-            font-family: 'Orbitron'; font-size: 13px; cursor: pointer;
+            font-family: 'Orbitron'; font-size: 13px;
         }
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
 
@@ -68,62 +64,55 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        /* TARJETAS MÁS PEQUEÑAS Y PROFESIONALES */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 6px; }
+        /* TARJETAS REDISEÑADAS - MÁS GRANDES Y LIMPIAS */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { 
             background: var(--surface); 
-            border-radius: 12px; 
-            padding: 8px 15px; 
+            border-radius: 16px; 
+            padding: 15px 18px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between;
             border: 1px solid var(--border); 
-            position: relative; 
-            min-height: 55px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.06); border-width: 1.5px; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
         
-        .card-left { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .check-box-large { width: 24px; height: 24px; accent-color: var(--dir-color); cursor: pointer; }
+        .card-left { display: flex; align-items: center; gap: 18px; }
+        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         
+        .price-group { display: flex; flex-direction: column; }
         .price-display { 
             font-family: 'Roboto Mono'; 
-            font-size: 18px; 
+            font-size: 22px; 
             font-weight: 900; 
-            letter-spacing: -0.5px;
+            color: var(--text);
+            line-height: 1;
         }
+        .lvl-label-mini { font-size: 9px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
 
-        .card-right { 
-            text-align: right; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center;
-            min-width: 80px;
-        }
-
-        .lvl-info-row { font-size: 9px; font-weight: 900; color: #848e9c; text-transform: uppercase; margin-bottom: 2px;}
-        .lvl-data-row { display: flex; justify-content: flex-end; gap: 8px; align-items: center; }
+        .card-right { text-align: right; }
+        .data-grid { display: grid; grid-template-columns: auto auto; gap: 12px; align-items: center; }
         
-        .lvl-usd-val { font-size: 12px; color: var(--long-green); font-weight: 900; }
-        .level-drop-tag { font-size: 12px; font-weight: 900; color: var(--danger); cursor: pointer; }
+        .data-item { display: flex; flex-direction: column; align-items: flex-end; }
+        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; }
+        .data-val-usd { font-size: 14px; color: var(--long-green); font-weight: 900; }
+        .data-val-pct { font-size: 14px; color: var(--danger); font-weight: 900; cursor: pointer; }
 
         .panic-btn { 
-            background: var(--dir-color); 
-            color: #fff; border: none; 
-            padding: 4px 8px; 
-            border-radius: 6px; 
-            font-size: 9px; 
-            font-weight: 900; 
-            margin-left: 10px;
+            position: absolute; top: 0; right: 18px;
+            background: var(--dir-color); color: #fff; border: none; 
+            padding: 3px 12px; border-radius: 0 0 8px 8px; 
+            font-size: 9px; font-weight: 900;
         }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITACORA */
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 400px; display: flex; flex-direction: column; }
         .h-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
-        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
+        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
         #historyList { overflow-y: auto; flex: 1; margin-top: 10px; }
         .history-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
     </style>
@@ -243,7 +232,7 @@
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Sin Datos</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             strategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
@@ -253,16 +242,25 @@
                 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
+                    <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
                     <div class="card-left">
                         <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                        <div class="price-display">${cp.toFixed(6)}</div>
+                        <div class="price-group">
+                            <span class="lvl-label-mini">NIVEL ${i+1}</span>
+                            <div class="price-display">${cp.toFixed(6)}</div>
+                        </div>
                     </div>
                     
                     <div class="card-right">
-                        <div class="lvl-info-row">NIVEL ${i+1} <button class="panic-btn" onclick="panicFill(${i})">FILL</button></div>
-                        <div class="lvl-data-row">
-                            <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
-                            <span class="level-drop-tag" onclick="editStrategy(${i})">${lvl.p}</span>
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <span class="data-label">MONTO</span>
+                                <span class="data-val-usd">$${mUSD.toFixed(1)}</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">CAÍDA</span>
+                                <span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span>
+                            </div>
                         </div>
                     </div>
                 </div>`;
@@ -283,7 +281,6 @@
                     if(i > 0) cp *= (1 - lvl.c);
                     if(s.buys.includes(i)) detailLog.push({ lvl: i+1, px: cp.toFixed(6), usd: (lvl.m * s.capital).toFixed(2) });
                 });
-
                 history.unshift({ 
                     coin: s.name, date: new Date().toLocaleString(), 
                     prof: document.getElementById('resProf').textContent, 
@@ -293,7 +290,6 @@
                 });
                 localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                 renderHistory();
-
                 slots.splice(activeIdx, 1);
                 slots.push({ name:'', price:0, capital:10, buys:[] });
                 save(); selectSlot(0);
@@ -301,7 +297,7 @@
         }
 
         function renderHistory() {
-            document.getElementById('historyList').innerHTML = history.map((item, idx) => `
+            document.getElementById('historyList').innerHTML = history.map(item => `
                 <div class="history-item">
                     <div style="display:flex; justify-content:space-between; font-weight:900;">
                         <span>${item.coin}</span>
@@ -312,8 +308,7 @@
         }
 
         function exportMasterExcel() {
-            let csv = "MONEDA,FECHA,INVERSION,PROFIT,AVG\n";
-            history.forEach(h => csv += `${h.coin},${h.date},"${h.inv}","${h.prof}",${h.avg}\n`);
+            let csv = "MONEDA,FECHA,INVERSION,PROFIT,AVG\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}",${h.avg}`).join("\n");
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
             a.download = `C5X_Reporte.csv`; a.click();
@@ -370,4 +365,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-    </html>
+</html>
