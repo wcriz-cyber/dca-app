@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.6</title>
+    <title>C5X DCA ENGINE V19.7</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -86,38 +86,30 @@
             letter-spacing: -1.5px;
         }
 
-        /* TARJETAS DE NIVEL V19.6 - 20% MÁS GRANDES Y FUENTES IGUALADAS */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 14px; }
+        /* TARJETAS V19.7 - REDUCIDAS Y SIMÉTRICAS */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { 
             background: var(--surface); 
-            border-radius: 24px; 
-            padding: 28px 20px; 
+            border-radius: 20px; 
+            padding: 16px; 
             display: flex; 
             align-items: center; 
             border: 1px solid var(--border); 
-            position: relative;
-            min-height: 110px;
+            min-height: 85px;
         }
         .level-card.active { border-color: var(--dir-color); border-width: 2px; }
         
-        .check-box-large { width: 38px; height: 38px; accent-color: var(--dir-color); margin-right: 18px; }
+        .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 15px; }
         
-        .lvl-data-group { flex: 1.2; display: flex; flex-direction: column; gap: 6px; }
-        .lvl-id-tag { font-size: 12px; color: var(--dir-color); font-weight: 900; text-transform: uppercase; }
+        /* Grilla simétrica de 4 valores */
+        .lvl-grid-content { flex: 1; display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; align-items: center; }
         
-        /* VALORES IGUALADOS EN TAMAÑO (%, $, Precio) */
-        .val-shared { font-size: 22px; font-weight: 900; }
-        .lvl-pct-text { color: var(--short-red); }
-        .lvl-usd-text { color: var(--text); }
-        
-        .lvl-price-right { 
-            flex: 2;
-            text-align: right; 
-            font-family: 'Roboto Mono'; 
-            font-size: 22px; /* Mismo tamaño que los demás */
-            font-weight: 900;
-            color: var(--text);
-        }
+        .lvl-col-left { display: flex; flex-direction: column; gap: 4px; }
+        .lvl-col-right { display: flex; flex-direction: column; gap: 4px; text-align: right; }
+
+        /* Estilos de valores simétricos */
+        .val-sim { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; }
+        .tag-sim { font-size: 14px; font-weight: 900; text-transform: uppercase; }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; border: none; }
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
@@ -256,12 +248,16 @@
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
-                    <div class="lvl-data-group">
-                        <div class="lvl-id-tag">Nivel ${i+1}</div>
-                        <div class="val-shared lvl-pct-text">${lvl.p}</div>
-                        <div class="val-shared lvl-usd-text">$${mUSD.toFixed(1)}</div>
+                    <div class="lvl-grid-content">
+                        <div class="lvl-col-left">
+                            <span class="tag-sim" style="color:var(--dir-color)">NV ${i+1}</span>
+                            <span class="val-sim">$${mUSD.toFixed(1)}</span>
+                        </div>
+                        <div class="lvl-col-right">
+                            <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
+                            <span class="val-sim">${cp.toFixed(6)}</span>
+                        </div>
                     </div>
-                    <div class="lvl-price-right">${cp.toFixed(6)}</div>
                 </div>`;
             });
             grid.innerHTML = html;
