@@ -27,6 +27,7 @@
             --border: #d1d5db; --header-bg: #ffffff;
         }
 
+        /* COLORES DINÁMICOS SEGÚN LONG / SHORT */
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
@@ -75,12 +76,10 @@
             display: flex; align-items: center; justify-content: space-between;
             border: 1px solid var(--border); position: relative; transition: 0.2s;
         }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.05); border-width: 2px; }
         
-        /* DISEÑO DE LA TARJETA REORDENADO */
         .card-start { display: flex; align-items: center; gap: 15px; }
         
-        /* SELECTOR ESTILIZADO (IZQUIERDA) */
         .custom-check {
             width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 8px;
             display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
@@ -90,12 +89,12 @@
         .level-card.active .custom-check::after { content: '✓'; color: white; font-weight: 900; font-size: 18px; }
 
         .lvl-info { display: flex; flex-direction: column; gap: 2px; }
-        .lvl-label { font-family: 'Orbitron'; font-size: 9px; color: var(--dir-color); font-weight: 900; opacity: 0.8; }
+        .lvl-label { font-family: 'Orbitron'; font-size: 9px; color: var(--dir-color); font-weight: 900; }
         .lvl-usd { font-family: 'Roboto Mono'; font-size: 19px; font-weight: 900; color: var(--text); }
         
         .lvl-right { text-align: right; display: flex; flex-direction: column; gap: 2px; }
         .lvl-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); }
-        .lvl-drop { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--danger); }
+        .lvl-drop { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--short-red); }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
@@ -217,6 +216,13 @@
 
         function viewTickerChart() { loadChart(currentTickerSymbol); }
 
+        // RESTAURADO: Función para cambiar el color según moneda finalizada en L o S
+        function updateBodyMode(n) {
+            document.body.classList.remove('mode-long', 'mode-short');
+            if(n.endsWith('L')) document.body.classList.add('mode-long');
+            if(n.endsWith('S')) document.body.classList.add('mode-short');
+        }
+
         function changeStrategy(num) {
             const s = slots[activeIdx];
             if(num === s.currentStrat) return;
@@ -235,6 +241,7 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+            updateBodyMode(s.name); // Activar colores dinámicos
             updateStratUI(s.currentStrat);
 
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base</p>'; return; }
