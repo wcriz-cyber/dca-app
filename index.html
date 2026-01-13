@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.4</title>
+    <title>C5X DCA ENGINE V19.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -86,33 +86,40 @@
             letter-spacing: -1.5px;
         }
 
-        /* TARJETAS DE NIVEL V19.4 - 20% MÁS GRANDES Y REDISTRIBUIDAS */
+        /* TARJETAS DE NIVEL V19.5 - ALINEACIÓN SOLICITADA */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; }
         .level-card { 
             background: var(--surface); 
             border-radius: 22px; 
-            padding: 24px 18px; /* 20% más alto */
+            padding: 20px 18px; 
             display: flex; 
             align-items: center; 
             border: 1px solid var(--border); 
             position: relative;
-            min-height: 90px;
+            min-height: 100px;
         }
         .level-card.active { border-color: var(--dir-color); border-width: 2px; }
         
         .check-box-large { width: 34px; height: 34px; accent-color: var(--dir-color); margin-right: 15px; }
         
-        /* Información izquierda equilibrada */
-        .lvl-tag { font-size: 13px; color: var(--dir-color); font-weight: 900; display: block; }
-        .lvl-usd-val { font-size: 13px; font-weight: 900; color: var(--text); display: block; margin-top: 4px; }
+        /* Grupo de datos (Nivel, %, $) */
+        .lvl-data-group { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .lvl-row-top { display: flex; align-items: center; gap: 15px; }
+        
+        /* Estilos de etiquetas simétricas */
+        .lvl-label-shared { font-size: 14px; font-weight: 900; }
+        .lvl-n-text { color: var(--dir-color); }
+        .lvl-p-text { color: var(--short-red); }
+        .lvl-u-text { color: var(--text); font-size: 14px; font-weight: 900; }
 
-        /* Porcentaje a la derecha y más grande */
-        .lvl-pct-large { 
-            font-size: 18px; 
-            font-weight: 900; 
-            color: var(--short-red); 
-            text-align: right;
-            margin-top: 5px;
+        /* Precio a la derecha total */
+        .lvl-price-right { 
+            flex: 2;
+            text-align: right; 
+            font-family: 'Roboto Mono'; 
+            font-size: 24px; 
+            font-weight: 900;
+            color: var(--text);
         }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; border: none; }
@@ -249,20 +256,17 @@
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
                 
-                // MEJORA V19.4: Estructura de tarjeta con equilibrio de tamaños
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
-                    <div style="flex:1">
-                        <span class="lvl-tag">NIVEL ${i+1}</span>
-                        <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
+                    <div class="lvl-data-group">
+                        <div class="lvl-row-top">
+                            <span class="lvl-label-shared lvl-n-text">NIVEL ${i+1}</span>
+                            <span class="lvl-label-shared lvl-p-text">${lvl.p}</span>
+                        </div>
+                        <span class="lvl-u-text">$${mUSD.toFixed(1)}</span>
                     </div>
-                    <div style="flex:2; text-align:center;">
-                        <b style="font-size:22px; font-family:'Roboto Mono';">${cp.toFixed(6)}</b>
-                    </div>
-                    <div style="flex:1;">
-                        <div class="lvl-pct-large">${lvl.p}</div>
-                    </div>
+                    <div class="lvl-price-right">${cp.toFixed(6)}</div>
                 </div>`;
             });
             grid.innerHTML = html;
