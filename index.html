@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.2</title>
+    <title>C5X DCA ENGINE V19.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -55,35 +55,36 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         
+        /* DASHBOARD V19.3 - 10% más grande y fuentes aumentadas */
         .dash { 
             margin: 12px; 
-            padding: 22px; 
+            padding: 26px; /* Aumentado */
             background: var(--surface); 
-            border-radius: 24px; 
-            border: 2px solid var(--dir-color);
+            border-radius: 28px; /* Aumentado */
+            border: 2.5px solid var(--dir-color);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
         .dash-info-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            font-size: 11px;
+            padding-bottom: 14px;
+            font-size: 13.5px; /* Fuente 10% más grande */
             color: var(--warning);
         }
-        .dash-info-top b { color: var(--text); }
+        .dash-info-top b { color: var(--text); font-size: 14px; }
 
         .target-price { 
             font-family: 'Roboto Mono'; 
-            font-size: 42px; 
+            font-size: 46px; /* Aumentado */
             font-weight: 900; 
             color: var(--long-green); 
             display: block; 
             text-align: center; 
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
         }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
@@ -134,7 +135,7 @@
             <span>Ganancias: <b id="resProf">$0</b></span>
         </div>
         <div>
-            <span style="font-size:10px; color:var(--dir-color); font-weight:900; display:block; text-align:center; margin-bottom: 4px;">OBJETIVO DE VENTA</span>
+            <span style="font-size:11px; color:var(--dir-color); font-weight:900; display:block; text-align:center; margin-bottom: 4px;">OBJETIVO DE VENTA</span>
             <b id="resTarget" class="target-price">0.000000</b>
         </div>
     </div>
