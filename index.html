@@ -69,11 +69,32 @@
         .strat-option { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; color: #848e9c; cursor: pointer; transition: 0.3s; }
         .strat-option.active { background: var(--dir-color); color: white; }
 
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.04); border-width: 2px; }
-        .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 11px; font-weight: 900; color: var(--danger); }
+        /* ESTILIZACIÓN DE TARJETAS DE NIVELES */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; }
+        .level-card { 
+            background: var(--surface); border-radius: 16px; padding: 15px; 
+            display: flex; align-items: center; justify-content: space-between;
+            border: 1px solid var(--border); position: relative; transition: 0.2s;
+        }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
         
+        .lvl-left { display: flex; flex-direction: column; gap: 2px; }
+        .lvl-label { font-family: 'Orbitron'; font-size: 10px; color: var(--dir-color); font-weight: 900; }
+        .lvl-usd { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); }
+        
+        .lvl-right { text-align: right; display: flex; flex-direction: column; gap: 2px; }
+        .lvl-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); }
+        .lvl-drop { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--danger); }
+
+        /* CHECKBOX ESTILIZADO */
+        .check-wrapper { margin: 0 15px; }
+        .custom-check {
+            width: 28px; height: 28px; border: 2px solid var(--border); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+        }
+        .level-card.active .custom-check { background: var(--dir-color); border-color: var(--dir-color); }
+        .level-card.active .custom-check::after { content: '✓'; color: white; font-weight: bold; }
+
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
         #coinInput { text-transform: uppercase; }
@@ -160,7 +181,7 @@
 
         const getStrategyData = (stratNum) => {
             return [
-                { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
+                { c: 0.00, m: 1.0, g: 0.50, p: "0.0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
                 { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
                 { c: 0.20, m: 2.0, g: 1.00, p: "-48%" }, { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
                 { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
@@ -213,9 +234,7 @@
 
         function updateStratUI(num) {
             document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
-            if(document.getElementById('strat' + num)) {
-                document.getElementById('strat' + num).classList.add('active');
-            }
+            if(document.getElementById('strat' + num)) document.getElementById('strat' + num).classList.add('active');
         }
 
         function renderLevels() {
@@ -223,7 +242,7 @@
             updateBodyMode(s.name);
             updateStratUI(s.currentStrat);
 
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base para ver niveles</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base</p>'; return; }
             
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
             const strategyData = getStrategyData(s.currentStrat);
@@ -233,14 +252,22 @@
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
+                
                 html += `
-                <div class="level-card ${on ? 'active' : ''}">
-                    <input type="checkbox" style="width:34px;height:34px;margin-right:15px;" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                    <div style="flex:1">
-                        <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1} ($${mUSD.toFixed(1)})</span>
-                        <b style="font-size:22px; display:block; font-family:'Roboto Mono';">${cp.toFixed(6)}</b>
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div class="lvl-left">
+                        <span class="lvl-label">NIVEL ${i+1}</span>
+                        <span class="lvl-usd">$${mUSD.toFixed(1)}</span>
                     </div>
-                    <span class="level-drop-tag">${lvl.p}</span>
+                    
+                    <div class="check-wrapper">
+                        <div class="custom-check"></div>
+                    </div>
+
+                    <div class="lvl-right">
+                        <span class="lvl-price">${cp.toFixed(6)}</span>
+                        <span class="lvl-drop">${lvl.p}</span>
+                    </div>
                 </div>`;
             });
             grid.innerHTML = html;
@@ -260,8 +287,7 @@
         }
 
         function releaseSlot() {
-            const s = slots[activeIdx];
-            if(confirm(`¿Liquidar ${s.name || 'Slot'}?`)) {
+            if(confirm(`¿Liquidar Slot?`)) {
                 slots[activeIdx] = { name: '', price: 0, capital: 10, buys: [], currentStrat: 1 };
                 save(); selectSlot(activeIdx);
             }
@@ -314,4 +340,4 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
     </script>
 </body>
-        </html>
+</html>
