@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.0</title>
+    <title>C5X DCA ENGINE V19.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -55,8 +55,37 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         
-        .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); display: block; text-align: center; }
+        /* DASHBOARD MEJORADO V19.1 */
+        .dash { 
+            margin: 12px; 
+            padding: 22px; 
+            background: var(--surface); 
+            border-radius: 24px; 
+            border: 2px solid var(--dir-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .dash-info-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+            font-size: 11px;
+            color: var(--warning);
+        }
+        .dash-info-top b { color: var(--text); }
+
+        .target-price { 
+            font-family: 'Roboto Mono'; 
+            font-size: 42px; /* Más grande */
+            font-weight: 900; 
+            color: var(--long-green); 
+            display: block; 
+            text-align: center; 
+            letter-spacing: -1px;
+        }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 18px; display: flex; align-items: center; border: 1px solid var(--border); position: relative;}
@@ -100,10 +129,14 @@
     </div>
 
     <div class="dash">
-        <span style="font-size:8px; color:var(--dir-color); font-weight:900; display:block; text-align:center">OBJETIVO DE VENTA</span>
-        <b id="resTarget" class="target-price">0.000000</b>
-        <div style="text-align: center; font-size: 11px; color: var(--warning); margin-top: 5px;">
-            INV: <span id="resInv">$0</span> | AVG: <span id="resAvg">0.00</span> | PROFIT: <span id="resProf">$0</span>
+        <div class="dash-info-top">
+            <span>INV: <b id="resInv">$0</b></span>
+            <span>AVG: <b id="resAvg">0.00</b></span>
+            <span>PROFIT: <b id="resProf">$0</b></span>
+        </div>
+        <div>
+            <span style="font-size:10px; color:var(--dir-color); font-weight:900; display:block; text-align:center; margin-bottom: 4px;">OBJETIVO DE VENTA</span>
+            <b id="resTarget" class="target-price">0.000000</b>
         </div>
     </div>
 
@@ -222,21 +255,14 @@
             save(); renderLevels();
         }
 
-        // MEJORA 2: Reordenar slots al liquidar (vacíos al final)
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length > 0 && confirm(`¿Cerrar ${s.name}?`)) {
                 history.unshift({ coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, prof: document.getElementById('resProf').textContent });
                 localStorage.setItem('dca_history', JSON.stringify(history));
-                
-                // Quitamos el slot actual
                 slots.splice(activeIdx, 1);
-                // Añadimos uno nuevo vacío al final
                 slots.push({ name:'', price:0, capital:10, buys:[] });
-                
-                save(); 
-                selectSlot(0); // Volvemos al primer slot para ver los que quedan
-                renderHistory();
+                save(); selectSlot(0); renderHistory();
             }
         }
 
