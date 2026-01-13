@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V17.7</title>
+    <title>C5X DCA ENGINE V17.8</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -62,10 +62,10 @@
         .strat-btn { padding: 6px 10px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; border: 1px solid var(--border); background: var(--bg); color: #848e9c; border-radius: 8px; cursor: pointer; }
         .strat-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
 
-        /* --- DISEÑO DE TARJETAS ACTUALIZADO --- */
+        /* --- DISEÑO DE TARJETAS V17.8 --- */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { 
-            background: var(--surface); border-radius: 15px; padding: 12px 18px; 
+            background: var(--surface); border-radius: 15px; padding: 15px 18px; 
             display: flex; align-items: center; border: 1px solid var(--border); 
             transition: 0.2s; cursor: pointer;
         }
@@ -74,19 +74,16 @@
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
 
         .card-center { flex: 1; display: flex; flex-direction: column; }
-        .lvl-tag { font-size: 9px; color: var(--dir-color); font-weight: 900; font-family: 'Orbitron'; letter-spacing: 0.5px; }
+        .lvl-tag { font-size: 11px; color: var(--dir-color); font-weight: 900; font-family: 'Orbitron'; letter-spacing: 0.5px; } /* Nivel más grande */
         .lvl-usd-val { font-size: 20px; font-weight: 900; color: var(--text); font-family: 'Roboto Mono'; margin-top: -2px; }
 
-        .card-right { text-align: right; }
-        .lvl-price-val { font-size: 18px; font-weight: 900; font-family: 'Roboto Mono'; display: block; }
-        .lvl-drop-pct { font-size: 11px; font-weight: 900; color: var(--short-red); font-family: 'Orbitron'; }
+        .card-right { text-align: right; display: flex; flex-direction: column; }
+        .lvl-drop-pct { font-size: 16px; font-weight: 900; color: var(--short-red); font-family: 'Orbitron'; margin-bottom: 2px; } /* Porcentaje arriba y más grande */
+        .lvl-price-val { font-size: 15px; font-weight: 700; font-family: 'Roboto Mono'; color: #848e9c; } /* Precio abajo y un poco más discreto */
         /* -------------------------------------- */
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 500px; display: flex; flex-direction: column; }
-        .h-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
-        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
         #historyList { overflow-y: auto; flex: 1; margin-top: 10px; }
         .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px 10px; border-bottom: 1px solid var(--border); }
         .h-coin { font-family: 'Orbitron'; color: var(--text); font-size: 20px; font-weight: 900; }
@@ -101,7 +98,7 @@
             <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
             <span id="t-sym">BTC</span>
             <span id="t-price">$--,---</span>
-            <span id="t-pct" style="font-size:10px; font-weight:900;">0.00%</span>
+            <span id="t-pct">0.00%</span>
         </div>
         <div class="theme-toggle-container">
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
@@ -148,10 +145,6 @@
 
     <div class="history-section">
         <span style="font-size:12px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
-        <div class="h-actions">
-            <button class="btn-export" onclick="exportMasterExcel()">EXCEL</button>
-            <button class="btn-clear" onclick="clearHistory()">LIMPIAR</button>
-        </div>
         <div id="historyList"></div>
     </div>
 
@@ -229,8 +222,8 @@
                         <span class="lvl-usd-val">$${mUSD.toFixed(1)}</span>
                     </div>
                     <div class="card-right">
-                        <b class="lvl-price-val">${cp.toFixed(6)}</b>
                         <span class="lvl-drop-pct">${lvl.p}</span>
+                        <b class="lvl-price-val">${cp.toFixed(6)}</b>
                     </div>
                 </div>`;
             });
@@ -238,8 +231,8 @@
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
+            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + (lastG / 100))).toFixed(6) : '0.000000';
+            document.getElementById('resProf').textContent = `$${(spent * (lastG / 100)).toFixed(2)}`;
         }
 
         function releaseSlot() {
@@ -314,22 +307,11 @@
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        
         function updateTF(tf, btn) {
             activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active'); loadChart(slots[activeIdx].name);
         }
-
-        function clearHistory() { if(prompt("Clave:") === "2524") { history = []; localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory(); } }
-        
-        function exportMasterExcel() {
-            let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}"`).join("\n");
-            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `Bitacora_C5X.csv`; a.click();
-        }
-        
         function viewTickerChart() { loadChart('BTCUSDT'); }
     </script>
 </body>
-    </html>
+</html>
