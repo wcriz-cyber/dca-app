@@ -1,237 +1,166 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.5 PREMIUM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
+<style>
+    /* Estilos específicos para las nuevas funciones de las tarjetas */
+    .gain-edit {
+        background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
+        color: var(--long-green); font-weight: 900; width: 50px; border-radius: 4px;
+        text-align: center; font-size: 12px; padding: 2px; outline: none;
+    }
     
-    <style>
-        :root {
-            --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
-            --border: #2d3339; --header-bg: #12151a;
-            --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
-            --warning: #f1c40f; --danger: #e74c3c;
-        }
+    /* Modal de PIN Seguro */
+    #pinModal {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.95); z-index: 9999; display: none;
+        flex-direction: column; align-items: center; justify-content: center;
+    }
+    .pin-dots { font-size: 40px; color: var(--dir-color); margin-bottom: 20px; letter-spacing: 15px; }
+    .pin-grid { display: grid; grid-template-columns: repeat(3, 70px); gap: 15px; }
+    .pin-key {
+        width: 70px; height: 70px; border-radius: 50%; border: 1px solid var(--border);
+        background: var(--surface); color: var(--text); font-size: 22px; font-weight: 900;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .pin-key:active { background: var(--dir-color); }
+</style>
 
-        body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
-        
-        .sticky-top { position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 3px solid var(--dir-color); }
-        .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 15px; background: var(--header-bg); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
-        
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
-        
-        .dash { margin: 12px; padding: 22px; background: var(--surface); border-radius: 24px; border: 2.5px solid var(--dir-color); }
-        .dash-info-top { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; font-size: 13px; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); display: block; text-align: center; letter-spacing: -1px; }
-
-        /* TARJETAS SIMÉTRICAS */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { 
-            background: var(--surface); border-radius: 20px; padding: 16px; 
-            display: flex; align-items: center; border: 1px solid var(--border); min-height: 85px;
-        }
-        .level-card.active { border-color: var(--dir-color); border-width: 2px; }
-        .check-box-large { width: 30px; height: 30px; accent-color: var(--dir-color); margin-right: 15px; }
-        
-        .lvl-grid-content { flex: 1; display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; align-items: center; }
-        .lvl-col-left { display: flex; flex-direction: column; gap: 4px; }
-        .lvl-col-right { display: flex; flex-direction: column; gap: 4px; text-align: right; }
-        .val-sim { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; }
-        .tag-sim { font-size: 13px; font-weight: 900; }
-
-        .gain-edit {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border);
-            color: var(--long-green); font-weight: 900; width: 50px; border-radius: 4px;
-            text-align: center; font-size: 12px; padding: 2px;
-        }
-
-        /* MODAL DE PIN */
-        #pinModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-        }
-        .pin-display { font-size: 40px; color: var(--dir-color); margin-bottom: 30px; font-family: 'Roboto Mono'; letter-spacing: 15px; }
-        .pin-grid { display: grid; grid-template-columns: repeat(3, 80px); gap: 15px; }
-        .pin-key {
-            width: 80px; height: 80px; border-radius: 50%; border: 1px solid var(--border);
-            background: var(--surface); color: var(--text); font-size: 24px; font-weight: 900;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .pin-key:active { background: var(--dir-color); }
-
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; border: none; }
-    </style>
-</head>
-<body onload="init()">
-
-    <div id="pinModal">
-        <div style="color:white; margin-bottom:10px; font-family:'Orbitron';">INGRESE PIN</div>
-        <div class="pin-display" id="pinDots">****</div>
-        <div class="pin-grid" id="keyboard">
-            <div class="pin-key" onclick="pressKey('1')">1</div>
-            <div class="pin-key" onclick="pressKey('2')">2</div>
-            <div class="pin-key" onclick="pressKey('3')">3</div>
-            <div class="pin-key" onclick="pressKey('4')">4</div>
-            <div class="pin-key" onclick="pressKey('5')">5</div>
-            <div class="pin-key" onclick="pressKey('6')">6</div>
-            <div class="pin-key" onclick="pressKey('7')">7</div>
-            <div class="pin-key" onclick="pressKey('8')">8</div>
-            <div class="pin-key" onclick="pressKey('9')">9</div>
-            <div class="pin-key" style="background:transparent; border:none;"></div>
-            <div class="pin-key" onclick="pressKey('0')">0</div>
-            <div class="pin-key" onclick="closePin()" style="color:var(--danger)">X</div>
-        </div>
+<div id="pinModal">
+    <div style="color:white; margin-bottom:20px; font-family:'Orbitron';">SEGURIDAD C5X</div>
+    <div class="pin-dots" id="pinDisplay">____</div>
+    <div class="pin-grid">
+        <div class="pin-key" onclick="pressPin('1')">1</div>
+        <div class="pin-key" onclick="pressPin('2')">2</div>
+        <div class="pin-key" onclick="pressPin('3')">3</div>
+        <div class="pin-key" onclick="pressPin('4')">4</div>
+        <div class="pin-key" onclick="pressPin('5')">5</div>
+        <div class="pin-key" onclick="pressPin('6')">6</div>
+        <div class="pin-key" onclick="pressPin('7')">7</div>
+        <div class="pin-key" onclick="pressPin('8')">8</div>
+        <div class="pin-key" onclick="pressPin('9')">9</div>
+        <div class="pin-key" onclick="closePin()" style="color:var(--danger)">X</div>
+        <div class="pin-key" onclick="pressPin('0')">0</div>
+        <div class="pin-key" onclick="clearPin()">←</div>
     </div>
+</div>
 
-    <div class="sticky-top">
-        <header class="app-header">
-            <div class="logo-area">C5X</div>
-            <div id="t-price" style="font-family:'Orbitron'; font-weight:900;">0.00</div>
-            <button onclick="toggleTheme()" style="background:none; border:none; font-size:20px;">🌙</button>
-        </header>
-        <nav id="slotNav" class="slot-nav"></nav>
-    </div>
+<script>
+// --- LÓGICA EXCLUSIVA PARA LOS NIVELES ---
 
-    <div class="dash">
-        <div class="dash-info-top">
-            <span>Inv: <b id="resInv">$0</b></span>
-            <span>Avg: <b id="resAvg">0.00</b></span>
-            <span>Profit: <b id="resProf">$0</b></span>
-        </div>
-        <b id="resTarget" class="target-price">0.000000</b>
-    </div>
+let currentPinInput = "";
+let pendingLevelAction = null;
 
-    <main id="levelsGrid" class="levels-container"></main>
-    <button class="btn-release" onclick="requestPin('release')">LIQUIDAR POSICIÓN</button>
+// Configuración inicial de ganancias por bloques de 4 niveles
+const defaultGains = [
+    50, 50, 50, 50,    // Niveles 1-4
+    100, 100, 100, 100, // Niveles 5-8
+    150, 150, 150, 150, // Niveles 9-12
+    200, 200, 200, 200  // Niveles 13-16
+];
 
-    <script>
-        let activeIdx = 0;
-        let currentPin = "";
-        let pendingAction = null;
-        let pendingData = {};
-
-        let slots = JSON.parse(localStorage.getItem('dca_v22_slots')) || Array(5).fill(null).map(() => ({ 
-            name:'', price:0, capital:10, buys:[], 
-            gains: [50, 50, 50, 50, 100, 100, 100, 100, 150, 150, 150, 150, 200, 200, 200, 200] 
-        }));
-
-        const strategy = [
-            { c: 0.00, m: 1.0, p: "0%" }, { c: 0.10, m: 1.0, p: "-10%" },
-            { c: 0.15, m: 1.5, p: "-23%" }, { c: 0.15, m: 1.5, p: "-35%" },
-            { c: 0.20, m: 2.0, p: "-48%" }, { c: 0.20, m: 2.0, p: "-58%" },
-            { c: 0.25, m: 2.5, p: "-69%" }, { c: 0.25, m: 2.5, p: "-77%" },
-            { c: 0.30, m: 3.0, p: "-84%" }, { c: 0.30, m: 3.0, p: "-89%" },
-            { c: 0.35, m: 3.5, p: "-93%" }, { c: 0.35, m: 3.5, p: "-95%" },
-            { c: 0.40, m: 4.0, p: "-97%" }, { c: 0.40, m: 4.0, p: "-98%" },
-            { c: 0.50, m: 5.0, p: "-99%" }, { c: 0.50, m: 5.0, p: "-99.5%" }
-        ];
-
-        function init() { renderNav(); selectSlot(0); }
-
-        // LÓGICA DE PIN SEGURO
-        function requestPin(action, data = {}) {
-            pendingAction = action;
-            pendingData = data;
-            currentPin = "";
-            document.getElementById('pinDots').textContent = "____";
-            document.getElementById('pinModal').style.display = "flex";
+// 1. Función de selección en cascada automática
+function toggleLvlCascade(index) {
+    const s = slots[activeIdx];
+    if (s.buys.includes(index)) {
+        // Si se apaga, apaga todos los niveles superiores también
+        s.buys = s.buys.filter(i => i < index);
+    } else {
+        // Si se enciende, enciende todos los niveles anteriores automáticamente
+        let newBuys = [];
+        for (let i = 0; i <= index; i++) {
+            newBuys.push(i);
         }
+        s.buys = newBuys;
+    }
+    calculate();
+}
 
-        function pressKey(num) {
-            if(currentPin.length < 4) {
-                currentPin += num;
-                document.getElementById('pinDots').textContent = "*".repeat(currentPin.length) + "_".repeat(4 - currentPin.length);
-            }
-            if(currentPin.length === 4) {
-                setTimeout(validatePin, 200);
-            }
+// 2. Función para solicitar el PIN antes de editar
+function requestGainEdit(idx, newVal, inputElement) {
+    pendingLevelAction = { type: 'gain', idx: idx, val: newVal, el: inputElement };
+    openPin();
+}
+
+// 3. Lógica del Teclado Numérico con Asteriscos
+function openPin() {
+    currentPinInput = "";
+    document.getElementById('pinDisplay').textContent = "____";
+    document.getElementById('pinModal').style.display = "flex";
+}
+
+function pressPin(num) {
+    if (currentPinInput.length < 4) {
+        currentPinInput += num;
+        document.getElementById('pinDisplay').textContent = "*".repeat(currentPinInput.length) + "_".repeat(4 - currentPinInput.length);
+    }
+    if (currentPinInput.length === 4) {
+        if (currentPinInput === "2524") {
+            executePendingAction();
+            closePin();
+        } else {
+            alert("PIN INCORRECTO");
+            closePin();
+            calculate(); // Revierte cambios visuales
         }
+    }
+}
 
-        function validatePin() {
-            if(currentPin === "2524") {
-                if(pendingAction === 'release') {
-                    slots[activeIdx].buys = [];
-                    calculate();
-                } else if(pendingAction === 'editGain') {
-                    slots[activeIdx].gains[pendingData.idx] = pendingData.val;
-                    calculate();
-                }
-                closePin();
-            } else {
-                alert("PIN INCORRECTO");
-                closePin();
-                calculate(); // Reset display
-            }
+function executePendingAction() {
+    if (pendingLevelAction.type === 'gain') {
+        slots[activeIdx].gains[pendingLevelAction.idx] = parseFloat(pendingLevelAction.val);
+        calculate();
+    }
+}
+
+function closePin() { document.getElementById('pinModal').style.display = "none"; }
+function clearPin() { currentPinInput = ""; document.getElementById('pinDisplay').textContent = "____"; }
+
+// 4. Renderizado actualizado de las tarjetas
+function renderLevels() {
+    const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+    if (!s.gains) s.gains = [...defaultGains];
+    
+    if (!s.price) { grid.innerHTML = ''; return; }
+    
+    let spent = 0, tokens = 0, cp = s.price, html = '', lastGain = 0;
+    
+    strategy.forEach((lvl, i) => {
+        if (i > 0) cp *= (1 - lvl.c);
+        const mUSD = lvl.m * s.capital;
+        const on = s.buys.includes(i);
+        const currentGain = s.gains[i];
+        
+        if (on) { 
+            spent += mUSD; 
+            tokens += (mUSD / cp); 
+            lastGain = currentGain; 
         }
-
-        function closePin() { 
-            document.getElementById('pinModal').style.display = "none"; 
-        }
-
-        function toggleLvlCascade(index) {
-            const s = slots[activeIdx];
-            if(s.buys.includes(index)) {
-                s.buys = s.buys.filter(i => i < index);
-            } else {
-                s.buys = Array.from({length: index + 1}, (_, i) => i);
-            }
-            calculate();
-        }
-
-        function calculate() {
-            renderLevels();
-            localStorage.setItem('dca_v22_slots', JSON.stringify(slots));
-        }
-
-        function renderLevels() {
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            let spent = 0, tokens = 0, lastGain = 50, cp = 100, html = ''; // cp base 100 sim para render
-            
-            strategy.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
-                const mUSD = lvl.m * s.capital;
-                const on = s.buys.includes(i);
-                const currentGain = s.gains[i];
-                if(on) { spent += mUSD; tokens += (mUSD / cp); lastGain = currentGain; }
-                
-                html += `
-                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvlCascade(${i})">
-                    <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
-                    <div class="lvl-grid-content">
-                        <div class="lvl-col-left">
-                            <span class="tag-sim" style="color:var(--dir-color)">NV ${i+1}</span>
-                            <span class="val-sim">$${mUSD.toFixed(1)}</span>
-                        </div>
-                        <div class="lvl-col-right">
-                            <div style="display:flex; justify-content:flex-end; align-items:center; gap:8px;">
-                                <input type="number" class="gain-edit" value="${currentGain}" 
-                                    onclick="event.stopPropagation()" 
-                                    onchange="requestPin('editGain', {idx:${i}, val:parseFloat(this.value)})">%
-                                <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
-                            </div>
-                            <span class="val-sim">PRECIO</span>
-                        </div>
+        
+        html += `
+        <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvlCascade(${i})">
+            <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
+            <div class="lvl-grid-content">
+                <div class="lvl-col-left">
+                    <span class="tag-sim" style="color:var(--dir-color)">NV ${i+1}</span>
+                    <span class="val-sim">$${mUSD.toFixed(1)}</span>
+                </div>
+                <div class="lvl-col-right">
+                    <div style="display:flex; justify-content:flex-end; align-items:center; gap:5px;">
+                        <input type="number" class="gain-edit" value="${currentGain}" 
+                            onclick="event.stopPropagation()" 
+                            onchange="requestGainEdit(${i}, this.value, this)">
+                        <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
                     </div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        function selectSlot(i) { activeIdx = i; renderNav(); calculate(); }
-        function renderNav() {
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
-                <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">S${i+1}</div>
-            `).join('');
-        }
-        function toggleTheme() { document.body.classList.toggle('light-mode'); }
-    </script>
-</body>
-</html>
+                    <span class="val-sim">${cp.toFixed(6)}</span>
+                </div>
+            </div>
+        </div>`;
+    });
+    
+    grid.innerHTML = html;
+    
+    // Actualización del Dashboard con el % del último nivel seleccionado
+    const avg = tokens > 0 ? (spent / tokens) : 0;
+    document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
+    document.getElementById('resAvg').textContent = avg.toFixed(6);
+    document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + (lastGain/100))).toFixed(6) : '0.000000';
+    document.getElementById('resProf').textContent = `$${(spent * (lastGain/100)).toFixed(2)}`;
+}
+</script>
