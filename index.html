@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.7</title>
+    <title>C5X DCA ENGINE V20.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -86,7 +86,6 @@
             letter-spacing: -1.5px;
         }
 
-        /* TARJETAS V19.7 - REDUCIDAS Y SIMÉTRICAS */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { 
             background: var(--surface); 
@@ -101,15 +100,26 @@
         
         .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); margin-right: 15px; }
         
-        /* Grilla simétrica de 4 valores */
         .lvl-grid-content { flex: 1; display: grid; grid-template-columns: 1fr 1.5fr; gap: 8px; align-items: center; }
         
         .lvl-col-left { display: flex; flex-direction: column; gap: 4px; }
         .lvl-col-right { display: flex; flex-direction: column; gap: 4px; text-align: right; }
 
-        /* Estilos de valores simétricos */
         .val-sim { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono'; }
         .tag-sim { font-size: 14px; font-weight: 900; text-transform: uppercase; }
+
+        /* Estilo para el input de edición de ganancia */
+        .gain-edit {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--long-green);
+            font-weight: 900;
+            width: 50px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+            padding: 2px;
+        }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; border: none; }
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
@@ -170,21 +180,27 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ 
+            name:'', 
+            price:0, 
+            capital:10, 
+            buys:[],
+            gains: Array(16).fill(0.50) // Almacenar porcentajes de ganancia editables
+        }));
         let history = JSON.parse(localStorage.getItem('dca_history')) || [];
         
         const tickers = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT"];
         let tIdx = 0, currentTickerFull = "BTCUSDT";
 
         const strategy = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
-            { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
-            { c: 0.20, m: 2.0, g: 1.00, p: "-48%" }, { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
-            { c: 0.25, m: 2.5, g: 1.00, p: "-69%" }, { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
-            { c: 0.30, m: 3.0, g: 1.50, p: "-84%" }, { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
-            { c: 0.35, m: 3.5, g: 1.50, p: "-93%" }, { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
-            { c: 0.40, m: 4.0, g: 2.00, p: "-97%" }, { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
-            { c: 0.50, m: 5.0, g: 2.00, p: "-99%" }, { c: 0.50, m: 5.0, g: 2.00, p: "-99.5%" }
+            { c: 0.00, m: 1.0, p: "0%" }, { c: 0.10, m: 1.0, p: "-10%" },
+            { c: 0.15, m: 1.5, p: "-23%" }, { c: 0.15, m: 1.5, p: "-35%" },
+            { c: 0.20, m: 2.0, p: "-48%" }, { c: 0.20, m: 2.0, p: "-58%" },
+            { c: 0.25, m: 2.5, p: "-69%" }, { c: 0.25, m: 2.5, p: "-77%" },
+            { c: 0.30, m: 3.0, p: "-84%" }, { c: 0.30, m: 3.0, p: "-89%" },
+            { c: 0.35, m: 3.5, p: "-93%" }, { c: 0.35, m: 3.5, p: "-95%" },
+            { c: 0.40, m: 4.0, p: "-97%" }, { c: 0.40, m: 4.0, p: "-98%" },
+            { c: 0.50, m: 5.0, p: "-99%" }, { c: 0.50, m: 5.0, p: "-99.5%" }
         ];
 
         function init() {
@@ -221,6 +237,7 @@
 
         function selectSlot(i) {
             activeIdx = i; const s = slots[i];
+            if(!s.gains) s.gains = Array(16).fill(0.50); // Migración si no existe
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
@@ -238,15 +255,22 @@
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = ''; return; }
-            let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
+            let spent = 0, tokens = 0, currentTargetGain = 0, cp = s.price, html = '';
+            
             strategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / cp); lastG = lvl.g; }
+                const gainPct = s.gains[i];
+                
+                if(on) { 
+                    spent += mUSD; 
+                    tokens += (mUSD / cp); 
+                    currentTargetGain = gainPct; // Usar el % del último nivel activo
+                }
                 
                 html += `
-                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvlCascade(${i})">
                     <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}>
                     <div class="lvl-grid-content">
                         <div class="lvl-col-left">
@@ -254,7 +278,12 @@
                             <span class="val-sim">$${mUSD.toFixed(1)}</span>
                         </div>
                         <div class="lvl-col-right">
-                            <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
+                            <div style="display:flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                                <input type="number" step="0.01" class="gain-edit" value="${gainPct}" 
+                                    onclick="event.stopPropagation()" 
+                                    onchange="updateGainVal(${i}, this.value)">
+                                <span class="val-sim" style="color:var(--short-red)">${lvl.p}</span>
+                            </div>
                             <span class="val-sim">${cp.toFixed(6)}</span>
                         </div>
                     </div>
@@ -264,14 +293,32 @@
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
+            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + (currentTargetGain/100))).toFixed(6) : '0.000000';
+            document.getElementById('resProf').textContent = `$${(spent * (currentTargetGain/100)).toFixed(2)}`;
         }
 
-        function toggleLvl(i) {
-            const b = slots[activeIdx].buys;
-            slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
+        // NUEVA FUNCIÓN: Selección en cascada
+        function toggleLvlCascade(i) {
+            const s = slots[activeIdx];
+            if(s.buys.includes(i)) {
+                // Si ya está, deseleccionamos ese y todos los posteriores
+                s.buys = s.buys.filter(idx => idx < i);
+            } else {
+                // Si no está, seleccionamos ese y todos los anteriores
+                let newBuys = [];
+                for(let j = 0; j <= i; j++) {
+                    newBuys.push(j);
+                }
+                s.buys = newBuys;
+            }
             save(); renderLevels();
+        }
+
+        // NUEVA FUNCIÓN: Editar ganancia
+        function updateGainVal(idx, val) {
+            slots[activeIdx].gains[idx] = parseFloat(val) || 0;
+            save();
+            renderLevels();
         }
 
         function releaseSlot() {
@@ -280,7 +327,7 @@
                 history.unshift({ coin: s.name, date: new Date().toLocaleString(), inv: document.getElementById('resInv').textContent, prof: document.getElementById('resProf').textContent });
                 localStorage.setItem('dca_history', JSON.stringify(history));
                 slots.splice(activeIdx, 1);
-                slots.push({ name:'', price:0, capital:10, buys:[] });
+                slots.push({ name:'', price:0, capital:10, buys:[], gains: Array(16).fill(0.50) });
                 save(); selectSlot(0); renderHistory();
             }
         }
@@ -325,4 +372,4 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
     </script>
 </body>
-</html>
+</html>6
