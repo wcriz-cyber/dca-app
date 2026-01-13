@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE</title>
+    <title>C5X DCA ENGINE PRO</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
@@ -27,7 +27,6 @@
             --border: #d1d5db; --header-bg: #ffffff;
         }
 
-        /* COLORES DINÁMICOS SEGÚN LONG / SHORT */
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
@@ -74,18 +73,16 @@
         .level-card { 
             background: var(--surface); border-radius: 16px; padding: 15px; 
             display: flex; align-items: center; justify-content: space-between;
-            border: 1px solid var(--border); position: relative; transition: 0.2s;
+            border: 1px solid var(--border); transition: 0.2s;
         }
         .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.05); border-width: 2px; }
         
         .card-start { display: flex; align-items: center; gap: 15px; }
-        
         .custom-check {
             width: 30px; height: 30px; border: 2px solid var(--border); border-radius: 8px;
             display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
-            background: rgba(255,255,255,0.02);
         }
-        .level-card.active .custom-check { background: var(--dir-color); border-color: var(--dir-color); box-shadow: 0 0 10px var(--dir-color); }
+        .level-card.active .custom-check { background: var(--dir-color); border-color: var(--dir-color); }
         .level-card.active .custom-check::after { content: '✓'; color: white; font-weight: 900; font-size: 18px; }
 
         .lvl-info { display: flex; flex-direction: column; gap: 2px; }
@@ -96,8 +93,16 @@
         .lvl-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); }
         .lvl-drop { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--short-red); }
 
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
-        
+        /* SECCIÓN BITÁCORA */
+        .history-section { margin: 20px 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
+        .history-title { font-family: 'Orbitron'; font-size: 12px; color: var(--dir-color); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .history-table th { text-align: left; color: #848e9c; padding: 8px; border-bottom: 1px solid var(--border); }
+        .history-table td { padding: 8px; border-bottom: 1px solid var(--border); font-family: 'Roboto Mono'; }
+
+        .btn-release { width: 92%; margin: 20px auto 10px; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
+        .btn-excel { width: 92%; margin: 0 auto 20px; display: block; padding: 15px; border-radius: 15px; border: 1px solid #0ecb81; background: transparent; color: #0ecb81; font-weight: 900; font-family: 'Orbitron'; font-size: 11px; }
+
         #coinInput { text-transform: uppercase; }
         input[type="number"], input[type="text"] { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
     </style>
@@ -106,14 +111,12 @@
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        
         <div class="btc-live-box" onclick="viewTickerChart()">
             <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
             <span id="t-sym">BTC</span>
             <span id="t-price">$--,---</span>
             <span id="t-pct" style="font-size:10px; font-weight:900;">0.00%</span>
         </div>
-
         <div class="theme-toggle-container">
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </div>
@@ -154,7 +157,6 @@
         <div style="text-align:center">
             <span class="dash-label">OBJETIVO DE VENTA</span>
             <b id="resTarget" class="target-price">0.000000</b>
-            
             <div class="strategy-selector">
                 <div class="strat-option active" id="strat1" onclick="changeStrategy(1)">16 NIV</div>
                 <div class="strat-option" id="strat2" onclick="changeStrategy(2)">EST 2</div>
@@ -167,6 +169,22 @@
 
     <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
+    <div class="history-section">
+        <div class="history-title">
+            <span>BITÁCORA DE CIERRES</span>
+            <span id="histCount" style="color:#848e9c">0 Op.</span>
+        </div>
+        <table class="history-table">
+            <thead>
+                <tr><th>MONEDA</th><th>INV.</th><th>PROFIT</th><th>FECHA</th></tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+        </table>
+    </div>
+
+    <button class="btn-excel" onclick="exportToExcel()">EXPORTAR HISTORIAL EXCEL</button>
+    <button class="btn-excel" style="border-color:var(--danger); color:var(--danger); margin-top:10px;" onclick="clearHistory()">BORRAR BITÁCORA</button>
+
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
@@ -176,9 +194,10 @@
             name:'', price:0, capital:10, buys:[], currentStrat: 1 
         }));
         
+        let history = JSON.parse(localStorage.getItem('dca_history')) || [];
+
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0;
-        let currentTickerSymbol = "BTC";
 
         const getStrategyData = (stratNum) => {
             return [
@@ -195,7 +214,7 @@
 
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
-            renderNav(); selectSlot(0); fetchTicker(); setInterval(fetchTicker, 10000);
+            renderNav(); selectSlot(0); fetchTicker(); setInterval(fetchTicker, 10000); renderHistory();
         }
 
         async function fetchTicker() {
@@ -203,8 +222,7 @@
                 const symbol = assets[assetIdx];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
                 const data = await res.json();
-                currentTickerSymbol = symbol.replace("USDT","");
-                document.getElementById('t-sym').textContent = currentTickerSymbol;
+                document.getElementById('t-sym').textContent = symbol.replace("USDT","");
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
                 const pct = parseFloat(data.priceChangePercent);
                 document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
@@ -214,36 +232,15 @@
             } catch(e) {}
         }
 
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
-
-        // RESTAURADO: Función para cambiar el color según moneda finalizada en L o S
         function updateBodyMode(n) {
             document.body.classList.remove('mode-long', 'mode-short');
             if(n.endsWith('L')) document.body.classList.add('mode-long');
             if(n.endsWith('S')) document.body.classList.add('mode-short');
         }
 
-        function changeStrategy(num) {
-            const s = slots[activeIdx];
-            if(num === s.currentStrat) return;
-            if(prompt("Código 2524:") === "2524") {
-                s.currentStrat = num; 
-                updateStratUI(num);
-                save();
-                calculate();
-            }
-        }
-
-        function updateStratUI(num) {
-            document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
-            if(document.getElementById('strat' + num)) document.getElementById('strat' + num).classList.add('active');
-        }
-
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            updateBodyMode(s.name); // Activar colores dinámicos
-            updateStratUI(s.currentStrat);
-
+            updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base</p>'; return; }
             
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
@@ -264,7 +261,6 @@
                             <span class="lvl-usd">$${mUSD.toFixed(1)}</span>
                         </div>
                     </div>
-
                     <div class="lvl-right">
                         <span class="lvl-price">${cp.toFixed(6)}</span>
                         <span class="lvl-drop">${lvl.p}</span>
@@ -275,8 +271,54 @@
             const avg = tokens > 0 ? (spent / tokens) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG)).toFixed(6) : '0.000000';
-            document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
+            document.getElementById('resTarget').textContent = avg > 0 ? (avg * (1 + lastG/100)).toFixed(6) : '0.000000';
+            document.getElementById('resProf').textContent = `$${(spent * (lastG/100)).toFixed(2)}`;
+        }
+
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(!s.name || s.buys.length === 0) return alert("No hay operación activa");
+            
+            if(confirm(`¿Liquidar ${s.name} y guardar en bitácora?`)) {
+                const inv = document.getElementById('resInv').textContent;
+                const prof = document.getElementById('resProf').textContent;
+                const date = new Date().toLocaleDateString();
+                
+                history.unshift({ coin: s.name, inv: inv, prof: prof, date: date });
+                localStorage.setItem('dca_history', JSON.stringify(history));
+                
+                slots[activeIdx] = { name: '', price: 0, capital: 10, buys: [], currentStrat: 1 };
+                save(); selectSlot(activeIdx); renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const body = document.getElementById('historyBody');
+            document.getElementById('histCount').textContent = `${history.length} Op.`;
+            body.innerHTML = history.slice(0, 10).map(h => `
+                <tr>
+                    <td>${h.coin}</td>
+                    <td>${h.inv}</td>
+                    <td style="color:var(--long-green)">${h.prof}</td>
+                    <td style="font-size:9px">${h.date}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportToExcel() {
+            if(history.length === 0) return alert("Bitácora vacía");
+            let csv = "MONEDA,INVERSION,PROFIT,FECHA\n" + history.map(h => `${h.coin},${h.inv},${h.prof},${h.date}`).join("\n");
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `C5X_Reporte_${new Date().getMonth()+1}_${new Date().getFullYear()}.csv`;
+            a.click();
+        }
+
+        function clearHistory() {
+            if(confirm("¿Borrar todo el historial permanentemente?")) {
+                history = []; localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
+            }
         }
 
         function selectSlot(i) {
@@ -285,13 +327,6 @@
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
             renderNav(); loadChart(s.name); calculate();
-        }
-
-        function releaseSlot() {
-            if(confirm(`¿Liquidar Slot?`)) {
-                slots[activeIdx] = { name: '', price: 0, capital: 10, buys: [], currentStrat: 1 };
-                save(); selectSlot(activeIdx);
-            }
         }
 
         function loadChart(coin) {
@@ -339,6 +374,14 @@
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        function changeStrategy(num) {
+            if(prompt("Código 2524:") === "2524") {
+                slots[activeIdx].currentStrat = num;
+                document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
+                document.getElementById('strat'+num).classList.add('active');
+                save(); calculate();
+            }
+        }
     </script>
 </body>
-</html>
+    </html>
