@@ -34,10 +34,20 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
         
+        /* CABECERA FIJA (STICKY) */
         .app-header { 
-            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; 
-            padding: 15px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); 
+            display: grid; 
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center; 
+            padding: 15px; 
+            background: var(--header-bg); 
+            border-bottom: 3px solid var(--dir-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
+
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; justify-self: start; }
         
         .btc-live-box { 
@@ -145,11 +155,9 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // Service Worker para instalación
+        // PWA Setup
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(() => {});
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
         }
 
         let isLight = localStorage.getItem('theme') === 'light';
@@ -246,6 +254,15 @@
             renderNav(); loadChart(s.name); calculate();
         }
 
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(confirm(`¿Liquidar ${s.name}?`)) {
+                slots.splice(activeIdx, 1);
+                slots.push({ name:'', price:0, capital:10, buys:[] });
+                save(); selectSlot(0);
+            }
+        }
+
         function loadChart(coin) {
             const sym = (coin || 'BTC3L').replace('USDT','');
             new TradingView.widget({
@@ -264,14 +281,6 @@
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 10;
             save(); renderLevels();
-        }
-
-        function releaseSlot() {
-            if(confirm("¿Liquidar?")) {
-                slots.splice(activeIdx, 1);
-                slots.push({ name:'', price:0, capital:10, buys:[] });
-                save(); selectSlot(0);
-            }
         }
 
         function toggleLvl(i) {
