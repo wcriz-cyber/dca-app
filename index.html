@@ -159,7 +159,6 @@
         let currentTickerSymbol = "BTC";
 
         const getStrategyData = (stratNum) => {
-            // Aquí puedes definir variaciones reales para cada estrategia si lo deseas
             return [
                 { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
                 { c: 0.15, m: 1.5, g: 0.50, p: "-23%" }, { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
@@ -214,7 +213,9 @@
 
         function updateStratUI(num) {
             document.querySelectorAll('.strat-option').forEach(el => el.classList.remove('active'));
-            document.getElementById('strat' + num).classList.add('active');
+            if(document.getElementById('strat' + num)) {
+                document.getElementById('strat' + num).classList.add('active');
+            }
         }
 
         function renderLevels() {
@@ -222,12 +223,12 @@
             updateBodyMode(s.name);
             updateStratUI(s.currentStrat);
 
-            if(!s.price) { grid.innerHTML = ''; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.5;">Ingresa Precio Base para ver niveles</p>'; return; }
             
             let spent = 0, tokens = 0, lastG = 0, cp = s.price, html = '';
-            const currentStrategyData = getStrategyData(s.currentStrat);
+            const strategyData = getStrategyData(s.currentStrat);
 
-            currentStrategyData.forEach((lvl, i) => {
+            strategyData.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
@@ -260,17 +261,9 @@
 
         function releaseSlot() {
             const s = slots[activeIdx];
-            if(confirm(`¿Liquidar ${s.name}?`)) {
-                // Al liquidar, reseteamos el slot y FORZAMOS la estrategia 1
-                slots[activeIdx] = { 
-                    name: '', 
-                    price: 0, 
-                    capital: 10, 
-                    buys: [], 
-                    currentStrat: 1 // Estrategia 1 predeterminada al liberar
-                };
-                save();
-                selectSlot(activeIdx);
+            if(confirm(`¿Liquidar ${s.name || 'Slot'}?`)) {
+                slots[activeIdx] = { name: '', price: 0, capital: 10, buys: [], currentStrat: 1 };
+                save(); selectSlot(activeIdx);
             }
         }
 
@@ -302,7 +295,7 @@
 
         function updateCoin() {
             const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
+            slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate();
         }
 
         function toggleTheme() {
@@ -321,4 +314,4 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
     </script>
 </body>
-</html>
+        </html>
