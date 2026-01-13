@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>C5X DCA ENGINE V18.3</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#050708">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -18,91 +13,35 @@
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
         }
-
-        body.light-mode {
-            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; 
-            --border: #d1d5db; --header-bg: #ffffff;
-        }
-
-        body.mode-long { --dir-color: var(--long-green); }
-        body.mode-short { --dir-color: var(--short-red); }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
-        
         .app-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 15px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; justify-self: start; }
-        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; cursor: pointer; justify-self: center; }
-        .theme-toggle-container { justify-self: end; }
-        .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
-
-        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; }
-        .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
-        .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
-        
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; }
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
-        
         .chart-container { width: 100%; height: 300px; background: #000; }
-        
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-        
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
-
-        .strat-selector { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-        .strat-btn { padding: 6px 10px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; border: 1px solid var(--border); background: var(--bg); color: #848e9c; border-radius: 8px; cursor: pointer; }
-        .strat-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
-
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.04); border-width: 2px; }
-        .lvl-usd-badge { position: absolute; top: 8px; left: 60px; font-size: 13px; color: var(--long-green); font-weight: 900; background: rgba(128,128,128,0.1); padding: 4px 10px; border-radius: 6px; }
-        .panic-btn { position: absolute; top: 10px; right: 15px; font-size: 9px; background: var(--dir-color); color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-weight: 900; }
-        .level-drop-tag { position: absolute; bottom: 10px; right: 15px; font-size: 11px; font-weight: 900; color: var(--danger); cursor: pointer; }
-        .check-box-large { width: 34px; height: 34px; accent-color: var(--dir-color); margin-right: 18px; }
-
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 500px; display: flex; flex-direction: column; }
-        .h-actions { display: flex; gap: 10px; margin-top: 10px; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
-        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
-        #historyList { overflow-y: auto; flex: 1; margin-top: 10px; }
-        .history-item { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px 10px; border-bottom: 1px solid var(--border); }
-        .h-coin { font-family: 'Orbitron'; color: var(--text); font-size: 20px; font-weight: 900; }
-        .h-profit { color: var(--long-green); font-size: 24px; font-weight: 900; text-align: right; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); display: block; text-align: center; }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+        .level-card { background: var(--surface); border-radius: 15px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); }
+        .level-card.active { border-color: var(--dir-color); border-width: 2px; }
+        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); margin-right: 15px; }
     </style>
 </head>
 <body onload="init()">
 
     <header class="app-header">
         <div class="logo-area">C5X</div>
-        <div class="btc-live-box" onclick="viewTickerChart()">
-            <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
-            <span id="t-sym">BTC</span>
+        <div class="btc-live-box">
             <span id="t-price">$--,---</span>
-            <span id="t-pct" style="font-size:10px; font-weight:900;">0.00%</span>
-        </div>
-        <div class="theme-toggle-container">
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </div>
     </header>
-
-    <div class="tf-bar">
-        <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-        <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
-        <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
-        <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
-    </div>
 
     <nav id="slotNav" class="slot-nav"></nav>
     <div id="tv_chart" class="chart-container"></div>
@@ -115,118 +54,43 @@
 
     <div class="dash">
         <div class="dash-top-row">
-            <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-            <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
-            <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
+            <div><span style="font-size:8px; color:var(--dir-color)">INVERSIÓN</span><div id="resInv" style="font-weight:900">$0.00</div></div>
+            <div><span style="font-size:8px; color:var(--dir-color)">AVG</span><div id="resAvg" style="color:var(--warning); font-weight:900">0.00</div></div>
+            <div><span style="font-size:8px; color:var(--dir-color)">PROFIT %</span><div id="resPct" style="font-weight:900">0%</div></div>
         </div>
-        <div style="text-align:center">
-            <span class="dash-label">OBJETIVO DE VENTA</span>
-            <b id="resTarget" class="target-price">0.000000</b>
-            <div class="strat-selector">
-                <button class="strat-btn active" id="btnStrat0" onclick="setStrategy(0)">STRAT 1</button>
-                <button class="strat-btn" id="btnStrat1" onclick="setStrategy(1)">STRAT 2</button>
-                <button class="strat-btn" id="btnStrat2" onclick="setStrategy(2)">STRAT 3</button>
-            </div>
-        </div>
+        <span style="font-size:8px; color:var(--dir-color); display:block; text-align:center">OBJETIVO DE VENTA</span>
+        <b id="resTarget" class="target-price">0.00</b>
     </div>
 
     <main id="levelsGrid" class="levels-container"></main>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
-
-    <div class="history-section">
-        <span style="font-size:12px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
-        <div class="h-actions">
-            <button class="btn-export" onclick="exportMasterExcel()">EXCEL</button>
-            <button class="btn-clear" onclick="clearHistory()">LIMPIAR</button>
-        </div>
-        <div id="historyList"></div>
-    </div>
-
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[], activeStrat:0 }));
-        let history = JSON.parse(localStorage.getItem('dca_history')) || [];
+        let activeIdx = 0;
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
         
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
-        let assetIdx = 0;
-        let currentTickerSymbol = "BTC";
-
-        const strategies = [
-            // STRAT 1: ESCALAS DE PROFIT (0.5% a 2.5%)
-            [
-                { c: 0.00, m: 1.0, g: 0.50, p: "0%" },    { c: 0.10, m: 1.0, g: 0.50, p: "-10%" },
-                { c: 0.15, m: 1.5, g: 0.50, p: "-23%" },   { c: 0.15, m: 1.5, g: 0.50, p: "-35%" },
-                { c: 0.20, m: 2.0, g: 1.00, p: "-48%" },   { c: 0.20, m: 2.0, g: 1.00, p: "-58%" },
-                { c: 0.25, m: 2.5, g: 1.00, p: "-69%" },   { c: 0.25, m: 2.5, g: 1.00, p: "-77%" },
-                { c: 0.30, m: 3.0, g: 1.50, p: "-84%" },   { c: 0.30, m: 3.0, g: 1.50, p: "-89%" },
-                { c: 0.35, m: 3.5, g: 1.50, p: "-93%" },   { c: 0.35, m: 3.5, g: 1.50, p: "-95%" },
-                { c: 0.40, m: 4.0, g: 2.00, p: "-97%" },   { c: 0.40, m: 4.0, g: 2.00, p: "-98%" },
-                { c: 0.50, m: 5.0, g: 2.50, p: "-99%" },   { c: 0.50, m: 5.0, g: 2.50, p: "-99.5%" }
-            ],
-            // STRAT 2: MODERADA (Swing 65% Drop)
-            [
-                { c: 0.00, m: 1.0, g: 1.20, p: "0%" },   { c: 0.04, m: 1.5, g: 1.20, p: "-4%" },
-                { c: 0.06, m: 2.0, g: 1.50, p: "-10%" },  { c: 0.08, m: 3.0, g: 1.80, p: "-17%" },
-                { c: 0.12, m: 4.5, g: 2.00, p: "-27%" },  { c: 0.15, m: 6.0, g: 2.50, p: "-40%" },
-                { c: 0.18, m: 8.0, g: 3.00, p: "-51%" },  { c: 0.25, m: 12.0, g: 4.00, p: "-65%" }
-            ],
-            // STRAT 3: AGRESIVA (Scalp 25% Drop)
-            [
-                { c: 0.00, m: 1.0, g: 2.00, p: "0%" },   { c: 0.03, m: 2.5, g: 2.50, p: "-3%" },
-                { c: 0.05, m: 5.0, g: 3.00, p: "-8%" },   { c: 0.07, m: 10.0, g: 4.00, p: "-14%" },
-                { c: 0.12, m: 20.0, g: 5.00, p: "-25%" }
-            ]
+        // ESTRATEGIA CORREGIDA: 50%, 100%, 150%, 200%
+        const strategy = [
+            { c: 0.00, m: 1, g: 50, p: "0%" },    { c: 0.10, m: 1, g: 50, p: "-10%" },
+            { c: 0.15, m: 1.5, g: 50, p: "-23%" }, { c: 0.15, m: 1.5, g: 50, p: "-35%" },
+            { c: 0.20, m: 2, g: 100, p: "-48%" },  { c: 0.20, m: 2, g: 100, p: "-58%" },
+            { c: 0.25, m: 2.5, g: 100, p: "-69%" },{ c: 0.25, m: 2.5, g: 100, p: "-77%" },
+            { c: 0.30, m: 3, g: 150, p: "-84%" },  { c: 0.30, m: 3, g: 150, p: "-89%" },
+            { c: 0.35, m: 3.5, g: 150, p: "-93%" },{ c: 0.35, m: 3.5, g: 150, p: "-95%" },
+            { c: 0.40, m: 4, g: 200, p: "-97%" },  { c: 0.40, m: 4, g: 200, p: "-98%" },
+            { c: 0.50, m: 5, g: 200, p: "-99%" },  { c: 0.50, m: 5, g: 200, p: "-99.5%" }
         ];
 
         function init() {
-            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
-            renderNav(); selectSlot(0); renderHistory(); fetchTicker(); 
-            setInterval(fetchTicker, 10000);
+            renderNav(); selectSlot(0); fetchBTC();
         }
 
-        async function fetchTicker() {
+        async function fetchBTC() {
             try {
-                const symbol = assets[assetIdx];
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
                 const data = await res.json();
-                currentTickerSymbol = symbol.replace("USDT","");
-                document.getElementById('t-sym').textContent = currentTickerSymbol;
-                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
-                const pct = parseFloat(data.priceChangePercent);
-                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
-                document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
-                document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
-                assetIdx = (assetIdx + 1) % assets.length;
+                document.getElementById('t-price').textContent = parseFloat(data.price).toLocaleString();
             } catch(e) {}
-        }
-
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
-
-        function toggleTheme() {
-            isLight = !isLight;
-            document.body.classList.toggle('light-mode', isLight);
-            document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        }
-
-        function selectSlot(i) {
-            activeIdx = i; const s = slots[i];
-            document.getElementById('coinInput').value = s.name;
-            document.getElementById('baseInput').value = s.price || '';
-            document.getElementById('capitalInput').value = s.capital;
-            updateStratUI(); renderNav(); loadChart(s.name); calculate();
-        }
-
-        function setStrategy(idx) {
-            slots[activeIdx].activeStrat = idx;
-            save(); updateStratUI(); calculate();
-        }
-
-        function updateStratUI() {
-            document.querySelectorAll('.strat-btn').forEach((b, i) => b.classList.toggle('active', i === slots[activeIdx].activeStrat));
         }
 
         function calculate() {
@@ -238,121 +102,73 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            const currentStrat = strategies[s.activeStrat || 0];
-            updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Sin Datos</p>'; return; }
+            if(!s.price) return;
             
-            let totalUSD = 0, totalTokens = 0, appliedProfit = 0, cp = s.price, html = '';
+            let totalUSD = 0, totalTokens = 0, currentP = s.price, html = '', lastG = 0;
             
-            currentStrat.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
+            strategy.forEach((lvl, i) => {
+                if(i > 0) currentP *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
-                const on = s.buys.includes(i);
-                
-                if(on) { 
-                    totalUSD += mUSD; 
-                    totalTokens += (mUSD / cp); 
-                    appliedProfit = lvl.g; 
+                const isBought = s.buys.includes(i);
+                if(isBought) {
+                    totalUSD += mUSD;
+                    totalTokens += (mUSD / currentP);
+                    lastG = lvl.g;
                 }
-                
                 html += `
-                <div class="level-card ${on ? 'active' : ''}">
-                    <div class="lvl-usd-badge">$${mUSD.toFixed(1)}</div>
-                    <button class="panic-btn" onclick="panicFill(${i})">FILL</button>
-                    <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                <div class="level-card ${isBought ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <input type="checkbox" class="check-box-large" ${isBought ? 'checked' : ''}>
                     <div style="flex:1">
-                        <span style="font-size:10px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
-                        <b style="font-size:22px; display:block; font-family:'Roboto Mono';">${cp.toFixed(6)}</b>
+                        <span style="font-size:10px; color:var(--dir-color)">NIVEL ${i+1} ($${mUSD})</span>
+                        <b style="font-size:20px; display:block;">${currentP.toFixed(6)}</b>
                     </div>
-                    <span class="level-drop-tag" onclick="editLevelProfit(${i})">${lvl.p}</span>
+                    <span style="color:var(--short-red); font-weight:900">${lvl.p}</span>
                 </div>`;
             });
             grid.innerHTML = html;
 
-            const averagePrice = totalTokens > 0 ? (totalUSD / totalTokens) : 0;
-            const targetSalePrice = averagePrice > 0 ? (averagePrice * (1 + (appliedProfit / 100))) : 0;
-            
+            const avg = totalTokens > 0 ? (totalUSD / totalTokens) : 0;
+            const target = avg > 0 ? (avg * (1 + (lastG / 100))) : 0;
+
             document.getElementById('resInv').textContent = `$${totalUSD.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = averagePrice.toFixed(6);
-            document.getElementById('resTarget').textContent = targetSalePrice.toFixed(6);
-            document.getElementById('resProf').textContent = `$${(totalUSD * (appliedProfit / 100)).toFixed(2)}`;
+            document.getElementById('resAvg').textContent = avg.toFixed(6);
+            document.getElementById('resPct').textContent = lastG + "%";
+            document.getElementById('resTarget').textContent = target.toFixed(6);
         }
 
         function toggleLvl(i) {
-            const b = slots[activeIdx].buys;
-            slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
-            save(); renderLevels();
-        }
-
-        function panicFill(i) {
-            slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k);
-            save(); renderLevels();
-        }
-
-        function releaseSlot() {
             const s = slots[activeIdx];
-            if(s.buys.length > 0 && confirm(`¿Cerrar y archivar ${s.name}?`)) {
-                history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
-                localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory();
-                slots[activeIdx] = { name:'', price:0, capital:10, buys:[], activeStrat:0 }; save(); selectSlot(activeIdx);
-            }
+            s.buys = s.buys.includes(i) ? s.buys.filter(x => x !== i) : [...s.buys, i];
+            save(); renderLevels();
         }
 
-        function clearHistory() {
-            if(prompt("Clave:") === "2524") { history = []; localStorage.setItem('dca_history', JSON.stringify(history)); renderHistory(); }
-        }
-
-        function renderHistory() {
-            document.getElementById('historyList').innerHTML = history.map(item => `
-                <div class="history-item">
-                    <div><span class="h-coin">${item.coin}</span><div style="font-size:10px; opacity:0.6;">${item.date}</div></div>
-                    <div class="h-profit">${item.prof}</div>
-                </div>`).join('');
-        }
-
-        function updateBodyMode(n) {
-            document.body.classList.remove('mode-long', 'mode-short');
-            if(n.endsWith('L')) document.body.classList.add('mode-long');
-            if(n.endsWith('S')) document.body.classList.add('mode-short');
-        }
-
-        function loadChart(coin) {
-            new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF,
-                "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708"
-            });
+        function selectSlot(i) {
+            activeIdx = i; const s = slots[i];
+            document.getElementById('coinInput').value = s.name;
+            document.getElementById('baseInput').value = s.price || '';
+            document.getElementById('capitalInput').value = s.capital;
+            renderNav(); loadChart(s.name); calculate();
         }
 
         function updateCoin() {
             const v = document.getElementById('coinInput').value.trim().toUpperCase();
-            if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); }
+            slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate();
+        }
+
+        function loadChart(coin) {
+            new TradingView.widget({
+                "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`,
+                "interval": "60", "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true
+            });
         }
 
         function renderNav() {
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
-                <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join('');
+                <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>
+            `).join('');
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        
-        function updateTF(tf, btn) {
-            activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active'); loadChart(slots[activeIdx].name);
-        }
-
-        function exportMasterExcel() {
-            let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}"`).join("\n");
-            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `Bitacora_C5X.csv`; a.click();
-        }
-
-        function editLevelProfit(i) {
-            if(prompt("Clave:") === "2524") {
-                const nG = prompt("Nuevo Profit % para este nivel:", strategies[slots[activeIdx].activeStrat][i].g);
-                if(nG) { strategies[slots[activeIdx].activeStrat][i].g = parseFloat(nG); calculate(); }
-            }
-        }
     </script>
 </body>
 </html>
