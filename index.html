@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.2</title>
+    <title>C5X DCA ENGINE V19.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -121,7 +121,9 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = 0, activeTF = '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
+        
+        // ACTUALIZACIÓN: Capital por defecto a $5.00
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
@@ -149,7 +151,7 @@
         async function fetchTicker() { try { const symbol = assets[assetIdx]; const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`); const data = await res.json(); currentTickerSymbol = symbol.replace("USDT",""); document.getElementById('t-sym').textContent = currentTickerSymbol; document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const pct = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; assetIdx = (assetIdx + 1) % assets.length; } catch(e) {} }
         
         function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 10; save(); renderLevels(); }
+        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
@@ -182,7 +184,7 @@
                 localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                 renderHistory();
                 slots.splice(activeIdx, 1);
-                slots.push({ name:'', price:0, capital:10, buys:[] });
+                slots.push({ name:'', price:0, capital:5, buys:[] });
                 save();
                 selectSlot(0); 
             }
@@ -201,7 +203,6 @@
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
         function editStrategy(i) { if(prompt("Clave:") === "2524") { const nG = prompt("Profit G (ej: 0.50):", strategy[i].g); if(nG) { strategy[i].g = parseFloat(nG); localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate(); } } }
         
-        // FUNCIÓN DE LIMPIAR HISTORIAL CON CLAVE
         function clearHistory() { 
             if(prompt("Ingrese la clave para borrar todo el historial:") === "2524") { 
                 if(confirm("¿Está seguro de que desea eliminar todos los registros permanentemente?")) {
@@ -209,8 +210,6 @@
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory(); 
                 }
-            } else {
-                alert("Clave incorrecta. Operación cancelada.");
             }
         }
 
