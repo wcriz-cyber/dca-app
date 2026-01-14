@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.6</title>
+    <title>C5X DCA ENGINE V19.7</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -69,7 +69,7 @@
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 260px; background: #000; }
+        .chart-container { width: 100%; height: 280px; background: #000; position: relative; }
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
@@ -100,19 +100,12 @@
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA AJUSTADA PARA MOSTRAR 3 OPERACIONES CON SCROLL */
         .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
         .h-actions { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 10px; }
         .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
         .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
         
-        /* Contenedor de lista con altura calculada para 3 items (~230px) */
-        #historyList { 
-            margin-top: 10px; 
-            max-height: 235px; 
-            overflow-y: auto; 
-            scrollbar-width: thin;
-        }
+        #historyList { margin-top: 10px; max-height: 235px; overflow-y: auto; }
         .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; height: 78px; display: flex; flex-direction: column; justify-content: center; }
         .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 18px; margin-bottom: 4px; }
         .h-meta-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; font-family: 'Roboto Mono'; }
@@ -177,7 +170,7 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, activeTF = '60';
+        let activeIdx = 0, activeTF = '60', tvWidget = null;
         
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
@@ -225,12 +218,30 @@
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            const profitUSD = spent * lastActiveProfitPercent;
             const target = avg > 0 ? (avg * (1 + lastActiveProfitPercent)) : 0;
+            const profitUSD = spent * lastActiveProfitPercent;
+            
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = target.toFixed(6);
             document.getElementById('resProf').textContent = `$${profitUSD.toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
+            
+            updateTVLines(avg, target);
+        }
+
+        // FUNCIÓN PARA DIBUJAR LÍNEAS EN TRADINGVIEW
+        function updateTVLines(avg, target) {
+            if(!tvWidget) return;
+            tvWidget.onChartReady(() => {
+                const chart = tvWidget.activeChart();
+                chart.removeAllShapes(); // Limpia líneas previas
+                if(avg > 0) {
+                    chart.createShape({ price: avg }, { shape: 'horizontal_line', overrides: { lineColor: '#f1c40f', lineStyle: 1, lineWidth: 2, showLabel: true, text: 'AVG PRICE' } });
+                }
+                if(target > 0) {
+                    chart.createShape({ price: target }, { shape: 'horizontal_line', overrides: { lineColor: '#0ecb81', lineStyle: 0, lineWidth: 3, showLabel: true, text: 'TARGET SELL' } });
+                }
+            });
         }
 
         function releaseSlot() {
@@ -249,14 +260,8 @@
         function renderHistory() { 
             document.getElementById('historyList').innerHTML = history.map(item => `
                 <div class="history-item">
-                    <div class="h-coin-row">
-                        <span>${item.coin}</span>
-                        <span style="color:var(--long-green)">${item.prof}</span>
-                    </div>
-                    <div class="h-meta-row">
-                        <span>${item.date}</span>
-                        <span>Inv: ${item.inv}</span>
-                    </div>
+                    <div class="h-coin-row"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div>
+                    <div class="h-meta-row"><span>${item.date}</span><span>Inv: ${item.inv}</span></div>
                 </div>`).join(''); 
         }
 
@@ -266,7 +271,20 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        
+        function loadChart(coin) { 
+            tvWidget = new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": "#050708",
+                "library_path": "https://s3.tradingview.com/tv.js"
+            }); 
+        }
+
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
@@ -274,15 +292,14 @@
         
         function clearHistory() { 
             if(prompt("Ingrese la clave para borrar todo el historial:") === "2524") { 
-                if(confirm("¿Está seguro de que desea eliminar todos los registros permanentemente?")) {
+                if(confirm("¿Eliminar registros permanentemente?")) {
                     history = []; 
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory(); 
                 }
             }
         }
-
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-</html>
+    </html>
