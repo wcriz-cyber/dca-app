@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.3</title>
+    <title>C5X DCA ENGINE V19.4</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -22,28 +22,68 @@
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
+
+        /* CABECERA FIJA */
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--bg);
+        }
+
+        .app-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 10px 20px; 
+            background: var(--header-bg); 
+            border-bottom: 3px solid var(--dir-color); 
+        }
+
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
-        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
+        
+        .btc-live-box { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: rgba(128,128,128,0.1); 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            font-family: 'Orbitron'; 
+            font-size: 13px; 
+        }
+
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
-        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; }
-        .tf-btn { flex: 1; padding: 12px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        
+        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
+        .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
+
+        /* ESPACIADOR PARA QUE EL CONTENIDO NO SE META DEBAJO DE LA CABECERA */
+        .content-spacer { margin-top: 110px; }
+
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        
         .chart-container { width: 100%; height: 260px; background: #000; }
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
+        
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
+        
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
@@ -59,6 +99,7 @@
         .data-val-usd { font-size: 14px; color: var(--long-green); font-weight: 900; }
         .data-val-pct { font-size: 14px; color: var(--danger); font-weight: 900; cursor: pointer; }
         .panic-btn { position: absolute; top: 0; right: 18px; background: var(--dir-color); color: #fff; border: none; padding: 3px 12px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
+        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 400px; display: flex; flex-direction: column; }
         .h-actions { display: flex; gap: 10px; margin-top: 10px; }
@@ -70,51 +111,55 @@
 </head>
 <body onload="init()">
 
-    <header class="app-header">
-        <div class="logo-area">C5X</div>
-        <div class="btc-live-box" onclick="viewTickerChart()">
-            <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
-            <span id="t-sym">BTC</span>
-            <span id="t-price">$--,---</span>
-            <span id="t-pct" style="font-size:10px; font-weight:900;">0.00%</span>
+    <div class="fixed-header">
+        <header class="app-header">
+            <div class="logo-area">C5X</div>
+            <div class="btc-live-box" onclick="viewTickerChart()">
+                <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
+                <span id="t-sym">BTC</span>
+                <span id="t-price">$--,---</span>
+                <span id="t-pct" style="font-size:10px; font-weight:900;">0.00%</span>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+        </header>
+
+        <div class="tf-bar">
+            <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
+            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
+            <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
         </div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    </header>
-
-    <div class="tf-bar">
-        <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-        <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-        <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
-        <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
-        <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
     </div>
 
-    <nav id="slotNav" class="slot-nav"></nav>
-    <div id="tv_chart" class="chart-container"></div>
+    <div class="content-spacer">
+        <nav id="slotNav" class="slot-nav"></nav>
+        <div id="tv_chart" class="chart-container"></div>
 
-    <div class="controls">
-        <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
-        <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-        <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
-    </div>
-
-    <div class="dash">
-        <div class="dash-top-row">
-            <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-            <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
-            <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
+        <div class="controls">
+            <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
+            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
+            <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
         </div>
-        <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
-    </div>
 
-    <main id="levelsGrid" class="levels-container"></main>
+        <div class="dash">
+            <div class="dash-top-row">
+                <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
+                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
+                <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
+            </div>
+            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
+        </div>
 
-    <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
+        <main id="levelsGrid" class="levels-container"></main>
 
-    <div class="history-section">
-        <span style="font-size:11px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
-        <div class="h-actions"><button class="btn-export" onclick="exportMasterExcel()">EXCEL</button><button class="btn-clear" onclick="clearHistory()">LIMPIAR</button></div>
-        <div id="historyList"></div>
+        <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
+
+        <div class="history-section">
+            <span style="font-size:11px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
+            <div class="h-actions"><button class="btn-export" onclick="exportMasterExcel()">EXCEL</button><button class="btn-clear" onclick="clearHistory()">LIMPIAR</button></div>
+            <div id="historyList"></div>
+        </div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -122,7 +167,6 @@
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = 0, activeTF = '60';
         
-        // ACTUALIZACIÓN: Capital por defecto a $5.00
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
