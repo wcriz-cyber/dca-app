@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.1</title>
+    <title>C5X DCA ENGINE V19.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -175,22 +175,15 @@
             document.getElementById('resProf').textContent = `$${profitUSD.toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
         }
 
-        // LÓGICA DE MOVER SLOT LIBERADO AL FINAL
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length > 0 && confirm(`¿Liquidar ${s.name}?`)) {
-                // Guardar en historial
                 history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
                 localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                 renderHistory();
-
-                // 1. Eliminar el slot actual de su posición
                 slots.splice(activeIdx, 1);
-                // 2. Insertar uno nuevo vacío al final
                 slots.push({ name:'', price:0, capital:10, buys:[] });
-                
                 save();
-                // 3. Seleccionar el primer slot disponible (o mantener el índice si es válido)
                 selectSlot(0); 
             }
         }
@@ -207,7 +200,20 @@
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
         function editStrategy(i) { if(prompt("Clave:") === "2524") { const nG = prompt("Profit G (ej: 0.50):", strategy[i].g); if(nG) { strategy[i].g = parseFloat(nG); localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate(); } } }
-        function clearHistory() { if(confirm("¿Borrar historial?")) { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } }
+        
+        // FUNCIÓN DE LIMPIAR HISTORIAL CON CLAVE
+        function clearHistory() { 
+            if(prompt("Ingrese la clave para borrar todo el historial:") === "2524") { 
+                if(confirm("¿Está seguro de que desea eliminar todos los registros permanentemente?")) {
+                    history = []; 
+                    localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
+                    renderHistory(); 
+                }
+            } else {
+                alert("Clave incorrecta. Operación cancelada.");
+            }
+        }
+
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
