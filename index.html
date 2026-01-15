@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V19.8</title>
+    <title>C5X DCA ENGINE V19.9</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -25,38 +25,11 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        .fixed-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background: var(--bg);
-        }
-
-        .app-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 10px 20px; 
-            background: var(--header-bg); 
-            border-bottom: 3px solid var(--dir-color); 
-        }
-
+        .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         
-        .btc-live-box { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            background: rgba(128,128,128,0.1); 
-            padding: 6px 12px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border); 
-            font-family: 'Orbitron'; 
-            font-size: 13px; 
-        }
-
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
         
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
@@ -64,7 +37,6 @@
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
         .content-spacer { margin-top: 110px; }
-
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -82,7 +54,7 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        /* AJUSTE: Altura máxima para ver solo la mitad de niveles con scroll */
+        /* Contenedor de niveles con scroll para ver la mitad */
         .levels-container { 
             padding: 0 12px; 
             display: flex; 
@@ -93,17 +65,15 @@
             scrollbar-width: thin;
         }
 
-        .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
         .card-left { display: flex; align-items: center; gap: 18px; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         
-        /* Área de precio clickeable */
+        /* Área de precio clickeable y fuente de nivel más grande */
         .price-group { display: flex; flex-direction: column; cursor: pointer; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); line-height: 1; }
-        
-        /* FUENTE DE NIVEL MÁS GRANDE */
         .lvl-label-mini { font-size: 12px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); line-height: 1; }
         
         .card-right { text-align: right; }
         .data-grid { display: grid; grid-template-columns: auto auto; gap: 12px; align-items: center; }
@@ -120,11 +90,7 @@
             z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px;
         }
         #toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 1.5s; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @-webkit-keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
+        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
         .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
@@ -132,10 +98,15 @@
         .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
         .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
         
-        #historyList { margin-top: 10px; max-height: 235px; overflow-y: auto; scrollbar-width: thin; }
+        #historyList { margin-top: 10px; max-height: 235px; overflow-y: auto; }
         .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; height: 78px; display: flex; flex-direction: column; justify-content: center; }
         .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 18px; margin-bottom: 4px; }
         .h-meta-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; font-family: 'Roboto Mono'; }
+
+        @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @-webkit-keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body onload="init()">
@@ -153,7 +124,6 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-
         <div class="tf-bar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
@@ -263,16 +233,29 @@
             document.getElementById('resProf').textContent = `$${profitUSD.toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
         }
 
+        // NUEVA FUNCIÓN: Liquidar con confirmación de contraseña
         function releaseSlot() {
             const s = slots[activeIdx];
-            if(s.buys.length > 0 && confirm(`¿Liquidar ${s.name}?`)) {
-                history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
+            if(s.buys.length === 0) return;
+            
+            const pass = prompt(`Para liquidar ${s.name}, ingresa la clave de seguridad:`);
+            if(pass === "2524") {
+                history.unshift({ 
+                    coin: s.name, 
+                    date: new Date().toLocaleString(), 
+                    prof: document.getElementById('resProf').textContent, 
+                    inv: document.getElementById('resInv').textContent, 
+                    avg: document.getElementById('resAvg').textContent 
+                });
                 localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                 renderHistory();
                 slots.splice(activeIdx, 1);
                 slots.push({ name:'', price:0, capital:5, buys:[] });
                 save();
-                selectSlot(0); 
+                selectSlot(0);
+                alert("Operación liquidada y guardada en la bitácora.");
+            } else if (pass !== null) {
+                alert("Clave incorrecta. Operación no liquidada.");
             }
         }
 
