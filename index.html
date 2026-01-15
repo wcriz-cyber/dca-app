@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V21.0</title>
+    <title>C5X DCA ENGINE V21.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -22,7 +22,7 @@
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; transition: 0.3s; overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; cursor: pointer; }
@@ -58,11 +58,25 @@
         .data-val-pct { font-size: 14px; color: var(--danger); font-weight: 900; cursor: pointer; }
         .panic-btn { position: absolute; top: 0; right: 18px; background: var(--dir-color); color: #fff; border: none; padding: 3px 12px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
-        .history-section { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); max-height: 400px; display: flex; flex-direction: column; }
-        .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
-        .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 10px; border-radius: 10px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; }
-        #historyList { overflow-y: auto; flex: 1; margin-top: 10px; }
-        .history-item { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+
+        /* BITÁCORA CORREGIDA */
+        .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
+        .h-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        #historyList { 
+            max-height: 220px; /* Altura para ver aprox 3 elementos */
+            overflow-y: auto; 
+            padding-right: 5px;
+        }
+        .history-item { 
+            padding: 15px 10px; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 4px;
+        }
+        .h-row-top { display: flex; justify-content: space-between; font-weight: 900; font-size: 16px; }
+        .h-row-bot { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.7; }
+        .btn-h { padding: 8px 15px; border-radius: 8px; font-size: 10px; font-weight: 900; border: none; font-family: 'Orbitron'; }
     </style>
 </head>
 <body onload="init()">
@@ -109,10 +123,12 @@
     <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
     <div class="history-section">
-        <span style="font-size:11px; font-weight:900; color:var(--dir-color)">BITÁCORA DE CIERRES</span>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <button class="btn-export" onclick="exportMasterExcel()">EXCEL</button>
-            <button class="btn-clear" onclick="clearHistory()">LIMPIAR</button>
+        <div class="h-header">
+            <span style="font-size:11px; font-weight:900; color:var(--dir-color); font-family: 'Orbitron';">BITÁCORA</span>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-h" style="background:var(--long-green); color:#fff;" onclick="exportMasterExcel()">EXCEL</button>
+                <button class="btn-h" style="background:transparent; border:1px solid var(--danger); color:var(--danger);" onclick="clearHistory()">LIMPIAR</button>
+            </div>
         </div>
         <div id="historyList"></div>
     </div>
@@ -185,14 +201,22 @@
                 tvWidget.onChartReady(() => {
                     const chart = tvWidget.activeChart();
                     chart.removeAllShapes();
-                    if(avg > 0) chart.createShape({ price: avg }, { shape: 'horizontal_line', overrides: { lineColor: '#f1c40f', lineStyle: 1, showLabel: true, text: 'AVG PRICE' } });
-                    if(target > 0) chart.createShape({ price: target }, { shape: 'horizontal_line', overrides: { lineColor: '#0ecb81', lineStyle: 0, showLabel: true, text: 'TARGET SELL' } });
+                    if(avg > 0) chart.createShape({ price: avg }, { shape: 'horizontal_line', overrides: { lineColor: '#f1c40f', lineStyle: 1, showLabel: true, text: 'AVG' } });
+                    if(target > 0) chart.createShape({ price: target }, { shape: 'horizontal_line', overrides: { lineColor: '#0ecb81', lineStyle: 0, showLabel: true, text: 'TARGET' } });
                 });
             } catch(e){}
         }
 
         function loadChart(coin) {
-            tvWidget = new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" });
+            tvWidget = new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": "#050708" 
+            });
         }
 
         function releaseSlot() {
@@ -205,7 +229,14 @@
             }
         }
 
-        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(item => `<div class="history-item"><div style="display:flex; justify-content:space-between; font-weight:900;"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div><div style="font-size:10px; opacity:0.6;">${item.date} | Inv: ${item.inv}</div></div>`).join(''); }
+        function renderHistory() { 
+            document.getElementById('historyList').innerHTML = history.map(item => `
+                <div class="history-item">
+                    <div class="h-row-top"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div>
+                    <div class="h-row-bot"><span>${item.date}</span><span>Inv: ${item.inv}</span></div>
+                </div>`).join(''); 
+        }
+
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
@@ -214,7 +245,7 @@
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
-        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT,AVG\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}",${h.avg}`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Reporte.csv`; a.click(); }
+        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT,AVG\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}",${h.avg}`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Bitacora.csv`; a.click(); }
         function clearHistory() { if(confirm("¿Borrar historial?")) { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } }
         function editStrategy(i) { if(prompt("Clave:") === "2524") { const nG = prompt("Profit G (ej: 0.50):", strategy[i].g); if(nG) { strategy[i].g = parseFloat(nG); localStorage.setItem('c5x_strategy', JSON.stringify(strategy)); calculate(); } } }
         function viewTickerChart() { loadChart(currentTickerSymbol); }
