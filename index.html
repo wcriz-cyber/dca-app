@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.5</title>
+    <title>C5X DCA ENGINE V22.9</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -161,21 +161,20 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA V22.5: 12 niveles. El Nivel 1 es entrada, luego +5% progresivo por nivel.
-        // Cada valor de 'c' representa la caída respecto al nivel anterior.
+        // ESTRATEGIA V22.9: 12 niveles. Caída acumulada (Entrada -> -15% -> +7% cada nivel)
         const STRATEGY = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // NIVEL 1
-            { c: 0.05, m: 1.0, g: 0.50, p: "-5%" },     // NIVEL 2
-            { c: 0.10, m: 1.5, g: 0.50, p: "-10%" },    // NIVEL 3
-            { c: 0.15, m: 1.5, g: 1.00, p: "-15%" },    // NIVEL 4
-            { c: 0.20, m: 2.0, g: 1.00, p: "-20%" },    // NIVEL 5
-            { c: 0.25, m: 2.0, g: 1.00, p: "-25%" },    // NIVEL 6
-            { c: 0.30, m: 4.0, g: 1.50, p: "-30%" },    // NIVEL 7
-            { c: 0.35, m: 4.0, g: 1.50, p: "-35%" },    // NIVEL 8
-            { c: 0.40, m: 8.0, g: 1.50, p: "-40%" },    // NIVEL 9
-            { c: 0.45, m: 8.0, g: 2.00, p: "-45%" },    // NIVEL 10
-            { c: 0.50, m: 16.0, g: 2.00, p: "-50%" },   // NIVEL 11
-            { c: 0.55, m: 16.0, g: 2.00, p: "-55%" }    // NIVEL 12
+            { pct: 0, m: 1.0, g: 0.50, label: "ENTRADA" },   // NIVEL 1
+            { pct: 15, m: 1.0, g: 0.50, label: "-15%" },     // NIVEL 2
+            { pct: 22, m: 1.5, g: 0.50, label: "-22%" },     // NIVEL 3 (15+7)
+            { pct: 29, m: 1.5, g: 1.00, label: "-29%" },     // NIVEL 4 (22+7)
+            { pct: 36, m: 2.0, g: 1.00, label: "-36%" },     // NIVEL 5
+            { pct: 43, m: 2.0, g: 1.00, label: "-43%" },     // NIVEL 6
+            { pct: 50, m: 4.0, g: 1.50, label: "-50%" },     // NIVEL 7
+            { pct: 57, m: 4.0, g: 1.50, label: "-57%" },     // NIVEL 8
+            { pct: 64, m: 8.0, g: 1.50, label: "-64%" },     // NIVEL 9
+            { pct: 71, m: 8.0, g: 2.00, label: "-71%" },     // NIVEL 10
+            { pct: 78, m: 16.0, g: 2.00, label: "-78%" },    // NIVEL 11
+            { pct: 85, m: 16.0, g: 2.00, label: "-85%" }     // NIVEL 12
         ];
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -196,26 +195,26 @@
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             
-            let spent = 0, tokens = 0, cp = s.price, html = '';
+            let spent = 0, tokens = 0, html = '';
             let lastActiveProfitPercent = 0.50;
             if (s.buys.length > 0) { const maxLvlIdx = Math.max(...s.buys); if(STRATEGY[maxLvlIdx]) lastActiveProfitPercent = STRATEGY[maxLvlIdx].g; }
             
             STRATEGY.forEach((lvl, i) => {
-                // Cálculo en cascada: cada nivel resta su % al precio del nivel anterior
-                if(i > 0) cp = cp * (1 - lvl.c);
-                
+                // Cálculo de precio basado en la caída acumulada desde el precio base
+                const currentPriceVal = s.price * (1 - (lvl.pct / 100));
+                const currentPriceStr = currentPriceVal.toFixed(6);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                const currentPrice = cp.toFixed(6);
+                
+                if(on) { spent += mUSD; tokens += (mUSD / currentPriceVal); }
                 
                 html += `<div class="level-card ${on ? 'active' : ''}">
                             <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
                             <div class="card-left">
                                 <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                                <div class="price-group" onclick="copyToClipboard('${currentPrice}')">
+                                <div class="price-group" onclick="copyToClipboard('${currentPriceStr}')">
                                     <span class="lvl-label-mini">NIVEL ${i + 1}</span>
-                                    <div class="price-display">${currentPrice}</div>
+                                    <div class="price-display">${currentPriceStr}</div>
                                 </div>
                             </div>
                             <div class="card-right">
@@ -226,7 +225,7 @@
                                     </div>
                                     <div class="data-item">
                                         <span class="data-label">CAÍDA</span>
-                                        <span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span>
+                                        <span class="data-val-pct" onclick="editStrategy(${i})">-${lvl.pct}%</span>
                                     </div>
                                 </div>
                             </div>
