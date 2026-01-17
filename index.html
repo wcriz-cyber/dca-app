@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.1</title>
+    <title>C5X DCA ENGINE V20.2</title>
     <style>
         :root {
             --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
@@ -37,8 +37,8 @@
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--long-green); }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
+        .target-price { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--long-green); }
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; scrollbar-width: thin; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
@@ -46,7 +46,7 @@
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         .price-group { display: flex; flex-direction: column; cursor: pointer; }
         .lvl-label-mini { font-size: 12px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; color: var(--text); line-height: 1; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); line-height: 1; }
         .card-right { text-align: right; }
         .data-grid { display: grid; grid-template-columns: auto auto; gap: 12px; align-items: center; }
         .data-item { display: flex; flex-direction: column; align-items: flex-end; }
@@ -108,10 +108,10 @@
         <div class="dash">
             <div class="dash-top-row">
                 <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.00000000</div></div>
+                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.0000000000</div></div>
                 <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
             </div>
-            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.00000000</b></div>
+            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.0000000000</b></div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
@@ -167,12 +167,7 @@
         function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
 
-        function copyToClipboard(val) {
-            navigator.clipboard.writeText(val);
-            const t = document.getElementById("toast");
-            t.className = "show";
-            setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000);
-        }
+        function copyToClipboard(val) { navigator.clipboard.writeText(val); const t = document.getElementById("toast"); t.className = "show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
@@ -187,15 +182,15 @@
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                const currentPrice = cp.toFixed(8); // Aumento a 8 decimales
+                const currentPrice = cp.toFixed(10); // 10 Decimales
                 html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
             const target = avg > 0 ? (avg * (1 + lastActiveProfitPercent)) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(8); // Aumento a 8 decimales
-            document.getElementById('resTarget').textContent = target.toFixed(8); // Aumento a 8 decimales
+            document.getElementById('resAvg').textContent = avg.toFixed(10); // 10 Decimales
+            document.getElementById('resTarget').textContent = target.toFixed(10); // 10 Decimales
             document.getElementById('resProf').textContent = `$${(spent * lastActiveProfitPercent).toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
         }
 
