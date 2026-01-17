@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.2</title>
+    <title>C5X DCA ENGINE V20.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -159,7 +159,6 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // NUEVA ESTRATEGIA: 12 niveles con dobles aplicados
         const NEW_STRATEGY = [
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" },
             { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },
@@ -167,15 +166,14 @@
             { c: 0.35, m: 1.5, g: 0.50, p: "-58%" },
             { c: 0.40, m: 2.0, g: 0.70, p: "-75%" },
             { c: 0.45, m: 2.0, g: 1.00, p: "-86%" },
-            { c: 0.50, m: 5.0, g: 1.00, p: "-93%" },    // Nivel 6 (Doble)
-            { c: 0.55, m: 5.0, g: 1.20, p: "-96.8%" },  // Nivel 7 (Doble)
-            { c: 0.50, m: 6.0, g: 1.00, p: "-98.4%" },  // Nivel 8 (Doble)
-            { c: 0.60, m: 6.0, g: 1.50, p: "-99.3%" },  // Nivel 9 (Doble)
-            { c: 0.60, m: 7.0, g: 2.00, p: "-99.7%" },  // Nivel 10 (Doble)
-            { c: 0.70, m: 7.0, g: 2.00, p: "-99.9%" }   // Nivel 11 (Doble)
+            { c: 0.50, m: 5.0, g: 1.00, p: "-93%" },    
+            { c: 0.55, m: 5.0, g: 1.20, p: "-96.8%" },  
+            { c: 0.50, m: 6.0, g: 1.00, p: "-98.4%" },  
+            { c: 0.60, m: 6.0, g: 1.50, p: "-99.3%" },  
+            { c: 0.60, m: 7.0, g: 2.00, p: "-99.7%" },  
+            { c: 0.70, m: 7.0, g: 2.00, p: "-99.9%" }   
         ];
 
-        // FORZAR ACTUALIZACIÓN: Esto sobrescribe cualquier estrategia vieja guardada
         localStorage.setItem('c5x_strategy', JSON.stringify(NEW_STRATEGY));
         let strategy = NEW_STRATEGY;
 
@@ -222,13 +220,19 @@
             if(s.buys.length === 0) return;
             const pass = prompt(`Para liquidar ${s.name}, ingresa la clave (2524):`);
             if(pass === "2524") {
+                // 1. Guardar en historial
                 history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
                 localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                 renderHistory();
-                slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
+
+                // 2. Lógica de reordenamiento: Eliminar el slot actual y añadir uno vacío al final
+                slots.splice(activeIdx, 1);
+                slots.push({ name:'', price:0, capital:5, buys:[] });
+                
+                // 3. Guardar y actualizar UI
                 save();
-                selectSlot(activeIdx);
-                alert("Operación liquidada y guardada.");
+                selectSlot(activeIdx); // Se mantiene en el mismo índice, que ahora tiene la siguiente operación o está vacío
+                alert("Operación liquidada. Slots reorganizados.");
             } else if (pass !== null) alert("Clave incorrecta.");
         }
 
