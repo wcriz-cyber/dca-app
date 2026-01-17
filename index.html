@@ -159,20 +159,20 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA ACTUALIZADA SEGÚN SOLICITUD
+        // ESTRATEGIA ACTUALIZADA: MULTIPLICADORES Y GANANCIAS ESCALONADAS
         const NEW_STRATEGY = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // BASE
-            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // LVL 1
-            { c: 0.25, m: 1.5, g: 0.50, p: "-36%" },    // LVL 2
-            { c: 0.35, m: 1.5, g: 0.50, p: "-58%" },    // LVL 3
-            { c: 0.40, m: 2.0, g: 0.70, p: "-75%" },    // LVL 4
-            { c: 0.45, m: 2.0, g: 1.00, p: "-86%" },    // LVL 5
-            { c: 0.50, m: 4.0, g: 1.00, p: "-93%" },    // LVL 6 (Doble del 5)
-            { c: 0.55, m: 4.0, g: 1.20, p: "-96.8%" },  // LVL 7 (Doble del 5)
-            { c: 0.50, m: 8.0, g: 1.00, p: "-98.4%" },  // LVL 8 (Doble del 6)
-            { c: 0.60, m: 8.0, g: 1.50, p: "-99.3%" },  // LVL 9 (Doble del 6)
-            { c: 0.60, m: 16.0, g: 2.00, p: "-99.7%" }, // LVL 10 (Doble del 8)
-            { c: 0.70, m: 16.0, g: 2.00, p: "-99.9%" }  // LVL 11 (Doble del 8)
+            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // BASE - 50%
+            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // LVL 1 - 50%
+            { c: 0.25, m: 1.5, g: 0.50, p: "-36%" },    // LVL 2 - 50%
+            { c: 0.35, m: 1.5, g: 1.00, p: "-58%" },    // LVL 3 - 100%
+            { c: 0.40, m: 2.0, g: 1.00, p: "-75%" },    // LVL 4 - 100%
+            { c: 0.45, m: 2.0, g: 1.00, p: "-86%" },    // LVL 5 - 100%
+            { c: 0.50, m: 4.0, g: 1.50, p: "-93%" },    // LVL 6 - 150% (Doble del 5)
+            { c: 0.55, m: 4.0, g: 1.50, p: "-96.8%" },  // LVL 7 - 150% (Doble del 5)
+            { c: 0.50, m: 8.0, g: 1.50, p: "-98.4%" },  // LVL 8 - 150% (Doble del 6)
+            { c: 0.60, m: 8.0, g: 2.00, p: "-99.3%" },  // LVL 9 - 200% (Doble del 6)
+            { c: 0.60, m: 16.0, g: 2.00, p: "-99.7%" }, // LVL 10 - 200% (Doble del 8)
+            { c: 0.70, m: 16.0, g: 2.00, p: "-99.9%" }  // LVL 11 - 200% (Doble del 8)
         ];
 
         localStorage.setItem('c5x_strategy', JSON.stringify(NEW_STRATEGY));
@@ -248,4 +248,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-</html>
+    </html>
