@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.2</title>
+    <title>C5X DCA ENGINE V20.4 - 5X BOOST</title>
     <style>
         :root {
             --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
@@ -16,47 +16,58 @@
         body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
+        
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
+        
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
+
         .content-spacer { margin-top: 110px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        
         .chart-container { width: 100%; height: 260px; background: #000; }
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
+        
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--long-green); }
+        .dash-val-small { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; color: var(--warning); word-break: break-all; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); word-break: break-all; }
+        
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; scrollbar-width: thin; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
-        .card-left { display: flex; align-items: center; gap: 18px; }
+        .card-left { display: flex; align-items: center; gap: 18px; flex: 1; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
-        .price-group { display: flex; flex-direction: column; cursor: pointer; }
+        
+        .price-group { display: flex; flex-direction: column; cursor: pointer; max-width: 70%; }
         .lvl-label-mini { font-size: 12px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); line-height: 1; }
-        .card-right { text-align: right; }
-        .data-grid { display: grid; grid-template-columns: auto auto; gap: 12px; align-items: center; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: var(--text); line-height: 1.2; word-break: break-all; }
+        
+        .card-right { text-align: right; min-width: 80px; }
+        .data-grid { display: grid; grid-template-columns: auto auto; gap: 8px; align-items: center; }
         .data-item { display: flex; flex-direction: column; align-items: flex-end; }
         .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; }
-        .data-val-usd { font-size: 14px; color: var(--long-green); font-weight: 900; }
-        .data-val-pct { font-size: 14px; color: var(--danger); font-weight: 900; cursor: pointer; }
+        .data-val-usd { font-size: 13px; color: var(--long-green); font-weight: 900; }
+        .data-val-pct { font-size: 13px; color: var(--danger); font-weight: 900; cursor: pointer; }
         .panic-btn { position: absolute; top: 0; right: 18px; background: var(--dir-color); color: #fff; border: none; padding: 3px 12px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
+        
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
         #toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 1.5s; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
+        
         .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
         .h-actions { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 10px; }
         .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
@@ -65,6 +76,7 @@
         .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; height: 78px; display: flex; flex-direction: column; justify-content: center; }
         .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 18px; margin-bottom: 4px; }
         .h-meta-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; font-family: 'Roboto Mono'; }
+
         @-webkit-keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @-webkit-keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
@@ -108,10 +120,10 @@
         <div class="dash">
             <div class="dash-top-row">
                 <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.0000000000</div></div>
+                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.00...</div></div>
                 <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
             </div>
-            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.0000000000</b></div>
+            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.00...</b></div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
@@ -146,19 +158,35 @@
             { c: 0.90, m: 5.0, g: 2.00, p: "-99.9%" }
         ];
 
+        // ESTRATEGIA 5X V20.4 (INCREMENTADA UN 20% EN CAÍDAS ACUMULADAS)
         const strategy5x = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.13, m: 1.0, g: 0.50, p: "-13%" }, { c: 0.26, m: 1.5, g: 0.50, p: "-36%" },
-            { c: 0.39, m: 1.5, g: 0.50, p: "-61%" }, { c: 0.39, m: 2.0, g: 0.50, p: "-76%" }, { c: 0.52, m: 2.0, g: 1.00, p: "-89%" },
-            { c: 0.52, m: 2.5, g: 1.00, p: "-94%" }, { c: 0.65, m: 2.5, g: 1.00, p: "-98%" }, { c: 0.65, m: 3.0, g: 1.00, p: "-99.3%" },
-            { c: 0.78, m: 3.0, g: 1.50, p: "-99.8%" }, { c: 0.78, m: 3.5, g: 1.50, p: "-99.9%" }, { c: 0.91, m: 3.5, g: 1.50, p: "-99.9%" },
-            { c: 0.91, m: 4.0, g: 1.50, p: "-99.9%" }, { c: 1.00, m: 4.0, g: 2.00, p: "-100%" }, { c: 1.00, m: 5.0, g: 2.00, p: "-100%" },
-            { c: 1.00, m: 5.0, g: 2.00, p: "-100%" }
+            { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, 
+            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" }, 
+            { c: 0.28, m: 1.5, g: 0.50, p: "-38%" },
+            { c: 0.42, m: 1.5, g: 0.50, p: "-64%" }, 
+            { c: 0.42, m: 2.0, g: 0.50, p: "-79%" }, 
+            { c: 0.55, m: 2.0, g: 1.00, p: "-91%" },
+            { c: 0.55, m: 2.5, g: 1.00, p: "-96%" }, 
+            { c: 0.70, m: 2.5, g: 1.00, p: "-99%" }, 
+            { c: 0.70, m: 3.0, g: 1.00, p: "-99.7%" },
+            { c: 0.85, m: 3.0, g: 1.50, p: "-99.95%" }, 
+            { c: 0.85, m: 3.5, g: 1.50, p: "-99.99%" }, 
+            { c: 0.95, m: 3.5, g: 1.50, p: "-99.999%" },
+            { c: 0.95, m: 4.0, g: 1.50, p: "-99.999%" }, 
+            { c: 0.99, m: 4.0, g: 2.00, p: "-100%" }, 
+            { c: 0.99, m: 5.0, g: 2.00, p: "-100%" },
+            { c: 0.99, m: 5.0, g: 2.00, p: "-100%" }
         ];
 
         function getActiveStrategy(coinName) {
             const name = (coinName || "").toUpperCase();
-            if (name.endsWith("5L") || name.endsWith("5S")) return strategy5x;
-            return strategy3x;
+            return (name.endsWith("5L") || name.endsWith("5S")) ? strategy5x : strategy3x;
+        }
+
+        function formatSmartPrice(num) {
+            if (num === 0) return "0.000000";
+            if (num < 0.00000001) return num.toFixed(14);
+            return num.toFixed(10);
         }
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -177,20 +205,21 @@
             let spent = 0, tokens = 0, cp = s.price, html = '';
             let lastActiveProfitPercent = 0.50;
             if (s.buys.length > 0) { const maxLvlIdx = Math.min(Math.max(...s.buys), currentStrategy.length - 1); lastActiveProfitPercent = currentStrategy[maxLvlIdx].g; }
+            
             currentStrategy.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                const currentPrice = cp.toFixed(10); // 10 Decimales
+                const currentPrice = formatSmartPrice(cp);
                 html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
             const target = avg > 0 ? (avg * (1 + lastActiveProfitPercent)) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(10); // 10 Decimales
-            document.getElementById('resTarget').textContent = target.toFixed(10); // 10 Decimales
+            document.getElementById('resAvg').textContent = formatSmartPrice(avg);
+            document.getElementById('resTarget').textContent = formatSmartPrice(target);
             document.getElementById('resProf').textContent = `$${(spent * lastActiveProfitPercent).toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
         }
 
