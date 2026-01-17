@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>C5X DCA ENGINE V20.5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700&family=Roboto+Mono:wght@700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
@@ -13,241 +12,211 @@
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --accent: #f3ba2f;
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body.light-mode { --bg: #f5f7f9; --surface: #ffffff; --text: #1e2329; --border: #e6e8ea; --header-bg: #ffffff; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
-            font-family: 'Roboto', sans-serif; overflow-x: hidden;
-            padding-bottom: 80px;
+            font-family: 'Roboto', sans-serif; transition: 0.3s;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         header { 
-            background: var(--header-bg); padding: 15px; text-align: center;
+            background: var(--header-bg); padding: 15px; display: flex; 
+            justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: var(--accent); letter-spacing: 2px; }
+        .logo { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
         
-        .main-container { padding: 10px; max-width: 600px; margin: auto; }
-        
-        .card { 
-            background: var(--surface); border-radius: 12px; padding: 15px; 
-            margin-bottom: 15px; border: 1px solid var(--border);
+        /* Navegación de 5 Slots */
+        .slots-nav { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 4px; padding: 10px; 
+            background: var(--surface); 
+            border-bottom: 1px solid var(--border);
         }
+        .slot-btn { 
+            background: #1e222d; border: 1px solid var(--border); color: #848e9c;
+            padding: 8px 2px; border-radius: 4px; font-weight: 900; cursor: pointer; font-size: 0.7rem;
+        }
+        .slot-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(243, 186, 47, 0.1); }
 
-        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .main-card { background: var(--surface); margin: 10px; border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
+        .input-row { display: grid; grid-template-columns: 1.2fr 1fr; gap: 10px; margin-bottom: 12px; }
         input { 
             background: #1e222d; border: 1px solid var(--border); color: white;
-            padding: 12px; border-radius: 8px; font-size: 1rem; width: 100%;
+            padding: 12px; border-radius: 8px; font-size: 1rem; width: 100%; font-weight: bold;
         }
+        body.light-mode input { background: #f0f2f5; color: black; }
 
-        .level-row {
-            display: grid; grid-template-columns: 40px 1fr 80px 40px;
-            align-items: center; padding: 10px; border-bottom: 1px solid #1e222d;
-            font-family: 'Roboto Mono', monospace; font-size: 0.9rem;
+        #tv_chart { height: 180px; margin: 10px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+
+        .level-card {
+            display: grid; grid-template-columns: 35px 1fr 100px 45px;
+            align-items: center; padding: 12px 10px; border-bottom: 1px solid var(--border);
+            font-family: 'Roboto Mono', monospace; font-size: 0.85rem;
         }
-        .level-row.active { background: rgba(14, 203, 129, 0.1); border-left: 3px solid var(--long-green); }
-        
-        .btn { 
-            border: none; border-radius: 8px; padding: 10px; font-weight: bold; 
-            cursor: pointer; text-transform: uppercase; font-size: 0.8rem;
+        .level-card.active { background: rgba(14, 203, 129, 0.08); border-left: 3px solid var(--long-green); }
+        .mode-short .level-card.active { background: rgba(246, 70, 93, 0.08); border-left: 3px solid var(--short-red); }
+
+        .btn-action { border: none; border-radius: 6px; padding: 8px; font-weight: 900; cursor: pointer; }
+        .btn-buy { background: #2b2f36; color: var(--text); border: 1px solid var(--border); border-radius: 4px; }
+        .active .btn-buy { background: var(--long-green); color: black; border: none; }
+        .mode-short .active .btn-buy { background: var(--short-red); color: white; }
+
+        .fab-reset {
+            position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px;
+            background: var(--short-red); border-radius: 50%; display: flex;
+            justify-content: center; align-items: center; color: white; font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 200;
         }
-        .btn-buy { background: var(--long-green); color: black; }
-        .btn-clear { background: var(--short-red); color: white; width: 100%; margin-top: 10px; }
-        .btn-history { background: var(--dir-color); color: white; margin-bottom: 10px; width: 100%; }
-
-        .stat-box { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.85rem; color: #848e9c; }
-        .stat-val { color: var(--text); font-weight: bold; }
-
-        #history-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.8rem; }
-        #history-table th, #history-table td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
-        .win { color: var(--long-green); }
     </style>
 </head>
-<body>
+<body class="mode-long">
 
 <header>
     <div class="logo">C5X DCA V20.5</div>
+    <button onclick="toggleTheme()" id="themeBtn" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">🌙</button>
 </header>
 
-<div class="main-container">
-    <div class="card">
-        <div class="input-group">
-            <div>
-                <label style="font-size: 0.7rem;">MONEDA</label>
-                <input type="text" id="coin" value="BTC3L" oninput="calculate()">
-            </div>
-            <div>
-                <label style="font-size: 0.7rem;">PRECIO ENTRADA</label>
-                <input type="number" id="entryPrice" value="1.00" step="0.0001" oninput="calculate()">
-            </div>
-        </div>
-        <div class="input-group">
-            <div>
-                <label style="font-size: 0.7rem;">CAPITAL BASE $</label>
-                <input type="number" id="baseCap" value="5.00" oninput="calculate()">
-            </div>
-            <div style="display: flex; align-items: flex-end;">
-                <button class="btn btn-clear" onclick="resetSlots()">RESET</button>
-            </div>
-        </div>
+<div class="slots-nav">
+    <button class="slot-btn active" onclick="setSlot(0)">S1</button>
+    <button class="slot-btn" onclick="setSlot(1)">S2</button>
+    <button class="slot-btn" onclick="setSlot(2)">S3</button>
+    <button class="slot-btn" onclick="setSlot(3)">S4</button>
+    <button class="slot-btn" onclick="setSlot(4)">S5</button>
+</div>
+
+<div id="tv_chart"></div>
+
+<div class="main-card">
+    <div class="input-row">
+        <input type="text" id="coin" placeholder="MONEDA" oninput="calculate()">
+        <input type="number" id="entry" placeholder="PRECIO" step="0.000001" oninput="calculate()">
     </div>
-
-    <div id="levels-container" class="card" style="padding: 5px;">
-        </div>
-
-    <div class="card">
-        <button class="btn btn-history" onclick="toggleHistory()">VER HISTORIAL CERRADOS</button>
-        <div id="history-section" style="display: none;">
-            <table id="history-table">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Par</th>
-                        <th>Invertido</th>
-                        <th>Profit</th>
-                    </tr>
-                </thead>
-                <tbody id="history-body"></tbody>
-            </table>
-            <button class="btn btn-clear" onclick="clearHistory()" style="font-size: 0.6rem;">BORRAR HISTORIAL</button>
-        </div>
+    <div class="input-row">
+        <input type="number" id="capital" placeholder="CAPITAL $" oninput="calculate()">
+        <button class="btn-action" onclick="saveOp()" style="background: var(--dir-color); color: white;">SAVE OP</button>
     </div>
 </div>
 
+<div id="levels-list" style="margin-bottom: 100px;"></div>
+
+<div class="fab-reset" onclick="resetCurrentSlot()">🔄</div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    // ESTRATEGIA ACTUALIZADA: Base 10% + Incremento de 7% por nivel
+    // ESTRATEGIA: Base 0%, Nivel 1 10%, luego +7% incremental por nivel
     const strategy = [
-        { d: 0.00, m: 1.0, g: 0.50 }, // Base
-        { d: 0.10, m: 1.0, g: 0.50 }, // Nivel 1
-        { d: 0.17, m: 1.5, g: 0.60 }, // Nivel 2 (+7%)
-        { d: 0.24, m: 1.5, g: 0.70 }, // Nivel 3 (+7%)
-        { d: 0.31, m: 2.0, g: 0.80 }, // Nivel 4 (+7%)
-        { d: 0.38, m: 2.0, g: 1.00 }, // Nivel 5 (+7%)
-        { d: 0.45, m: 4.0, g: 1.20 }, // Nivel 6 (+7%)
-        { d: 0.52, m: 4.0, g: 1.50 }, // Nivel 7 (+7%)
-        { d: 0.59, m: 8.0, g: 1.80 }, // Nivel 8 (+7%)
-        { d: 0.66, m: 8.0, g: 2.00 }, // Nivel 9 (+7%)
-        { d: 0.73, m: 16.0, g: 2.00 }, // Nivel 10 (+7%)
-        { d: 0.80, m: 16.0, g: 2.00 }  // Nivel 11 (+7%)
+        { d: 0.00, m: 1.0, g: 0.50 }, { d: 0.10, m: 1.0, g: 0.50 },
+        { d: 0.17, m: 1.5, g: 0.60 }, { d: 0.24, m: 1.5, g: 0.70 },
+        { d: 0.31, m: 2.0, g: 0.80 }, { d: 0.38, m: 2.0, g: 1.00 },
+        { d: 0.45, m: 4.0, g: 1.20 }, { d: 0.52, m: 4.0, g: 1.50 },
+        { d: 0.59, m: 8.0, g: 1.80 }, { d: 0.66, m: 8.0, g: 2.00 },
+        { d: 0.73, m: 16.0, g: 2.00 }, { d: 0.80, m: 16.0, g: 2.00 }
     ];
 
-    let activeBuys = JSON.parse(localStorage.getItem('c5x_buys')) || [0];
-    let closedOps = JSON.parse(localStorage.getItem('c5x_history')) || [];
+    let slots = JSON.parse(localStorage.getItem('c5x_slots')) || [
+        { coin: 'BTC3L', entry: 1.0, cap: 5, buys: [0] },
+        { coin: 'ETH3L', entry: 1.0, cap: 5, buys: [0] },
+        { coin: 'SOL3L', entry: 1.0, cap: 5, buys: [0] },
+        { coin: 'LINK3L', entry: 1.0, cap: 5, buys: [0] },
+        { coin: 'DOGE3L', entry: 1.0, cap: 5, buys: [0] }
+    ];
+    let activeIdx = 0;
 
     function calculate() {
-        const entry = parseFloat(document.getElementById('entryPrice').value) || 0;
-        const base = parseFloat(document.getElementById('baseCap').value) || 0;
-        const container = document.getElementById('levels-container');
-        container.innerHTML = '';
+        const s = slots[activeIdx];
+        s.coin = document.getElementById('coin').value.toUpperCase();
+        s.entry = parseFloat(document.getElementById('entry').value) || 0;
+        s.cap = parseFloat(document.getElementById('capital').value) || 0;
+        
+        document.body.className = s.coin.endsWith('S') ? 'mode-short' : 'mode-long';
+        renderLevels();
+        save();
+    }
 
-        let totalInv = 0;
-        let totalQty = 0;
-        let lastPrice = entry;
+    function renderLevels() {
+        const s = slots[activeIdx];
+        const container = document.getElementById('levels-list');
+        container.innerHTML = '';
+        
+        let totalInv = 0, totalQty = 0, lastPrice = s.entry;
 
         strategy.forEach((lvl, i) => {
-            // Precio cae respecto al anterior
-            const buyPrice = i === 0 ? entry : lastPrice * (1 - lvl.d);
-            lastPrice = buyPrice;
+            const p = i === 0 ? s.entry : lastPrice * (1 - lvl.d);
+            lastPrice = p;
+            const cost = s.cap * lvl.m;
+            const isA = s.buys.includes(i);
 
-            const cost = base * lvl.m;
-            const qty = cost / buyPrice;
-            const isActive = activeBuys.includes(i);
-
-            if (isActive) {
-                totalInv += cost;
-                totalQty += qty;
-            }
-
+            if(isA) { totalInv += cost; totalQty += (cost / p); }
             const avg = totalQty > 0 ? totalInv / totalQty : 0;
             const target = avg * (1 + lvl.g);
 
-            const row = document.createElement('div');
-            row.className = `level-row ${isActive ? 'active' : ''}`;
-            row.innerHTML = `
-                <div style="color: #848e9c">L${i}</div>
-                <div>
-                    <div style="color: var(--accent)">$${buyPrice.toFixed(4)}</div>
-                    <div style="font-size: 0.7rem; color: #5e6673">M: ${lvl.m}x | Cost: $${cost.toFixed(2)}</div>
+            const div = document.createElement('div');
+            div.className = `level-card ${isA ? 'active' : ''}`;
+            div.innerHTML = `
+                <div style="color:#848e9c">L${i}</div>
+                <div onclick="panic(${i})">
+                    <div style="font-weight:900">$${p.toFixed(4)}</div>
+                    <div style="font-size:0.65rem; color:#848e9c">-${(lvl.d*100).toFixed(0)}% | $${cost.toFixed(2)}</div>
                 </div>
-                <div style="text-align: right;">
-                    <div class="win">T: $${target.toFixed(4)}</div>
-                    <div style="font-size: 0.7rem; color: #5e6673">Avg: ${avg.toFixed(4)}</div>
+                <div style="text-align:right">
+                    <div style="color:var(--long-green); font-weight:900">$${target.toFixed(4)}</div>
+                    <div style="font-size:0.65rem; color:#848e9c">AVG: ${avg.toFixed(4)}</div>
                 </div>
-                <button class="btn-buy" style="border:none; border-radius:4px; margin-left:10px" onclick="toggleLvl(${i})">${isActive ? '✔' : '+'}</button>
+                <button class="btn-buy" onclick="toggleLvl(${i})">${isA ? '✔' : '+'}</button>
             `;
-            container.appendChild(row);
+            container.appendChild(div);
         });
-
-        save();
-        renderHistory();
     }
 
     function toggleLvl(i) {
-        if (activeBuys.includes(i)) {
-            // Si es el último nivel comprado, al quitarlo preguntamos si se cerró la operación
-            if (i === Math.max(...activeBuys) && i > 0) {
-                if (confirm("¿Cerrar operación y guardar en historial?")) {
-                    saveToHistory();
-                }
-            }
-            activeBuys = activeBuys.filter(x => x !== i);
-        } else {
-            activeBuys.push(i);
-        }
+        const b = slots[activeIdx].buys;
+        slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i];
         calculate();
     }
 
-    function saveToHistory() {
-        const coin = document.getElementById('coin').value;
-        const base = parseFloat(document.getElementById('baseCap').value);
-        let total = 0;
-        activeBuys.forEach(idx => total += (base * strategy[idx].m));
-        
-        const op = {
-            date: new Date().toLocaleDateString(),
-            coin: coin,
-            total: total.toFixed(2),
-            profit: "SUCCESS"
-        };
-        closedOps.unshift(op);
-        localStorage.setItem('c5x_history', JSON.stringify(closedOps));
-    }
-
-    function renderHistory() {
-        const body = document.getElementById('history-body');
-        body.innerHTML = closedOps.map(op => `
-            <tr>
-                <td>${op.date}</td>
-                <td>${op.coin}</td>
-                <td>$${op.total}</td>
-                <td class="win">${op.profit}</td>
-            </tr>
-        `).join('');
-    }
-
-    function toggleHistory() {
-        const sec = document.getElementById('history-section');
-        sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function clearHistory() {
-        if(confirm("¿Borrar todo el historial?")) {
-            closedOps = [];
-            localStorage.setItem('c5x_history', JSON.stringify(closedOps));
-            renderHistory();
-        }
-    }
-
-    function resetSlots() {
-        activeBuys = [0];
+    function panic(i) {
+        slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k);
         calculate();
     }
 
-    function save() {
-        localStorage.setItem('c5x_buys', JSON.stringify(activeBuys));
+    function setSlot(i) {
+        activeIdx = i;
+        document.querySelectorAll('.slot-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        const s = slots[i];
+        document.getElementById('coin').value = s.coin;
+        document.getElementById('entry').value = s.entry;
+        document.getElementById('capital').value = s.cap;
+        loadChart(s.coin);
+        calculate();
     }
 
-    // Inicializar
-    calculate();
+    function resetCurrentSlot() {
+        if(confirm("¿Resetear Slot actual?")) {
+            slots[activeIdx].buys = [0];
+            calculate();
+        }
+    }
+
+    function loadChart(coin) {
+        new TradingView.widget({
+            "autosize": true, "symbol": `GATEIO:${coin.replace('USDT','')}USDT`,
+            "interval": "60", "theme": "dark", "container_id": "tv_chart",
+            "style": "1", "hide_top_toolbar": true, "backgroundColor": "#050708"
+        });
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+    }
+
+    function save() { localStorage.setItem('c5x_slots', JSON.stringify(slots)); }
+
+    // Iniciar
+    setSlot(0);
 </script>
-
 </body>
 </html>
