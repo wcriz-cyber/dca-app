@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.0 - SMART MULTIPLIER</title>
+    <title>C5X DCA ENGINE V22.1 - ORIGINAL COV</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -104,7 +104,7 @@
         <div class="tf-bar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-            <button class="tf-btn active" onclick="updateTF('60', this) focus: none;">1H</button>
+            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
             <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
         </div>
@@ -152,7 +152,7 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA ORIGINAL
+        // ESTRATEGIA ORIGINAL (VERSIÓN 19.9)
         const strategyBase = [
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.10, m: 1.0, g: 0.50, p: "-10%" }, { c: 0.20, m: 1.5, g: 0.50, p: "-28%" },
             { c: 0.30, m: 1.5, g: 0.50, p: "-49%" }, { c: 0.30, m: 2.0, g: 0.50, p: "-64%" }, { c: 0.40, m: 2.0, g: 1.00, p: "-78%" },
@@ -164,24 +164,21 @@
 
         function getActiveStrategy(coinName) {
             const name = (coinName || "").toUpperCase();
-            // Clonamos la estrategia para aplicar los cambios de capital solo si es 5L/5S
             let strategy = JSON.parse(JSON.stringify(strategyBase));
             
+            // Lógica de capital para tokens 5X
             if (name.endsWith("5L") || name.endsWith("5S")) {
                 strategy.forEach((lvl, i) => {
-                    // Niveles 9, 10, 11, 12 son el doble (Index 9 al 12)
-                    if (i >= 9 && i <= 12) lvl.m *= 2;
-                    // Niveles 13, 14, 15, 16 son el doble (Index 13 al 15)
-                    if (i >= 13) lvl.m *= 2;
+                    if (i >= 9 && i <= 12) lvl.m *= 2; // Niveles 9 al 12 doble capital
+                    if (i >= 13) lvl.m *= 2;           // Niveles 13 al 16 doble capital
                 });
             }
             return strategy;
         }
 
         function formatDeepPrice(num) {
-            if (num === 0) return "0.00000000";
-            if (num < 0.00000001) return num.toFixed(14);
-            return num.toFixed(8);
+            if (num === 0) return "0.000000";
+            return num.toFixed(6);
         }
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
