@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.5</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icon.png">
-    <meta name="theme-color" content="#050708">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>C5X DCA ENGINE V20.6 - DEEP PRECISION</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -50,33 +45,29 @@
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--long-green); }
+        .dash-val-small { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; color: var(--warning); word-break: break-all; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--long-green); word-break: break-all; }
         
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; scrollbar-width: thin; }
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
-        .card-left { display: flex; align-items: center; gap: 18px; }
+        .card-left { display: flex; align-items: center; gap: 18px; flex: 1; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         
-        .price-group { display: flex; flex-direction: column; cursor: pointer; }
+        .price-group { display: flex; flex-direction: column; cursor: pointer; max-width: 70%; }
         .lvl-label-mini { font-size: 12px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); line-height: 1; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--text); line-height: 1.2; word-break: break-all; }
         
-        .card-right { text-align: right; }
-        .data-grid { display: grid; grid-template-columns: auto auto; gap: 12px; align-items: center; }
+        .card-right { text-align: right; min-width: 80px; }
+        .data-grid { display: grid; grid-template-columns: auto auto; gap: 8px; align-items: center; }
         .data-item { display: flex; flex-direction: column; align-items: flex-end; }
         .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; }
-        .data-val-usd { font-size: 14px; color: var(--long-green); font-weight: 900; }
-        .data-val-pct { font-size: 14px; color: var(--danger); font-weight: 900; cursor: pointer; }
+        .data-val-usd { font-size: 13px; color: var(--long-green); font-weight: 900; }
+        .data-val-pct { font-size: 13px; color: var(--danger); font-weight: 900; cursor: pointer; }
         .panic-btn { position: absolute; top: 0; right: 18px; background: var(--dir-color); color: #fff; border: none; padding: 3px 12px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         
-        #toast {
-            visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff;
-            text-align: center; border-radius: 30px; padding: 10px; position: fixed;
-            z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px;
-        }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
         #toast.show { visibility: visible; -webkit-animation: fadein 0.5s, fadeout 0.5s 1.5s; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
@@ -132,10 +123,10 @@
         <div class="dash">
             <div class="dash-top-row">
                 <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
+                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.00...</div></div>
                 <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
             </div>
-            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
+            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.00...</b></div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
@@ -170,7 +161,6 @@
             { c: 0.90, m: 5.0, g: 2.00, p: "-99.9%" }
         ];
 
-        // ESTRATEGIA 5X ACTUALIZADA (+10% COBERTURA)
         const strategy5x = [
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" }, { c: 0.14, m: 1.0, g: 0.50, p: "-14%" }, { c: 0.27, m: 1.5, g: 0.50, p: "-37%" },
             { c: 0.40, m: 1.5, g: 0.50, p: "-62%" }, { c: 0.40, m: 2.0, g: 0.50, p: "-77%" }, { c: 0.53, m: 2.0, g: 1.00, p: "-90%" },
@@ -183,6 +173,13 @@
         function getActiveStrategy(coinName) {
             const name = (coinName || "").toUpperCase();
             return (name.endsWith("5L") || name.endsWith("5S")) ? strategy5x : strategy3x;
+        }
+
+        // FUNCIÓN DE FORMATEO CON ALTA PRECISIÓN (14 DECIMALES)
+        function formatDeepPrice(num) {
+            if (num === 0) return "0.00000000";
+            if (num < 0.00000001) return num.toFixed(14);
+            return num.toFixed(8);
         }
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -207,15 +204,15 @@
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                const currentPrice = cp.toFixed(6);
+                const currentPrice = formatDeepPrice(cp);
                 html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
             const target = avg > 0 ? (avg * (1 + lastActiveProfitPercent)) : 0;
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = target.toFixed(6);
+            document.getElementById('resAvg').textContent = formatDeepPrice(avg);
+            document.getElementById('resTarget').textContent = formatDeepPrice(target);
             document.getElementById('resProf').textContent = `$${(spent * lastActiveProfitPercent).toFixed(2)} (${(lastActiveProfitPercent*100)}%)`;
         }
 
