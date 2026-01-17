@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.2</title>
+    <title>C5X DCA ENGINE V22.3</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -124,7 +124,7 @@
 
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
-            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
+            <div class="control-box"><label>P. ENTRADA</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
             <div class="control-box"><label>CAPITAL $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
         </div>
 
@@ -161,19 +161,20 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA V22.2: Cada valor se calcula sobre el anterior (+9% progresivo)
+        // ESTRATEGIA V22.3: 12 niveles. El Nivel 1 es el precio de entrada (0% caída).
         const STRATEGY = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // BASE
-            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // LVL 1
-            { c: 0.24, m: 1.5, g: 0.50, p: "-24%" },    // LVL 2 (15+9)
-            { c: 0.33, m: 1.5, g: 1.00, p: "-33%" },    // LVL 3 (24+9)
-            { c: 0.42, m: 2.0, g: 1.00, p: "-42%" },    // LVL 4 (33+9)
-            { c: 0.51, m: 2.0, g: 1.00, p: "-51%" },    // LVL 5 (42+9)
-            { c: 0.60, m: 4.0, g: 1.50, p: "-60%" },    // LVL 6 (51+9)
-            { c: 0.69, m: 4.0, g: 1.50, p: "-69%" },    // LVL 7 (60+9)
-            { c: 0.78, m: 8.0, g: 1.50, p: "-78%" },    // LVL 8 (69+9)
-            { c: 0.87, m: 8.0, g: 2.00, p: "-87%" },    // LVL 9 (78+9)
-            { c: 0.96, m: 16.0, g: 2.00, p: "-96%" }    // LVL 10 (87+9)
+            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // NIVEL 1 (Entrada)
+            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // NIVEL 2 (Anterior - 15%)
+            { c: 0.24, m: 1.5, g: 0.50, p: "-24%" },    // NIVEL 3 (15+9)
+            { c: 0.33, m: 1.5, g: 1.00, p: "-33%" },    // NIVEL 4 (24+9)
+            { c: 0.42, m: 2.0, g: 1.00, p: "-42%" },    // NIVEL 5 (33+9)
+            { c: 0.51, m: 2.0, g: 1.00, p: "-51%" },    // NIVEL 6 (42+9)
+            { c: 0.60, m: 4.0, g: 1.50, p: "-60%" },    // NIVEL 7 (51+9)
+            { c: 0.69, m: 4.0, g: 1.50, p: "-69%" },    // NIVEL 8 (60+9)
+            { c: 0.78, m: 8.0, g: 1.50, p: "-78%" },    // NIVEL 9 (69+9)
+            { c: 0.87, m: 8.0, g: 2.00, p: "-87%" },    // NIVEL 10 (78+9)
+            { c: 0.96, m: 16.0, g: 2.00, p: "-96%" },   // NIVEL 11 (87+9)
+            { c: 0.99, m: 16.0, g: 2.00, p: "-99%" }    // NIVEL 12 (Límite)
         ];
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -212,7 +213,7 @@
                             <div class="card-left">
                                 <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                                 <div class="price-group" onclick="copyToClipboard('${currentPrice}')">
-                                    <span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span>
+                                    <span class="lvl-label-mini">NIVEL ${i + 1}</span>
                                     <div class="price-display">${currentPrice}</div>
                                 </div>
                             </div>
@@ -223,7 +224,7 @@
                                         <span class="data-val-usd">$${mUSD.toFixed(1)}</span>
                                     </div>
                                     <div class="data-item">
-                                        <span class="data-label">CAÍDA LVL</span>
+                                        <span class="data-label">CAÍDA</span>
                                         <span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span>
                                     </div>
                                 </div>
