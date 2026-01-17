@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.3</title>
+    <title>C5X DCA ENGINE V22.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -161,20 +161,21 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA V22.3: 12 niveles. El Nivel 1 es el precio de entrada (0% caída).
+        // ESTRATEGIA V22.5: 12 niveles. El Nivel 1 es entrada, luego +5% progresivo por nivel.
+        // Cada valor de 'c' representa la caída respecto al nivel anterior.
         const STRATEGY = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // NIVEL 1 (Entrada)
-            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // NIVEL 2 (Anterior - 15%)
-            { c: 0.24, m: 1.5, g: 0.50, p: "-24%" },    // NIVEL 3 (15+9)
-            { c: 0.33, m: 1.5, g: 1.00, p: "-33%" },    // NIVEL 4 (24+9)
-            { c: 0.42, m: 2.0, g: 1.00, p: "-42%" },    // NIVEL 5 (33+9)
-            { c: 0.51, m: 2.0, g: 1.00, p: "-51%" },    // NIVEL 6 (42+9)
-            { c: 0.60, m: 4.0, g: 1.50, p: "-60%" },    // NIVEL 7 (51+9)
-            { c: 0.69, m: 4.0, g: 1.50, p: "-69%" },    // NIVEL 8 (60+9)
-            { c: 0.78, m: 8.0, g: 1.50, p: "-78%" },    // NIVEL 9 (69+9)
-            { c: 0.87, m: 8.0, g: 2.00, p: "-87%" },    // NIVEL 10 (78+9)
-            { c: 0.96, m: 16.0, g: 2.00, p: "-96%" },   // NIVEL 11 (87+9)
-            { c: 0.99, m: 16.0, g: 2.00, p: "-99%" }    // NIVEL 12 (Límite)
+            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // NIVEL 1
+            { c: 0.05, m: 1.0, g: 0.50, p: "-5%" },     // NIVEL 2
+            { c: 0.10, m: 1.5, g: 0.50, p: "-10%" },    // NIVEL 3
+            { c: 0.15, m: 1.5, g: 1.00, p: "-15%" },    // NIVEL 4
+            { c: 0.20, m: 2.0, g: 1.00, p: "-20%" },    // NIVEL 5
+            { c: 0.25, m: 2.0, g: 1.00, p: "-25%" },    // NIVEL 6
+            { c: 0.30, m: 4.0, g: 1.50, p: "-30%" },    // NIVEL 7
+            { c: 0.35, m: 4.0, g: 1.50, p: "-35%" },    // NIVEL 8
+            { c: 0.40, m: 8.0, g: 1.50, p: "-40%" },    // NIVEL 9
+            { c: 0.45, m: 8.0, g: 2.00, p: "-45%" },    // NIVEL 10
+            { c: 0.50, m: 16.0, g: 2.00, p: "-50%" },   // NIVEL 11
+            { c: 0.55, m: 16.0, g: 2.00, p: "-55%" }    // NIVEL 12
         ];
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -200,7 +201,7 @@
             if (s.buys.length > 0) { const maxLvlIdx = Math.max(...s.buys); if(STRATEGY[maxLvlIdx]) lastActiveProfitPercent = STRATEGY[maxLvlIdx].g; }
             
             STRATEGY.forEach((lvl, i) => {
-                // Cálculo en cascada: el precio actual se basa en el nivel anterior
+                // Cálculo en cascada: cada nivel resta su % al precio del nivel anterior
                 if(i > 0) cp = cp * (1 - lvl.c);
                 
                 const mUSD = lvl.m * s.capital;
