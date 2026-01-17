@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V22.1</title>
+    <title>C5X DCA ENGINE V22.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -161,7 +161,7 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // ESTRATEGIA ACTUALIZADA: NIVEL 1 AL 15%, LUEGO +9% PROGRESIVO
+        // ESTRATEGIA V22.2: Cada valor se calcula sobre el anterior (+9% progresivo)
         const STRATEGY = [
             { c: 0.00, m: 1.0, g: 0.50, p: "0%" },      // BASE
             { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },    // LVL 1
@@ -173,8 +173,7 @@
             { c: 0.69, m: 4.0, g: 1.50, p: "-69%" },    // LVL 7 (60+9)
             { c: 0.78, m: 8.0, g: 1.50, p: "-78%" },    // LVL 8 (69+9)
             { c: 0.87, m: 8.0, g: 2.00, p: "-87%" },    // LVL 9 (78+9)
-            { c: 0.96, m: 16.0, g: 2.00, p: "-96%" },   // LVL 10 (87+9)
-            { c: 0.999, m: 16.0, g: 2.00, p: "-99.9%" } // LVL 11 (Límite)
+            { c: 0.96, m: 16.0, g: 2.00, p: "-96%" }    // LVL 10 (87+9)
         ];
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -194,17 +193,42 @@
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
+            
             let spent = 0, tokens = 0, cp = s.price, html = '';
             let lastActiveProfitPercent = 0.50;
             if (s.buys.length > 0) { const maxLvlIdx = Math.max(...s.buys); if(STRATEGY[maxLvlIdx]) lastActiveProfitPercent = STRATEGY[maxLvlIdx].g; }
             
             STRATEGY.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
+                // Cálculo en cascada: el precio actual se basa en el nivel anterior
+                if(i > 0) cp = cp * (1 - lvl.c);
+                
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
                 const currentPrice = cp.toFixed(6);
-                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span></div></div></div></div>`;
+                
+                html += `<div class="level-card ${on ? 'active' : ''}">
+                            <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
+                            <div class="card-left">
+                                <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                                <div class="price-group" onclick="copyToClipboard('${currentPrice}')">
+                                    <span class="lvl-label-mini">${i === 0 ? 'BASE' : 'NIVEL ' + i}</span>
+                                    <div class="price-display">${currentPrice}</div>
+                                </div>
+                            </div>
+                            <div class="card-right">
+                                <div class="data-grid">
+                                    <div class="data-item">
+                                        <span class="data-label">MONTO</span>
+                                        <span class="data-val-usd">$${mUSD.toFixed(1)}</span>
+                                    </div>
+                                    <div class="data-item">
+                                        <span class="data-label">CAÍDA LVL</span>
+                                        <span class="data-val-pct" onclick="editStrategy(${i})">${lvl.p}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
