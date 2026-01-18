@@ -54,7 +54,9 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; scrollbar-width: thin; }
+        /* CORRECCIÓN SCROLL: Se eliminó el max-height fijo para permitir scroll natural */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        
         .level-card { background: var(--surface); border-radius: 16px; padding: 15px 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); border-width: 2px; }
         .card-left { display: flex; align-items: center; gap: 18px; }
@@ -83,7 +85,7 @@
         .h-actions { display: flex; gap: 10px; margin-top: 15px; margin-bottom: 10px; }
         .btn-export { flex: 1; background: var(--long-green); color: #fff; border: none; padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
         .btn-clear { flex: 1; background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; }
-        #historyList { margin-top: 10px; max-height: 235px; overflow-y: auto; }
+        #historyList { margin-top: 10px; }
         .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; display: flex; flex-direction: column; }
         .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 18px; }
         .h-meta-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; font-family: 'Roboto Mono'; margin-top: 5px; }
@@ -152,33 +154,52 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = 0, activeTF = '60';
+        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; // CORRECCIÓN: Recordar slot
+        let activeTF = '60';
         
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
 
-        // Estrategia con multiplicadores dinámicos basados en tu requerimiento
         const STRATEGY_DATA = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "BASE" },   // Nivel 1 ($5 si base=5)
-            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },  // Nivel 2
-            { c: 0.20, m: 1.5, g: 0.50, p: "-20%" },  // Nivel 3
-            { c: 0.25, m: 1.5, g: 0.50, p: "-25%" },  // Nivel 4
-            { c: 0.30, m: 2.0, g: 0.70, p: "-30%" },  // Nivel 5
-            { c: 0.35, m: 2.0, g: 1.00, p: "-35%" },  // Nivel 6
-            { c: 0.40, m: 5.0, g: 1.00, p: "-40%" },  // Nivel 7
-            { c: 0.45, m: 5.0, g: 1.20, p: "-45%" },  // Nivel 8
-            { c: 0.50, m: 8.0, g: 1.00, p: "-50%" },  // Nivel 9 ($40 si base=5)
-            { c: 0.55, m: 8.0, g: 1.50, p: "-55%" },  // Nivel 10 ($40 si base=5)
-            { c: 0.60, m: 16.0, g: 2.00, p: "-60%" }, // Nivel 11 ($80 si base=5)
-            { c: 0.65, m: 16.0, g: 2.00, p: "-65%" }  // Nivel 12 ($80 si base=5)
+            { c: 0.00, m: 1.0, g: 0.50, p: "BASE" },
+            { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },
+            { c: 0.20, m: 1.5, g: 0.50, p: "-20%" },
+            { c: 0.25, m: 1.5, g: 0.50, p: "-25%" },
+            { c: 0.30, m: 2.0, g: 0.70, p: "-30%" },
+            { c: 0.35, m: 2.0, g: 1.00, p: "-35%" },
+            { c: 0.40, m: 5.0, g: 1.00, p: "-40%" },
+            { c: 0.45, m: 5.0, g: 1.20, p: "-45%" },
+            { c: 0.50, m: 8.0, g: 1.00, p: "-50%" },
+            { c: 0.55, m: 8.0, g: 1.50, p: "-55%" },
+            { c: 0.60, m: 16.0, g: 2.00, p: "-60%" },
+            { c: 0.65, m: 16.0, g: 2.00, p: "-65%" }
         ];
 
-        function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(0); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
+        function init() { 
+            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } 
+            renderNav(); 
+            selectSlot(activeIdx); // Carga el último slot guardado
+            renderHistory(); 
+            fetchTicker(); 
+            setInterval(fetchTicker, 10000); 
+        }
+
         async function fetchTicker() { try { const symbol = assets[assetIdx]; const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`); const data = await res.json(); currentTickerSymbol = symbol.replace("USDT",""); document.getElementById('t-sym').textContent = currentTickerSymbol; document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const pct = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; assetIdx = (assetIdx + 1) % assets.length; } catch(e) {} }
         
-        function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
+        function selectSlot(i) { 
+            activeIdx = i; 
+            localStorage.setItem('c5x_last_slot', i); // Guarda el slot actual
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); 
+            loadChart(s.name); 
+            calculate(); 
+        }
+
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
 
         function copyToClipboard(val) {
