@@ -54,30 +54,42 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         
-        .level-card { background: var(--surface); border-radius: 16px; padding: 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        .card-left { display: flex; align-items: center; gap: 18px; }
-        .check-box-large { width: 32px; height: 32px; accent-color: var(--dir-color); cursor: pointer; }
+        /* CORRECCIÓN: Tarjetas más grandes y espaciosas */
+        .level-card { 
+            background: var(--surface); 
+            border-radius: 20px; 
+            padding: 22px 18px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border: 1px solid var(--border); 
+            position: relative;
+            min-height: 100px;
+        }
+        .level-card.active { 
+            border-color: var(--dir-color); 
+            background: rgba(52, 152, 219, 0.1); 
+            border-width: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .card-left { display: flex; align-items: center; gap: 20px; }
+        .check-box-large { width: 34px; height: 34px; accent-color: var(--dir-color); cursor: pointer; }
         .price-group { display: flex; flex-direction: column; cursor: pointer; }
-        .lvl-label-mini { font-size: 12px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; }
-        
-        /* AJUSTE: Números de Precio más grandes */
-        .price-display { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--text); line-height: 1; }
+        .lvl-label-mini { font-size: 13px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--text); line-height: 1.1; }
         
         .card-right { text-align: right; }
-        .data-grid { display: grid; grid-template-columns: auto auto; gap: 15px; align-items: center; }
+        .data-grid { display: grid; grid-template-columns: auto auto; gap: 18px; align-items: center; }
         .data-item { display: flex; flex-direction: column; align-items: flex-end; }
-        .data-label { font-size: 9px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
+        .data-label { font-size: 10px; font-weight: 900; color: #848e9c; margin-bottom: 4px; text-transform: uppercase; }
         
-        /* AJUSTE: Monto en dólares más grande */
-        .data-val-usd { font-size: 18px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-usd { font-size: 20px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-pct { font-size: 20px; color: var(--danger); font-weight: 900; cursor: pointer; font-family: 'Roboto Mono'; }
         
-        /* AJUSTE: Valores de caída más grandes */
-        .data-val-pct { font-size: 18px; color: var(--danger); font-weight: 900; cursor: pointer; font-family: 'Roboto Mono'; }
-        
-        .panic-btn { position: absolute; top: 0; right: 20px; background: var(--dir-color); color: #fff; border: none; padding: 4px 14px; border-radius: 0 0 10px 10px; font-size: 10px; font-weight: 900; }
+        .panic-btn { position: absolute; top: 0; right: 25px; background: var(--dir-color); color: #fff; border: none; padding: 5px 16px; border-radius: 0 0 12px 12px; font-size: 11px; font-weight: 900; }
         
         #toast {
             visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff;
