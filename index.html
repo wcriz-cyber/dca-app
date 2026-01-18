@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.6</title>
+    <title>C5X DCA ENGINE V20.7</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -57,43 +57,45 @@
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
-        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
-        .price-group { display: flex; flex-direction: column; cursor: pointer; }
-        .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; opacity: 0.8; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
-        .card-right { flex: 1; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; text-align: right; }
-        .data-item { display: flex; flex-direction: column; justify-content: center; }
-        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
-        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
-        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
         
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA CON SLIDER (Muestra 3) */
-        .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; }
-        #historyList { margin-top: 10px; max-height: 260px; overflow-y: auto; scrollbar-width: none; }
+        /* BITÁCORA MEJORADA CON SLIDER VERTICAL */
+        .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
+        .h-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .h-title { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
+        
+        #historyList { 
+            max-height: 240px; /* Altura aproximada para 3 items */
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column;
+            gap: 2px;
+            scrollbar-width: none;
+        }
         #historyList::-webkit-scrollbar { display: none; }
-        .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; display: flex; flex-direction: column; }
-        .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 18px; }
-        .h-meta-row { display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7; font-family: 'Roboto Mono'; margin-top: 5px; }
+        .history-item { padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 16px; }
+        .h-meta-row { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.6; font-family: 'Roboto Mono'; margin-top: 4px; }
 
-        /* MODAL MINIMALISTA MÁS GRANDE */
-        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--bg); padding: 40px 30px; border-radius: 30px; border: 1px solid var(--border); width: 90%; max-width: 380px; text-align: center; }
-        .modal-label { font-family: 'Orbitron'; font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 30px; letter-spacing: 2px; }
-        .modal-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--dir-color); color: var(--text); padding: 15px; text-align: center; font-size: 32px; margin-bottom: 40px; outline: none; font-family: 'Roboto Mono'; letter-spacing: 15px; }
-        .modal-btns { display: flex; flex-direction: column; gap: 15px; }
-        .m-btn { width: 100%; padding: 16px; border-radius: 15px; border: none; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; cursor: pointer; transition: 0.2s; }
-        .m-btn-confirm { background: var(--dir-color); color: #fff; }
-        .m-btn-cancel { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+        /* MODAL REDISEÑADO: MÁS MINIMALISTA Y COMPACTO */
+        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
+        .modal-label { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--text); margin-bottom: 25px; letter-spacing: 2px; }
+        
+        /* Input más arriba */
+        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; font-family: 'Roboto Mono'; letter-spacing: 8px; }
+        
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        /* Botones más pequeños y estilizados */
+        .m-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
+        .m-btn-confirm { background: var(--long-green); color: #fff; }
+        .m-btn-cancel { background: transparent; color: var(--text); opacity: 0.5; }
 
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
@@ -157,12 +159,14 @@
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
         <div class="history-section">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:12px; font-weight:900; color:var(--dir-color); font-family: 'Orbitron'; letter-spacing:1px;">BITÁCORA DE CIERRES</span>
-                <button style="background:transparent; border:none; color:var(--long-green); font-size:10px; font-weight:900;" onclick="exportMasterExcel()">EXPORTAR</button>
+            <div class="h-header">
+                <span class="h-title">BITÁCORA DE CIERRES</span>
+                <div style="display:flex; gap:10px;">
+                    <button style="background:transparent; border:none; color:var(--long-green); font-size:9px; font-weight:900;" onclick="exportMasterExcel()">EXCEL</button>
+                    <button style="background:transparent; border:none; color:var(--danger); font-size:9px; font-weight:900;" onclick="clearHistory()">LIMPIAR</button>
+                </div>
             </div>
             <div id="historyList"></div>
-            <button class="btn-clear" style="margin-top:15px; border:none; background:transparent; color:var(--danger); font-size:9px; font-weight:900; letter-spacing:1px;" onclick="clearHistory()">LIMPIAR HISTORIAL</button>
         </div>
     </div>
 
@@ -210,7 +214,7 @@
                 const mUSD = lvl.m * s.capital; const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
                 const currentPrice = cp.toFixed(6);
-                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
+                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left" onclick="toggleLvl(${i})"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
@@ -232,12 +236,10 @@
                     history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory();
-                    // MOVER AL FINAL: Quitamos el slot actual y lo añadimos vacío al final
                     slots.splice(activeIdx, 1);
                     slots.push({ name:'', price:0, capital:5, buys:[] });
-                    save(); 
-                    selectSlot(0); // Regresa al primer slot disponible
-                    showToast("OPERACIÓN CERRADA Y REORDENADA");
+                    save(); selectSlot(0); 
+                    showToast("CERRADO Y REORDENADO");
                 } else { alert("CLAVE INCORRECTA"); }
             });
         }
