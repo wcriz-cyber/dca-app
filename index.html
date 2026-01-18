@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.3</title>
+    <title>C5X DCA ENGINE V20.4</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -54,42 +54,40 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         
-        /* CORRECCIÓN: Tarjetas más grandes y espaciosas */
         .level-card { 
             background: var(--surface); 
-            border-radius: 20px; 
-            padding: 22px 18px; 
+            border-radius: 18px; 
+            padding: 15px 15px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
             border: 1px solid var(--border); 
             position: relative;
-            min-height: 100px;
         }
         .level-card.active { 
             border-color: var(--dir-color); 
-            background: rgba(52, 152, 219, 0.1); 
+            background: rgba(52, 152, 219, 0.08); 
             border-width: 2px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         
-        .card-left { display: flex; align-items: center; gap: 20px; }
-        .check-box-large { width: 34px; height: 34px; accent-color: var(--dir-color); cursor: pointer; }
+        .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
+        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         .price-group { display: flex; flex-direction: column; cursor: pointer; }
-        .lvl-label-mini { font-size: 13px; font-weight: 900; color: var(--dir-color); margin-bottom: 4px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--text); line-height: 1.1; }
+        .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; opacity: 0.8; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
         
-        .card-right { text-align: right; }
-        .data-grid { display: grid; grid-template-columns: auto auto; gap: 18px; align-items: center; }
-        .data-item { display: flex; flex-direction: column; align-items: flex-end; }
-        .data-label { font-size: 10px; font-weight: 900; color: #848e9c; margin-bottom: 4px; text-transform: uppercase; }
+        .card-right { flex: 1; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; text-align: right; }
+        .data-item { display: flex; flex-direction: column; justify-content: center; }
+        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
         
-        .data-val-usd { font-size: 20px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
-        .data-val-pct { font-size: 20px; color: var(--danger); font-weight: 900; cursor: pointer; font-family: 'Roboto Mono'; }
+        /* Números reducidos para mejor orden */
+        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
         
-        .panic-btn { position: absolute; top: 0; right: 25px; background: var(--dir-color); color: #fff; border: none; padding: 5px 16px; border-radius: 0 0 12px 12px; font-size: 11px; font-weight: 900; }
+        .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         
         #toast {
             visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff;
@@ -128,12 +126,12 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        <div class="tf-bar">
-            <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-            <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
-            <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
-            <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
+        <div class="tf-bar" id="tfBar">
+            <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
+            <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn" data-tf="240" onclick="updateTF('240', this)">4H</button>
+            <button class="tf-btn" data-tf="D" onclick="updateTF('D', this)">1D</button>
         </div>
     </div>
 
@@ -174,7 +172,7 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
-        let activeTF = '60';
+        let activeTF = localStorage.getItem('c5x_last_tf') || '60'; // Memoria de temporalidad
         
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
@@ -200,6 +198,14 @@
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } 
             renderNav(); 
             selectSlot(activeIdx); 
+            
+            // Cargar botón de temporalidad guardado
+            const savedBtn = document.querySelector(`.tf-btn[data-tf="${activeTF}"]`);
+            if(savedBtn) {
+                document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+                savedBtn.classList.add('active');
+            }
+
             renderHistory(); 
             fetchTicker(); 
             setInterval(fetchTicker, 10000); 
@@ -242,7 +248,29 @@
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
                 const currentPrice = cp.toFixed(6);
-                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
+                html += `
+                <div class="level-card ${on ? 'active' : ''}">
+                    <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
+                    <div class="card-left">
+                        <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                        <div class="price-group" onclick="copyToClipboard('${currentPrice}')">
+                            <span class="lvl-label-mini">NIVEL ${i+1}</span>
+                            <div class="price-display">${currentPrice}</div>
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div class="data-grid">
+                            <div class="data-item">
+                                <span class="data-label">MONTO</span>
+                                <span class="data-val-usd">$${mUSD.toFixed(1)}</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">CAÍDA</span>
+                                <span class="data-val-pct">${lvl.p}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
@@ -275,7 +303,15 @@
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
+        
+        function updateTF(tf, btn) { 
+            activeTF = tf; 
+            localStorage.setItem('c5x_last_tf', tf); // Guardar temporalidad
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            loadChart(slots[activeIdx].name); 
+        }
+
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
@@ -285,4 +321,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-</html>
+    </html>
