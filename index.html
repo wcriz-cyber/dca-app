@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.9</title>
+    <title>C5X DCA ENGINE V21.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -54,7 +54,7 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        /* ESTRUCTURA UNIFICADA PARA TARJETAS */
+        /* ESTRUCTURA TARJETAS */
         .levels-container, .history-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         
         .level-card, .history-card { 
@@ -87,13 +87,26 @@
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* SECCIÓN BITÁCORA CON SLIDER (3 ITEMS ALTURA) */
+        /* BITÁCORA Y BOTONES GRANDES */
         .history-section { margin-bottom: 40px; }
-        .h-title-bar { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .h-title-bar { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .h-title-bar span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
         
+        /* Botones de Excel y Limpiar más grandes */
+        .h-action-btn { 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: 900; 
+            font-family: 'Orbitron';
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+        .btn-excel { background: rgba(14, 203, 129, 0.1); color: var(--long-green); border-color: var(--long-green); }
+        .btn-clear { background: rgba(231, 76, 60, 0.1); color: var(--danger); border-color: var(--danger); }
+
         #historyList { 
-            max-height: 285px; /* Altura para 3 tarjetas aproximadamente */
+            max-height: 285px; 
             overflow-y: auto; 
             scrollbar-width: none; 
             padding: 0 12px;
@@ -103,7 +116,7 @@
         }
         #historyList::-webkit-scrollbar { display: none; }
 
-        /* MODAL REDISEÑADO */
+        /* MODAL MINIMALISTA */
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
         .modal-label { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--text); margin-bottom: 25px; }
@@ -180,9 +193,9 @@
         <div class="history-section">
             <div class="h-title-bar">
                 <span>BITÁCORA DE CIERRES</span>
-                <div style="display:flex; gap:12px;">
-                    <button style="background:transparent; border:none; color:var(--long-green); font-size:10px; font-weight:900;" onclick="exportMasterExcel()">EXCEL</button>
-                    <button style="background:transparent; border:none; color:var(--danger); font-size:10px; font-weight:900;" onclick="clearHistory()">LIMPIAR</button>
+                <div style="display:flex; gap:8px;">
+                    <button class="h-action-btn btn-excel" onclick="exportMasterExcel()">EXCEL</button>
+                    <button class="h-action-btn btn-clear" onclick="clearHistory()">LIMPIAR</button>
                 </div>
             </div>
             <div id="historyList"></div>
