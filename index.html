@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V21.0</title>
+    <title>C5X DCA ENGINE V21.1</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#050708">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -20,64 +26,73 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        /* HEADER Y NAVEGACIÓN */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
+        
         .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
+        .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
+        
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        /* MODAL PERSONALIZADO (NUEVO) */
+        /* MODAL PERSONALIZADO COMPACTO */
         #customAuthModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 3000; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center;
         }
         .modal-content {
-            background: var(--surface); border: 2px solid var(--dir-color); padding: 20px;
-            border-radius: 20px; width: 280px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: var(--surface); border: 2px solid var(--dir-color); padding: 25px;
+            border-radius: 24px; width: 280px; text-align: center;
         }
-        .modal-content h3 { font-family: 'Orbitron'; font-size: 14px; margin-bottom: 15px; color: var(--text); }
+        .modal-content h3 { font-family: 'Orbitron'; font-size: 12px; margin-bottom: 20px; color: var(--dir-color); letter-spacing: 1px; }
         .modal-content input {
-            width: 100%; background: #000; border: 1px solid var(--border); color: var(--dir-color);
-            padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; letter-spacing: 8px;
-            margin-bottom: 15px; outline: none;
+            width: 100%; background: #000; border: 1px solid var(--border); color: #fff;
+            padding: 15px; border-radius: 14px; text-align: center; font-size: 24px;
+            margin-bottom: 20px; outline: none; letter-spacing: 10px;
         }
-        .modal-btns { display: flex; gap: 10px; }
-        .modal-btn { flex: 1; padding: 10px; border-radius: 10px; border: none; font-weight: 900; font-family: 'Roboto'; cursor: pointer; }
+        .modal-btns { display: flex; gap: 12px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 900; font-family: 'Roboto'; font-size: 12px; }
         .btn-confirm { background: var(--dir-color); color: #fff; }
         .btn-cancel { background: transparent; color: var(--text); border: 1px solid var(--border); }
 
-        /* EL RESTO DE ESTILOS SE MANTIENEN IGUAL QUE TU V20.5 */
         .content-spacer { margin-top: 110px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'Roboto'; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        
         .chart-container { width: 100%; height: 260px; background: #000; }
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
-        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
+        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; font-family: 'Orbitron'; }
+        .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; font-family: 'Roboto Mono'; }
+        
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 30px; font-weight: 900; color: var(--long-green); }
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
+        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; font-family: 'Orbitron'; }
+        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
+        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
+        
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 15px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 21px; font-weight: 900; color: var(--text); }
-        .data-val-usd { font-size: 15px; color: var(--long-green); font-weight: 900; }
-        .data-val-pct { font-size: 15px; color: var(--danger); font-weight: 900; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
+        .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; font-family: 'Orbitron'; }
+        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; font-family: 'Roboto'; }
+        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
+        
+        .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; font-family: 'Orbitron'; }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
+        
         .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
-        .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; }
+        #historyList { margin-top: 10px; max-height: 250px; overflow-y: auto; }
+        .history-item { padding: 15px 10px; border-bottom: 1px solid var(--border); font-size: 15px; display: flex; flex-direction: column; }
+
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body onload="init()">
@@ -87,7 +102,7 @@
             <h3>INGRESAR CONTRASEÑA</h3>
             <input type="password" id="authInput" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
             <div class="modal-btns">
-                <button class="modal-btn btn-cancel" onclick="closeAuth()">VOLVER</button>
+                <button class="modal-btn btn-cancel" onclick="closeAuth()">CANCELAR</button>
                 <button class="modal-btn btn-confirm" onclick="confirmAuth()">ACEPTAR</button>
             </div>
         </div>
@@ -106,7 +121,7 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        <div class="tf-bar" id="tfBar">
+        <div class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
@@ -139,10 +154,10 @@
         <button class="btn-release" onclick="requestAuth('liquidar')">LIQUIDAR OPERACIÓN</button>
 
         <div class="history-section">
-            <span style="font-size:14px; font-weight:900; color:var(--dir-color); font-family: 'Orbitron';">BITÁCORA DE CIERRES</span>
-            <div class="h-actions">
-                <button class="btn-export" onclick="exportMasterExcel()">EXCEL</button>
-                <button class="btn-clear" onclick="requestAuth('limpiar')">LIMPIAR</button>
+            <span style="font-size:12px; font-weight:900; color:var(--dir-color); font-family: 'Orbitron';">BITÁCORA DE CIERRES</span>
+            <div class="h-actions" style="display:flex; gap:10px; margin-top:10px;">
+                <button onclick="exportMasterExcel()" style="flex:1; background:var(--long-green); color:#fff; border:none; padding:10px; border-radius:8px; font-family:'Orbitron'; font-size:10px;">EXPORTAR</button>
+                <button onclick="requestAuth('limpiar')" style="flex:1; background:transparent; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:8px; font-family:'Orbitron'; font-size:10px;">LIMPIAR</button>
             </div>
             <div id="historyList"></div>
         </div>
@@ -161,80 +176,44 @@
         let assetIdx = 0;
 
         const strategy = [
-            { c: 0.00, m: 1.0, g: 0.50, p: "BASE" },
+            { c: 0.00, m: 1.0, g: 0.50, p: "0%" },
             { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },
-            { c: 0.20, m: 1.5, g: 0.50, p: "-20%" },
-            { c: 0.25, m: 1.5, g: 0.50, p: "-25%" },
-            { c: 0.30, m: 2.0, g: 0.70, p: "-30%" },
-            { c: 0.35, m: 2.0, g: 1.00, p: "-35%" },
-            { c: 0.40, m: 5.0, g: 1.00, p: "-40%" },
-            { c: 0.45, m: 5.0, g: 1.20, p: "-45%" },
-            { c: 0.50, m: 8.0, g: 1.00, p: "-50%" },
-            { c: 0.55, m: 8.0, g: 1.50, p: "-55%" },
-            { c: 0.60, m: 16.0, g: 2.00, p: "-60%" },
-            { c: 0.65, m: 16.0, g: 2.00, p: "-65%" }
+            { c: 0.25, m: 1.5, g: 0.50, p: "-36%" },
+            { c: 0.35, m: 1.5, g: 0.50, p: "-58%" },
+            { c: 0.40, m: 2.0, g: 0.70, p: "-75%" },
+            { c: 0.45, m: 2.0, g: 1.00, p: "-86%" },
+            { c: 0.50, m: 5.0, g: 1.00, p: "-93%" },    
+            { c: 0.55, m: 5.0, g: 1.20, p: "-96.8%" },  
+            { c: 0.50, m: 6.0, g: 1.00, p: "-98.4%" },  
+            { c: 0.60, m: 6.0, g: 1.50, p: "-99.3%" },  
+            { c: 0.60, m: 7.0, g: 2.00, p: "-99.7%" },  
+            { c: 0.70, m: 7.0, g: 2.00, p: "-99.9%" }   
         ];
 
-        // LÓGICA DE MODAL PERSONALIZADO
-        function requestAuth(action) {
-            currentAction = action;
-            document.getElementById('customAuthModal').style.display = 'flex';
-            document.getElementById('authInput').value = '';
-            document.getElementById('authInput').focus();
-        }
-
-        function closeAuth() {
-            document.getElementById('customAuthModal').style.display = 'none';
-            currentAction = null;
-        }
-
-        function confirmAuth() {
-            const pass = document.getElementById('authInput').value;
-            if(pass === "2524") {
-                if(currentAction === 'liquidar') executeRelease();
-                else if(currentAction === 'limpiar') executeClear();
-                closeAuth();
-            } else {
-                alert("Incorrecto");
-                document.getElementById('authInput').value = '';
-            }
-        }
+        function requestAuth(action) { currentAction = action; document.getElementById('customAuthModal').style.display = 'flex'; document.getElementById('authInput').value = ''; document.getElementById('authInput').focus(); }
+        function closeAuth() { document.getElementById('customAuthModal').style.display = 'none'; currentAction = null; }
+        function confirmAuth() { if(document.getElementById('authInput').value === "2524") { if(currentAction === 'liquidar') executeRelease(); else if(currentAction === 'limpiar') executeClear(); closeAuth(); } else { alert("Error"); document.getElementById('authInput').value = ''; } }
 
         function executeRelease() {
             const s = slots[activeIdx];
-            history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
+            history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
             localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
-            renderHistory();
             slots.splice(activeIdx, 1);
             slots.push({ name:'', price:0, capital:5, buys:[] });
-            save();
-            selectSlot(activeIdx);
+            save(); selectSlot(activeIdx); renderHistory();
         }
 
-        function executeClear() {
-            history = [];
-            localStorage.setItem('dca_history_v2', JSON.stringify(history));
-            renderHistory();
-        }
+        function executeClear() { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); }
 
-        // FUNCIONES DE SOPORTE MANTENIDAS
         function init() { 
             if(isLight) document.body.classList.add('light-mode');
-            renderNav(); 
-            selectSlot(activeIdx); 
-            const savedBtn = document.querySelector(`.tf-btn[data-tf="${activeTF}"]`);
-            if(savedBtn) {
-                document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-                savedBtn.classList.add('active');
-            }
-            renderHistory(); 
-            fetchTicker(); 
-            setInterval(fetchTicker, 10000); 
+            renderNav(); selectSlot(activeIdx); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); 
         }
 
         async function fetchTicker() { try { const symbol = assets[assetIdx]; const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`); const data = await res.json(); document.getElementById('t-sym').textContent = symbol.replace("USDT",""); document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const pct = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; assetIdx = (assetIdx + 1) % assets.length; } catch(e) {} }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; updateBodyMode(s.name); renderNav(); loadChart(s.name); calculate(); }
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
+        
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
@@ -246,14 +225,13 @@
                 const mUSD = lvl.m * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                html += `<div class="level-card ${on ? 'active' : ''}"><div class="price-group" onclick="copyToClipboard('${cp.toFixed(6)}')"><span class="lvl-label-mini">${i===0?'BASE':'LVL '+i}</span><div class="price-display">${cp.toFixed(6)}</div></div><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><input type="checkbox" class="check-box-large" ${on?'checked':''} onclick="toggleLvl(${i})"></div></div></div>`;
+                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO</button><div class="price-group" onclick="copyToClipboard('${cp.toFixed(6)}')"><span class="lvl-label-mini">${i===0?'BASE':'LVL '+i}</span><div class="price-display">${cp.toFixed(6)}</div></div><div class="data-grid" style="text-align:right"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item" style="margin-top:5px"><span class="data-label">CAÍDA</span><input type="checkbox" class="check-box-large" style="width:20px;height:20px" ${on?'checked':''} onclick="toggleLvl(${i})"></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            const target = avg * (1 + lastG);
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = target.toFixed(6);
+            document.getElementById('resTarget').textContent = (avg * (1 + lastG)).toFixed(6);
             document.getElementById('resProf').textContent = `$${(spent*lastG).toFixed(2)}`;
         }
 
@@ -261,9 +239,11 @@
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
         function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
+        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); updateBodyMode(slots[activeIdx].name); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
+        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
-        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(item => `<div class="history-item"><div class="h-coin-row"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div><div class="h-meta-row"><span>${item.date}</span><span>Inv: ${item.inv}</span></div></div>`).join(''); }
+        function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
+        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(item => `<div class="history-item"><div style="display:flex; justify-content:space-between; font-weight:900"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div><div style="font-size:10px; opacity:0.6; font-family:'Roboto Mono'">${item.date} | Inv: ${item.inv}</div></div>`).join(''); }
         function copyToClipboard(val) { navigator.clipboard.writeText(val); const t = document.getElementById("toast"); t.className = "show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Reporte.csv`; a.click(); }
