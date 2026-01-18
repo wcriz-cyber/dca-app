@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.7</title>
+    <title>C5X DCA ENGINE V20.8</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -54,43 +54,56 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
+        /* RESTAURACIÓN DE TARJETAS ORIGINALES SEGÚN CAPTURA */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 15px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
+        .level-card { 
+            background: var(--surface); 
+            border-radius: 18px; 
+            padding: 15px 15px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border: 1px solid var(--border); 
+            position: relative;
+        }
+        .level-card.active { 
+            border-color: var(--dir-color); 
+            background: rgba(52, 152, 219, 0.08); 
+            border-width: 2px;
+        }
+        .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
+        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
+        .price-group { display: flex; flex-direction: column; cursor: pointer; }
+        .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; opacity: 0.8; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
+        .card-right { flex: 1; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; text-align: right; }
+        .data-item { display: flex; flex-direction: column; justify-content: center; }
+        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
+        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
         
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA MEJORADA CON SLIDER VERTICAL */
+        /* BITÁCORA CON SLIDER (3 ITEMS) */
         .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
         .h-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .h-title { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
-        
-        #historyList { 
-            max-height: 240px; /* Altura aproximada para 3 items */
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column;
-            gap: 2px;
-            scrollbar-width: none;
-        }
+        .h-title { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
+        #historyList { max-height: 240px; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; }
         #historyList::-webkit-scrollbar { display: none; }
         .history-item { padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 16px; }
         .h-meta-row { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.6; font-family: 'Roboto Mono'; margin-top: 4px; }
 
-        /* MODAL REDISEÑADO: MÁS MINIMALISTA Y COMPACTO */
+        /* MODAL MINIMALISTA MEJORADO */
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
-        .modal-label { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--text); margin-bottom: 25px; letter-spacing: 2px; }
-        
-        /* Input más arriba */
+        .modal-label { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--text); margin-bottom: 25px; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; font-family: 'Roboto Mono'; letter-spacing: 8px; }
-        
         .modal-btns { display: flex; flex-direction: column; gap: 10px; }
-        /* Botones más pequeños y estilizados */
-        .m-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; letter-spacing: 1px; }
+        .m-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; }
         .m-btn-confirm { background: var(--long-green); color: #fff; }
         .m-btn-cancel { background: transparent; color: var(--text); opacity: 0.5; }
 
@@ -214,7 +227,7 @@
                 const mUSD = lvl.m * s.capital; const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
                 const currentPrice = cp.toFixed(6);
-                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left" onclick="toggleLvl(${i})"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''}><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
+                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
