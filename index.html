@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE V20.8</title>
+    <title>C5X DCA ENGINE V20.9</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -54,28 +54,28 @@
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
-        /* RESTAURACIÓN DE TARJETAS ORIGINALES SEGÚN CAPTURA */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .level-card { 
+        /* ESTRUCTURA UNIFICADA PARA TARJETAS */
+        .levels-container, .history-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        
+        .level-card, .history-card { 
             background: var(--surface); 
             border-radius: 18px; 
-            padding: 15px 15px; 
+            padding: 15px; 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
             border: 1px solid var(--border); 
             position: relative;
+            min-height: 85px;
         }
-        .level-card.active { 
-            border-color: var(--dir-color); 
-            background: rgba(52, 152, 219, 0.08); 
-            border-width: 2px;
-        }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
+        
         .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
         .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
         .price-group { display: flex; flex-direction: column; cursor: pointer; }
         .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; opacity: 0.8; }
         .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
+        
         .card-right { flex: 1; }
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; text-align: right; }
         .data-item { display: flex; flex-direction: column; justify-content: center; }
@@ -87,17 +87,23 @@
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA CON SLIDER (3 ITEMS) */
-        .history-section { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 1px solid var(--border); }
-        .h-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .h-title { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
-        #historyList { max-height: 240px; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; }
+        /* SECCIÓN BITÁCORA CON SLIDER (3 ITEMS ALTURA) */
+        .history-section { margin-bottom: 40px; }
+        .h-title-bar { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .h-title-bar span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
+        
+        #historyList { 
+            max-height: 285px; /* Altura para 3 tarjetas aproximadamente */
+            overflow-y: auto; 
+            scrollbar-width: none; 
+            padding: 0 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
         #historyList::-webkit-scrollbar { display: none; }
-        .history-item { padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .h-coin-row { display: flex; justify-content: space-between; font-weight: 900; font-size: 16px; }
-        .h-meta-row { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.6; font-family: 'Roboto Mono'; margin-top: 4px; }
 
-        /* MODAL MINIMALISTA MEJORADO */
+        /* MODAL REDISEÑADO */
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
         .modal-label { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--text); margin-bottom: 25px; }
@@ -172,11 +178,11 @@
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
         <div class="history-section">
-            <div class="h-header">
-                <span class="h-title">BITÁCORA DE CIERRES</span>
-                <div style="display:flex; gap:10px;">
-                    <button style="background:transparent; border:none; color:var(--long-green); font-size:9px; font-weight:900;" onclick="exportMasterExcel()">EXCEL</button>
-                    <button style="background:transparent; border:none; color:var(--danger); font-size:9px; font-weight:900;" onclick="clearHistory()">LIMPIAR</button>
+            <div class="h-title-bar">
+                <span>BITÁCORA DE CIERRES</span>
+                <div style="display:flex; gap:12px;">
+                    <button style="background:transparent; border:none; color:var(--long-green); font-size:10px; font-weight:900;" onclick="exportMasterExcel()">EXCEL</button>
+                    <button style="background:transparent; border:none; color:var(--danger); font-size:10px; font-weight:900;" onclick="clearHistory()">LIMPIAR</button>
                 </div>
             </div>
             <div id="historyList"></div>
@@ -246,7 +252,7 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.unshift({ coin: s.name, date: new Date().toLocaleString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent, avg: document.getElementById('resAvg').textContent });
+                    history.unshift({ coin: s.name, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory();
                     slots.splice(activeIdx, 1);
@@ -260,8 +266,27 @@
         function clearHistory() { openPrompt((pass) => { if(pass === "2524") { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } else { alert("CLAVE INCORRECTA"); } }); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000); }
         function copyToClipboard(val) { navigator.clipboard.writeText(val); showToast("VALOR COPIADO"); }
-        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(item => `<div class="history-item"><div class="h-coin-row"><span>${item.coin}</span><span style="color:var(--long-green)">${item.prof}</span></div><div class="h-meta-row"><span>${item.date}</span><span>Inv: ${item.inv}</span></div></div>`).join(''); }
-        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT,AVG\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}",${h.avg}`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Reporte.csv`; a.click(); }
+        
+        function renderHistory() { 
+            document.getElementById('historyList').innerHTML = history.map(item => `
+                <div class="history-card">
+                    <div class="card-left">
+                        <div class="price-group">
+                            <span class="lvl-label-mini">${item.date} ${item.time}</span>
+                            <div class="price-display" style="font-size:20px;">${item.coin}</div>
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div class="data-grid">
+                            <div class="data-item"><span class="data-label">INVERSIÓN</span><span class="data-val-usd" style="color:var(--text); opacity:0.7;">${item.inv}</span></div>
+                            <div class="data-item"><span class="data-label">GANANCIA</span><span class="data-val-usd">${item.prof}</span></div>
+                        </div>
+                    </div>
+                </div>
+            `).join(''); 
+        }
+
+        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date} ${h.time},"${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Reporte.csv`; a.click(); }
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
@@ -274,4 +299,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-</html>
+    </html>
