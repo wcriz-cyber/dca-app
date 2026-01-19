@@ -17,7 +17,7 @@
             --border: #2d3339; --header-bg: #12151a;
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
-            --sidebar-w: 200px;
+            --sidebar-w: 280px;
         }
         body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
         body.mode-long { --dir-color: var(--long-green); }
@@ -26,29 +26,36 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        /* SIDEBAR */
-        #sidebar { position: fixed; left: calc(-1 * var(--sidebar-w)); top: 0; width: var(--sidebar-w); height: 100%; background: var(--surface); z-index: 2000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border); overflow-y: auto; padding-top: 60px; }
+        /* SIDEBAR MEJORADO */
+        #sidebar { position: fixed; left: calc(-1 * var(--sidebar-w)); top: 0; width: var(--sidebar-w); height: 100%; background: var(--surface); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 2px solid var(--dir-color); overflow-y: auto; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
         #sidebar.open { left: 0; }
-        .side-item { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .side-item:active { background: rgba(255,255,255,0.1); }
-        .side-coin { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; }
-        .side-price { font-family: 'Roboto Mono'; font-size: 11px; color: var(--long-green); }
-        .menu-trigger { font-size: 24px; cursor: pointer; padding: 5px; color: var(--dir-color); }
+        
+        .side-header { padding: 20px; background: var(--header-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+        .side-title { font-family: 'Orbitron'; font-size: 14px; color: var(--dir-color); font-weight: 900; }
+        .close-sidebar { font-size: 24px; cursor: pointer; color: var(--text); padding: 5px; }
 
+        .side-item { padding: 18px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .side-item:active { background: rgba(52, 152, 219, 0.2); }
+        .side-info { display: flex; flex-direction: column; gap: 4px; }
+        .side-coin { font-family: 'Orbitron'; font-size: 14px; font-weight: 900; color: var(--text); }
+        .side-price { font-family: 'Roboto Mono'; font-size: 13px; color: var(--text); opacity: 0.9; }
+        .side-stats { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+        .side-pct { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; }
+
+        /* RESTO DE LA INTERFAZ */
+        .menu-trigger { font-size: 28px; cursor: pointer; color: var(--dir-color); padding: 5px; margin-right: 10px; }
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .logo-area { display: flex; align-items: center; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
         
         .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
-        .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
-        
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
         .content-spacer { margin-top: 110px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
         .chart-container { width: 100%; height: 260px; background: #000; }
@@ -60,55 +67,36 @@
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
         .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        
-        .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
-        .check-box-large { width: 28px; height: 28px; accent-color: var(--dir-color); cursor: pointer; }
-        .price-group { display: flex; flex-direction: column; cursor: pointer; }
-        .lvl-label-mini { font-size: 10px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; opacity: 0.8; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
-        
-        .card-right { flex: 1; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; text-align: right; }
-        .data-item { display: flex; flex-direction: column; justify-content: center; }
-        .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
-        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
-        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; }
         
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        .history-section { margin-bottom: 40px; }
-        .h-title-bar { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .h-title-bar span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
-        
-        .h-action-btn { padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; border: 1px solid var(--border); }
-        .btn-excel { background: rgba(14, 203, 129, 0.1); color: var(--long-green); border-color: var(--long-green); }
-        .btn-clear { background: rgba(231, 76, 60, 0.1); color: var(--danger); border-color: var(--danger); }
-        #historyList { max-height: 285px; overflow-y: auto; padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 4000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; }
         .m-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 900; font-family: 'Orbitron'; font-size: 10px; margin-bottom: 5px; }
         .m-btn-confirm { background: var(--long-green); color: #fff; }
-
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 3000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body onload="init()">
 
     <div id="sidebar">
-        <div style="padding: 15px; font-family: 'Orbitron'; font-size: 12px; color: var(--dir-color); border-bottom: 1px solid var(--border);">MARKET ETF</div>
+        <div class="side-header">
+            <span class="side-title">MERCADO GATE.IO</span>
+            <span class="close-sidebar" onclick="toggleSidebar()">✕</span>
+        </div>
         <div id="marketList">
             </div>
     </div>
@@ -117,7 +105,7 @@
 
     <div id="customModal">
         <div class="modal-content">
-            <div class="modal-label" style="font-family:'Orbitron'; font-size:12px; margin-bottom:20px;">INGRESAR CONTRASEÑA</div>
+            <div class="modal-label" style="font-family:'Orbitron'; font-size:12px; margin-bottom:20px; color:var(--text);">SEGURIDAD</div>
             <input type="password" id="modalInput" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••">
             <div class="modal-btns">
                 <button class="m-btn m-btn-confirm" onclick="closeMyModal(true)">CONFIRMAR</button>
@@ -140,7 +128,7 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        <div class="tf-bar" id="tfBar">
+        <div class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
@@ -161,26 +149,24 @@
 
         <div class="dash">
             <div class="dash-top-row">
-                <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
+                <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small" style="font-weight:900;">$0.00</div></div>
                 <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
-                <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
+                <div><span class="dash-label">PROFIT EST.</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color); font-weight:900;">$0.00</div></div>
             </div>
             <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
-
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
         <div class="history-section">
             <div class="h-title-bar">
-                <span>BITÁCORA DE CIERRES</span>
+                <span style="font-family:'Orbitron'; font-size:11px;">BITÁCORA DE CIERRES</span>
                 <div style="display:flex; gap:8px;">
-                    <button class="h-action-btn btn-excel" onclick="exportMasterExcel()">EXCEL</button>
-                    <button class="h-action-btn btn-clear" onclick="clearHistory()">LIMPIAR</button>
+                    <button class="h-action-btn" style="color:var(--long-green); border:1px solid var(--long-green); background:transparent; padding:8px 12px; border-radius:10px; font-weight:900; font-size:10px;" onclick="exportMasterExcel()">EXCEL</button>
                 </div>
             </div>
-            <div id="historyList"></div>
+            <div id="historyList" style="padding:12px; display:flex; flex-direction:column; gap:10px;"></div>
         </div>
     </div>
 
@@ -191,9 +177,9 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
-        const etfList = ["BTC3L","BTC3S","ETH3L","ETH3S","SOL3L","SOL3S","ADA3L","ADA3S","SUI3L","SUI3S","AVAX3L","AVAX3S"];
-        let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
+        
+        // Configuración de ETFs para el Sidebar
+        const etfList = ["BTC3L","BTC3S","ETH3L","ETH3S","SOL3L","SOL3S","SUI3L","SUI3S","AVAX3L","AVAX3S","ADA3L","ADA3S","XRP3L","XRP3S","LINK3L","LINK3S"];
         let gateStreams = {};
 
         const STRATEGY_DATA = [
@@ -211,10 +197,9 @@
             renderNav(); 
             selectSlot(activeIdx); 
             renderHistory(); 
-            fetchTicker(); 
-            setInterval(fetchTicker, 10000); 
             initMarketSidebar();
             slots.forEach((s, idx) => { if(s.name) initGateWS(s.name, idx); });
+            fetchTicker(); setInterval(fetchTicker, 15000);
         }
 
         // SIDEBAR LOGIC
@@ -224,8 +209,14 @@
             const list = document.getElementById('marketList');
             list.innerHTML = etfList.map(coin => `
                 <div class="side-item" onclick="loadFromSidebar('${coin}')">
-                    <span class="side-coin">${coin}</span>
-                    <span class="side-price" id="side-${coin}">---</span>
+                    <div class="side-info">
+                        <span class="side-coin">${coin}</span>
+                        <span class="side-price" id="side-p-${coin}">---</span>
+                    </div>
+                    <div class="side-stats">
+                        <span class="side-pct" id="side-c-${coin}">0.00%</span>
+                        <span style="font-size:8px; color:#848e9c; font-weight:900;">24H CHANGE</span>
+                    </div>
                 </div>
             `).join('');
 
@@ -238,8 +229,14 @@
                 const data = JSON.parse(e.data);
                 if(data.event === "update") {
                     const coin = data.result.s.replace('_USDT','');
-                    const priceEl = document.getElementById(`side-${coin}`);
+                    const priceEl = document.getElementById(`side-p-${coin}`);
+                    const pctEl = document.getElementById(`side-c-${coin}`);
                     if(priceEl) priceEl.textContent = parseFloat(data.result.last).toFixed(4);
+                    if(pctEl) {
+                        const change = parseFloat(data.result.cp);
+                        pctEl.textContent = (change >= 0 ? "+" : "") + change.toFixed(2) + "%";
+                        pctEl.style.color = change >= 0 ? 'var(--long-green)' : 'var(--danger)';
+                    }
                 }
             };
         }
@@ -248,20 +245,17 @@
             document.getElementById('coinInput').value = coin;
             updateCoin();
             toggleSidebar();
+            showToast(`CARGADO: ${coin}`);
         }
 
         function initGateWS(coin, idx) {
             if (gateStreams[idx]) gateStreams[idx].close();
-            const pair = coin.includes('_') ? coin : `${coin.replace('USDT','')}_USDT`;
+            const pair = `${coin.replace('USDT','')}_USDT`;
             const ws = new WebSocket("wss://api.gateio.ws/api/v4/ws/spot");
-            ws.onopen = () => {
-                ws.send(JSON.stringify({ time: Math.floor(Date.now()/1000), channel: "spot.tickers", event: "subscribe", payload: [pair] }));
-            };
+            ws.onopen = () => ws.send(JSON.stringify({ time: Math.floor(Date.now()/1000), channel: "spot.tickers", event: "subscribe", payload: [pair] }));
             ws.onmessage = (e) => {
                 const data = JSON.parse(e.data);
-                if (data.event === "update") {
-                    checkAlerts(idx, parseFloat(data.result.last));
-                }
+                if (data.event === "update") checkAlerts(idx, parseFloat(data.result.last));
             };
             gateStreams[idx] = ws;
         }
@@ -273,36 +267,36 @@
                 if (i > 0) cp *= (1 - STRATEGY_DATA[i].c);
                 if (!s.buys.includes(i)) {
                     const reached = isLong ? (currentPrice <= cp) : (currentPrice >= cp);
-                    if (reached) { triggerNotification(idx, i, currentPrice, cp); break; }
+                    if (reached) { triggerNotification(idx, i, currentPrice); break; }
                 }
             }
         }
 
-        function triggerNotification(slotIdx, lvlIdx, curPrice, targetPrice) {
+        function triggerNotification(slotIdx, lvlIdx, curPrice) {
             const coin = slots[slotIdx].name;
             new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3').play();
             if (Notification.permission === "granted") {
-                const n = new Notification("ALERTA DCA", { body: `Nivel ${lvlIdx+1} en ${coin} ($${curPrice.toFixed(4)})`, tag: `${coin}-${lvlIdx}` });
+                const n = new Notification("NIVEL ALCANZADO", { body: `${coin} Nivel ${lvlIdx+1} ($${curPrice.toFixed(4)})`, tag: `${coin}-${lvlIdx}` });
                 n.onclick = () => { window.focus(); activeIdx = slotIdx; toggleLvl(lvlIdx); };
             }
-            showToast(`ALERTA: ${coin} Nivel ${lvlIdx+1}`);
+            showToast(`${coin} LVL ${lvlIdx+1}!`);
         }
 
-        async function fetchTicker() { try { const symbol = assets[assetIdx]; const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`); const data = await res.json(); currentTickerSymbol = symbol.replace("USDT",""); document.getElementById('t-sym').textContent = currentTickerSymbol; document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const pct = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; assetIdx = (assetIdx + 1) % assets.length; } catch(e) {} }
+        async function fetchTicker() { try { const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`); const data = await res.json(); document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const pct = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; } catch(e){} }
         function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Sin configuración...</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:40px;">Configura Moneda y Precio Base</p>'; return; }
             let spent = 0, tokens = 0, cp = s.price, html = '', lastG = 0.50;
             if (s.buys.length > 0) lastG = STRATEGY_DATA[Math.max(...s.buys)].g;
             STRATEGY_DATA.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital; const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${cp.toFixed(6)}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${cp.toFixed(6)}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
+                html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${cp.toFixed(6)}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${cp.toFixed(6)}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">CASH</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">DROP</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
@@ -313,26 +307,23 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)} (${(lastG*100).toFixed(0)}%)`;
         }
 
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
-        function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
-
         function releaseSlot() {
             const s = slots[activeIdx]; if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.unshift({ coin: s.name, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
+                    history.unshift({ coin: s.name, date: new Date().toLocaleDateString(), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory();
-                    slots.splice(activeIdx, 1); slots.push({ name:'', price:0, capital:5, buys:[] });
-                    save(); selectSlot(0); showToast("CIERRE REGISTRADO");
-                } else alert("CLAVE INCORRECTA");
+                    slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
+                    save(); selectSlot(activeIdx); showToast("CIERRE OK");
+                } else alert("Error");
             });
         }
 
-        function clearHistory() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } }); }
+        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(h => `<div style="background:var(--surface); padding:15px; border-radius:15px; border:1px solid var(--border); display:flex; justify-content:space-between;"><div><div style="font-size:10px; opacity:0.5;">${h.date}</div><div style="font-weight:900;">${h.coin}</div></div><div style="text-align:right;"><div style="color:var(--long-green); font-weight:900;">${h.prof}</div><div style="font-size:10px; opacity:0.5;">INV: ${h.inv}</div></div></div>`).join(''); }
+        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
+        function closeMyModal(confirm) { document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(document.getElementById('modalInput').value); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function copyToClipboard(val) { navigator.clipboard.writeText(val); showToast("COPIADO"); }
-        function renderHistory() { document.getElementById('historyList').innerHTML = history.map(item => `<div class="history-card"><div class="card-left"><div class="price-group"><span class="lvl-label-mini">${item.date}</span><div class="price-display" style="font-size:20px;">${item.coin}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">INV</span><span class="data-val-usd" style="color:var(--text); opacity:0.7;">${item.inv}</span></div><div class="data-item"><span class="data-label">GAIN</span><span class="data-val-usd">${item.prof}</span></div></div></div></div>`).join(''); }
-        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Reporte.csv`; a.click(); }
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); initGateWS(v, activeIdx); calculate(); } }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
@@ -342,7 +333,8 @@
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
+        function viewTickerChart() { loadChart('BTC'); }
+        function exportMasterExcel() { let csv = "MONEDA,FECHA,INVERSION,PROFIT\n" + history.map(h => `${h.coin},${h.date},"${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Reporte.csv`; a.click(); }
     </script>
 </body>
 </html>
