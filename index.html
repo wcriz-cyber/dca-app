@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X</title>
+    <title>C5X V18.1</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -37,7 +37,6 @@
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
         .content-spacer { margin-top: 110px; }
-        /* Grid de 6 slots */
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -213,12 +212,13 @@
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
         let gateStreams = {};
 
+        // TABLA DE ESTRATEGIA CON PORCENTAJES DINÁMICOS SEGÚN NIVEL
         const STRATEGY_DATA = [
             { c: 0.00, m: 1.0, g: 0.50, p: "BASE" }, { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },
-            { c: 0.20, m: 1.5, g: 0.50, p: "-20%" }, { c: 0.25, m: 1.5, g: 0.50, p: "-25%" },
-            { c: 0.30, m: 2.0, g: 0.70, p: "-30%" }, { c: 0.35, m: 2.0, g: 1.00, p: "-35%" },
-            { c: 0.40, m: 5.0, g: 1.00, p: "-40%" }, { c: 0.45, m: 5.0, g: 1.20, p: "-45%" },
-            { c: 0.50, m: 8.0, g: 1.00, p: "-50%" }, { c: 0.55, m: 8.0, g: 1.50, p: "-55%" },
+            { c: 0.20, m: 1.5, g: 0.50, p: "-20%" }, { c: 0.25, m: 1.5, g: 1.00, p: "-25%" },
+            { c: 0.30, m: 2.0, g: 1.00, p: "-30%" }, { c: 0.35, m: 2.0, g: 1.00, p: "-35%" },
+            { c: 0.40, m: 5.0, g: 1.50, p: "-40%" }, { c: 0.45, m: 5.0, g: 1.50, p: "-45%" },
+            { c: 0.50, m: 8.0, g: 1.50, p: "-50%" }, { c: 0.55, m: 8.0, g: 2.00, p: "-55%" },
             { c: 0.60, m: 16.0, g: 2.00, p: "-60%" }, { c: 0.65, m: 16.0, g: 2.00, p: "-65%" }
         ];
 
@@ -284,7 +284,6 @@
                     window.focus();
                     activeIdx = slotIdx;
                     toggleLvl(lvlIdx);
-                    showToast(`Compra registrada en ${coin} Lvl ${lvlIdx+1}`);
                 };
             }
             showToast(msg);
@@ -298,9 +297,19 @@
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
+            
             let spent = 0, tokens = 0, cp = s.price, html = '';
-            let lastActiveProfitPercent = 0.50;
-            if (s.buys.length > 0) { const maxLvlIdx = Math.max(...s.buys); if(STRATEGY_DATA[maxLvlIdx]) lastActiveProfitPercent = STRATEGY_DATA[maxLvlIdx].g; }
+            
+            // LÓGICA DE PROFIT DINÁMICO SEGÚN NIVEL ALCANZADO
+            let currentProfitPct = 0.50; // Default 50%
+            if (s.buys.length > 0) {
+                const maxLvl = Math.max(...s.buys) + 1;
+                if (maxLvl <= 3) currentProfitPct = 0.50;
+                else if (maxLvl <= 6) currentProfitPct = 1.00;
+                else if (maxLvl <= 9) currentProfitPct = 1.50;
+                else currentProfitPct = 2.00;
+            }
+
             STRATEGY_DATA.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
                 const mUSD = lvl.m * s.capital; const on = s.buys.includes(i);
@@ -309,12 +318,14 @@
                 html += `<div class="level-card ${on ? 'active' : ''}"><button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button><div class="card-left"><input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})"><div class="price-group" onclick="copyToClipboard('${currentPrice}')"><span class="lvl-label-mini">NIVEL ${i+1}</span><div class="price-display">${currentPrice}</div></div></div><div class="card-right"><div class="data-grid"><div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div><div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div></div></div></div>`;
             });
             grid.innerHTML = html;
+            
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            const target = avg > 0 ? (avg * (1 + lastActiveProfitPercent)) : 0;
+            const target = avg > 0 ? (avg * (1 + currentProfitPct)) : 0;
+            
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = target.toFixed(6);
-            document.getElementById('resProf').textContent = `$${(spent * lastActiveProfitPercent).toFixed(2)} (${(lastActiveProfitPercent*100).toFixed(0)}%)`;
+            document.getElementById('resProf').textContent = `$${(spent * currentProfitPct).toFixed(2)} (${(currentProfitPct*100).toFixed(0)}%)`;
         }
 
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
@@ -353,4 +364,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-</html>
+                                                                  </html>
