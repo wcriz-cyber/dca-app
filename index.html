@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X DCA ENGINE</title>
+    <title>C5X DCA ENGINE V21.0</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -17,7 +17,7 @@
             --border: #2d3339; --header-bg: #12151a;
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
-            --sidebar-w: 280px;
+            --sidebar-w: 300px;
         }
         body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
         body.mode-long { --dir-color: var(--long-green); }
@@ -26,82 +26,81 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        /* SIDEBAR ESTILO GATE.IO */
-        #sidebar { position: fixed; left: calc(-1 * var(--sidebar-w)); top: 0; width: var(--sidebar-w); height: 100%; background: var(--surface); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border); overflow-y: auto; }
+        /* SIDEBAR ESTILO GATE.IO (Captura) */
+        #sidebar { position: fixed; left: calc(-1 * var(--sidebar-w)); top: 0; width: var(--sidebar-w); height: 100%; background: var(--bg); z-index: 3000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-right: 1px solid var(--border); overflow-y: auto; }
         #sidebar.open { left: 0; }
         .side-header { padding: 20px; background: var(--header-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
-        .side-item { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .side-coin { font-family: 'Roboto'; font-size: 14px; font-weight: 900; color: var(--text); }
-        .side-price { font-family: 'Roboto Mono'; font-size: 13px; color: var(--text); display: block; }
-        .side-pct { padding: 4px 8px; border-radius: 6px; font-family: 'Roboto Mono'; font-size: 12px; font-weight: 900; min-width: 65px; text-align: center; color: #fff; }
+        
+        .market-item { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
+        .market-info { display: flex; flex-direction: column; }
+        .market-pair { font-size: 14px; font-weight: 700; color: #fff; }
+        .market-vol { font-size: 10px; color: #848e9c; }
+        .market-price-box { text-align: right; flex: 1; padding-right: 15px; }
+        .market-price { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 700; color: #fff; }
+        .market-change { min-width: 75px; padding: 6px; border-radius: 6px; text-align: center; font-family: 'Roboto Mono'; font-size: 12px; font-weight: 900; color: #fff; }
 
-        /* HEADER Y NAV */
+        /* UI PRINCIPAL */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-family: 'Orbitron'; font-weight: 900; }
         .menu-trigger { font-size: 24px; cursor: pointer; color: var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
-        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
         
+        .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
+        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
+        .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
+
         .content-spacer { margin-top: 110px; }
         .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        
+        .chart-container { width: 100%; height: 260px; background: #000; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
+        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
+        
+        .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
+        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
+        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
 
-        /* TARJETAS DE NIVELES V17.3 */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+        /* TARJETAS V17.3 RESTAURADAS */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { 
-            background: var(--surface); 
-            border-radius: 12px; 
-            padding: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border: 1px solid var(--border);
-            position: relative;
+            background: var(--surface); border-radius: 18px; padding: 15px; 
+            display: flex; align-items: center; justify-content: space-between; 
+            border: 1px solid var(--border); position: relative; min-height: 85px;
         }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
-        .price-display { font-family: 'Roboto Mono'; font-size: 19px; font-weight: 900; color: var(--text); }
-        .lvl-tag { font-size: 9px; font-weight: 900; color: var(--dir-color); opacity: 0.7; margin-bottom: 2px; }
-        .monto-val { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: var(--long-green); }
-        .caida-val { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: var(--danger); }
-        .panic-btn { position: absolute; top: 0; right: 10px; background: var(--dir-color); color: #fff; border: none; padding: 2px 8px; border-radius: 0 0 6px 6px; font-size: 8px; font-weight: 900; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
+        .card-left { display: flex; align-items: center; gap: 12px; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: right; }
+        .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
+        .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
 
-        /* DASHBOARD */
-        .dash { margin: 12px; padding: 15px; background: var(--surface); border-radius: 15px; border: 2px solid var(--dir-color); text-align: center; }
-        .dash-top-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--long-green); }
-
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
-
-        /* MODAL */
-        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--surface); padding: 30px; border-radius: 20px; border: 1px solid var(--border); width: 80%; max-width: 300px; text-align: center; }
-        .modal-input { width: 100%; padding: 15px; margin: 20px 0; border-radius: 10px; border: 1px solid var(--border); background: #000; color: #fff; font-size: 20px; text-align: center; }
+        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
     </style>
 </head>
 <body onload="init()">
 
     <div id="sidebar">
         <div class="side-header">
-            <span style="font-family:'Orbitron'; font-size:12px; font-weight:900; color:var(--dir-color);">GATE.IO MARKET</span>
-            <span onclick="toggleSidebar()" style="cursor:pointer; font-size:20px;">✕</span>
+            <span style="font-family:'Orbitron'; font-size:12px; font-weight:900; color:var(--dir-color);">MERCADO ETF</span>
+            <span onclick="toggleSidebar()" style="cursor:pointer; font-size:24px;">✕</span>
         </div>
-        <div id="marketList"></div>
+        <div id="marketList">
+            </div>
     </div>
 
-    <div id="toast" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--dir-color); padding:10px 20px; border-radius:20px; visibility:hidden; z-index:5000; font-weight:900; font-size:12px;">COPIADO</div>
-
-    <div id="customModal">
-        <div class="modal-content">
-            <div style="font-family:'Orbitron'; font-size:12px; color:var(--text);">SEGURIDAD</div>
-            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••">
-            <button onclick="closeMyModal(true)" style="width:100%; padding:12px; background:var(--long-green); border:none; border-radius:10px; color:#fff; font-weight:900;">CONFIRMAR</button>
-        </div>
-    </div>
+    <div id="toast" style="visibility:hidden; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:var(--dir-color); color:#fff; padding:10px 20px; border-radius:30px; z-index:4000; font-weight:900;">COPIADO</div>
 
     <div class="fixed-header">
         <header class="app-header">
-            <div class="logo-area" style="display:flex; align-items:center; gap:10px;">
+            <div class="logo-area">
                 <span class="menu-trigger" onclick="toggleSidebar()">☰</span>
                 <span>C5X</span>
             </div>
@@ -110,11 +109,10 @@
                 <span id="t-price">$--,---</span>
                 <span id="t-pct">0.00%</span>
             </div>
-            <button onclick="toggleTheme()" id="themeBtn" style="background:transparent; border:none; font-size:18px;">🌙</button>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
-            <button class="tf-btn" onclick="updateTF('60', this)">1H</button>
             <button class="tf-btn active" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
         </div>
@@ -122,7 +120,7 @@
 
     <div class="content-spacer">
         <nav id="slotNav" class="slot-nav"></nav>
-        <div id="tv_chart" style="width:100%; height:260px;"></div>
+        <div id="tv_chart" class="chart-container"></div>
 
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
@@ -132,12 +130,11 @@
 
         <div class="dash">
             <div class="dash-top-row">
-                <div><div style="font-size:8px; color:var(--dir-color);">INVERSIÓN</div><b id="resInv">$0.00</b></div>
-                <div><div style="font-size:8px; color:var(--dir-color);">PRECIO AVG</div><b id="resAvg">0.00</b></div>
-                <div><div style="font-size:8px; color:var(--dir-color);">PROFIT</div><b id="resProf" style="color:var(--dir-color)">$0.00</b></div>
+                <div><span class="dash-label">INVERSIÓN</span><div id="resInv" style="font-weight:900;">$0.00</div></div>
+                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
+                <div><span class="dash-label">PROFIT</span><div id="resProf" style="color:var(--dir-color); font-weight:900;">$0.00</div></div>
             </div>
-            <div style="font-size:8px; color:var(--dir-color);">OBJETIVO VENTA</div>
-            <div id="resTarget" class="target-price">0.000000</div>
+            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA</span><b id="resTarget" class="target-price">0.000000</b></div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
@@ -148,8 +145,10 @@
     <script>
         let activeIdx = 0, activeTF = '240';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:10, buys:[] }));
-        const etfList = ["BTC3L","BTC3S","ETH3L","ETH3S","SUI3L","SUI3S","AVAX3L","AVAX3S","SOL3L","SOL3S","ADA3L","ADA3S","XRP3L","XRP3S","DOGE3L","DOGE3S"];
         
+        // Lista basada en la captura de pantalla del usuario
+        const etfList = ["ETH5L","ETH5S","DOGE5L","BTC5L","XRP5S","DOGE5S","SUI5S","XRP5L","BTC3L","BTC3S","SUI3L","SUI3S"];
+
         const STRATEGY_DATA = [
             { c: 0.00, m: 1.0, g: 0.50, p: "BASE" }, { c: 0.15, m: 1.0, g: 0.50, p: "-15%" },
             { c: 0.20, m: 1.5, g: 0.50, p: "-20%" }, { c: 0.25, m: 1.5, g: 0.50, p: "-25%" },
@@ -163,7 +162,8 @@
             renderNav(); 
             selectSlot(0); 
             initMarketSidebar(); 
-            fetchTicker();
+            fetchTicker(); 
+            setInterval(fetchTicker, 15000);
         }
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
@@ -171,12 +171,15 @@
         function initMarketSidebar() {
             const list = document.getElementById('marketList');
             list.innerHTML = etfList.map(coin => `
-                <div class="side-item" onclick="loadFromSidebar('${coin}')">
-                    <div>
-                        <div class="side-coin">${coin} / USDT</div>
-                        <span class="side-price" id="side-p-${coin}">---</span>
+                <div class="market-item" onclick="loadCoin('${coin}')">
+                    <div class="market-info">
+                        <span class="market-pair">${coin}/USDT</span>
+                        <span class="market-vol" id="vol-${coin}">Vol --</span>
                     </div>
-                    <div id="side-c-${coin}" class="side-pct" style="background:#444;">0.00%</div>
+                    <div class="market-price-box">
+                        <div class="market-price" id="price-${coin}">0.0000</div>
+                    </div>
+                    <div class="market-change" id="change-${coin}" style="background:#444">0.00%</div>
                 </div>
             `).join('');
 
@@ -189,8 +192,8 @@
                 const data = JSON.parse(e.data);
                 if(data.event === "update") {
                     const coin = data.result.s.replace('_USDT','');
-                    const pEl = document.getElementById(`side-p-${coin}`);
-                    const cEl = document.getElementById(`side-c-${coin}`);
+                    const pEl = document.getElementById(`price-${coin}`);
+                    const cEl = document.getElementById(`change-${coin}`);
                     if(pEl) pEl.textContent = parseFloat(data.result.last).toFixed(6);
                     if(cEl) {
                         const ch = parseFloat(data.result.cp);
@@ -201,7 +204,7 @@
             };
         }
 
-        function loadFromSidebar(coin) {
+        function loadCoin(coin) {
             document.getElementById('coinInput').value = coin;
             updateCoin();
             toggleSidebar();
@@ -209,31 +212,31 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            if(!s.price) { grid.innerHTML = ''; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:20px;">Sin configuración</p>'; return; }
             let spent = 0, tokens = 0, cp = s.price, html = '', lastG = 0.50;
             if (s.buys.length > 0) lastG = STRATEGY_DATA[Math.max(...s.buys)].g;
-            
+
             STRATEGY_DATA.forEach((lvl, i) => {
                 if(i > 0) cp *= (1 - lvl.c);
-                const mUSD = lvl.m * s.capital;
-                const on = s.buys.includes(i);
+                const mUSD = lvl.m * s.capital; const on = s.buys.includes(i);
                 if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                
                 html += `
-                    <div class="level-card ${on ? 'active' : ''}">
-                        <button class="panic-btn" onclick="panicFill(${i})">AUTO</button>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" style="width:20px; height:20px;" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                            <div onclick="copyToClipboard('${cp.toFixed(6)}')">
-                                <div class="lvl-tag">NIVEL ${i+1}</div>
-                                <div class="price-display">${cp.toFixed(6)}</div>
-                            </div>
+                <div class="level-card ${on ? 'active' : ''}">
+                    <button class="panic-btn" onclick="panicFill(${i})">AUTO</button>
+                    <div class="card-left">
+                        <input type="checkbox" style="width:25px; height:25px;" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                        <div onclick="copyToClipboard('${cp.toFixed(6)}')">
+                            <div style="font-size:10px; font-weight:900; color:var(--dir-color); opacity:0.7;">NIVEL ${i+1}</div>
+                            <div class="price-display">${cp.toFixed(6)}</div>
                         </div>
-                        <div style="text-align:right">
-                            <div class="monto-val">$${mUSD.toFixed(1)}</div>
-                            <div class="caida-val">${lvl.p}</div>
+                    </div>
+                    <div class="card-right">
+                        <div class="data-grid">
+                            <div style="display:flex; flex-direction:column;"><span style="font-size:8px; color:#848e9c;">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div>
+                            <div style="display:flex; flex-direction:column;"><span style="font-size:8px; color:#848e9c;">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div>
                         </div>
-                    </div>`;
+                    </div>
+                </div>`;
             });
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
@@ -243,8 +246,9 @@
             document.getElementById('resProf').textContent = `$${(spent * lastG).toFixed(2)}`;
         }
 
+        // Funciones de utilidad restauradas
         function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); renderLevels(); }
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 10; save(); renderLevels(); }
+        function calculate() { slots[activeIdx].price = parseFloat(document.getElementById('baseInput').value) || 0; slots[activeIdx].capital = parseFloat(document.getElementById('capitalInput').value) || 10; save(); renderLevels(); }
         function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); renderLevels(); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i+1}, (_, k) => k); save(); renderLevels(); }
@@ -253,10 +257,8 @@
         function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${coin || 'BTC3L'}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
         function copyToClipboard(v) { navigator.clipboard.writeText(v); const t = document.getElementById('toast'); t.style.visibility = 'visible'; setTimeout(() => t.style.visibility = 'hidden', 1500); }
-        async function fetchTicker() { try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`); const data = await res.json(); document.getElementById('t-price').textContent = parseFloat(data.price).toLocaleString(); } catch(e){} }
+        async function fetchTicker() { try { const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT`); const data = await res.json(); document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); const p = parseFloat(data.priceChangePercent); document.getElementById('t-pct').textContent = (p >= 0 ? "+" : "") + p.toFixed(2) + "%"; document.getElementById('t-pct').style.color = p >= 0 ? 'var(--long-green)' : 'var(--danger)'; } catch(e){} }
         function toggleTheme() { document.body.classList.toggle('light-mode'); }
-        function releaseSlot() { document.getElementById('customModal').style.display='flex'; }
-        function closeMyModal(c) { if(c && document.getElementById('modalInput').value === '2524') { slots[activeIdx] = { name:'', price:0, capital:10, buys:[] }; save(); selectSlot(activeIdx); } document.getElementById('customModal').style.display='none'; }
     </script>
 </body>
 </html>
