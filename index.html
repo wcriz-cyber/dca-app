@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X V18.4 - Progresivo</title>
+    <title>C5X</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -129,7 +129,7 @@
 
     <div class="fixed-header">
         <header class="app-header">
-            <div class="logo-area">C5X V18.4</div>
+            <div class="logo-area">C5X</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
                 <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
                 <span id="t-sym">BTC</span>
@@ -193,7 +193,6 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
 
-        // ESTRUCTURA DE MULTIPLICADORES DE CAPITAL
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
@@ -238,7 +237,7 @@
             
             let spent = 0, tokens = 0, html = '';
             let lastPrice = s.price;
-            let currentDropPct = 10.0; // Empezamos con base para el cálculo del incremento
+            let currentDropPct = 10.0; // Base inicial para el cálculo de incrementos
 
             for(let i = 0; i < 12; i++) {
                 let displayPrice;
@@ -248,8 +247,8 @@
                     displayPrice = s.price;
                     dropLabel = "BASE";
                 } else {
-                    // Lógica solicitada: Nivel 2 es 10% + 6.5% = 16.5% del anterior, y así sucesivamente
-                    currentDropPct += 6.5; 
+                    // Lógica: Nivel 2 es 10% + 7% = 17% del anterior, Nivel 3 es 17% + 7% = 24% del anterior, etc.
+                    currentDropPct += 7.0; 
                     displayPrice = lastPrice * (1 - (currentDropPct / 100));
                     dropLabel = `-${currentDropPct.toFixed(1)}%`;
                 }
@@ -277,12 +276,12 @@
                     </div>
                 </div>`;
                 
-                lastPrice = displayPrice; // El siguiente nivel se calcula sobre este
+                lastPrice = displayPrice;
             }
 
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            const target = avg > 0 ? (avg * 2) : 0; // Profit 100%
+            const target = avg > 0 ? (avg * 2) : 0; 
             
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
