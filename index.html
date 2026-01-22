@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X V18.3</title>
+    <title>C5X V18.4 - Progresivo</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -129,7 +129,7 @@
 
     <div class="fixed-header">
         <header class="app-header">
-            <div class="logo-area">C5X</div>
+            <div class="logo-area">C5X V18.4</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
                 <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
                 <span id="t-sym">BTC</span>
@@ -192,21 +192,12 @@
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
-        let gateStreams = {};
 
-        // Mantenemos la estructura de caídas pero el profit será global 100%
-        const STRATEGY_DATA = [
-            { c: 0.00, m: 1.0, p: "BASE" }, { c: 0.15, m: 1.0, p: "-15%" },
-            { c: 0.20, m: 1.5, p: "-20%" }, { c: 0.25, m: 1.5, p: "-25%" },
-            { c: 0.30, m: 2.0, p: "-30%" }, { c: 0.35, m: 2.0, p: "-35%" },
-            { c: 0.40, m: 5.0, p: "-40%" }, { c: 0.45, m: 5.0, p: "-45%" },
-            { c: 0.50, m: 8.0, p: "-50%" }, { c: 0.55, m: 8.0, p: "-55%" },
-            { c: 0.60, m: 16.0, p: "-60%" }, { c: 0.65, m: 16.0, p: "-65%" }
-        ];
+        // ESTRUCTURA DE MULTIPLICADORES DE CAPITAL
+        const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } 
-            if ("Notification" in window) Notification.requestPermission();
             renderNav(); 
             selectSlot(activeIdx); 
             renderHistory(); 
@@ -245,43 +236,58 @@
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             
-            let spent = 0, tokens = 0, cp = s.price, html = '';
-            
-            STRATEGY_DATA.forEach((lvl, i) => {
-                if(i > 0) cp *= (1 - lvl.c);
-                const mUSD = lvl.m * s.capital; 
+            let spent = 0, tokens = 0, html = '';
+            let lastPrice = s.price;
+            let currentDropPct = 10.0; // Empezamos con base para el cálculo del incremento
+
+            for(let i = 0; i < 12; i++) {
+                let displayPrice;
+                let dropLabel;
+
+                if (i === 0) {
+                    displayPrice = s.price;
+                    dropLabel = "BASE";
+                } else {
+                    // Lógica solicitada: Nivel 2 es 10% + 6.5% = 16.5% del anterior, y así sucesivamente
+                    currentDropPct += 6.5; 
+                    displayPrice = lastPrice * (1 - (currentDropPct / 100));
+                    dropLabel = `-${currentDropPct.toFixed(1)}%`;
+                }
+
+                const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / cp); }
-                const currentPrice = cp.toFixed(6);
+                if(on) { spent += mUSD; tokens += (mUSD / displayPrice); }
+                
+                const pStr = displayPrice.toFixed(6);
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
                     <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
                     <div class="card-left">
                         <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                        <div class="price-group" onclick="copyToClipboard('${currentPrice}')">
+                        <div class="price-group" onclick="copyToClipboard('${pStr}')">
                             <span class="lvl-label-mini">NIVEL ${i+1}</span>
-                            <div class="price-display">${currentPrice}</div>
+                            <div class="price-display">${pStr}</div>
                         </div>
                     </div>
                     <div class="card-right">
                         <div class="data-grid">
                             <div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div>
-                            <div class="data-item"><span class="data-label">CAÍDA</span><span class="data-val-pct">${lvl.p}</span></div>
+                            <div class="data-item"><span class="data-label">CAÍDA LVL</span><span class="data-val-pct">${dropLabel}</span></div>
                         </div>
                     </div>
                 </div>`;
-            });
-            grid.innerHTML = html;
+                
+                lastPrice = displayPrice; // El siguiente nivel se calcula sobre este
+            }
 
+            grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            // ACTUALIZACIÓN: Profit 100% sobre el promedio
-            const profitFactor = 1.0; // 100%
-            const target = avg > 0 ? (avg * (1 + profitFactor)) : 0;
+            const target = avg > 0 ? (avg * 2) : 0; // Profit 100%
             
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = target.toFixed(6);
-            document.getElementById('resProf').textContent = `$${(spent * profitFactor).toFixed(2)} (100%)`;
+            document.getElementById('resProf').textContent = `$${spent.toFixed(2)} (100%)`;
         }
 
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
@@ -348,4 +354,4 @@
         function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
-    </html>
+</html>
