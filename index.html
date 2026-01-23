@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.8 Pro</title>
+    <title>C5X - V18.9 Ultra Compact</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -43,22 +43,23 @@
         
         .chart-container { width: 100%; height: 260px; background: #000; }
         
-        /* CONTROLES (CASILLAS) */
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 12px 12px 0 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        /* DASHBOARD (ESPACIADO REDUCIDO ARRIBA) */
-        .dash { margin: 8px 12px 12px 12px; padding: 22px 15px; background: var(--surface); border-radius: 25px; border: 2.5px solid var(--dir-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .dash-summary { display: flex; justify-content: space-around; align-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
-        .dash-label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* DASHBOARD COMPACTO */
+        .dash { margin: 8px 12px 12px 12px; padding: 15px; background: var(--surface); border-radius: 25px; border: 2.5px solid var(--dir-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .dash-summary { display: flex; justify-content: space-around; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .dash-label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
         .dash-val-main { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; }
 
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .strat-card { padding: 15px 5px; border-radius: 18px; border: 1.5px solid var(--border); text-align: center; position: relative; }
-        .avg-mini { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 700; color: var(--text); opacity: 0.9; margin-bottom: 12px; display: block; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 8px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -1px; }
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .strat-card { padding: 10px 5px; border-radius: 18px; border: 1.5px solid var(--border); text-align: center; position: relative; }
+        
+        /* Ajuste de fuentes y espacios internos subidos */
+        .avg-mini { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: var(--text); opacity: 0.9; margin-bottom: 4px; display: block; background: rgba(0,0,0,0.2); padding: 2px; border-radius: 6px; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -1px; line-height: 1.1; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
@@ -156,19 +157,15 @@
                 <div style="text-align:center"><span class="dash-label">GANANCIA 100%</span><div id="resProf" class="dash-val-main" style="color:var(--dir-color)">$0.00</div></div>
             </div>
             
-            <div style="text-align: center; margin-bottom: 8px;"><span class="dash-label" style="opacity: 0.7;">OBJETIVOS DE SALIDA (100% PROFIT)</span></div>
-            
             <div class="target-grid">
                 <div class="strat-card" style="background: rgba(52, 152, 219, 0.05); border-color: rgba(52, 152, 219, 0.4);">
                     <span class="dash-label">PREDETERMINADA</span>
                     <span class="avg-mini">AVG: <span id="resAvg7">0.000000</span></span>
-                    <span class="dash-label">SALIDA</span>
                     <b id="resTarget7" class="target-price">0.000000</b>
                 </div>
                 <div class="strat-card" style="background: rgba(241, 196, 15, 0.05); border-color: rgba(241, 196, 15, 0.4);">
                     <span class="dash-label" style="color:var(--warning)">DESCUENTO %</span>
                     <span class="avg-mini">AVG: <span id="resAvgDesc">0.000000</span></span>
-                    <span class="dash-label">SALIDA</span>
                     <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.000000</b>
                 </div>
             </div>
