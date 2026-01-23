@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.5</title>
+    <title>C5X - V18.6 Dual Strategy</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -47,15 +47,16 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
-        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; text-transform: uppercase; }
-        .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
-        .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
-        
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .target-card { text-align: center; padding: 12px 5px; border-radius: 14px; border: 1px solid var(--border); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--long-green); display: block; margin-top: 4px; }
+        /* DASHBOARD DUAL REFINADO */
+        .dash { margin: 12px; padding: 15px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
+        .dash-summary { display: flex; justify-content: space-around; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; text-transform: uppercase; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; }
+
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .strat-card { padding: 10px 5px; border-radius: 15px; border: 1px solid var(--border); text-align: center; }
+        .avg-mini { font-family: 'Roboto Mono'; font-size: 12px; font-weight: 700; color: var(--text); opacity: 0.9; margin-bottom: 8px; display: block; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 21px; font-weight: 900; color: var(--long-green); display: block; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
@@ -148,20 +149,22 @@
         </div>
 
         <div class="dash">
-            <div class="dash-top-row">
-                <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-                <div><span class="dash-label">AVG ACTUAL</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
-                <div><span class="dash-label">PROFIT 100%</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
+            <div class="dash-summary">
+                <div style="text-align:center"><span class="dash-label">INVERSIÓN TOTAL</span><div id="resInv" class="dash-val-main" style="color:var(--text)">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">GANANCIA 100%</span><div id="resProf" class="dash-val-main" style="color:var(--dir-color)">$0.00</div></div>
             </div>
             
-            <div style="text-align: center;"><span class="dash-label">SALIDA 100% (PRECIO OBJETIVO)</span></div>
             <div class="target-grid">
-                <div class="target-card" style="background: rgba(52, 152, 219, 0.05); border-color: rgba(52, 152, 219, 0.3);">
+                <div class="strat-card" style="background: rgba(52, 152, 219, 0.05); border-color: rgba(52, 152, 219, 0.3);">
                     <span class="dash-label">PREDETERMINADA</span>
-                    <b id="resTarget" class="target-price">0.000000</b>
+                    <span class="avg-mini">AVG: <span id="resAvg7">0.000000</span></span>
+                    <span class="dash-label">SALIDA 100%</span>
+                    <b id="resTarget7" class="target-price">0.000000</b>
                 </div>
-                <div class="target-card" style="background: rgba(241, 196, 15, 0.05); border-color: rgba(241, 196, 15, 0.3);">
+                <div class="strat-card" style="background: rgba(241, 196, 15, 0.05); border-color: rgba(241, 196, 15, 0.3);">
                     <span class="dash-label" style="color:var(--warning)">DESCUENTO %</span>
+                    <span class="avg-mini">AVG: <span id="resAvgDesc">0.000000</span></span>
+                    <span class="dash-label">SALIDA 100%</span>
                     <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.000000</b>
                 </div>
             </div>
@@ -285,15 +288,19 @@
 
             grid.innerHTML = html;
             
+            // Cálculos Finales
             const avg7 = tokens7 > 0 ? (totalSpent / tokens7) : 0;
             const avgDesc = tokensDesc > 0 ? (totalSpent / tokensDesc) : 0;
 
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg7.toFixed(6);
-            document.getElementById('resProf').textContent = `$${totalSpent.toFixed(2)} (100%)`;
+            document.getElementById('resProf').textContent = `$${totalSpent.toFixed(2)}`;
             
-            // Objetivos de Venta (Promedio * 2 para el 100%)
-            document.getElementById('resTarget').textContent = (avg7 * 2).toFixed(6);
+            // Lado Predeterminado
+            document.getElementById('resAvg7').textContent = avg7.toFixed(6);
+            document.getElementById('resTarget7').textContent = (avg7 * 2).toFixed(6);
+            
+            // Lado Descuento Dinámico
+            document.getElementById('resAvgDesc').textContent = avgDesc.toFixed(6);
             document.getElementById('resTargetDesc').textContent = (avgDesc * 2).toFixed(6);
         }
 
