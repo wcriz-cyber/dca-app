@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.6 Optimized Log</title>
+    <title>C5X - V19.7 Precision Log</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -69,38 +69,50 @@
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA REDISEÑADA: ANCHO COMPLETO Y ALTURA MEDIA */
+        /* BITÁCORA PRECISIÓN V19.7 */
         .history-section { margin: 25px 0 45px 0; }
-        .h-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .h-header span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 0.5px; }
+        .h-header { padding: 0 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .h-header span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
 
-        .slider-wrapper { width: 100%; overflow-x: auto; padding: 0 12px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .slider-wrapper { 
+            width: 100%; 
+            overflow-x: auto; 
+            padding: 0 20px; /* Padding lateral para que la primera/última no peguen al borde */
+            scroll-snap-type: x mandatory; 
+            scrollbar-width: none;
+            display: flex;
+        }
         .slider-wrapper::-webkit-scrollbar { display: none; }
-        .slider-container { display: flex; gap: 10px; }
+        
+        .slider-container { 
+            display: flex; 
+            gap: 15px;
+            padding-right: 20px; /* Asegura que la última tarjeta tenga espacio al final */
+        }
 
         .history-card { 
-            flex: 0 0 calc(100% - 24px); 
+            flex: 0 0 calc(100vw - 40px); /* Ocupa el ancho visible exacto menos el padding */
             scroll-snap-align: center; 
             background: var(--surface); 
             border-radius: 20px; 
-            padding: 18px 20px; 
+            padding: 20px; 
             border: 1.5px solid var(--border);
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             align-items: center;
-            gap: 12px;
-            min-height: 100px; /* Un poco más de altura */
+            gap: 10px;
+            min-height: 110px;
         }
 
-        .h-col-main { display: flex; flex-direction: column; gap: 4px; }
-        .h-coin-label { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
-        .h-date-sub { font-size: 10px; opacity: 0.5; font-weight: 700; line-height: 1.2; }
+        .h-col-main { display: flex; flex-direction: column; gap: 5px; }
+        .h-coin-label { font-family: 'Orbitron'; font-size: 18px; font-weight: 900; color: var(--dir-color); }
+        .h-date-sub { font-size: 10px; opacity: 0.4; font-weight: 700; line-height: 1.2; }
 
-        .h-col-data { display: flex; flex-direction: column; text-align: center; gap: 2px; border-left: 1.5px solid rgba(255,255,255,0.08); padding-left: 10px; }
-        .h-lbl { font-size: 8px; font-weight: 900; color: #848e9c; text-transform: uppercase; }
-        .h-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; color: var(--text); }
-        .h-val.green { color: var(--long-green); font-size: 16px; }
-        .h-val.target { font-size: 11px; color: var(--long-green); opacity: 0.9; }
+        .h-col-data { display: flex; flex-direction: column; text-align: center; gap: 4px; border-left: 1.5px solid rgba(255,255,255,0.08); padding-left: 8px; }
+        .h-lbl { font-size: 8px; font-weight: 900; color: #848e9c; text-transform: uppercase; letter-spacing: 0.5px; }
+        .h-val { font-family: 'Roboto Mono'; font-size: 12px; font-weight: 900; color: var(--text); }
+        .h-val.green { color: var(--long-green); font-size: 15px; }
+        .h-val.target { font-size: 11px; color: var(--long-green); font-weight: 900; }
 
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
@@ -186,7 +198,7 @@
 
         <div class="history-section">
             <div class="h-header">
-                <span>HISTORIAL DE OPERACIONES</span>
+                <span>BITÁCORA DE CIERRES</span>
                 <div style="display:flex; gap:10px;">
                     <button style="font-size:9px; font-weight:900; color:var(--long-green); background:transparent; border:none;" onclick="exportMasterExcel()">EXCEL</button>
                     <button style="font-size:9px; font-weight:900; color:var(--danger); background:transparent; border:none;" onclick="clearHistory()">LIMPIAR</button>
@@ -277,22 +289,20 @@
                         <span class="h-date-sub">${item.date}<br>${item.time}</span>
                     </div>
                     <div class="h-col-data">
-                        <span class="h-lbl">Inversión</span>
-                        <span class="h-val">${item.inv}</span>
-                        <span class="h-lbl" style="margin-top:4px;">Precio AVG</span>
-                        <span class="h-val" style="font-size:11px; opacity:0.7;">${item.avg}</span>
+                        <span class="h-lbl">Entrada / Salida</span>
+                        <span class="h-val" style="font-size:11px;">${item.avg}</span>
+                        <span class="h-val target">${item.target}</span>
                     </div>
                     <div class="h-col-data" style="border-right:none">
-                        <span class="h-lbl" style="color:var(--long-green)">Profit 100%</span>
+                        <span class="h-lbl">Inversión / Ganancia</span>
+                        <span class="h-val">${item.inv}</span>
                         <span class="h-val green">${item.prof}</span>
-                        <span class="h-lbl" style="margin-top:4px; color:var(--long-green)">Target</span>
-                        <span class="h-val target">${item.target}</span>
                     </div>
                 </div>`).join(''); 
         }
 
         function clearHistory() { openPrompt((pass) => { if(pass === "2524") { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } else { alert("CLAVE INCORRECTA"); } }); }
-        function exportMasterExcel() { let csv = "FECHA,MONEDA,INVERSION,AVG,TARGET,PROFIT\n" + history.map(h => `${h.date} ${h.time},${h.coin},"${h.inv}","${h.avg}","${h.target}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Bitacora.csv`; a.click(); }
+        function exportMasterExcel() { let csv = "FECHA,MONEDA,ENTRADA,SALIDA,INVERSION,GANANCIA\n" + history.map(h => `${h.date} ${h.time},${h.coin},"${h.avg}","${h.target}","${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Bitacora.csv`; a.click(); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000); }
         function copyToClipboard(val) { navigator.clipboard.writeText(val); showToast("COPIADO"); }
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
