@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.9 Pro Elite</title>
+    <title>C5X - V20.0 Pro Elite</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -48,54 +48,52 @@
         .dash { margin: 8px 12px 12px 12px; padding: 15px; background: var(--surface); border-radius: 25px; border: 2.5px solid var(--dir-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dash-summary { display: flex; justify-content: space-around; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .dash-label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; text-transform: uppercase; }
-        .dash-val-main { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; }
 
-        /* Niveles (Restaurados de la versión base) */
+        /* Niveles */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 80px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
         .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); line-height: 1; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
 
-        /* BITÁCORA OPTIMIZADA V19.9 */
+        /* BITÁCORA REDISEÑADA V20.0 */
         .history-section { margin: 30px 0 60px 0; }
         .h-header { padding: 0 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .h-header span { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; color: var(--dir-color); }
 
         .slider-wrapper { width: 100%; overflow-x: auto; padding: 0 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
         .slider-wrapper::-webkit-scrollbar { display: none; }
-        .slider-container { display: flex; gap: 15px; padding-right: 20px; }
+        .slider-container { display: flex; gap: 12px; padding-right: 20px; }
 
         .history-card { 
             flex: 0 0 calc(100vw - 40px); 
             scroll-snap-align: center; 
             background: var(--surface); 
-            border-radius: 22px; 
-            padding: 20px; 
-            border: 1.5px solid var(--border);
+            border-radius: 24px; 
+            padding: 18px; 
+            border: 2px solid var(--border);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            min-height: 140px;
+            gap: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        /* Fila Superior: Moneda y Fecha */
-        .h-row-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
-        .h-coin-label { font-family: 'Orbitron'; font-size: 22px; font-weight: 900; }
-        .coin-long { color: var(--long-green); }
-        .coin-short { color: var(--short-red); }
-        .h-date-box { text-align: right; font-family: 'Roboto Mono'; font-size: 10px; font-weight: 700; opacity: 0.6; line-height: 1.2; }
+        .h-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .h-coin { font-family: 'Orbitron'; font-size: 26px; font-weight: 900; letter-spacing: -1px; }
+        .h-time { text-align: right; font-family: 'Roboto Mono'; font-size: 11px; font-weight: 700; opacity: 0.5; }
 
-        /* Fila Inferior: Datos en rejilla */
-        .h-grid-data { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .h-item { display: flex; flex-direction: column; }
-        .h-lbl { font-size: 9px; font-weight: 900; color: var(--dir-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .h-val-big { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; color: var(--text); }
-        .h-val-sub { font-family: 'Roboto Mono'; font-size: 11px; font-weight: 700; color: var(--warning); }
-        .h-val-profit { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; color: var(--long-green); }
+        .h-body { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .h-group { display: flex; flex-direction: column; gap: 2px; }
+        .h-tag { font-size: 9px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
+        .h-num { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; }
+        .h-num-sub { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; opacity: 0.7; }
 
-        /* Utilitarios */
+        .coin-L { color: var(--long-green); }
+        .coin-S { color: var(--short-red); }
+
+        /* Modales / Toast */
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; font-family: 'Roboto Mono'; letter-spacing: 8px; }
@@ -146,22 +144,22 @@
 
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoin()" placeholder="BTC3L"></div>
-            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
+            <div class="control-box"><label>BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
             <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
             <div class="control-box" style="border-color: var(--warning);"><label>% DESC</label><input type="number" id="descInput" value="55" readonly onclick="unlockDiscount()" style="cursor:pointer; color:var(--warning)" oninput="calculate()"></div>
         </div>
 
         <div class="dash">
             <div class="dash-summary">
-                <div style="text-align:center"><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-main">$0.00</div></div>
-                <div style="text-align:center"><span class="dash-label">SALIDA NETA</span><div id="resProf" class="dash-val-main" style="color:var(--long-green)">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">CAPITAL TOTAL</span><div id="resInv" class="dash-val-main">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">RETORNO 100%</span><div id="resProf" class="dash-val-main" style="color:var(--long-green)">$0.00</div></div>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                 <div style="text-align:center; padding:10px; background:rgba(255,255,255,0.03); border-radius:15px; border:1px solid var(--border);">
-                    <span class="dash-label">COMPRA AVG</span><b id="resAvg7" style="font-family:'Roboto Mono'; font-size:14px;">0.000000</b>
+                    <span class="dash-label">PROM. COMPRA</span><b id="resAvg7" style="font-family:'Roboto Mono'; font-size:15px;">0.000000</b>
                 </div>
                 <div style="text-align:center; padding:10px; background:rgba(14, 203, 129, 0.05); border-radius:15px; border:1px solid var(--long-green);">
-                    <span class="dash-label" style="color:var(--long-green)">TARGET VENTA</span><b id="resTarget7" style="font-family:'Roboto Mono'; font-size:14px; color:var(--long-green);">0.000000</b>
+                    <span class="dash-label" style="color:var(--long-green)">META VENTA</span><b id="resTarget7" style="font-family:'Roboto Mono'; font-size:15px; color:var(--long-green);">0.000000</b>
                 </div>
             </div>
         </div>
@@ -172,8 +170,8 @@
 
         <div class="history-section">
             <div class="h-header">
-                <span>REGISTRO DE CIERRES</span>
-                <div style="display:flex; gap:12px;">
+                <span>BITÁCORA DE CIERRES</span>
+                <div style="display:flex; gap:15px;">
                     <button style="font-size:10px; font-weight:900; color:var(--long-green); background:transparent; border:none;" onclick="exportMasterExcel()">EXCEL</button>
                     <button style="font-size:10px; font-weight:900; color:var(--danger); background:transparent; border:none;" onclick="clearHistory()">BORRAR</button>
                 </div>
@@ -194,7 +192,6 @@
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
         
-        // Multiplicadores originales de 12 niveles
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } renderNav(); selectSlot(activeIdx); renderHistory(); fetchTicker(); setInterval(fetchTicker, 10000); }
@@ -219,16 +216,16 @@
                 if(on) { totalSpent += mUSD; tokens7 += (mUSD / p7); }
                 
                 html += `<div class="level-card ${on ? 'active' : ''}">
-                    <button style="position:absolute; top:0; right:15px; background:var(--dir-color); color:#fff; border:none; padding:2px 8px; border-radius:0 0 5px 5px; font-size:8px; font-weight:900;" onclick="panicFill(${i})">AUTO</button>
+                    <button style="position:absolute; top:0; right:15px; background:var(--dir-color); color:#fff; border:none; padding:2px 8px; border-radius:0 0 5px 5px; font-size:8px; font-weight:900;" onclick="panicFill(${i})">FILL</button>
                     <div style="display:flex; align-items:center;">
-                        <input type="checkbox" style="transform:scale(1.4)" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
+                        <input type="checkbox" style="transform:scale(1.5)" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
                         <div style="margin-left:15px" onclick="copyToClipboard('${p7.toFixed(6)}')">
                             <span style="font-size:8px; color:var(--dir-color); font-weight:900;">NIVEL ${i+1}</span>
                             <div class="price-display">${p7.toFixed(6)}</div>
                         </div>
                     </div>
                     <div style="text-align:right">
-                        <span style="font-size:9px; opacity:0.5; font-weight:900; display:block;">MONTO</span>
+                        <span style="font-size:9px; opacity:0.5; font-weight:900; display:block;">ESTRATEGIA</span>
                         <span style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green);">$${mUSD.toFixed(1)}</span>
                     </div>
                 </div>`;
@@ -237,7 +234,7 @@
             grid.innerHTML = html;
             const avg7 = tokens7 > 0 ? (totalSpent / tokens7) : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resProf').textContent = `$${(totalSpent * 2).toFixed(2)}`; // Salida al 100%
+            document.getElementById('resProf').textContent = `$${(totalSpent * 2).toFixed(2)}`;
             document.getElementById('resAvg7').textContent = avg7.toFixed(6);
             document.getElementById('resTarget7').textContent = (avg7 * 2).toFixed(6);
         }
@@ -257,7 +254,7 @@
                     });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory();
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] }; save(); selectSlot(activeIdx); showToast("CERRADA");
-                } else { showToast("ERROR CLAVE"); }
+                } else { showToast("CLAVE INCORRECTA"); }
             });
         }
 
@@ -265,34 +262,29 @@
             const slider = document.getElementById('historySlider');
             if(history.length === 0) { slider.innerHTML = '<p style="opacity:0.2; font-size:11px; padding:20px;">Sin historial</p>'; return; }
             slider.innerHTML = history.map(item => {
-                const isLong = item.coin.endsWith('L');
-                const nameClass = isLong ? 'coin-long' : 'coin-short';
+                const coinColor = item.coin.endsWith('L') ? 'coin-L' : (item.coin.endsWith('S') ? 'coin-S' : '');
                 return `
                 <div class="history-card">
-                    <div class="h-row-top">
-                        <span class="h-coin-label ${nameClass}">${item.coin}</span>
-                        <div class="h-date-box">
-                            <div>${item.date}</div>
-                            <div style="opacity:0.6">${item.time}</div>
-                        </div>
+                    <div class="h-top">
+                        <span class="h-coin ${coinColor}">${item.coin}</span>
+                        <div class="h-time"><div>${item.date}</div><div>${item.time}</div></div>
                     </div>
-                    <div class="h-grid-data">
-                        <div class="h-item">
-                            <span class="h-lbl">Precios Operación</span>
-                            <span class="h-val-sub">AVG: ${item.avg}</span>
-                            <span class="h-val-big" style="color:var(--long-green)">TGT: ${item.target}</span>
+                    <div class="h-body">
+                        <div class="h-group">
+                            <span class="h-tag">PRECIOS</span>
+                            <span class="h-num-sub">AVG: ${item.avg}</span>
+                            <span class="h-num" style="color:var(--warning)">TGT: ${item.target}</span>
                         </div>
-                        <div class="h-item" style="text-align:right">
-                            <span class="h-lbl">Balance Final</span>
-                            <span class="h-val-sub" style="color:var(--text); opacity:0.5;">INV: ${item.inv}</span>
-                            <span class="h-val-profit">${item.prof}</span>
+                        <div class="h-group" style="text-align:right">
+                            <span class="h-tag">CAPITAL</span>
+                            <span class="h-num-sub">INV: ${item.inv}</span>
+                            <span class="h-num" style="color:var(--long-green)">NETO: ${item.prof}</span>
                         </div>
                     </div>
                 </div>`;
             }).join(''); 
         }
 
-        // Sistema
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
         function clearHistory() { openPrompt((pass) => { if(pass === "2524") { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } }); }
