@@ -3,193 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18</title>
+    <title>C5X Pro Terminal</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Mono:wght@500;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
-            --border: #2d3339; --header-bg: #12151a;
-            --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
-            --warning: #f1c40f; --danger: #e74c3c;
+            --bg: #050708; --card: #12151a; --border: #2d3339;
+            --accent: #3498db; --green: #0ecb81; --red: #f6465d;
+            --text: #eaecef; --text-dim: #848e9c;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'Roboto', sans-serif; overflow-x: hidden;
-            display: flex; flex-direction: column; height: 100vh;
-        }
-        
-        /* HEADER */
-        header {
-            background: var(--header-bg); padding: 10px 15px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .logo { font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--dir-color); font-size: 20px; letter-spacing: 2px; }
-        .btc-ticker { font-family: 'Roboto Mono', monospace; font-size: 14px; display: flex; align-items: center; gap: 8px; }
-        .status-dot { width: 8px; height: 8px; background: #95a5a6; border-radius: 50%; }
-        .status-dot.online { background: var(--long-green); box-shadow: 0 0 8px var(--long-green); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* SLOTS BAR */
-        .slots-bar {
-            display: flex; overflow-x: auto; background: var(--surface);
-            padding: 10px; gap: 8px; border-bottom: 1px solid var(--border);
+        /* HEADER */
+        header { 
+            padding: 12px 16px; border-bottom: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center; background: var(--card);
+        }
+        .logo { font-family: 'Orbitron', sans-serif; color: var(--accent); font-size: 18px; letter-spacing: 1px; }
+        #btcPrice { font-family: 'Roboto Mono', monospace; font-weight: 700; color: var(--green); }
+
+        /* SLOTS */
+        .slots-container { 
+            display: flex; overflow-x: auto; padding: 10px; gap: 8px; 
+            background: var(--bg); border-bottom: 1px solid var(--border);
         }
         .slot-pill {
-            padding: 6px 15px; border-radius: 20px; background: #1c2127;
-            font-size: 12px; font-weight: 700; white-space: nowrap; border: 1px solid transparent;
-            color: #7f8c8d; cursor: pointer; transition: 0.2s;
+            padding: 6px 14px; border-radius: 6px; background: var(--card);
+            border: 1px solid var(--border); font-size: 11px; font-weight: 700;
+            color: var(--text-dim); cursor: pointer; white-space: nowrap;
         }
-        .slot-pill.active { background: var(--dir-color); color: white; border-color: #5dade2; }
+        .slot-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(52, 152, 219, 0.1); }
 
-        /* MAIN CONTENT */
-        main { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
-
-        .card { background: var(--surface); border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 10px; color: #7f8c8d; margin-bottom: 4px; text-transform: uppercase; font-weight: 700; }
-        .input-group input {
-            width: 100%; background: #050708; border: 1px solid var(--border);
-            color: white; padding: 10px; border-radius: 6px; font-family: 'Roboto Mono', monospace; font-size: 16px;
+        /* CHART AREA */
+        #chart-wrapper { position: relative; height: 35vh; width: 100%; background: #000; border-bottom: 1px solid var(--border); }
+        .tf-bar { 
+            position: absolute; top: 10px; left: 10px; z-index: 10; 
+            display: flex; gap: 5px; background: rgba(0,0,0,0.6); padding: 4px; border-radius: 4px;
         }
+        .tf-btn { border: none; background: transparent; color: #fff; font-size: 10px; padding: 4px 8px; cursor: pointer; border-radius: 3px; }
+        .tf-btn.active { background: var(--accent); }
 
-        /* DCA TABLE */
-        .dca-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        .dca-table th { text-align: left; color: #7f8c8d; padding-bottom: 8px; font-size: 10px; }
-        .dca-table td { padding: 8px 0; border-top: 1px solid #1c2127; font-family: 'Roboto Mono', monospace; }
-        .row-active { color: var(--long-green); font-weight: 700; }
-        .btn-check { width: 24px; height: 24px; border-radius: 4px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-check.on { background: var(--dir-color); border-color: var(--dir-color); color: white; }
+        /* INPUTS AREA */
+        main { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+        .input-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .field { background: var(--card); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
+        .field label { display: block; font-size: 9px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; font-weight: 700; }
+        .field input { width: 100%; background: transparent; border: none; color: #fff; font-family: 'Roboto Mono'; font-size: 15px; outline: none; }
 
-        /* SUMMARY */
-        .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #1c2127; border-radius: 8px; padding: 12px; }
-        .sum-item .label { font-size: 10px; color: #7f8c8d; }
-        .sum-item .val { font-size: 16px; font-weight: 900; font-family: 'Roboto Mono', monospace; }
-
-        /* ACTIONS */
-        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px; }
-        .btn { border: none; padding: 12px; border-radius: 8px; font-weight: 900; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-close { background: var(--danger); color: white; }
-        .btn-reset { background: #34495e; color: white; }
-        .btn-backup { background: #27ae60; color: white; margin-top: 10px; grid-column: span 2; }
-
-        /* HISTORIAL */
-        .history-section { margin-top: 20px; }
-        .history-item { 
-            background: #0d1014; padding: 10px; border-radius: 6px; margin-bottom: 8px; 
-            border-left: 4px solid var(--long-green); font-size: 12px;
+        /* LEVELS */
+        .level-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px; background: var(--card); border-radius: 8px; margin-bottom: 6px;
+            border-left: 3px solid transparent; transition: 0.2s;
         }
+        .level-row.active { border-left-color: var(--green); background: rgba(14, 203, 129, 0.05); }
+        .lvl-info .name { font-size: 10px; color: var(--text-dim); display: block; }
+        .lvl-info .price { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 700; }
+        .lvl-cap { font-family: 'Roboto Mono'; font-size: 12px; color: var(--text-dim); }
+        
+        /* CHECKBOX */
+        .check-box { width: 22px; height: 22px; border-radius: 4px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .check-box.on { background: var(--green); border-color: var(--green); color: #000; font-weight: bold; }
 
-        /* TOAST */
-        #toast {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--dir-color); color: white; padding: 10px 20px;
-            border-radius: 30px; font-size: 12px; font-weight: 700; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 1000;
+        /* FOOTER SUMMARY */
+        .summary-bar { 
+            background: var(--card); border-top: 1px solid var(--border); 
+            padding: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
         }
+        .sum-block .lab { font-size: 10px; color: var(--text-dim); margin-bottom: 2px; }
+        .sum-block .val { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 700; color: var(--accent); }
 
-        .hidden { display: none; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 15px 15px; }
+        .btn { padding: 12px; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; cursor: pointer; text-transform: uppercase; }
+        .btn-blue { background: var(--accent); color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--accent); padding: 8px 20px; border-radius: 20px; font-size: 12px; z-index: 1000; opacity: 0; transition: 0.3s; pointer-events: none; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">C5X <span style="font-size: 10px; vertical-align: middle; color: #7f8c8d;">V18</span></div>
-        <div class="btc-ticker">
-            <div id="dot" class="status-dot"></div>
-            <span id="btcPrice">0.00</span>
-        </div>
+        <div class="logo">C5X PRO</div>
+        <div id="btcPrice">--.--</div>
     </header>
 
-    <div class="slots-bar" id="slotsBar"></div>
+    <div class="slots-container" id="slotsBar"></div>
+
+    <div id="chart-wrapper">
+        <div class="tf-bar">
+            <button class="tf-btn" onclick="setTF('1')">1m</button>
+            <button class="tf-btn active" onclick="setTF('15')">15m</button>
+            <button class="tf-btn" onclick="setTF('60')">1h</button>
+            <button class="tf-btn" onclick="setTF('D')">1D</button>
+        </div>
+        <div id="tv_chart" style="height: 100%;"></div>
+    </div>
 
     <main>
-        <div class="card">
-            <div class="grid-inputs">
-                <div class="input-group">
-                    <label>Moneda / Slot</label>
-                    <input type="text" id="coinName" placeholder="BTC3L" oninput="updateSlotName(this.value)">
-                </div>
-                <div class="input-group">
-                    <label>P. Base</label>
-                    <input type="number" id="basePrice" step="any" inputmode="decimal" placeholder="0.0000" oninput="calc()">
-                </div>
-                <div class="input-group">
-                    <label>Capital Inicial</label>
-                    <input type="number" id="baseCap" step="any" inputmode="decimal" placeholder="10.00" oninput="calc()">
-                </div>
-                <div class="input-group">
-                    <label>% Caída DCA</label>
-                    <input type="number" id="dropPct" step="0.1" inputmode="decimal" placeholder="5.0" oninput="calc()">
-                </div>
+        <div class="input-grid">
+            <div class="field">
+                <label>Activo / Par</label>
+                <input type="text" id="coinName" placeholder="BTC3L" oninput="handleCoinChange(this.value)">
             </div>
-
-            <table class="dca-table">
-                <thead>
-                    <tr>
-                        <th>NIVEL</th>
-                        <th>PRECIO</th>
-                        <th>INVERSIÓN</th>
-                        <th>CHECK</th>
-                    </tr>
-                </thead>
-                <tbody id="dcaBody"></tbody>
-            </table>
-        </div>
-
-        <div class="summary">
-            <div class="sum-item">
-                <div class="label">TOTAL INVERTIDO</div>
-                <div class="val" id="totalInv">$0.00</div>
+            <div class="field">
+                <label>Precio Entrada</label>
+                <input type="number" id="basePrice" inputmode="decimal" placeholder="0.00" oninput="calc()">
             </div>
-            <div class="sum-item">
-                <div class="label">PRECIO AVG</div>
-                <div class="val" id="avgPrice" style="color:var(--warning)">$0.00</div>
+            <div class="field">
+                <label>Capital Base ($)</label>
+                <input type="number" id="baseCap" inputmode="decimal" placeholder="10.00" oninput="calc()">
+            </div>
+            <div class="field">
+                <label>% Caída</label>
+                <input type="number" id="dropPct" inputmode="decimal" placeholder="5.0" oninput="calc()">
             </div>
         </div>
 
-        <div class="actions">
-            <button class="btn btn-reset" onclick="resetSlot()">RESETEAR</button>
-            <button class="btn btn-close" onclick="closeOperation()">CERRAR OP</button>
-            <button class="btn btn-backup" onclick="exportData()">💾 EXPORTAR COPIA SEGURIDAD</button>
-            <button class="btn btn-backup" style="background:#8e44ad;" onclick="document.getElementById('importFile').click()">📂 IMPORTAR COPIA</button>
-            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
-        </div>
-
-        <div class="history-section">
-            <h4 style="font-size: 10px; color: #7f8c8d; margin-bottom: 10px; letter-spacing: 1px;">HISTORIAL DE CIERRES</h4>
-            <div id="historyList"></div>
-        </div>
+        <div id="levelsList"></div>
     </main>
 
-    <div id="toast">MENSAJE</div>
+    <div class="summary-bar">
+        <div class="sum-block">
+            <div class="lab">TOTAL INVERTIDO</div>
+            <div class="val" id="totalInv">$0.00</div>
+        </div>
+        <div class="sum-block">
+            <div class="lab">PRECIO PROMEDIO</div>
+            <div class="val" id="avgPrice" style="color:var(--green)">$0.00</div>
+        </div>
+    </div>
 
+    <div class="btn-group">
+        <button class="btn btn-outline" onclick="exportData()">Backup</button>
+        <button class="btn btn-red" onclick="closeOperation()">Cerrar Operación</button>
+    </div>
+
+    <div id="toast">Copiado</div>
+
+    <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let slots = JSON.parse(localStorage.getItem('c5x_v18_slots')) || Array.from({length:10}, () => ({
-            name: '', basePrice: '', baseCap: '', dropPct: '', buys: []
+        let slots = JSON.parse(localStorage.getItem('c5x_v18_slots')) || Array.from({length:8}, () => ({
+            name: 'BTC3L', basePrice: '', baseCap: '10', dropPct: '5', buys: []
         }));
-        let history = JSON.parse(localStorage.getItem('c5x_v18_history')) || [];
         let activeIdx = 0;
+        let activeTF = '15';
 
         function init() {
             renderSlots();
-            renderHistory();
             loadSlot(0);
             connectBinance();
-        }
-
-        function renderSlots() {
-            const bar = document.getElementById('slotsBar');
-            bar.innerHTML = slots.map((s, i) => `
-                <div class="slot-pill ${i === activeIdx ? 'active' : ''}" onclick="loadSlot(${i})">
-                    ${s.name || 'SLOT ' + (i+1)}
-                </div>
-            `).join('');
         }
 
         function loadSlot(idx) {
@@ -199,163 +167,140 @@
             document.getElementById('basePrice').value = s.basePrice;
             document.getElementById('baseCap').value = s.baseCap;
             document.getElementById('dropPct').value = s.dropPct;
+            
+            updateChart(s.name);
             renderSlots();
             calc();
         }
 
-        function updateSlotName(val) {
+        function handleCoinChange(val) {
             slots[activeIdx].name = val.toUpperCase();
             renderSlots();
+            updateChart(val);
             save();
         }
 
+        function updateChart(coin) {
+            const symbol = coin.includes('USDT') ? coin : `GATEIO:${coin.replace('3L','').replace('3S','')}USDT`;
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": activeTF,
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "es",
+                "toolbar_bg": "#050708",
+                "enable_publishing": false,
+                "hide_top_toolbar": true,
+                "hide_legend": true,
+                "save_image": false,
+                "container_id": "tv_chart",
+                "backgroundColor": "#050708",
+                "gridColor": "rgba(42, 46, 57, 0.1)"
+            });
+        }
+
+        function setTF(tf) {
+            activeTF = tf;
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateChart(slots[activeIdx].name);
+        }
+
         function calc() {
-            const bp = parseFloat(document.getElementById('basePrice').value) || 0;
-            const bc = parseFloat(document.getElementById('baseCap').value) || 0;
-            const dp = parseFloat(document.getElementById('dropPct').value) || 0;
-            
-            slots[activeIdx].basePrice = document.getElementById('basePrice').value;
-            slots[activeIdx].baseCap = document.getElementById('baseCap').value;
-            slots[activeIdx].dropPct = document.getElementById('dropPct').value;
+            const s = slots[activeIdx];
+            s.basePrice = document.getElementById('basePrice').value;
+            s.baseCap = document.getElementById('baseCap').value;
+            s.dropPct = document.getElementById('dropPct').value;
 
-            const tbody = document.getElementById('dcaBody');
-            tbody.innerHTML = '';
+            const bp = parseFloat(s.basePrice) || 0;
+            const bc = parseFloat(s.baseCap) || 0;
+            const dp = parseFloat(s.dropPct) || 0;
 
-            let totalInversion = 0;
-            let totalTokens = 0;
+            const list = document.getElementById('levelsList');
+            list.innerHTML = '';
 
-            for(let i=0; i<7; i++) {
-                const levelPrice = i === 0 ? bp : bp * (1 - (dp * i / 100));
-                const levelCap = bc * Math.pow(2, i);
-                const isBought = slots[activeIdx].buys.includes(i);
+            let tInv = 0, tTokens = 0;
 
-                if(isBought && bp > 0) {
-                    totalInversion += levelCap;
-                    totalTokens += (levelCap / levelPrice);
-                }
+            for(let i=0; i<6; i++) {
+                const p = i === 0 ? bp : bp * (1 - (dp * i / 100));
+                const c = bc * Math.pow(2, i);
+                const isOn = s.buys.includes(i);
+
+                if(isOn && bp > 0) { tInv += c; tTokens += (c/p); }
 
                 if(bp > 0) {
-                    const tr = document.createElement('tr');
-                    if(isBought) tr.className = 'row-active';
-                    tr.innerHTML = `
-                        <td>${i === 0 ? 'BASE' : 'DCA ' + i}</td>
-                        <td onclick="copyText('${levelPrice.toFixed(4)}')">${levelPrice.toFixed(4)}</td>
-                        <td>$${levelCap.toFixed(2)}</td>
-                        <td><div class="btn-check ${isBought ? 'on' : ''}" onclick="toggleBuy(${i})">${isBought ? '✓' : ''}</div></td>
+                    const div = document.createElement('div');
+                    div.className = `level-row ${isOn ? 'active' : ''}`;
+                    div.innerHTML = `
+                        <div class="lvl-info" onclick="copy('${p.toFixed(4)}')">
+                            <span class="name">${i === 0 ? 'ENTRY' : 'DCA '+i}</span>
+                            <span class="price">${p.toFixed(4)}</span>
+                        </div>
+                        <div class="lvl-cap">$${c.toFixed(2)}</div>
+                        <div class="check-box ${isOn ? 'on' : ''}" onclick="toggleLvl(${i})">${isOn ? '✓' : ''}</div>
                     `;
-                    tbody.appendChild(tr);
+                    list.appendChild(div);
                 }
             }
 
-            const avg = totalTokens > 0 ? totalInversion / totalTokens : 0;
-            document.getElementById('totalInv').textContent = `$${totalInversion.toFixed(2)}`;
+            const avg = tTokens > 0 ? tInv / tTokens : 0;
+            document.getElementById('totalInv').textContent = `$${tInv.toFixed(2)}`;
             document.getElementById('avgPrice').textContent = `$${avg.toFixed(4)}`;
             save();
         }
 
-        function toggleBuy(lvl) {
+        function toggleLvl(i) {
             const buys = slots[activeIdx].buys;
-            if(buys.includes(lvl)) {
-                slots[activeIdx].buys = buys.filter(x => x !== lvl);
-            } else {
-                slots[activeIdx].buys.push(lvl);
-            }
+            slots[activeIdx].buys = buys.includes(i) ? buys.filter(x => x !== i) : [...buys, i];
             calc();
         }
 
-        function resetSlot() {
-            if(confirm('¿Reiniciar este slot?')) {
-                slots[activeIdx] = { name: '', basePrice: '', baseCap: '', dropPct: '', buys: [] };
-                loadSlot(activeIdx);
-            }
-        }
-
-        function closeOperation() {
-            const s = slots[activeIdx];
-            if(s.buys.length === 0) return;
-            
-            const record = {
-                date: new Date().toLocaleString(),
-                coin: s.name || 'Token',
-                total: document.getElementById('totalInv').textContent,
-                avg: document.getElementById('avgPrice').textContent
-            };
-            
-            history.unshift(record);
-            if(history.length > 20) history.pop();
-            
-            localStorage.setItem('c5x_v18_history', JSON.stringify(history));
-            showToast("OP. CERRADA Y GUARDADA");
-            resetSlot();
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const container = document.getElementById('historyList');
-            container.innerHTML = history.map(h => `
-                <div class="history-item">
-                    <strong>${h.coin}</strong> - ${h.date}<br>
-                    <span style="color:#7f8c8d">Invertido: ${h.total} | AVG: ${h.avg}</span>
+        function renderSlots() {
+            const bar = document.getElementById('slotsBar');
+            bar.innerHTML = slots.map((s, i) => `
+                <div class="slot-pill ${i === activeIdx ? 'active' : ''}" onclick="loadSlot(${i})">
+                    ${s.name || 'Slot '+(i+1)}
                 </div>
             `).join('');
         }
-
-        function exportData() {
-            const data = { slots, history, version: 'V18' };
-            const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `C5X_Backup_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            showToast("BACKUP DESCARGADO");
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if(imported.slots) {
-                        slots = imported.slots;
-                        history = imported.history || [];
-                        save();
-                        localStorage.setItem('c5x_v18_history', JSON.stringify(history));
-                        init();
-                        showToast("DATOS IMPORTADOS");
-                    }
-                } catch(err) { alert("Error al leer archivo"); }
-            };
-            reader.readAsText(file);
-        }
-
-        function copyText(txt) {
-            navigator.clipboard.writeText(txt);
-            showToast("PRECIO COPIADO: " + txt);
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.textContent = msg;
-            t.style.opacity = 1;
-            setTimeout(() => t.style.opacity = 0, 2000);
-        }
-
-        function save() { localStorage.setItem('c5x_v18_slots', JSON.stringify(slots)); }
 
         function connectBinance() {
             const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
             ws.onmessage = (e) => {
                 const data = JSON.parse(e.data);
-                document.getElementById('btcPrice').textContent = parseFloat(data.c).toLocaleString();
-                document.getElementById('dot').classList.add('online');
+                const p = parseFloat(data.c);
+                const el = document.getElementById('btcPrice');
+                el.textContent = `BTC $${p.toLocaleString()}`;
+                el.style.color = data.P.startsWith('-') ? 'var(--red)' : 'var(--green)';
             };
-            ws.onclose = () => {
-                document.getElementById('dot').classList.remove('online');
-                setTimeout(connectBinance, 5000);
-            };
+        }
+
+        function copy(val) {
+            navigator.clipboard.writeText(val);
+            const t = document.getElementById('toast');
+            t.textContent = "Copiado: " + val;
+            t.style.opacity = 1;
+            setTimeout(() => t.style.opacity = 0, 1500);
+        }
+
+        function save() { localStorage.setItem('c5x_v18_slots', JSON.stringify(slots)); }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(slots)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'C5X_Backup.json';
+            a.click();
+        }
+
+        function closeOperation() {
+            if(confirm('¿Cerrar y limpiar slot?')) {
+                slots[activeIdx].buys = [];
+                slots[activeIdx].basePrice = '';
+                loadSlot(activeIdx);
+            }
         }
 
         window.onload = init;
