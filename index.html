@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.2</title>
+    <title>C5X - V18.5</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -48,30 +48,17 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
         .dash { margin: 12px; padding: 18px; background: var(--surface); border-radius: 20px; border: 2px solid var(--dir-color); }
-        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
-        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .dash-top-row { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 5px; text-align: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; text-transform: uppercase; }
         .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
         
-        /* New Dual Strategy Layout */
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; margin-top: 10px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); display: block; }
-        .strat-col { border-right: 1px solid var(--border); }
-        .strat-col:last-child { border-right: none; }
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .target-card { text-align: center; padding: 12px 5px; border-radius: 14px; border: 1px solid var(--border); }
+        .target-price { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--long-green); display: block; margin-top: 4px; }
 
-        .levels-container, .history-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        
-        .level-card, .history-card { 
-            background: var(--surface); 
-            border-radius: 18px; 
-            padding: 15px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            border: 1px solid var(--border); 
-            position: relative;
-            min-height: 85px;
-        }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
         
         .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
@@ -85,22 +72,19 @@
         .data-item { display: flex; flex-direction: column; justify-content: center; }
         .data-label { font-size: 8px; font-weight: 900; color: #848e9c; margin-bottom: 2px; text-transform: uppercase; }
         .data-val-usd { font-size: 16px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
-        .data-val-pct { font-size: 16px; color: var(--danger); font-weight: 900; font-family: 'Roboto Mono'; }
         
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
-        
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
         .history-section { margin-bottom: 40px; }
         .h-title-bar { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .h-title-bar span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
-        
-        .h-action-btn { padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; border: 1px solid var(--border); cursor: pointer; }
+        .h-action-btn { padding: 10px 18px; border-radius: 12px; font-size: 11px; font-weight: 900; font-family: 'Orbitron'; border: 1px solid var(--border); }
         .btn-excel { background: rgba(14, 203, 129, 0.1); color: var(--long-green); border-color: var(--long-green); }
         .btn-clear { background: rgba(231, 76, 60, 0.1); color: var(--danger); border-color: var(--danger); }
 
         #historyList { max-height: 285px; overflow-y: auto; scrollbar-width: none; padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        #historyList::-webkit-scrollbar { display: none; }
+        .history-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
 
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
@@ -166,16 +150,18 @@
         <div class="dash">
             <div class="dash-top-row">
                 <div><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-small">$0.00</div></div>
-                <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
+                <div><span class="dash-label">AVG ACTUAL</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
                 <div><span class="dash-label">PROFIT 100%</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
             </div>
+            
+            <div style="text-align: center;"><span class="dash-label">SALIDA 100% (PRECIO OBJETIVO)</span></div>
             <div class="target-grid">
-                <div class="strat-col">
-                    <span class="dash-label">STRAT 12 LVLS (7%)</span>
+                <div class="target-card" style="background: rgba(52, 152, 219, 0.05); border-color: rgba(52, 152, 219, 0.3);">
+                    <span class="dash-label">PREDETERMINADA</span>
                     <b id="resTarget" class="target-price">0.000000</b>
                 </div>
-                <div class="strat-col">
-                    <span class="dash-label" style="color:var(--warning)">DESC. DINÁMICO</span>
+                <div class="target-card" style="background: rgba(241, 196, 15, 0.05); border-color: rgba(241, 196, 15, 0.3);">
+                    <span class="dash-label" style="color:var(--warning)">DESCUENTO %</span>
                     <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.000000</b>
                 </div>
             </div>
@@ -251,28 +237,30 @@
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             
-            let spent = 0, tokens = 0, html = '';
-            let lastPrice7 = s.price;
-            let lastPriceDesc = s.price;
-            let currentDrop7 = 10.0; 
+            let totalSpent = 0, tokens7 = 0, tokensDesc = 0;
+            let html = '';
+            let lastP7 = s.price;
+            let lastPDesc = s.price;
+            let drop7 = 10.0; 
 
             for(let i = 0; i < 12; i++) {
                 let p7, pDesc, label7;
-
-                if (i === 0) {
-                    p7 = s.price;
-                    pDesc = s.price;
-                    label7 = "BASE";
-                } else {
-                    currentDrop7 += 7.0; 
-                    p7 = lastPrice7 * (1 - (currentDrop7 / 100));
-                    pDesc = lastPriceDesc * (1 - (descPct / 100));
-                    label7 = `-${currentDrop7.toFixed(1)}%`;
+                if (i === 0) { p7 = s.price; pDesc = s.price; label7 = "BASE"; } 
+                else { 
+                    drop7 += 7.0; 
+                    p7 = lastP7 * (1 - (drop7 / 100)); 
+                    pDesc = lastPDesc * (1 - (descPct / 100));
+                    label7 = `-${drop7.toFixed(1)}%`;
                 }
 
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / p7); } // Cálculo basado en Strat 1 (7%)
+                
+                if(on) { 
+                    totalSpent += mUSD; 
+                    tokens7 += (mUSD / p7); 
+                    tokensDesc += (mUSD / pDesc);
+                }
                 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
@@ -288,28 +276,25 @@
                     <div class="card-right">
                         <div class="data-grid">
                             <div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div>
-                            <div class="data-item"><span class="data-label">MULT</span><span class="data-val-pct">x${MULTIPLIERS[i]}</span></div>
+                            <div class="data-item"><span class="data-label">MULT</span><span class="data-val-pct" style="color:#848e9c">x${MULTIPLIERS[i]}</span></div>
                         </div>
                     </div>
                 </div>`;
-                
-                lastPrice7 = p7;
-                lastPriceDesc = pDesc;
+                lastP7 = p7; lastPDesc = pDesc;
             }
 
             grid.innerHTML = html;
-            const avg = tokens > 0 ? (spent / tokens) : 0;
-            const target7 = avg > 0 ? (avg * 2) : 0; 
             
-            // Cálculo del último nivel de la estrategia descuento para el dashboard
-            let finalDesc = s.price;
-            for(let j=1; j<12; j++) finalDesc *= (1 - (descPct/100));
+            const avg7 = tokens7 > 0 ? (totalSpent / tokens7) : 0;
+            const avgDesc = tokensDesc > 0 ? (totalSpent / tokensDesc) : 0;
 
-            document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = target7.toFixed(6);
-            document.getElementById('resTargetDesc').textContent = finalDesc.toFixed(6);
-            document.getElementById('resProf').textContent = `$${spent.toFixed(2)} (100%)`;
+            document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
+            document.getElementById('resAvg').textContent = avg7.toFixed(6);
+            document.getElementById('resProf').textContent = `$${totalSpent.toFixed(2)} (100%)`;
+            
+            // Objetivos de Venta (Promedio * 2 para el 100%)
+            document.getElementById('resTarget').textContent = (avg7 * 2).toFixed(6);
+            document.getElementById('resTargetDesc').textContent = (avgDesc * 2).toFixed(6);
         }
 
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
