@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.3 Full Width Slider</title>
+    <title>C5X - V19.4 Compact Wide Log</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -69,7 +69,7 @@
         .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
-        /* BITÁCORA SLIDER PANTALLA COMPLETA */
+        /* BITÁCORA SLIDER COMPACTA Y COMPLETA */
         .history-section { margin: 30px 0 50px 0; }
         .h-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .h-header span { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); text-transform: uppercase; }
@@ -80,24 +80,25 @@
         .slider-container { display: flex; gap: 12px; }
 
         .history-card { 
-            flex: 0 0 calc(100% - 24px); /* PANTALLA COMPLETA (ajustada a márgenes) */
+            flex: 0 0 calc(100% - 24px); 
             scroll-snap-align: center; 
             background: var(--surface); 
-            border-radius: 25px; 
-            padding: 22px; 
-            border: 1.5px solid var(--border); 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border-radius: 20px; 
+            padding: 15px; 
+            border: 1px solid var(--border); 
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 8px;
         }
-        .h-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-        .h-card-coin { font-family: 'Orbitron'; font-size: 22px; font-weight: 900; color: var(--dir-color); }
-        .h-card-date { font-size: 11px; opacity: 0.5; text-align: right; line-height: 1.4; font-weight: 700; }
-        .h-card-body { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border-top: 1px solid var(--border); padding-top: 18px; }
-        .h-stat { display: flex; flex-direction: column; }
-        .h-stat label { font-size: 9px; font-weight: 900; color: #848e9c; text-transform: uppercase; margin-bottom: 5px; }
-        .h-stat val { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; color: var(--long-green); }
+        .h-card-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .h-card-coin { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
+        .h-card-date { font-size: 10px; opacity: 0.5; font-weight: 700; text-align: right; line-height: 1.2; }
+        
+        .h-card-info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .h-info-box { display: flex; flex-direction: column; }
+        .h-info-label { font-size: 7.5px; font-weight: 900; color: #848e9c; text-transform: uppercase; margin-bottom: 2px; }
+        .h-info-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; color: var(--text); }
+        .h-info-val.highlight { color: var(--long-green); }
 
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
@@ -221,7 +222,7 @@
             const descPct = parseFloat(document.getElementById('descInput').value) || 55;
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
-            let totalSpent = 0, tokens7 = 0, tokensDesc = 0, html = '', lastP7 = s.price, lastPDesc = s.price, drop7 = 10.0; 
+            let totalSpent = 0, tokens7 = 0, tokensDesc = 0, lastP7 = s.price, lastPDesc = s.price, drop7 = 10.0, html = ''; 
             for(let i = 0; i < 12; i++) {
                 let p7, pDesc, label7;
                 if (i === 0) { p7 = s.price; pDesc = s.price; label7 = "BASE"; } 
@@ -249,7 +250,15 @@
             const s = slots[activeIdx]; if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.unshift({ coin: s.name, date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), prof: document.getElementById('resProf').textContent, inv: document.getElementById('resInv').textContent });
+                    history.unshift({ 
+                        coin: s.name, 
+                        date: new Date().toLocaleDateString(), 
+                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                        prof: document.getElementById('resProf').textContent, 
+                        inv: document.getElementById('resInv').textContent,
+                        avg: document.getElementById('resAvg7').textContent,
+                        target: document.getElementById('resTarget7').textContent
+                    });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory();
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] }; save(); selectSlot(activeIdx); showToast("OPERACIÓN CERRADA");
                 } else { alert("CLAVE INCORRECTA"); }
@@ -261,19 +270,24 @@
             if(history.length === 0) { slider.innerHTML = '<p style="opacity:0.3; font-size:11px; padding:20px;">Sin registros</p>'; return; }
             slider.innerHTML = history.map(item => `
                 <div class="history-card">
-                    <div class="h-card-top">
+                    <div class="h-card-header">
                         <div class="h-card-coin">${item.coin}</div>
                         <div class="h-card-date">${item.date}<br>${item.time}</div>
                     </div>
-                    <div class="h-card-body">
-                        <div class="h-stat"><label>Inversión</label><val style="color:var(--text); opacity:0.8;">${item.inv}</val></div>
-                        <div class="h-stat"><label>Profit (100%)</label><val>${item.prof}</val></div>
+                    <div class="h-card-info-grid">
+                        <div class="h-info-box"><span class="h-info-label">Inversión</span><span class="h-info-val">${item.inv}</span></div>
+                        <div class="h-info-box"><span class="h-info-label">P. Medio</span><span class="h-info-val">${item.avg || '0.00'}</span></div>
+                        <div class="h-info-box"><span class="h-info-label">Profit 100%</span><span class="h-info-val highlight">${item.prof}</span></div>
+                        <div class="h-info-box" style="grid-column: span 3; border-top:1px solid rgba(255,255,255,0.03); padding-top:4px;">
+                            <span class="h-info-label">Objetivo de Venta</span>
+                            <span class="h-info-val" style="color:var(--long-green); font-size:15px;">${item.target || '0.00'}</span>
+                        </div>
                     </div>
                 </div>`).join(''); 
         }
 
         function clearHistory() { openPrompt((pass) => { if(pass === "2524") { history = []; localStorage.setItem('dca_history_v2', JSON.stringify(history)); renderHistory(); } else { alert("CLAVE INCORRECTA"); } }); }
-        function exportMasterExcel() { let csv = "FECHA,MONEDA,INVERSION,PROFIT\n" + history.map(h => `${h.date} ${h.time},${h.coin},"${h.inv}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Bitacora.csv`; a.click(); }
+        function exportMasterExcel() { let csv = "FECHA,MONEDA,INVERSION,AVG,TARGET,PROFIT\n" + history.map(h => `${h.date} ${h.time},${h.coin},"${h.inv}","${h.avg}","${h.target}","${h.prof}"`).join("\n"); const blob = new Blob(["\ufeff" + csv], { type: 'text/csv' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `C5X_Bitacora.csv`; a.click(); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => { t.className = t.className.replace("show", ""); }, 2000); }
         function copyToClipboard(val) { navigator.clipboard.writeText(val); showToast("COPIADO"); }
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
