@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X</title>
+    <title>C5X - V18.2</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -42,7 +42,7 @@
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
         .chart-container { width: 100%; height: 260px; background: #000; }
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 12px; }
         .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
@@ -52,8 +52,13 @@
         .dash-label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .dash-val-small { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
         .dash-val-avg { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--warning); }
-        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); }
         
+        /* New Dual Strategy Layout */
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; margin-top: 10px; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); display: block; }
+        .strat-col { border-right: 1px solid var(--border); }
+        .strat-col:last-child { border-right: none; }
+
         .levels-container, .history-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         
         .level-card, .history-card { 
@@ -154,7 +159,8 @@
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box"><label>CAPITAL BASE $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
+            <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
+            <div class="control-box" style="border-color: var(--warning);"><label>% DESC</label><input type="number" id="descInput" value="55" oninput="calculate()"></div>
         </div>
 
         <div class="dash">
@@ -163,7 +169,16 @@
                 <div><span class="dash-label">PRECIO AVG</span><div id="resAvg" class="dash-val-avg">0.000000</div></div>
                 <div><span class="dash-label">PROFIT 100%</span><div id="resProf" class="dash-val-small" style="color:var(--dir-color)">$0.00</div></div>
             </div>
-            <div style="text-align:center"><span class="dash-label">OBJETIVO DE VENTA (100%)</span><b id="resTarget" class="target-price">0.000000</b></div>
+            <div class="target-grid">
+                <div class="strat-col">
+                    <span class="dash-label">STRAT 12 LVLS (7%)</span>
+                    <b id="resTarget" class="target-price">0.000000</b>
+                </div>
+                <div class="strat-col">
+                    <span class="dash-label" style="color:var(--warning)">DESC. DINÁMICO</span>
+                    <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.000000</b>
+                </div>
+            </div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
@@ -232,60 +247,68 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+            const descPct = parseFloat(document.getElementById('descInput').value) || 55;
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             
             let spent = 0, tokens = 0, html = '';
-            let lastPrice = s.price;
-            let currentDropPct = 10.0; // Base inicial para el cálculo de incrementos
+            let lastPrice7 = s.price;
+            let lastPriceDesc = s.price;
+            let currentDrop7 = 10.0; 
 
             for(let i = 0; i < 12; i++) {
-                let displayPrice;
-                let dropLabel;
+                let p7, pDesc, label7;
 
                 if (i === 0) {
-                    displayPrice = s.price;
-                    dropLabel = "BASE";
+                    p7 = s.price;
+                    pDesc = s.price;
+                    label7 = "BASE";
                 } else {
-                    // Lógica: Nivel 2 es 10% + 7% = 17% del anterior, Nivel 3 es 17% + 7% = 24% del anterior, etc.
-                    currentDropPct += 7.0; 
-                    displayPrice = lastPrice * (1 - (currentDropPct / 100));
-                    dropLabel = `-${currentDropPct.toFixed(1)}%`;
+                    currentDrop7 += 7.0; 
+                    p7 = lastPrice7 * (1 - (currentDrop7 / 100));
+                    pDesc = lastPriceDesc * (1 - (descPct / 100));
+                    label7 = `-${currentDrop7.toFixed(1)}%`;
                 }
 
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tokens += (mUSD / displayPrice); }
+                if(on) { spent += mUSD; tokens += (mUSD / p7); } // Cálculo basado en Strat 1 (7%)
                 
-                const pStr = displayPrice.toFixed(6);
                 html += `
                 <div class="level-card ${on ? 'active' : ''}">
                     <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
                     <div class="card-left">
                         <input type="checkbox" class="check-box-large" ${on ? 'checked' : ''} onclick="toggleLvl(${i})">
-                        <div class="price-group" onclick="copyToClipboard('${pStr}')">
-                            <span class="lvl-label-mini">NIVEL ${i+1}</span>
-                            <div class="price-display">${pStr}</div>
+                        <div class="price-group" onclick="copyToClipboard('${p7.toFixed(6)}')">
+                            <span class="lvl-label-mini">NIVEL ${i+1} (${label7})</span>
+                            <div class="price-display">${p7.toFixed(6)}</div>
+                            <div style="font-size:10px; color:var(--warning); margin-top:4px; font-weight:900;">DESC: ${pDesc.toFixed(6)}</div>
                         </div>
                     </div>
                     <div class="card-right">
                         <div class="data-grid">
                             <div class="data-item"><span class="data-label">MONTO</span><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div>
-                            <div class="data-item"><span class="data-label">CAÍDA LVL</span><span class="data-val-pct">${dropLabel}</span></div>
+                            <div class="data-item"><span class="data-label">MULT</span><span class="data-val-pct">x${MULTIPLIERS[i]}</span></div>
                         </div>
                     </div>
                 </div>`;
                 
-                lastPrice = displayPrice;
+                lastPrice7 = p7;
+                lastPriceDesc = pDesc;
             }
 
             grid.innerHTML = html;
             const avg = tokens > 0 ? (spent / tokens) : 0;
-            const target = avg > 0 ? (avg * 2) : 0; 
+            const target7 = avg > 0 ? (avg * 2) : 0; 
             
+            // Cálculo del último nivel de la estrategia descuento para el dashboard
+            let finalDesc = s.price;
+            for(let j=1; j<12; j++) finalDesc *= (1 - (descPct/100));
+
             document.getElementById('resInv').textContent = `$${spent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = target.toFixed(6);
+            document.getElementById('resTarget').textContent = target7.toFixed(6);
+            document.getElementById('resTargetDesc').textContent = finalDesc.toFixed(6);
             document.getElementById('resProf').textContent = `$${spent.toFixed(2)} (100%)`;
         }
 
