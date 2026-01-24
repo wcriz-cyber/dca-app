@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.8 Visual Dash</title>
+    <title>C5X - V22.9 Final Polish</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -35,7 +35,6 @@
             
             --border: #2b3139;
             --radius-m: 16px;
-            --radius-s: 10px;
         }
 
         /* TEMA CLARO */
@@ -123,7 +122,7 @@
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* --- DASHBOARD VISUAL (REDDISEÑADO) --- */
+        /* --- DASHBOARD VISUAL (ICONOS MEJORADOS) --- */
         .dashboard-card { 
             background: var(--surface);
             border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; 
@@ -131,29 +130,36 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative; overflow: hidden;
         }
-        /* Fondo sutil */
         .dashboard-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
             background: linear-gradient(90deg, var(--brand), var(--long));
         }
 
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
-        .icon-btn { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; transition: 0.2s; }
-        .icon-btn:active { transform: scale(0.9); background: var(--brand); color: #fff; }
+        
+        /* BOTONES SVG DE ALTA CALIDAD */
+        .icon-btn { 
+            width: 36px; height: 36px; border-radius: 50%; 
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; 
+            color: var(--text-secondary); cursor: pointer; transition: 0.3s;
+        }
+        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
+        .icon-btn.locked { color: var(--danger); border-color: var(--danger); }
 
         .main-target-box { text-align: center; margin-bottom: 25px; }
         .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
         
-        /* Visual Impact for Target Price */
         .target-price { 
             font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); 
             line-height: 1; letter-spacing: -1.5px;
-            text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); /* Default glow */
+            text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); 
             transition: color 0.3s, text-shadow 0.3s;
         }
         
-        /* Stats Boxes - Visualmente separadas */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { 
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
@@ -216,7 +222,7 @@
         .btn-reset { background: var(--danger); color: #fff; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; width: 100%; margin-top: 10px; }
         .btn-save-config { width: 100%; background: var(--long); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(14, 203, 129, 0.2); }
 
-        /* --- MENÚ MODAL (Navigation) --- */
+        /* --- MENÚ MODAL --- */
         #navModal { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
             z-index: 2000; display: none; justify-content: center; align-items: center;
@@ -235,12 +241,11 @@
         .nav-icon { width: 30px; font-size: 18px; text-align: center; margin-right: 15px; }
         .nav-text { font-family: 'Inter'; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
 
-        /* Toast */
+        /* Toast & Modales */
         #toast { visibility: hidden; min-width: 120px; background-color: var(--brand); color: #fff; text-align: center; border-radius: 30px; padding: 12px 24px; position: fixed; z-index: 4000; left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 700; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2s; }
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
 
-        /* Modales Genéricos */
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
         .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 20px; text-align: center; margin: 20px 0; }
@@ -313,15 +318,21 @@
 
             <div class="dashboard-card" id="dashMain">
                 <div class="dash-header">
-                    <div class="icon-btn" onclick="rotateDash()">🔄</div>
+                    <div class="icon-btn" onclick="rotateDash()" id="btnRotate">
+                        <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+                    </div>
+                    
                     <div class="dash-title" id="stratName">NORMAL</div>
-                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()">🔓</div>
+                    
+                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>
+                    </div>
                 </div>
                 
                 <div class="main-target-box">
                     <div class="target-label">OBJETIVO SALIDA</div>
                     <div class="target-price" id="resTarget">0.00000000</div>
-                    </div>
+                </div>
 
                 <div class="stats-grid">
                     <div class="stat-box">
@@ -386,7 +397,7 @@
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.8 VISUAL DASH</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.9 FINAL</div>
             </div>
         </div>
     </div>
@@ -441,7 +452,6 @@
             toggleMenu(); 
         }
 
-        // --- SETTINGS ---
         function loadSettingsValues() {
             const s = slots[activeIdx];
             document.getElementById('setCapital').value = s.capital;
@@ -506,23 +516,45 @@
 
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
-        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
-        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
+        function rotateDash() { 
+            const s = slots[activeIdx]; 
+            if(s.locked) return showToast("⚠️ Slot Bloqueado"); 
+            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
+            save(); updateDashUI(); 
+        }
+
+        function toggleLock() { 
+            const s = slots[activeIdx]; 
+            s.locked = !s.locked; 
+            save(); updateDashUI(); 
+        }
         
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
             const elTarget = document.getElementById('resTarget');
+            const btnRotate = document.getElementById('btnRotate');
+            const btnLock = document.getElementById('lockBtn');
             
             elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
             elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
             elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
             
-            // Efecto visual Glow en el precio
             elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
             elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
 
-            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            // Update Icon States
+            if(s.strat === "agresiva") btnRotate.classList.add('active'); else btnRotate.classList.remove('active');
+            
+            // SVG Lock Path Update
+            if(s.locked) {
+                btnLock.classList.add('locked');
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>';
+            } else {
+                btnLock.classList.remove('locked');
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>';
+            }
+
             document.getElementById('capitalInput').value = s.capital;
             calculate();
         }
@@ -565,7 +597,10 @@
             openSecurity(() => {
                 history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
                 localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
+                
+                // RESET TO NORMAL STRATEGY
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
+                
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                 slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
             });
