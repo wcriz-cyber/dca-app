@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.4 Ticker Fix</title>
+    <title>C5X - V22.5 Stable</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -69,10 +69,11 @@
             position: relative;
         }
 
-        /* MENÚ A LA IZQUIERDA */
+        /* LOGO C5X (MENÚ TRIGGER) */
         .brand-btn { 
             display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; 
-            z-index: 10; position: relative; /* Asegura que esté por encima */
+            z-index: 50; /* Z-index alto para asegurar su click */
+            position: relative;
         }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
@@ -80,12 +81,13 @@
         /* TICKER CENTRADO ABSOLUTO (NO INTERFIERE CON MENÚ) */
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            z-index: 20; pointer-events: none; /* Permite clicks pasen a traves del contenedor vacío */
-            display: flex; justify-content: center; width: 100%;
+            z-index: 60; /* Más alto que el brand para evitar solapamientos en pantallas muy pequeñas */
+            pointer-events: none; /* El contenedor es transparente a clicks */
+            display: flex; justify-content: center; width: auto;
         }
 
         .ticker-pill { 
-            pointer-events: auto; /* Reactiva clicks SOLO en el botón */
+            pointer-events: auto; /* El botón SÍ recibe clicks */
             display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
             border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer;
             transition: 0.2s;
@@ -99,7 +101,7 @@
         .theme-btn {
             width: 36px; height: 36px; border-radius: 50%; background: transparent; 
             border: 1px solid var(--border); color: var(--text-primary); display: flex; 
-            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 10;
+            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 50;
         }
 
         /* --- SECCIONES --- */
@@ -315,7 +317,7 @@
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.4 PROFESSIONAL</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.5 STABLE</div>
             </div>
         </div>
     </div>
@@ -362,6 +364,7 @@
             const tfBar = document.getElementById('tfBarContainer');
             if(viewName === 'operate') {
                 tfBar.style.display = 'flex';
+                // Si cambiamos de vista, recargamos el chart con la moneda del slot actual o la última seteada
                 if(chartSymbol) loadChart(chartSymbol); 
             } else {
                 tfBar.style.display = 'none';
@@ -382,13 +385,22 @@
             } catch(e) {} 
         }
 
-        // --- TICKER CLICK LOGIC FIX ---
+        // --- TICKER FIX: STOP PROPAGATION ---
         function viewTickerChart(e) { 
-            if(e) e.stopPropagation(); // Evita que el click suba y abra el menú
-            loadChart(currentTickerSymbol); // Carga la moneda actual del ticker
-            switchView('operate'); // Asegura que estamos en la vista de operar
-            // No seleccionamos slot, así que visualmente se ve el chart del ticker
-            // chartSymbol queda actualizado, así que updateTF usará esta moneda
+            // Esto evita que el click llegue al header o al menú
+            if(e) e.stopPropagation(); 
+            
+            // Cargar moneda del ticker
+            chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase();
+            loadChart(chartSymbol); 
+            
+            // Asegurar que estamos en vista operar
+            if(currentSection !== 'operate') {
+                currentSection = 'operate';
+                document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
+                document.getElementById('section-operate').classList.add('active');
+                document.getElementById('tfBarContainer').style.display = 'flex';
+            }
         }
 
         function updateTF(tf, btn) { 
@@ -396,10 +408,11 @@
             localStorage.setItem('c5x_last_tf', tf); 
             document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
             btn.classList.add('active'); 
-            loadChart(chartSymbol); // Mantiene la moneda actual (Slot o Ticker)
+            loadChart(chartSymbol); 
         }
 
         function loadChart(coin) { 
+            // Guardamos el símbolo actual para que al cambiar TF se mantenga
             chartSymbol = (coin || 'BTC3L').toUpperCase(); 
             new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); 
         }
