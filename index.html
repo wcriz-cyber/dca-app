@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.7 Professional</title>
+    <title>C5X - V22.2 Pro Nav</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -19,57 +19,44 @@
     <style>
         :root {
             /* --- SISTEMA DE DISEÑO PROFESIONAL --- */
-            
-            /* Colores Base (Dark Mode Default) */
             --bg: #0b0e11; 
             --surface: #151a21;
             --surface-hover: #1e2329;
-            --surface-glass: rgba(21, 26, 33, 0.85);
+            --surface-glass: rgba(21, 26, 33, 0.95);
             
-            /* Texto */
             --text-primary: #eaecef;
             --text-secondary: #848e9c;
             --text-tertiary: #5e6673;
 
-            /* Acentos Financieros */
-            --brand: #3b82f6;      /* Azul Institucional */
-            --long: #0ecb81;       /* Verde Binance */
-            --short: #f6465d;      /* Rojo Binance */
-            --warning: #f0b90b;    /* Amarillo Alerta */
-            --danger: #cf304a;     /* Rojo Acción Destructiva */
+            --brand: #3b82f6;      
+            --long: #0ecb81;       
+            --short: #f6465d;      
+            --warning: #f0b90b;    
+            --danger: #cf304a;     
             
-            /* Bordes y Estructura */
             --border: #2b3139;
-            --border-active: #474d57;
-            --radius-s: 8px;
             --radius-m: 12px;
-            --radius-l: 20px;
-            
-            /* Sombras */
-            --shadow-card: 0 4px 12px rgba(0,0,0,0.2);
-            --shadow-float: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-float: 0 8px 30px rgba(0,0,0,0.5);
         }
 
-        /* TEMA CLARO (Variables redefinidas) */
+        /* TEMA CLARO */
         body.light-mode {
             --bg: #f5f7fa; 
             --surface: #ffffff;
             --surface-hover: #f0f2f5;
-            --surface-glass: rgba(255, 255, 255, 0.9);
+            --surface-glass: rgba(255, 255, 255, 0.95);
             --text-primary: #1e2329;
             --text-secondary: #707a8a;
             --border: #e6e8ea;
-            --border-active: #cfd6e4;
         }
 
-        /* RESET & BASE */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); 
-            padding-bottom: 80px; overflow-x: hidden; transition: background 0.3s, color 0.3s;
+            padding-bottom: 20px; overflow-x: hidden; transition: background 0.3s, color 0.3s;
         }
 
-        /* --- HEADER PROFESIONAL (Glassmorphism) --- */
+        /* --- HEADER --- */
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -81,273 +68,169 @@
             height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto;
         }
 
-        /* Botón de Menú (Logo) */
-        .brand-btn { 
-            display: flex; align-items: center; gap: 6px; cursor: pointer; 
-            padding: 8px 0; transition: opacity 0.2s;
-        }
-        .brand-btn:active { opacity: 0.6; }
+        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 8px 0; }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
-        .brand-icon { font-size: 10px; color: var(--text-secondary); transform: translateY(2px); }
+        .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
+        
+        .header-actions { display: flex; gap: 10px; align-items: center; }
 
-        /* Ticker en Header */
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; background: transparent; 
+            border: 1px solid var(--border); color: var(--text-primary); display: flex; 
+            align-items: center; justify-content: center; font-size: 16px; cursor: pointer;
+        }
+
         .ticker-pill { 
             display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
             border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; cursor: pointer;
         }
-        body.light-mode .ticker-pill { background: #f0f2f5; }
         .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); }
         .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
 
-        /* Barra de Temporalidad */
-        .tf-bar { display: flex; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--border); overflow-x: auto; justify-content: center; }
+        /* --- SECCIONES (NAVEGACIÓN) --- */
+        .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
+        
+        /* La magia: Ocultar/Mostrar secciones */
+        .app-section { display: none; animation: fadeIn 0.3s ease; }
+        .app-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- VISTA OPERAR --- */
+        .tf-bar { display: flex; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--border); justify-content: center; }
         .tf-btn { 
             flex: 1; max-width: 60px; padding: 6px 0; border: none; background: transparent; 
             color: var(--text-secondary); font-size: 11px; font-weight: 700; border-radius: 6px;
-            font-family: 'Inter'; transition: all 0.2s;
         }
-        .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); font-weight: 800; }
+        .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
 
-        .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
-
-        /* --- NAVEGACIÓN DE SLOTS --- */
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
         .slot-card { 
             background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
             padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; 
-            font-weight: 700; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+            font-weight: 700; cursor: pointer; transition: 0.2s;
         }
-        .slot-card.active { 
-            border-color: var(--brand); color: var(--brand); background: var(--surface-hover);
-            box-shadow: 0 0 0 1px var(--brand);
-        }
+        .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-hover); }
 
-        /* --- CHART & CONTROLES --- */
-        .chart-wrapper { 
-            height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); 
-            overflow: hidden; border: 1px solid var(--border); 
-        }
+        .chart-wrapper { height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; }
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 10px; }
-        .input-group { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m);
-            padding: 8px; text-align: center; position: relative; transition: border-color 0.2s;
-        }
-        .input-group:focus-within { border-color: var(--brand); }
+        .input-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; position: relative; }
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
-        .input-field { 
-            width: 100%; background: transparent; border: none; color: var(--text-primary);
-            font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center;
-        }
+        .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         .locked-overlay { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
 
-        /* --- DASHBOARD PRINCIPAL --- */
         .dashboard-card { 
             background: linear-gradient(160deg, var(--surface) 0%, rgba(20,20,25,0.5) 100%);
             border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 20px;
-            box-shadow: var(--shadow-card); position: relative;
+            box-shadow: var(--shadow-float);
         }
-        .body.light-mode .dashboard-card { background: #fff; }
+        body.light-mode .dashboard-card { background: #fff; }
 
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .dash-title { font-family: 'Orbitron'; font-size: 11px; color: var(--text-tertiary); letter-spacing: 2px; font-weight: 900; }
-        .icon-btn { 
-            width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border);
-            background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
-            color: var(--text-primary); cursor: pointer; transition: 0.2s;
-        }
-        .icon-btn:active { transform: scale(0.9); }
+        .dash-title { font-family: 'Orbitron'; font-size: 11px; color: var(--text-tertiary); font-weight: 900; }
+        .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; }
 
         .main-target-box { text-align: center; margin: 15px 0; }
-        .target-label { font-size: 10px; color: var(--brand); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .target-price { 
-            font-family: 'JetBrains Mono'; font-size: 44px; font-weight: 700; color: var(--long);
-            line-height: 1.1; letter-spacing: -1px; text-shadow: 0 4px 12px rgba(14, 203, 129, 0.15);
-        }
-        
-        .strategy-pill { 
-            display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(59, 130, 246, 0.1);
-            color: var(--brand); font-family: 'Orbitron'; font-size: 10px; font-weight: 800; border: 1px solid rgba(59, 130, 246, 0.2);
-            margin-top: 5px; cursor: pointer;
-        }
+        .target-price { font-family: 'JetBrains Mono'; font-size: 44px; font-weight: 700; color: var(--long); line-height: 1.1; }
+        .strategy-pill { display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(59, 130, 246, 0.1); color: var(--brand); font-family: 'Orbitron'; font-size: 10px; font-weight: 800; margin-top: 5px; cursor: pointer; border: 1px solid rgba(59, 130, 246, 0.2); }
 
-        .stats-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; padding-top: 15px;
-            border-top: 1px solid var(--border);
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); }
         .stat-box { text-align: center; }
-        .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+        .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text-primary); }
 
-        /* --- LISTA DE NIVELES (Cards) --- */
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; }
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 80px; }
         .level-card { 
             background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-            padding: 16px; display: flex; align-items: center; transition: all 0.2s; cursor: pointer;
+            padding: 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;
         }
-        .level-card.active { 
-            border-color: var(--brand); background: rgba(59, 130, 246, 0.04); 
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
-        }
-        .level-card:active { transform: scale(0.98); }
-
-        .level-index { 
-            width: 36px; height: 36px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 700;
-            color: var(--text-secondary); margin-right: 14px; font-size: 14px;
-        }
-        .level-card.active .level-index { color: var(--brand); border-color: var(--brand); }
-
+        .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.04); }
+        .level-index { width: 36px; height: 36px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 700; color: var(--text-secondary); margin-right: 14px; }
         .level-info { flex: 1; }
-        .level-tag { font-size: 9px; font-weight: 800; color: var(--short); text-transform: uppercase; display: block; margin-bottom: 2px; }
+        .level-tag { font-size: 9px; font-weight: 800; color: var(--short); text-transform: uppercase; display: block; }
         .level-price { font-family: 'JetBrains Mono'; font-size: 18px; font-weight: 700; color: var(--text-primary); }
-        
         .level-invest { text-align: right; }
-        .level-invest label { display: block; font-size: 8px; color: var(--text-tertiary); font-weight: 700; margin-bottom: 2px; }
         .level-invest span { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; color: var(--long); }
 
-        /* BOTÓN DE LIQUIDAR */
         .btn-liquidate { 
             width: 94%; margin: 25px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
-            color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; letter-spacing: 1px;
-            box-shadow: 0 8px 20px rgba(207, 48, 74, 0.3); cursor: pointer; display: block; transition: 0.2s;
+            color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; cursor: pointer; display: block;
         }
-        .btn-liquidate:active { transform: scale(0.97); opacity: 0.9; }
 
-        /* --- MENÚ MODAL (Diseño de la Imagen) --- */
-        #menuOverlay { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-            z-index: 2000; display: none; align-items: flex-end; /* Bottom sheet style */
-            opacity: 0; transition: opacity 0.3s;
-        }
-        #menuOverlay.open { display: flex; opacity: 1; }
-        
-        .menu-sheet { 
-            width: 100%; background: var(--surface); border-top-left-radius: 24px; border-top-right-radius: 24px;
-            padding: 25px 20px 40px 20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.5); border-top: 1px solid var(--border);
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        #menuOverlay.open .menu-sheet { transform: translateY(0); }
+        /* --- VISTA BITÁCORA --- */
+        #section-log { padding-top: 20px; }
+        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
+        .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
+        .log-actions { display: flex; gap: 8px; }
+        .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        .menu-header { margin-bottom: 20px; padding: 0 5px; }
-        .menu-title { font-family: 'Orbitron'; font-size: 18px; color: var(--text-primary); margin-bottom: 4px; }
-        .menu-sub { font-size: 12px; color: var(--text-secondary); }
+        /* --- VISTA AJUSTES --- */
+        #section-settings { padding: 20px; }
+        .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .setting-info h4 { font-size: 14px; margin-bottom: 4px; }
+        .setting-info p { font-size: 11px; color: var(--text-secondary); }
+        .btn-reset { background: var(--danger); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; width: 100%; margin-top: 10px; }
 
-        .menu-opt { 
-            display: flex; align-items: center; padding: 16px; background: var(--bg); border: 1px solid var(--border);
-            border-radius: 16px; margin-bottom: 12px; cursor: pointer; transition: 0.2s;
-        }
-        .menu-opt:active { background: var(--surface-hover); border-color: var(--brand); transform: scale(0.99); }
-        .menu-opt-icon { 
-            width: 40px; height: 40px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); color: var(--brand);
-            display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 15px;
-        }
-        .menu-opt-text h4 { font-family: 'Inter'; font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 2px; }
-        .menu-opt-text p { font-size: 11px; color: var(--text-secondary); }
-        .menu-check { margin-left: auto; color: var(--long); font-size: 18px; opacity: 0; }
-        .menu-opt.selected .menu-check { opacity: 1; }
-
-        /* --- MODALES GENERALES --- */
-        .generic-modal { 
+        /* --- MENÚ MODAL (Navigation) --- */
+        #navModal { 
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-            z-index: 3000; display: none; align-items: center; justify-content: center;
+            z-index: 2000; display: none; justify-content: center; align-items: center;
         }
-        .modal-box { 
-            background: var(--surface); width: 85%; max-width: 320px; border-radius: 24px; padding: 30px 25px;
-            border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow-float);
+        .nav-content { 
+            background: var(--surface); width: 80%; max-width: 320px; border-radius: 24px; 
+            padding: 30px 20px; border: 1px solid var(--border); box-shadow: var(--shadow-float);
         }
-        .modal-inp { 
-            width: 100%; background: var(--bg); border: 2px solid var(--border); padding: 14px;
-            border-radius: 12px; color: var(--text-primary); font-size: 20px; font-family: 'JetBrains Mono';
-            text-align: center; margin: 20px 0; transition: 0.2s;
-        }
-        .modal-inp:focus { border-color: var(--brand); }
+        .nav-title { font-family: 'Orbitron'; font-size: 16px; margin-bottom: 20px; color: var(--text-primary); text-align: center; }
         
-        .modal-btns { display: grid; gap: 10px; }
-        .btn-primary { background: var(--brand); color: #fff; padding: 14px; border-radius: 12px; border: none; font-weight: 700; font-family: 'Orbitron'; cursor: pointer; }
-        .btn-ghost { background: transparent; color: var(--text-secondary); padding: 10px; border: none; font-weight: 600; cursor: pointer; }
-
-        /* Toast Notification */
-        #toast { 
-            visibility: hidden; min-width: 120px; background-color: var(--surface); color: var(--text-primary);
-            text-align: center; border-radius: 30px; padding: 12px 24px; position: fixed; z-index: 4000;
-            left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 600; font-size: 13px;
-            border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            display: flex; align-items: center; gap: 8px;
+        .nav-item { 
+            display: flex; align-items: center; padding: 15px; border-radius: 12px; 
+            margin-bottom: 10px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s;
         }
-        #toast.show { visibility: visible; animation: slideUp 0.3s forwards, fadeOut 0.5s 2s forwards; }
-        @keyframes slideUp { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .nav-item.selected { background: rgba(59, 130, 246, 0.1); border-color: var(--brand); }
+        .nav-icon { width: 30px; font-size: 18px; text-align: center; margin-right: 10px; }
+        .nav-text { font-family: 'Inter'; font-weight: 700; font-size: 14px; }
 
-        /* Sección de Bitácora (Inicialmente Oculta por Scroll) */
-        #logSection { 
-            margin-top: 40px; border-top: 1px solid var(--border); padding-top: 30px; 
-            background: rgba(0,0,0,0.2); padding-bottom: 60px;
-        }
-        .log-header { padding: 0 16px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .log-label { font-family: 'Orbitron'; font-size: 16px; color: var(--brand); font-weight: 900; }
-        
-        .empty-state { padding: 40px; text-align: center; color: var(--text-tertiary); font-size: 12px; font-style: italic; }
+        /* Toast */
+        #toast { visibility: hidden; min-width: 120px; background-color: var(--brand); color: #fff; text-align: center; border-radius: 30px; padding: 12px 24px; position: fixed; z-index: 4000; left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 700; font-size: 12px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2s; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+
+        /* Modales Genéricos */
+        .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
+        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 20px; text-align: center; margin: 20px 0; }
+        .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
+        .btn-confirm { background: var(--brand); color: #fff; }
+        .btn-cancel { background: transparent; color: var(--text-secondary); }
 
     </style>
 </head>
 <body onload="init()">
 
-    <div id="toast"><span id="toastIcon">ℹ️</span> <span id="toastMsg">Mensaje</span></div>
+    <div id="toast">Notificación</div>
 
-    <div id="menuOverlay" onclick="if(event.target===this) toggleMenu()">
-        <div class="menu-sheet">
-            <div class="menu-header">
-                <div class="menu-title">C5X Menú</div>
-                <div class="menu-sub">Selecciona una vista</div>
+    <div id="navModal" onclick="if(event.target===this) toggleMenu()">
+        <div class="nav-content">
+            <div class="nav-title">MENÚ C5X</div>
+            
+            <div class="nav-item selected" id="nav-operate" onclick="switchView('operate')">
+                <div class="nav-icon">⚡</div>
+                <div class="nav-text">OPERAR</div>
             </div>
             
-            <div class="menu-opt selected" id="menuOp1" onclick="navTo('top')">
-                <div class="menu-opt-icon">⚡</div>
-                <div class="menu-opt-text"><h4>Operar</h4><p>Panel Principal & Chart</p></div>
-                <div class="menu-check">✓</div>
+            <div class="nav-item" id="nav-log" onclick="switchView('log')">
+                <div class="nav-icon">📋</div>
+                <div class="nav-text">BITÁCORA</div>
             </div>
 
-            <div class="menu-opt" id="menuOp2" onclick="navTo('log')">
-                <div class="menu-opt-icon">📋</div>
-                <div class="menu-opt-text"><h4>Bitácora</h4><p>Historial de Operaciones</p></div>
-                <div class="menu-check">✓</div>
+            <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
+                <div class="nav-icon">⚙️</div>
+                <div class="nav-text">AJUSTES</div>
             </div>
 
-            <div class="menu-opt" onclick="toggleTheme(); toggleMenu();">
-                <div class="menu-opt-icon" style="color:var(--text-primary); background:rgba(255,255,255,0.1)">🌗</div>
-                <div class="menu-opt-text"><h4>Apariencia</h4><p>Cambiar Claro / Oscuro</p></div>
-            </div>
-
-            <div class="menu-opt" onclick="exportExcel(); toggleMenu();">
-                <div class="menu-opt-icon" style="color:#107c41; background:rgba(16,124,65,0.1)">📊</div>
-                <div class="menu-opt-text"><h4>Exportar Excel</h4><p>Guardar Reporte .xlsx</p></div>
-            </div>
-
-            <button class="btn-ghost" style="width:100%; margin-top:15px; color:var(--danger)" onclick="toggleMenu()">CERRAR MENÚ</button>
-        </div>
-    </div>
-
-    <div id="configModal" class="generic-modal">
-        <div class="modal-box">
-            <div style="font-family:'Orbitron'; color:var(--brand); font-size:12px; letter-spacing:1px;">AJUSTAR PORCENTAJE</div>
-            <input type="number" id="configInputVal" class="modal-inp" step="any" inputmode="decimal">
-            <div class="modal-btns">
-                <button class="btn-primary" onclick="saveConfigValue()">GUARDAR</button>
-                <button class="btn-ghost" onclick="closeModals()">CANCELAR</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="securityModal" class="generic-modal">
-        <div class="modal-box">
-            <div style="font-family:'Orbitron'; color:var(--text-primary); font-size:12px;">SEGURIDAD REQUERIDA</div>
-            <input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric">
-            <div class="modal-btns">
-                <button class="btn-primary" onclick="validateSecurity()">ACCEDER</button>
-                <button class="btn-ghost" onclick="closeModals()">CANCELAR</button>
-            </div>
+            <button class="btn-cancel" style="width:100%; margin-top:15px;" onclick="toggleMenu()">CERRAR</button>
         </div>
     </div>
 
@@ -355,15 +238,19 @@
         <header class="app-header">
             <div class="brand-btn" onclick="toggleMenu()">
                 <span class="brand-text">C5X</span>
-                <span class="brand-icon">▼</span>
+                <span class="brand-caret" style="margin-left:5px">▼</span>
             </div>
-            <div class="ticker-pill" onclick="viewTickerChart()">
-                <div class="ticker-dot" id="t-dot"></div>
-                <span class="ticker-sym" id="t-sym">BTC</span>
-                <span class="ticker-price" id="t-price">--.--</span>
+            
+            <div class="header-actions">
+                <div class="ticker-pill" onclick="viewTickerChart()">
+                    <div class="ticker-dot" id="t-dot"></div>
+                    <span class="ticker-sym" id="t-sym">BTC</span>
+                    <span class="ticker-price" id="t-price">--.--</span>
+                </div>
+                <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
             </div>
         </header>
-        <div class="tf-bar">
+        <div class="tf-bar" id="tfBarContainer">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
@@ -374,68 +261,89 @@
 
     <div class="content-spacer">
         
-        <nav id="slotNav" class="slot-nav"></nav>
-        
-        <div id="tv_chart" class="chart-wrapper"></div>
-
-        <div class="controls-grid">
-            <div class="input-group">
-                <label class="input-label">Moneda</label>
-                <input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
-            </div>
-            <div class="input-group">
-                <label class="input-label">Precio Base</label>
-                <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any">
-            </div>
-            <div class="input-group">
-                <div class="locked-overlay" onclick="requestControlAccess('capitalInput')"></div>
-                <label class="input-label">Capital</label>
-                <input type="number" id="capitalInput" class="input-field" readonly>
-            </div>
-        </div>
-
-        <div class="dashboard-card" id="dashMain">
-            <div class="dash-header">
-                <div class="icon-btn" onclick="rotateDash()">🔄</div>
-                <div class="dash-title" id="stratName">NORMAL</div>
-                <div class="icon-btn" id="lockBtn" onclick="toggleLock()">🔓</div>
-            </div>
+        <div id="section-operate" class="app-section active">
+            <nav id="slotNav" class="slot-nav"></nav>
+            <div id="tv_chart" class="chart-wrapper"></div>
             
-            <div class="main-target-box">
-                <div class="target-label">Objetivo de Salida</div>
-                <div class="target-price" id="resTarget">0.000000</div>
-                <div class="strategy-pill" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
+            <div class="controls-grid">
+                <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any"></div>
+                <div class="input-group"><div class="locked-overlay" onclick="requestControlAccess('capitalInput')"></div><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-label">Promedio</div>
-                    <div class="stat-value" id="resAvg">0.0000</div>
+            <div class="dashboard-card" id="dashMain">
+                <div class="dash-header">
+                    <div class="icon-btn" onclick="rotateDash()">🔄</div>
+                    <div class="dash-title" id="stratName">NORMAL</div>
+                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()">🔓</div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Ganancia</div>
-                    <div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div>
+                <div class="main-target-box">
+                    <div class="target-price" id="resTarget">0.000000</div>
+                    <div class="strategy-pill" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">Inversión</div>
-                    <div class="stat-value" id="resInv">$0.00</div>
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.0000</div></div>
+                    <div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div>
+                    <div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div>
+                </div>
+            </div>
+
+            <main id="levelsGrid" class="levels-container"></main>
+            <button class="btn-liquidate" onclick="releaseSlot()">LIQUIDAR POSICIÓN</button>
+        </div>
+
+        <div id="section-log" class="app-section">
+            <div class="log-header-bar">
+                <div class="log-title">BITÁCORA</div>
+                <div class="log-actions">
+                    <button class="action-btn" onclick="exportExcel()">XLS</button>
+                    <button class="action-btn" onclick="exportPDF()">PDF</button>
+                    <button class="action-btn" style="color:var(--danger); border-color:var(--danger)" onclick="clearLogs()">BORRAR</button>
+                </div>
+            </div>
+            <div id="logGrid" class="levels-container"></div>
+        </div>
+
+        <div id="section-settings" class="app-section">
+            <div class="settings-card">
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <h4>Tema de la App</h4>
+                        <p>Alternar entre Claro y Oscuro</p>
+                    </div>
+                    <button class="action-btn" onclick="toggleTheme()">CAMBIAR</button>
+                </div>
+                <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;">
+                    <div class="setting-info">
+                        <h4 style="color:var(--danger)">Zona de Peligro</h4>
+                        <p>Borrar todos los datos y reiniciar</p>
+                        <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
+                    </div>
+                </div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">
+                    C5X V22.2 PROFESSIONAL
                 </div>
             </div>
         </div>
 
-        <main id="levelsGrid" class="levels-container"></main>
+    </div>
 
-        <button class="btn-liquidate" onclick="releaseSlot()">LIQUIDAR POSICIÓN</button>
+    <div id="configModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; color:var(--brand); font-size:12px;">CONFIGURAR %</div>
+            <input type="number" id="configInputVal" class="modal-inp" step="any">
+            <button class="btn-modal btn-confirm" onclick="saveConfigValue()">ACEPTAR</button>
+            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
+        </div>
+    </div>
 
-        <section id="logSection">
-            <div class="log-header">
-                <div class="log-label">BITÁCORA</div>
-                <button class="btn-ghost" style="color:var(--danger); font-size:10px; font-weight:800;" onclick="clearLogs()">BORRAR HISTORIAL</button>
-            </div>
-            <div class="levels-container" id="logGrid">
-                </div>
-        </section>
-
+    <div id="securityModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div>
+            <input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4">
+            <button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button>
+            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
+        </div>
     </div>
 
     <input type="hidden" id="incInput" value="7">
@@ -443,24 +351,26 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // --- CONFIGURACIÓN E INICIALIZACIÓN (Misma lógica V21.5) ---
+        // CONFIGURACIÓN INICIAL
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        // Estructura de Slots original
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+        let currentSection = 'operate';
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) document.body.classList.add('light-mode');
+            if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+            
+            // Render Inicial
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             
-            // Set active TF button
+            // Active TF
             document.querySelectorAll('.tf-btn').forEach(btn => { 
                 if(btn.dataset.tf === activeTF) btn.classList.add('active'); 
             });
@@ -468,36 +378,45 @@
             setInterval(fetchTicker, 8000); 
         }
 
-        // --- SISTEMA DE MENÚ (NUEVO Y SEGURO) ---
+        // --- SISTEMA DE NAVEGACIÓN (LO QUE PEDISTE) ---
         function toggleMenu() {
-            const el = document.getElementById('menuOverlay');
-            if(el.classList.contains('open')) {
-                el.classList.remove('open');
-                setTimeout(() => el.style.display = 'none', 300);
+            const m = document.getElementById('navModal');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function switchView(viewName) {
+            currentSection = viewName;
+            
+            // Ocultar todas las secciones
+            document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
+            // Mostrar la seleccionada
+            document.getElementById('section-' + viewName).classList.add('active');
+            
+            // Actualizar UI del Menú
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById('nav-' + viewName).classList.add('selected');
+
+            // Manejo especial: Si vamos a operar, asegurar que el TF bar se ve
+            const tfBar = document.getElementById('tfBarContainer');
+            if(viewName === 'operate') {
+                tfBar.style.display = 'flex';
+                // Pequeño fix para TradingView si se ocultó
+                if(chartSymbol) loadChart(chartSymbol); 
             } else {
-                el.style.display = 'flex';
-                // Pequeño delay para permitir transición CSS
-                setTimeout(() => el.classList.add('open'), 10);
+                tfBar.style.display = 'none';
             }
-        }
 
-        function navTo(target) {
             toggleMenu(); // Cerrar menú
-            
-            // Actualizar UI del menú
-            document.querySelectorAll('.menu-opt').forEach(m => m.classList.remove('selected'));
-            
-            if(target === 'top') {
-                document.getElementById('menuOp1').classList.add('selected');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else if (target === 'log') {
-                document.getElementById('menuOp2').classList.add('selected');
-                document.getElementById('logSection').scrollIntoView({ behavior: 'smooth' });
-            }
         }
 
-        // --- LÓGICA DE NEGOCIO (INTACTA V21.5) ---
+        function resetApp() {
+            openSecurity(() => {
+                localStorage.clear();
+                location.reload();
+            });
+        }
 
+        // --- FUNCIONES CORE ---
         async function fetchTicker() { 
             try { 
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
@@ -505,18 +424,15 @@
                 currentTickerSymbol = assets[assetIdx].replace("USDT",""); 
                 document.getElementById('t-sym').textContent = currentTickerSymbol; 
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
-                
-                // Color del punto indicador
                 const isUp = parseFloat(data.priceChangePercent) >= 0;
                 document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
-                
                 assetIdx = (assetIdx + 1) % assets.length; 
             } catch(e) {} 
         }
 
         function rotateDash() { 
             const s = slots[activeIdx]; 
-            if(s.locked) return showToast("⚠️ Slot Bloqueado", true); 
+            if(s.locked) return showToast("⚠️ Slot Bloqueado"); 
             s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
             save(); updateDashUI(); 
         }
@@ -532,29 +448,24 @@
             const elTitle = document.getElementById('stratName');
             const elCard = document.getElementById('dashMain');
             
-            elTitle.textContent = isNormal ? "ESTRATEGIA NORMAL" : "ESTRATEGIA AGRESIVA";
+            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA";
             elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)";
-            
-            // Borde visual para estado agresivo
-            if(!isNormal) elCard.style.borderColor = "var(--warning)";
-            else elCard.style.borderColor = "var(--border)";
+            elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
 
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-            document.getElementById('btnStratToggle').textContent = (isNormal ? "INC. BASE: " : "DESC. AGRO: ") + val + "%";
+            document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
             
             calculate();
         }
 
-        // --- SISTEMA DE MODALES Y SEGURIDAD ---
+        // --- SEGURIDAD Y MODALES ---
         function openSecurity(cb) {
             modalCallback = cb;
-            const m = document.getElementById('securityModal');
             document.getElementById('secInput').value = '';
-            m.style.display = 'flex';
-            document.getElementById('secInput').focus();
+            document.getElementById('securityModal').style.display = 'flex';
         }
-
+        
         function validateSecurity() {
             const pass = document.getElementById('secInput').value;
             closeModals();
@@ -565,11 +476,12 @@
             }
         }
 
+        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
+
         function requestControlAccess(id) {
             openSecurity(() => {
                 const el = document.getElementById(id);
-                el.readOnly = false; 
-                el.focus(); 
+                el.readOnly = false; el.focus(); 
                 el.onblur = () => el.readOnly = true;
                 showToast("🔓 Edición Habilitada");
             });
@@ -579,48 +491,31 @@
             openSecurity(() => {
                 const s = slots[activeIdx];
                 const isNormal = s.strat === "normal";
-                const currentVal = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-                
-                // Preparar modal de config
-                document.getElementById('configInputVal').value = currentVal;
+                document.getElementById('configInputVal').value = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
                 document.getElementById('configModal').style.display = 'flex';
-                document.getElementById('configInputVal').focus();
             });
         }
 
         function saveConfigValue() {
             const newVal = document.getElementById('configInputVal').value;
             if(!newVal) return;
-            
             if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; 
             else document.getElementById('descInput').value = newVal; 
-            
-            closeModals(); 
-            updateDashUI();
+            closeModals(); updateDashUI();
         }
 
-        function closeModals() {
-            document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none');
-        }
-
-        // --- CÁLCULOS PRINCIPALES ---
+        // --- CÁLCULOS ---
         function calculate() { 
             const s = slots[activeIdx]; 
             s.price = parseFloat(document.getElementById('baseInput').value) || 0; 
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; 
-            save(); 
-            renderLevels(); 
+            save(); renderLevels(); 
         }
 
         function toggleLvl(idx) { 
             const s = slots[activeIdx]; 
-            if (!s.buys.includes(idx)) { 
-                // Seleccionar todos los anteriores
-                for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } 
-            } else { 
-                // Deseleccionar este y superiores (pero mantener lógica V21.5 estricta de filtro)
-                s.buys = s.buys.filter(val => val < idx); 
-            } 
+            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } 
+            else { s.buys = s.buys.filter(val => val < idx); } 
             calculate(); 
         }
 
@@ -630,52 +525,31 @@
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             const incPct = parseFloat(document.getElementById('incInput').value) || 7;
             
-            updateBodyMode(s.name); // Color del tema según moneda (L/S)
+            updateBodyMode(s.name);
 
-            if(!s.price) { 
-                grid.innerHTML = '<div class="empty-state">Ingresa precio base para calcular niveles</div>'; 
-                return; 
-            }
+            if(!s.price) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
             
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
-            
             for(let i=0; i<12; i++){
                 let pLevel;
-                // Lógica exacta V21.5
                 if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
                 else { 
-                    if(s.strat === "normal") { 
-                        if(i === 1) currentStepDrop = 17; 
-                        else currentStepDrop += incPct; 
-                    } 
+                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } 
                     else { currentStepDrop = descPct; }
-                    
                     pLevel = lastPrice * (1 - (currentStepDrop / 100));
                 }
-
                 const mUSD = MULTIPLIERS[i] * s.capital; 
                 const on = s.buys.includes(i);
-                
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
                 
-                html += `
-                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                     <div class="level-index">${i+1}</div>
-                    <div class="level-info">
-                        <span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span>
-                        <div class="level-price">${pLevel.toFixed(5)}</div>
-                    </div>
-                    <div class="level-invest">
-                        <label>INVERSIÓN</label>
-                        <span>$${mUSD.toFixed(1)}</span>
-                    </div>
+                    <div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(5)}</div></div>
+                    <div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div>
                 </div>`;
-                
                 lastPrice = pLevel;
             }
-            
             grid.innerHTML = html;
-            
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(5);
@@ -683,35 +557,22 @@
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
-        // --- GESTIÓN DE BITÁCORA ---
         function renderHistory() { 
             const grid = document.getElementById('logGrid');
-            if(history.length === 0) {
-                grid.innerHTML = '<div class="empty-state">No hay operaciones registradas</div>';
-                return;
-            }
+            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; }
             grid.innerHTML = history.map(h => `
                 <div class="level-card">
-                    <div class="level-index" style="font-size:10px; color:var(--brand); border-color:var(--brand)">${h.coin.substring(0,3)}</div>
-                    <div class="level-info">
-                        <span class="level-tag" style="color:var(--text-secondary)">${h.date}</span>
-                        <div class="level-price" style="font-size:16px">${h.coin}</div>
-                    </div>
-                    <div class="level-invest">
-                        <label>PROFIT</label>
-                        <span style="color:var(--long)">+$${h.profit}</span>
-                    </div>
-                </div>
-            `).reverse().join(''); 
+                    <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
+                    <div class="level-info"><span class="level-tag" style="color:var(--text-secondary)">${h.date}</span><div class="level-price" style="font-size:16px">${h.coin}</div></div>
+                    <div class="level-invest"><span style="color:var(--long)">+$${h.profit}</span></div>
+                </div>`).reverse().join(''); 
         }
 
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
-            
             openSecurity(() => {
-                // Crear registro
-                const logEntry = { 
+                history.push({ 
                     date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
                     coin: s.name || 'S/N', 
                     profit: document.getElementById('resProfit').textContent.replace('$',''),
@@ -719,137 +580,48 @@
                     avg: document.getElementById('resAvg').textContent,
                     totalInv: document.getElementById('resInv').textContent.replace('$',''),
                     strategy: s.strat.toUpperCase()
-                };
-                
-                history.push(logEntry);
+                });
                 localStorage.setItem('c5x_history', JSON.stringify(history));
                 renderHistory();
-                
-                // Reset Slot
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                
-                // Reordenar (Lógica V21.5 de mover vacíos al final)
-                const filled = slots.filter(sl => sl.name !== '');
-                const empty = slots.filter(sl => sl.name === '');
+                const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                 slots = [...filled, ...empty];
-                
-                save(); 
-                selectSlot(0); 
-                showToast("✅ Operación Cerrada Exitosamente");
-                
-                // Scroll a bitácora para feedback visual
-                navTo('log');
+                save(); selectSlot(0); showToast("✅ Operación Cerrada");
+                switchView('log'); // Ir a bitácora
             });
         }
 
         function clearLogs() { 
             openSecurity(() => { 
-                history = []; 
-                localStorage.setItem('c5x_history', JSON.stringify(history)); 
-                renderHistory(); 
-                showToast("🗑️ Historial Eliminado"); 
+                history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); 
+                renderHistory(); showToast("🗑️ Historial Borrado"); 
             }); 
         }
 
-        // --- UTILIDADES ---
-        function updateTF(tf, btn) { 
-            activeTF = tf; 
-            localStorage.setItem('c5x_last_tf', tf); 
-            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
-            btn.classList.add('active'); 
-            loadChart(chartSymbol); 
-        }
-
+        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
         function loadChart(coin) { 
             chartSymbol = (coin || 'BTC3L').toUpperCase(); 
-            // Widget TradingView
-            new TradingView.widget({ 
-                "autosize": true, 
-                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
-                "interval": activeTF, 
-                "theme": "dark", 
-                "container_id": "tv_chart", 
-                "hide_top_toolbar": true, 
-                "backgroundColor": "#0b0e11",
-                "allow_symbol_change": false,
-                "save_image": false,
-                "locale": "es"
-            }); 
+            new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); 
         }
-
-        function selectSlot(i) { 
-            activeIdx = i; 
-            localStorage.setItem('c5x_last_slot', i); 
-            const s = slots[i]; 
-            document.getElementById('coinInput').value = s.name; 
-            document.getElementById('baseInput').value = s.price || ''; 
-            document.getElementById('capitalInput').value = s.capital; 
-            renderNav(); 
-            loadChart(s.name); 
-            updateDashUI(); 
-        }
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function viewTickerChart() { loadChart(currentTickerSymbol); switchView('operate'); }
+        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
-        
-        function updateCoin() { 
-            const val = document.getElementById('coinInput').value.toUpperCase(); 
-            slots[activeIdx].name = val; 
-            save(); renderNav(); loadChart(val); calculate(); 
-        }
-
         function toggleTheme() { 
             isLight = !isLight; 
             document.body.classList.toggle('light-mode', isLight); 
+            updateThemeIcon();
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
         }
+        function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
 
-        function renderNav() { 
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => 
-                `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'SLOT '+(i+1)}</div>`
-            ).join(''); 
-        }
-
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-
-        function showToast(txt) { 
-            const t = document.getElementById("toast"); 
-            const parts = txt.split(' ');
-            document.getElementById("toastIcon").textContent = parts[0];
-            document.getElementById("toastMsg").textContent = parts.slice(1).join(' ');
-            
-            t.className = "show"; 
-            setTimeout(() => t.className = "", 2500); 
-        }
-
-        function updateBodyMode(n) { 
-            // Inyectar CSS Variables dinámicamente según moneda (L vs S)
-            const r = document.querySelector(':root');
-            if(n && n.endsWith('S')) {
-                r.style.setProperty('--brand', 'var(--short)');
-            } else if (n && n.endsWith('L')) {
-                r.style.setProperty('--brand', 'var(--long)');
-            } else {
-                r.style.setProperty('--brand', '#3b82f6'); // Default Blue
-            }
-        }
+        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
+        function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
         
-        // Export Functions (Librerías externas)
-        function exportExcel() { 
-            if(history.length === 0) return showToast("⚠️ Sin Datos"); 
-            const detailedData = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "ESTRATEGIA": h.strategy, "P. BASE": h.base, "P. PROMEDIO": h.avg, "INVERSIÓN": "$" + h.totalInv, "PROFIT": "$" + h.profit }));
-            const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
-            XLSX.utils.book_append_sheet(wb, ws, "C5X_Bitacora"); 
-            XLSX.writeFile(wb, "C5X_Reporte_Pro.xlsx"); 
-        }
-        
-        function exportPDF() {
-             if(history.length === 0) return showToast("⚠️ Sin Datos"); 
-             const { jsPDF } = window.jspdf, doc = new jsPDF('l', 'mm', 'a4');
-             doc.text("Reporte Profesional C5X", 14, 20);
-             const body = history.map(h => [h.date, h.coin, h.strategy, h.base, h.avg, '$'+h.totalInv, '$'+h.profit]);
-             doc.autoTable({ head: [['Fecha', 'Moneda', 'Estrat', 'Base', 'Prom', 'Inv', 'Profit']], body: body, startY: 30, theme: 'grid' });
-             doc.save("C5X_Reporte_Pro.pdf");
-        }
+        function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const d = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT": "$" + h.profit })); const ws = XLSX.utils.json_to_sheet(d), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
+        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("C5X Reporte", 10, 10); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.profit]) }); doc.save("C5X.pdf"); }
     </script>
 </body>
 </html>
