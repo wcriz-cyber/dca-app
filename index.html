@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.3 Master</title>
+    <title>C5X - V20.4 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -68,26 +68,29 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
-        /* Estilos de Tarjetas de Niveles */
-        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 15px; padding: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); transition: 0.2s; position: relative; overflow: hidden; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); box-shadow: inset 0 0 15px rgba(52, 152, 219, 0.1); }
+        /* --- MEJORAS VISUALES 12 NIVELES --- */
+        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 12px 16px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.3s; position: relative; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); box-shadow: 0 0 15px rgba(52, 152, 219, 0.15); }
         
-        .level-card .check-icon { position: absolute; right: 10px; top: 5px; font-size: 10px; color: var(--dir-color); opacity: 0; }
-        .level-card.active .check-icon { opacity: 1; }
+        /* Círculo del número */
+        .lvl-circle { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; font-weight: 900; color: #848e9c; margin-right: 15px; transition: 0.3s; }
+        .level-card.active .lvl-circle { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); transform: scale(1.1); }
 
-        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); line-height: 1.2; }
-        .level-label { font-size: 10px; font-weight: 900; color: var(--dir-color); display: block; margin-bottom: 2px; }
-        .monto-display { text-align: right; }
-        .monto-label { font-size: 8px; color: #848e9c; display: block; margin-bottom: 2px; }
-        .monto-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 16px; color: var(--text); }
+        .lvl-main-info { flex: 1; }
+        .lvl-drop-tag { font-size: 9px; font-weight: 900; color: var(--short-red); margin-bottom: 2px; display: block; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; color: var(--text); line-height: 1; }
+        
+        .lvl-side-info { text-align: right; }
+        .lvl-side-info label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 2px; }
+        .lvl-side-info span { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--long-green); }
 
         /* Modales */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
 
-        .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
+        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -278,18 +281,12 @@
             save(); renderLevels();
         }
 
-        // LÓGICA DE SELECCIÓN ACUMULATIVA
         function toggleLvl(idx) {
             const s = slots[activeIdx];
             const isAlreadyActive = s.buys.includes(idx);
-            
             if (!isAlreadyActive) {
-                // Activa desde el 0 hasta el seleccionado
-                for(let i=0; i<=idx; i++) {
-                    if(!s.buys.includes(i)) s.buys.push(i);
-                }
+                for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); }
             } else {
-                // Desactiva desde el seleccionado hasta el final (11)
                 s.buys = s.buys.filter(val => val < idx);
             }
             calculate();
@@ -308,13 +305,17 @@
             let html = '';
 
             for(let i=0; i<12; i++){
-                let pLevel;
-                if(i === 0) pLevel = s.price;
-                else {
+                let pLevel, currentStepDrop;
+                if(i === 0) {
+                    pLevel = s.price;
+                    currentStepDrop = 0;
+                } else {
                     if(currentStrat === "normal") {
+                        currentStepDrop = currentDropPercent; // El que se aplicó para este nivel
                         currentDropPercent += incPct; 
-                        pLevel = lastPrice * (1 - (currentDropPercent / 100));
+                        pLevel = lastPrice * (1 - (currentStepDrop / 100));
                     } else {
+                        currentStepDrop = descPct;
                         pLevel = lastPrice * (1 - (descPct / 100));
                     }
                 }
@@ -324,14 +325,14 @@
 
                 html += `
                 <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <span class="check-icon">✔</span>
-                    <div>
-                        <span class="level-label">NIVEL ${i+1}</span>
+                    <div class="lvl-circle">${i+1}</div>
+                    <div class="lvl-main-info">
+                        <span class="lvl-drop-tag">${i===0 ? 'PRECIO ENTRADA' : 'CAÍDA -'+currentStepDrop.toFixed(1)+'%'}</span>
                         <div class="price-display">${pLevel.toFixed(6)}</div>
                     </div>
-                    <div class="monto-display">
-                        <span class="monto-label">INVERSIÓN</span>
-                        <div class="monto-val">$${mUSD.toFixed(1)}</div>
+                    <div class="lvl-side-info">
+                        <label>INVERSIÓN</label>
+                        <span>$${mUSD.toFixed(1)}</span>
                     </div>
                 </div>`;
                 lastPrice = pLevel;
@@ -370,7 +371,7 @@
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-btn ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
