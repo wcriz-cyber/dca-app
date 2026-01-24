@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.1 Persistent</title>
+    <title>C5X - V20.1 Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -46,7 +46,7 @@
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
         .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 12px; position: relative; transition: 0.3s border-color; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 12px; position: relative; }
         .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .strat-indicator { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; }
         .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
@@ -167,23 +167,17 @@
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 5;
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
-            
             const grid = document.getElementById('levelsGrid');
             if(!s.price) { grid.innerHTML = ''; return; }
 
-            let totalSpent = 0, totalTokens = 0, html = '';
-            let currentDrop = 10;
+            let totalSpent = 0, totalTokens = 0, html = '', currentDrop = 10;
 
             for(let i=0; i<12; i++) {
                 let pLvl;
                 if(i === 0) pLvl = s.price;
                 else {
-                    if(s.strat === "normal") {
-                        currentDrop += (i === 1) ? 0 : 7;
-                        pLvl = s.price * (1 - (currentDrop/100));
-                    } else {
-                        pLvl = s.price * (1 - (descPct/100)); 
-                    }
+                    if(s.strat === "normal") { currentDrop += (i === 1) ? 0 : 7; pLvl = s.price * (1 - (currentDrop/100)); }
+                    else { pLvl = s.price * (1 - (descPct/100)); }
                 }
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
@@ -222,7 +216,6 @@
             const dash = document.getElementById('dashMain');
             const label = document.getElementById('stratName');
             const lBtn = document.getElementById('lockBtn');
-            
             label.textContent = s.strat === "normal" ? "PREDETERMINADA" : "AGRESIVA";
             label.style.color = s.strat === "normal" ? "var(--dir-color)" : "var(--warning)";
             dash.style.borderColor = s.strat === "normal" ? "var(--dir-color)" : "var(--warning)";
