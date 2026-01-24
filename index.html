@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.4 Fast Flow</title>
+    <title>C5X - V22.5 Fast Flow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -51,8 +51,10 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
 
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; position: relative; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); text-align: center; }
+        /* Dashboard Mejorado */
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 18px; margin: 10px 8px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); text-align: center; text-shadow: 0 0 10px rgba(14, 203, 129, 0.2); }
+        .dash-label-main { font-size: 10px; color: var(--text); opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: -5px; }
         
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
         .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.1s; }
@@ -95,11 +97,11 @@
 
     <div id="tab-history" class="tab-content no-tf-margin">
         <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">HISTORIAL</h2>
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">BITÁCORA</h2>
             <button onclick="exportExcel()" style="padding:8px 15px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">EXPORTAR</button>
         </div>
         <div id="logGrid" class="card-grid"></div>
-        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:25px; font-weight:900; opacity:0.6;">BORRAR BITÁCORA</button></center>
+        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:25px; font-weight:900; opacity:0.6;">BORRAR REGISTROS</button></center>
     </div>
 
     <div id="tab-trade" class="tab-content active-tab">
@@ -110,21 +112,24 @@
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any" inputmode="decimal"></div>
             <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
         </div>
+        
         <div class="dash-main" id="dashMain">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <button style="background:none; border:none; font-size:20px;" onclick="rotateDash()">🔄</button>
-                <div id="stratName" style="font-family:'Orbitron'; font-size:11px; font-weight:900;">PREDETERMINADA</div>
-                <button style="background:none; border:none; font-size:20px;" id="lockBtn" onclick="toggleLock()">🔓</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <button style="background:none; border:none; font-size:22px;" onclick="rotateDash()">🔄</button>
+                <div id="stratName" style="font-family:'Orbitron'; font-size:13px; font-weight:900; letter-spacing:1.5px;">NORMAL</div>
+                <button style="background:none; border:none; font-size:22px;" id="lockBtn" onclick="toggleLock()">🔓</button>
             </div>
+            <center><div class="dash-label-main">Take Profit (2x)</div></center>
             <div class="main-target" id="resTarget">0.000000</div>
             <div class="sub-info" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:15px; padding-top:15px; border-top:1px solid var(--border);">
-                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Promedio</label><span id="resAvg" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900;">0.00</span></div>
-                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Ganancia</label><span id="resProfit" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900; color:var(--long-green)">$0.00</span></div>
-                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Inversión</label><span id="resInv" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900;">$0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:10px; font-weight:900; opacity:0.6; display:block; margin-bottom:4px;">PROMEDIO</label><span id="resAvg" style="font-family:'Roboto Mono'; font-size:18px; font-weight:900;">0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:10px; font-weight:900; opacity:0.6; display:block; margin-bottom:4px;">GANANCIA</label><span id="resProfit" style="font-family:'Roboto Mono'; font-size:18px; font-weight:900; color:var(--long-green)">$0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:10px; font-weight:900; opacity:0.6; display:block; margin-bottom:4px;">TOTAL</label><span id="resInv" style="font-family:'Roboto Mono'; font-size:18px; font-weight:900;">$0.00</span></div>
             </div>
         </div>
+
         <main id="levelsGrid" class="card-grid"></main>
-        <button onclick="releaseSlot()" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';">LIQUIDAR</button>
+        <button onclick="releaseSlot()" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';">LIQUIDAR POSICIÓN</button>
     </div>
 
     <div id="tab-config" class="tab-content no-tf-margin">
@@ -141,11 +146,11 @@
                 </div>
                 <div class="standard-card" onclick="openFastEdit('normal')">
                     <div class="card-icon" style="color:var(--dir-color)">📊</div>
-                    <div class="card-content"><div class="card-label">% Predeterminada</div><div class="card-value" id="cfgBaseVal">7%</div></div>
+                    <div class="card-content"><div class="card-label">% Estrategia Normal</div><div class="card-value" id="cfgBaseVal">7%</div></div>
                 </div>
                 <div class="standard-card" onclick="openFastEdit('agresiva')">
                     <div class="card-icon" style="color:var(--warning)">⚡</div>
-                    <div class="card-content"><div class="card-label">% Descuento</div><div class="card-value" id="cfgAggVal">66%</div></div>
+                    <div class="card-content"><div class="card-label">% Estrategia Agresiva</div><div class="card-value" id="cfgAggVal">66%</div></div>
                 </div>
             </div>
         </div>
@@ -203,10 +208,10 @@
                 document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
                 input.value = slots[activeIdx].capital;
             } else if(type === 'normal') {
-                document.getElementById('configTitle').textContent = "% PREDETERMINADA";
+                document.getElementById('configTitle').textContent = "% ESTRATEGIA NORMAL";
                 input.value = document.getElementById('incInput').value;
             } else {
-                document.getElementById('configTitle').textContent = "% DESCUENTO";
+                document.getElementById('configTitle').textContent = "% ESTRATEGIA AGRESIVA";
                 input.value = document.getElementById('descInput').value;
             }
             modal.style.display = 'flex';
@@ -234,7 +239,7 @@
             localStorage.setItem('c5x_history', JSON.stringify(history));
             slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false };
             save(); selectSlot(activeIdx); renderHistory();
-            showToast("OPERACIÓN CERRADA Y GUARDADA");
+            showToast("OPERACIÓN GUARDADA EN BITÁCORA");
         }
 
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; renderLevels(); }
@@ -248,7 +253,7 @@
                 if(i>0) curD = ((s.price - pL)/s.price)*100;
                 const m = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { tS += m; tQ += (m/pL); }
-                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'ENTRADA':'CAÍDA -'+curD.toFixed(1)+'%'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><div style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div></div>`;
+                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'ENTRADA BASE':'CAÍDA -'+curD.toFixed(1)+'%'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><div style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div></div>`;
                 lP = pL;
             }
             grid.innerHTML = h;
@@ -261,7 +266,7 @@
 
         function updateDashUI() {
             const s = slots[activeIdx], isN = s.strat === "normal";
-            document.getElementById('stratName').textContent = isN ? "PREDETERMINADA" : "DESCUENTO";
+            document.getElementById('stratName').textContent = isN ? "NORMAL" : "AGRESIVA";
             document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
             document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
             document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
@@ -281,10 +286,10 @@
         function showToast(t) { const x = document.getElementById("toast"); x.textContent = t; x.className = "show"; setTimeout(() => x.className = "", 2000); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
+        function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900; font-size:18px;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
         function loadChart(c) { if(!c) return; new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${c.replace('USDT','')}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
-        function clearLogs() { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("BITÁCORA LIMPIA"); }
+        function clearLogs() { if(confirm("¿Borrar todos los registros?")) { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("BITÁCORA LIMPIA"); } }
         function exportExcel() { if(!history.length) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
     </script>
 </body>
