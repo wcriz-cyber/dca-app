@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V33.0 Tactical Elite</title>
+    <title>C5X - V33.5 Precision</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -24,19 +24,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        /* HEADER INTEGRADO */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; background: var(--header-bg); border-bottom: 4px solid var(--dir-color); gap: 10px; }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; color: var(--text); font-size: 22px; flex-shrink: 0; }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; color: var(--text); font-size: 22px; }
         
-        .ticker-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 12px; background: transparent; }
+        .ticker-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 12px; }
         #t-sym { font-family: 'Orbitron'; font-size: 15px; font-weight: 900; color: var(--dir-color); }
         #t-price { font-family: 'Roboto Mono'; font-size: 17px; font-weight: 900; }
         #t-pct { font-family: 'Roboto Mono'; font-size: 11px; font-weight: 900; }
 
-        .theme-toggle { background: var(--surface); border: 2px solid var(--dir-color); color: var(--text); width: 42px; height: 42px; border-radius: 10px; font-size: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .theme-toggle { background: var(--surface); border: 2px solid var(--dir-color); color: var(--text); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
 
-        /* TEMPORALIDADES NEUTRAS */
         .tf-slider-section { background: rgba(0,0,0,0.1); padding: 12px 20px; border-bottom: 1px solid var(--border); }
         .tf-labels { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; font-weight: 900; color: var(--tf-text); font-family: 'Orbitron'; }
         .slider { -webkit-appearance: none; width: 100%; height: 8px; border-radius: 5px; background: var(--border); outline: none; }
@@ -44,48 +42,43 @@
 
         .content-spacer { margin-top: 135px; }
 
-        /* SLOTS 4x4 PAGINADOS */
-        .slot-outer-container { width: 100%; overflow: hidden; padding: 10px 0; position: relative; }
+        /* SLOTS 4x4 */
+        .slot-outer-container { width: 100%; overflow: hidden; padding: 10px 0; }
         .slot-nav-track { display: flex; width: 200%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .slot-page { display: grid; grid-template-columns: repeat(4, 1fr); width: 50%; gap: 6px; padding: 0 10px; }
         .slot-btn { padding: 16px 0; text-align: center; border-radius: 10px; font-size: 12px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); text-transform: uppercase; }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 3px; transform: scale(0.96); }
+        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 3px; }
 
         .loop-dots { display: flex; justify-content: center; gap: 8px; margin-top: 8px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: 0.3s; }
         .dot.active { background: var(--dir-color); transform: scale(1.3); }
         
-        /* CHART */
         .chart-container { width: 100%; height: 270px; background: #000; border-top: 1px solid var(--border); }
         
-        /* CONTROLES */
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.7fr; gap: 6px; padding: 10px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 7px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 3px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         .locked-input { pointer-events: none; opacity: 0.6; }
 
-        /* DASHBOARD */
+        /* DASHBOARD - SIN PALABRA ESTRATEGIA */
         .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; }
-        .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+        .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
         .lock-btn.locked { background: var(--danger); color: white; border: none; }
 
         .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; }
-        .dash-page { width: 50%; padding: 15px; flex-shrink: 0; text-align: center; }
-        .dash-label { font-size: 9px; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+        .dash-page { width: 50%; padding: 20px 15px; flex-shrink: 0; text-align: center; }
         .dash-main-row { display: flex; justify-content: space-around; align-items: center; margin-bottom: 10px; }
         .dash-main-val { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; display: block; }
         .avg-box { display: inline-block; padding: 4px 12px; border-radius: 8px; background: rgba(255,255,255,0.05); font-family: 'Roboto Mono'; font-size: 13px; margin-bottom: 4px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; color: var(--long-green); display: block; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); display: block; }
 
-        /* NIVELES */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); border-width: 2.5px; }
         .price-display { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 22px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 14px; }
-        #bitacoraList { padding: 15px; border-top: 1px solid var(--border); }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -135,7 +128,7 @@
             </div>
             <div class="control-box" style="border-color: var(--warning);" onclick="reqPin('descInput')">
                 <label>% DESC</label>
-                <input type="number" id="descInput" class="locked-input" readonly value="55">
+                <input type="number" id="descInput" class="locked-input" readonly>
             </div>
         </div>
 
@@ -143,7 +136,7 @@
             <button class="lock-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
             <div class="dash-viewport" id="dashViewport">
                 <div class="dash-page">
-                    <span class="dash-label" style="color:var(--dir-color)">ESTRATEGIA PREDETERMINADA</span>
+                    <span style="font-size:10px; font-weight:900; color:var(--dir-color); display:block; margin-bottom:5px;">PREDETERMINADA</span>
                     <div class="dash-main-row">
                         <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvP" class="dash-main-val">$0.00</span></div>
                         <div><small style="font-size:8px; color:var(--dir-color)">WIN +100%</small><span id="resWinP" class="dash-main-val" style="color:var(--dir-color)">$0.00</span></div>
@@ -152,7 +145,7 @@
                     <b id="resTargetP" class="target-price">0.000000</b>
                 </div>
                 <div class="dash-page">
-                    <span class="dash-label" style="color:var(--warning)">ESTRATEGIA AGRESIVA</span>
+                    <span style="font-size:10px; font-weight:900; color:var(--warning); display:block; margin-bottom:5px;">AGRESIVA</span>
                     <div class="dash-main-row">
                         <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
                         <div><small style="font-size:8px; color:var(--warning)">WIN +100%</small><span id="resWinA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
@@ -165,7 +158,7 @@
 
         <main id="levelsGrid" class="levels-container"></main>
         <button class="btn-release" onclick="liquidateOperation()">LIQUIDAR OPERACIÓN</button>
-        <div id="bitacoraList"></div>
+        <div id="bitacoraList" style="padding:15px;"></div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -183,25 +176,20 @@
         const ASSETS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "AVAXUSDT", "SUIUSDT", "BNBUSDT"];
         let assetIdx = 0;
 
-        // SWIPE SLOTS
-        let startX = 0;
+        // SWIPES
+        let startX = 0, startDashX = 0;
         document.getElementById('slotOuter').addEventListener('touchstart', e => startX = e.touches[0].clientX);
         document.getElementById('slotOuter').addEventListener('touchend', e => {
-            let diff = startX - e.changedTouches[0].clientX;
-            if(Math.abs(diff) > 50) toggleSlotPage();
+            if(Math.abs(startX - e.changedTouches[0].clientX) > 50) toggleSlotPage();
         });
 
-        // SWIPE DASHBOARD
-        let startDashX = 0;
         document.getElementById('dashBox').addEventListener('touchstart', e => { if(!slots[activeIdx].locked) startDashX = e.touches[0].clientX; });
         document.getElementById('dashBox').addEventListener('touchend', e => {
-            if(slots[activeIdx].locked) return;
-            let diff = startDashX - e.changedTouches[0].clientX;
-            if(Math.abs(diff) > 50) setDashPage(diff > 0 ? 1 : 0);
+            if(!slots[activeIdx].locked && Math.abs(startDashX - e.changedTouches[0].clientX) > 50) setDashPage(startDashX > e.changedTouches[0].clientX ? 1 : 0);
         });
 
         function toggleSlotPage() {
-            currentPage = (currentPage === 0) ? 1 : 0;
+            currentPage = currentPage === 0 ? 1 : 0;
             document.getElementById('slotTrack').style.transform = `translateX(-${currentPage * 50}%)`;
             document.getElementById('dot1').classList.toggle('active', currentPage === 0);
             document.getElementById('dot2').classList.toggle('active', currentPage === 1);
@@ -244,31 +232,25 @@
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
+            document.getElementById('descInput').value = 55; // Valor base por defecto
             
-            currentPage = (i < 4) ? 0 : 1;
+            currentPage = i < 4 ? 0 : 1;
             document.getElementById('slotTrack').style.transform = `translateX(-${currentPage * 50}%)`;
             document.getElementById('dot1').classList.toggle('active', currentPage === 0);
             document.getElementById('dot2').classList.toggle('active', currentPage === 1);
 
-            updateLockUI(); 
-            // Cargar página de estrategia guardada para este slot
-            setDashPage(s.dashPage || 0, false); 
-            renderNav(); 
-            loadChart(s.name); 
-            calculate();
+            updateLockUI(); setDashPage(s.dashPage || 0, false); renderNav(); loadChart(s.name); calculate();
         }
 
-        function setDashPage(p, shouldSave = true) { 
+        function setDashPage(p, saveFlag = true) { 
             slots[activeIdx].dashPage = p; 
             document.getElementById('dashViewport').style.transform = `translateX(-${p * 50}%)`; 
-            if(shouldSave) save(); 
-            renderLevels(); 
+            if(saveFlag) save(); renderLevels(); 
         }
 
         function reqPin(id) {
-            if(prompt("Contraseña:") === "2524") {
-                const el = document.getElementById(id);
-                el.readOnly = false; el.classList.remove('locked-input'); el.focus();
+            if(prompt("PIN:") === "2524") {
+                const el = document.getElementById(id); el.readOnly = false; el.classList.remove('locked-input'); el.focus();
                 el.onblur = () => { el.readOnly = true; el.classList.add('locked-input'); calculate(); };
             }
         }
@@ -329,12 +311,10 @@
         }
 
         function liquidateOperation() {
-            if(confirm("¿CERRAR Y MOVER AL FINAL?")) {
+            if(confirm("¿LIQUIDAR Y REINICIAR SLOT?")) {
                 bitacora.unshift({ coin: slots[activeIdx].name, total: document.getElementById('resInvP').textContent, date: new Date().toLocaleTimeString() });
-                slots.splice(activeIdx, 1);
-                // Resetear slot y forzar Estrategia Predeterminada (0) al crear nuevo slot
-                slots.push({ name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false });
-                activeIdx = 0; save(); selectSlot(0); renderBitacora();
+                slots[activeIdx] = { name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false };
+                save(); selectSlot(activeIdx); renderBitacora();
             }
         }
 
@@ -349,31 +329,10 @@
             });
         }
 
-        function toggleLock() { 
-            slots[activeIdx].locked = !slots[activeIdx].locked; 
-            updateLockUI(); 
-            save(); 
-        }
-
-        function updateLockUI() { 
-            const b = document.getElementById('lockBtn'); 
-            b.textContent = slots[activeIdx].locked ? '🔒' : '🔓'; 
-            b.className = 'lock-btn' + (slots[activeIdx].locked ? ' locked' : ''); 
-        }
-
-        function toggleTheme() { 
-            isLight = !isLight; 
-            document.body.classList.toggle('light-mode'); 
-            document.getElementById('themeBtn').textContent = isLight?'☀️':'🌙'; 
-            localStorage.setItem('theme', isLight?'light':'dark'); 
-            loadChart(slots[activeIdx].name); 
-        }
-
-        function changeTF(v) { 
-            currentTF = ['15','30','60','240','D','W'][v]; 
-            loadChart(slots[activeIdx].name); 
-        }
-
+        function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; updateLockUI(); save(); }
+        function updateLockUI() { const b = document.getElementById('lockBtn'); b.textContent = slots[activeIdx].locked ? '🔒' : '🔓'; b.className = 'lock-btn' + (slots[activeIdx].locked ? ' locked' : ''); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode'); document.getElementById('themeBtn').textContent = isLight?'☀️':'🌙'; localStorage.setItem('theme', isLight?'light':'dark'); loadChart(slots[activeIdx].name); }
+        function changeTF(v) { currentTF = ['15','30','60','240','D','W'][v]; loadChart(slots[activeIdx].name); }
         function save() { localStorage.setItem('dca_v33_slots', JSON.stringify(slots)); }
         function updateCoinName() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
         function lockTickerToChart() { calculate(); loadChart(document.getElementById('t-sym').textContent); }
