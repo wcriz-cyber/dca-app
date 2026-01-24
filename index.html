@@ -51,21 +51,20 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        /* DASHBOARD REDISEÑADO */
+        /* DASHBOARD - INFORMACIÓN MÁS GRANDE */
         .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 6px 25px rgba(0,0,0,0.5); }
         .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 12px; }
         .strat-indicator { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 2px; text-align: center; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: 0.2s; }
-        .tool-btn:active { transform: scale(0.9); }
+        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
-        .dash-data { text-align: center; padding: 2px 0; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 44px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -1.5px; text-shadow: 0 0 15px rgba(14, 203, 129, 0.3); }
-        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .dash-data { text-align: center; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -2px; }
+        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
         .info-item { text-align: center; }
-        .info-item label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: var(--text); display: block; }
+        .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -237,7 +236,7 @@
             
             let totalSpent = 0, totalQty = 0;
             let lastLevelPrice = s.price;
-            let drop7 = 10; 
+            let currentDrop = 10; // Empieza en 10 para que el primer salto sea a 17%
             let html = '';
 
             for(let i=0; i<12; i++){
@@ -246,9 +245,12 @@
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
-                        drop7 += 7;
-                        pLevel = s.price * (1 - (drop7/100));
+                        // Nivel 2: 17% (10 + 7)
+                        // Nivel 3: 24% (17 + 7)...
+                        currentDrop += 7;
+                        pLevel = s.price * (1 - (currentDrop/100));
                     } else {
+                        // Agresiva: 66% del valor anterior
                         pLevel = lastLevelPrice * (1 - (descPct/100));
                     }
                 }
@@ -273,7 +275,6 @@
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
             document.getElementById('resTarget').textContent = target.toFixed(6);
-            // Ganancia estimada (Inversión * 1 ya que el target es 100% arriba del promedio)
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
