@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V33.5 Precision</title>
+    <title>C5X - V33.8 Final</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -42,7 +42,7 @@
 
         .content-spacer { margin-top: 135px; }
 
-        /* SLOTS 4x4 */
+        /* SLOTS 4x4 FIX */
         .slot-outer-container { width: 100%; overflow: hidden; padding: 10px 0; }
         .slot-nav-track { display: flex; width: 200%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .slot-page { display: grid; grid-template-columns: repeat(4, 1fr); width: 50%; gap: 6px; padding: 0 10px; }
@@ -61,7 +61,7 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         .locked-input { pointer-events: none; opacity: 0.6; }
 
-        /* DASHBOARD - SIN PALABRA ESTRATEGIA */
+        /* DASHBOARD */
         .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; }
         .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
         .lock-btn.locked { background: var(--danger); color: white; border: none; }
@@ -79,14 +79,9 @@
         .price-display { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; }
         
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 22px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 14px; }
-
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
     </style>
 </head>
 <body onload="init()">
-
-    <div id="toast">MENSAJE</div>
 
     <div class="fixed-header">
         <header class="app-header">
@@ -128,7 +123,7 @@
             </div>
             <div class="control-box" style="border-color: var(--warning);" onclick="reqPin('descInput')">
                 <label>% DESC</label>
-                <input type="number" id="descInput" class="locked-input" readonly>
+                <input type="number" id="descInput" class="locked-input" readonly value="55">
             </div>
         </div>
 
@@ -158,7 +153,7 @@
 
         <main id="levelsGrid" class="levels-container"></main>
         <button class="btn-release" onclick="liquidateOperation()">LIQUIDAR OPERACIÓN</button>
-        <div id="bitacoraList" style="padding:15px;"></div>
+        <div id="bitacoraList" style="padding:15px; font-size:11px; opacity:0.6;"></div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -167,38 +162,35 @@
         let activeIdx = parseInt(localStorage.getItem('c5x_active_idx')) || 0; 
         let currentTF = '60', currentPage = 0;
         
-        let slots = JSON.parse(localStorage.getItem('dca_v33_slots')) || Array(8).fill(null).map(() => ({ 
+        // Inicialización forzada de 8 slots
+        let savedSlots = JSON.parse(localStorage.getItem('dca_v33_slots'));
+        let slots = (savedSlots && savedSlots.length === 8) ? savedSlots : Array(8).fill(null).map(() => ({ 
             name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false 
         }));
-        let bitacora = JSON.parse(localStorage.getItem('dca_bitacora')) || [];
 
+        let bitacora = JSON.parse(localStorage.getItem('dca_bitacora')) || [];
         const MULTIPLIERS = [1, 1, 1.5, 1.5, 2, 2, 5, 5, 8, 8, 16, 16];
         const ASSETS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "AVAXUSDT", "SUIUSDT", "BNBUSDT"];
         let assetIdx = 0;
-
-        // SWIPES
-        let startX = 0, startDashX = 0;
-        document.getElementById('slotOuter').addEventListener('touchstart', e => startX = e.touches[0].clientX);
-        document.getElementById('slotOuter').addEventListener('touchend', e => {
-            if(Math.abs(startX - e.changedTouches[0].clientX) > 50) toggleSlotPage();
-        });
-
-        document.getElementById('dashBox').addEventListener('touchstart', e => { if(!slots[activeIdx].locked) startDashX = e.touches[0].clientX; });
-        document.getElementById('dashBox').addEventListener('touchend', e => {
-            if(!slots[activeIdx].locked && Math.abs(startDashX - e.changedTouches[0].clientX) > 50) setDashPage(startDashX > e.changedTouches[0].clientX ? 1 : 0);
-        });
-
-        function toggleSlotPage() {
-            currentPage = currentPage === 0 ? 1 : 0;
-            document.getElementById('slotTrack').style.transform = `translateX(-${currentPage * 50}%)`;
-            document.getElementById('dot1').classList.toggle('active', currentPage === 0);
-            document.getElementById('dot2').classList.toggle('active', currentPage === 1);
-        }
 
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
             renderNav(); selectSlot(activeIdx); renderBitacora(); fetchTicker();
             setInterval(fetchTicker, 8000);
+            
+            // Swipe para slots
+            let sx = 0;
+            document.getElementById('slotOuter').addEventListener('touchstart', e => sx = e.touches[0].clientX);
+            document.getElementById('slotOuter').addEventListener('touchend', e => {
+                if(Math.abs(sx - e.changedTouches[0].clientX) > 50) toggleSlotPage();
+            });
+
+            // Swipe para dash
+            let sdx = 0;
+            document.getElementById('dashBox').addEventListener('touchstart', e => { if(!slots[activeIdx].locked) sdx = e.touches[0].clientX; });
+            document.getElementById('dashBox').addEventListener('touchend', e => {
+                if(!slots[activeIdx].locked && Math.abs(sdx - e.changedTouches[0].clientX) > 50) setDashPage(sdx > e.changedTouches[0].clientX ? 1 : 0);
+            });
         }
 
         async function fetchTicker() {
@@ -231,28 +223,24 @@
             const s = slots[i];
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
-            document.getElementById('capitalInput').value = s.capital;
-            document.getElementById('descInput').value = 55; // Valor base por defecto
+            document.getElementById('capitalInput').value = s.capital || 5;
             
             currentPage = i < 4 ? 0 : 1;
             document.getElementById('slotTrack').style.transform = `translateX(-${currentPage * 50}%)`;
             document.getElementById('dot1').classList.toggle('active', currentPage === 0);
             document.getElementById('dot2').classList.toggle('active', currentPage === 1);
 
-            updateLockUI(); setDashPage(s.dashPage || 0, false); renderNav(); loadChart(s.name); calculate();
+            updateLockUI(); 
+            setDashPage(s.dashPage || 0, false); 
+            renderNav(); 
+            loadChart(s.name); 
+            calculate();
         }
 
         function setDashPage(p, saveFlag = true) { 
             slots[activeIdx].dashPage = p; 
             document.getElementById('dashViewport').style.transform = `translateX(-${p * 50}%)`; 
             if(saveFlag) save(); renderLevels(); 
-        }
-
-        function reqPin(id) {
-            if(prompt("PIN:") === "2524") {
-                const el = document.getElementById(id); el.readOnly = false; el.classList.remove('locked-input'); el.focus();
-                el.onblur = () => { el.readOnly = true; el.classList.add('locked-input'); calculate(); };
-            }
         }
 
         function calculate() {
@@ -305,21 +293,21 @@
             document.getElementById('resTargetA').textContent = (avgA * 2).toFixed(6);
         }
 
-        function massSelect(idx) {
-            let buys = []; for(let i=0; i<=idx; i++) buys.push(i);
-            slots[activeIdx].buys = buys; save(); renderLevels();
-        }
-
         function liquidateOperation() {
-            if(confirm("¿LIQUIDAR Y REINICIAR SLOT?")) {
+            if(confirm("¿LIQUIDAR OPERACIÓN?")) {
                 bitacora.unshift({ coin: slots[activeIdx].name, total: document.getElementById('resInvP').textContent, date: new Date().toLocaleTimeString() });
                 slots[activeIdx] = { name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false };
                 save(); selectSlot(activeIdx); renderBitacora();
             }
         }
 
+        function massSelect(idx) {
+            let b = []; for(let i=0; i<=idx; i++) b.push(i);
+            slots[activeIdx].buys = b; save(); renderLevels();
+        }
+
         function renderBitacora() {
-            document.getElementById('bitacoraList').innerHTML = bitacora.slice(0,5).map(b => `<div style="font-size:11px; opacity:0.5; display:flex; justify-content:space-between; margin-bottom:6px;"><b>${b.coin}</b> <span>${b.total}</span></div>`).join('');
+            document.getElementById('bitacoraList').innerHTML = bitacora.slice(0,5).map(b => `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><b>${b.coin}</b> <span>${b.total}</span></div>`).join('');
         }
 
         function loadChart(coin) {
@@ -329,11 +317,19 @@
             });
         }
 
+        function reqPin(id) {
+            if(prompt("PIN:") === "2524") {
+                const el = document.getElementById(id); el.readOnly = false; el.classList.remove('locked-input'); el.focus();
+                el.onblur = () => { el.readOnly = true; el.classList.add('locked-input'); calculate(); };
+            }
+        }
+
+        function toggleSlotPage() { currentPage = currentPage === 0 ? 1 : 0; document.getElementById('slotTrack').style.transform = `translateX(-${currentPage * 50}%)`; document.getElementById('dot1').classList.toggle('active', currentPage === 0); document.getElementById('dot2').classList.toggle('active', currentPage === 1); }
         function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; updateLockUI(); save(); }
         function updateLockUI() { const b = document.getElementById('lockBtn'); b.textContent = slots[activeIdx].locked ? '🔒' : '🔓'; b.className = 'lock-btn' + (slots[activeIdx].locked ? ' locked' : ''); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode'); document.getElementById('themeBtn').textContent = isLight?'☀️':'🌙'; localStorage.setItem('theme', isLight?'light':'dark'); loadChart(slots[activeIdx].name); }
         function changeTF(v) { currentTF = ['15','30','60','240','D','W'][v]; loadChart(slots[activeIdx].name); }
-        function save() { localStorage.setItem('dca_v33_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v33_slots', JSON.stringify(slots)); localStorage.setItem('dca_bitacora', JSON.stringify(bitacora)); }
         function updateCoinName() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
         function lockTickerToChart() { calculate(); loadChart(document.getElementById('t-sym').textContent); }
     </script>
