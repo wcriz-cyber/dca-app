@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.3 Logic Fixed</title>
+    <title>C5X - V23.4 Visual Harmony</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -48,7 +48,7 @@
             padding-bottom: 20px; overflow-x: hidden; transition: background 0.3s, color 0.3s;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER ACTUALIZADO (TAMAÑOS IGUALADOS) --- */
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -57,35 +57,42 @@
         
         .app-header { 
             display: flex; justify-content: space-between; align-items: center; 
-            height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto;
+            height: 70px; /* Aumentado ligeramente para acomodar elementos más grandes */
+            padding: 0 16px; max-width: 800px; margin: 0 auto;
             position: relative;
         }
 
+        /* 1. BRAND (C5X) */
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; z-index: 50; position: relative; }
-        .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
-        .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
+        .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 24px; color: var(--brand); letter-spacing: -0.5px; } /* Ajustado a 24px */
+        .brand-caret { font-size: 12px; color: var(--text-secondary); transition: transform 0.3s; }
         
+        /* 2. TICKER (PRECIO) - MÁS GRANDE */
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
             z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto;
         }
 
         .ticker-pill { 
-            pointer-events: auto; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
-            border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s;
+            pointer-events: auto; display: flex; align-items: center; gap: 10px; 
+            background: rgba(255,255,255,0.03); /* Fondo sutil para destacar */
+            border: 1px solid var(--border); padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: 0.2s;
         }
         .ticker-pill:active { transform: scale(0.95); background: rgba(59, 130, 246, 0.1); }
-        .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); }
-        .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
-        .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
+        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
+        .ticker-sym { font-family: 'Orbitron'; font-weight: 800; font-size: 14px; color: var(--text-secondary); }
+        .ticker-price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 20px; color: var(--text-primary); } /* Precio grande */
 
+        /* 3. TEMA (BOTÓN) - MÁS GRANDE */
         .theme-btn {
-            width: 36px; height: 36px; border-radius: 50%; background: transparent; 
+            width: 44px; height: 44px; border-radius: 50%; background: transparent; 
             border: 1px solid var(--border); color: var(--text-primary); display: flex; 
-            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 50;
+            align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 50;
+            transition: 0.2s;
         }
+        .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
-        .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
+        .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -148,7 +155,7 @@
         .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
         .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
 
-        /* TARJETA DE LIQUIDAR - MISMO ESTILO QUE LEVEL CARD */
+        /* TARJETA DE LIQUIDAR */
         .liquidate-card {
             background: var(--danger);
             color: #fff;
@@ -297,7 +304,7 @@
             <div class="settings-card">
                 <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
                 <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.3 FIXED</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.4 VISUAL HARMONY</div>
             </div>
         </div>
     </div>
