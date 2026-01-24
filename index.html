@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.0 Cards Update</title>
+    <title>C5X - V23.1 Clean Cards</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -169,22 +169,19 @@
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES (NUEVO DISEÑO V23.0) --- */
-        .levels-container { 
-            padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; 
-        }
+        /* --- LISTA DE NIVELES (CLEAN) --- */
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; }
         
         .level-card { 
             background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-            padding: 20px 16px; /* Más alta */
+            padding: 20px 16px; 
             display: flex; align-items: center; cursor: pointer; transition: 0.2s;
             position: relative;
         }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
         
-        /* Círculo para el índice */
         .level-index { 
-            width: 36px; height: 36px; border-radius: 50%; /* Círculo */
+            width: 36px; height: 36px; border-radius: 50%;
             background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
             display: flex; align-items: center; justify-content: center; 
             font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); 
@@ -192,17 +189,16 @@
         }
         .level-card.active .level-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
 
-        /* Centro: Precio Grande y Copiable */
         .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        
+        /* PRECIO GRANDE Y COPIABLE (Sin texto "Copiar") */
         .level-price { 
             font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; 
             color: var(--text-primary); letter-spacing: -0.5px; 
             cursor: copy; transition: 0.2s;
         }
         .level-price:active { opacity: 0.7; transform: scale(0.98); }
-        .copy-hint { font-size: 8px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; font-weight: 700; }
 
-        /* Derecha: Inversión y Porcentaje */
         .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
         .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
         .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
@@ -414,7 +410,7 @@
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.9 FINAL</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.1 CLEAN CARDS</div>
             </div>
         </div>
     </div>
@@ -431,10 +427,7 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        
-        // SLOTS INITIALIZATION: ASEGURAR ESTRATEGIA PREDETERMINADA 'normal'
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
-        
         let currentSection = 'operate';
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
@@ -472,7 +465,6 @@
             toggleMenu(); 
         }
 
-        // --- SETTINGS ---
         function loadSettingsValues() {
             const s = slots[activeIdx];
             document.getElementById('setCapital').value = s.capital;
@@ -537,19 +529,8 @@
 
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
-        function rotateDash() { 
-            const s = slots[activeIdx]; 
-            if(s.locked) return showToast("⚠️ Slot Bloqueado"); 
-            // CAMBIO DE ESTRATEGIA (PERSISTENTE)
-            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
-            save(); updateDashUI(); 
-        }
-
-        function toggleLock() { 
-            const s = slots[activeIdx]; 
-            s.locked = !s.locked; 
-            save(); updateDashUI(); 
-        }
+        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
@@ -565,10 +546,8 @@
             elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
             elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
 
-            // Update Icon States
             if(s.strat === "agresiva") btnRotate.classList.add('active'); else btnRotate.classList.remove('active');
             
-            // SVG Lock Path Update
             if(s.locked) {
                 btnLock.classList.add('locked');
                 btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>';
@@ -587,12 +566,7 @@
             save(); renderLevels(); 
         }
 
-        function toggleLvl(idx) { 
-            const s = slots[activeIdx]; 
-            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } 
-            else { s.buys = s.buys.filter(val => val < idx); } 
-            calculate(); 
-        }
+        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
@@ -613,7 +587,6 @@
                     <div class="level-index">${i+1}</div>
                     <div class="level-center" onclick="event.stopPropagation(); copyText('${pLevel.toFixed(8)}')">
                         <div class="level-price">${pLevel.toFixed(8)}</div>
-                        <div class="copy-hint">COPIAR</div>
                     </div>
                     <div class="level-right">
                         <div class="invest-val">$${mUSD.toFixed(1)}</div>
@@ -639,10 +612,7 @@
             openSecurity(() => {
                 history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
                 localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
-                
-                // RESET: ESTRATEGIA VUELVE A NORMAL AL CERRAR
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                 slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
             });
