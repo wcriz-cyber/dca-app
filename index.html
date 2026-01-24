@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.2 Clean Dash</title>
+    <title>C5X - V22.3 Card Config</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -30,24 +30,24 @@
         .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 18px; }
         #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
         
-        /* Barra de temporalidad con control de visibilidad */
-        #tfBar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); transition: 0.3s; }
+        #tfBar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
 
         /* Tabs Logic */
         .tab-content { display: none; margin-top: 108px; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
-        /* Ajuste de margen para pestañas sin TF Bar */
         .no-tf-margin { margin-top: 65px !important; }
         .tab-content.active-tab { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--surface); display: flex; justify-content: space-around; border-top: 1px solid var(--border); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--dir-color); }
         .nav-item span { font-size: 22px; }
         .nav-item label { font-size: 10px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
 
+        /* Componentes de Trading */
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
         .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -61,17 +61,15 @@
 
         .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; position: relative; }
         .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); text-align: center; }
-        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
-        .info-item { text-align: center; }
-        .info-item label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--text); }
-
+        
+        /* Grid de Tarjetas (Usado en Niveles y Ajustes) */
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
-        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); }
+        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.2s; }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
-        .card-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; margin-right: 15px; }
-
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; }
+        .card-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; margin-right: 15px; flex-shrink: 0; }
+        .card-content { flex: 1; }
+        .card-label { font-size: 9px; color: var(--dir-color); font-weight: 900; text-transform: uppercase; }
+        .card-value { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; }
 
         /* Modales */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
@@ -79,18 +77,13 @@
         .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 20px; border-radius: 10px; margin-bottom: 20px; }
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        
-        /* Estilos Configuración */
-        .config-group { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 15px; margin-bottom: 12px; }
-        .config-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .config-row:last-child { border-bottom: none; }
     </style>
 </head>
 <body onload="init()">
 
     <div id="toast">MENSAJE</div>
 
-    <div id="configModal"><div class="modal-content"><div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">VALOR %</div><input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal"><button style="width:100%; background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="saveConfigValue()">ACEPTAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeConfigModal()">CANCELAR</button></div></div>
+    <div id="configModal"><div class="modal-content"><div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">EDITAR VALOR</div><input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal"><button style="width:100%; background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="saveConfigValue()">GUARDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeConfigModal()">CANCELAR</button></div></div>
     <div id="customModal"><div class="modal-content"><div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px;">SEGURIDAD</div><input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:6px;"><button style="width:100%; background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="closeMyModal(true)">VALIDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeMyModal(false)">CANCELAR</button></div></div>
 
     <div class="fixed-header">
@@ -119,7 +112,7 @@
             </div>
         </div>
         <div id="logGrid" class="card-grid"></div>
-        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:20px; font-weight:900;">ELIMINAR TODO EL HISTORIAL</button></center>
+        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:20px; font-weight:900;">LIMPIAR TODO</button></center>
     </div>
 
     <div id="tab-trade" class="tab-content active-tab">
@@ -128,7 +121,7 @@
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC" onblur="updateCoin()"></div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box"><div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
+            <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
         </div>
         <div class="dash-main" id="dashMain">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
@@ -137,56 +130,68 @@
                 <button class="tool-btn" style="background:none; border:none; font-size:20px;" id="lockBtn" onclick="toggleLock()">🔓</button>
             </div>
             <div class="main-target" id="resTarget">0.000000</div>
-            <center><div id="dashStratLabel" style="color:var(--dir-color); font-size:10px; font-weight:900; margin-top:5px; opacity:0.7;">AUTO-CALC ACTIVADO</div></center>
-            <div class="sub-info">
-                <div class="info-item"><label>Promedio</label><span id="resAvg">0.0000</span></div>
-                <div class="info-item"><label>Ganancia</label><span id="resProfit" style="color:var(--long-green)">$0.00</span></div>
-                <div class="info-item"><label>Inversión</label><span id="resInv">$0.00</span></div>
+            <div class="sub-info" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
+                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Promedio</label><span id="resAvg" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900;">0.0000</span></div>
+                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Ganancia</label><span id="resProfit" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--long-green)">$0.00</span></div>
+                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Inversión</label><span id="resInv" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900;">$0.00</span></div>
             </div>
         </div>
         <main id="levelsGrid" class="card-grid"></main>
-        <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
+        <button class="btn-release" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';" onclick="releaseSlot()">LIQUIDAR</button>
     </div>
 
     <div id="tab-config" class="tab-content no-tf-margin">
         <div style="padding:15px;">
-            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:15px;">AJUSTES MAESTROS</h2>
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:20px;">CONFIGURACIÓN</h2>
             
-            <div class="config-group">
-                <div class="config-row">
-                    <label style="font-weight:900; font-size:13px;">TEMA VISUAL</label>
-                    <button onclick="toggleTheme()" id="themeBtn" style="background:var(--border); border:none; color:var(--text); padding:8px 15px; border-radius:10px; font-weight:900;">🌙 OSCURO</button>
+            <div class="card-grid">
+                <div class="standard-card" onclick="toggleTheme()">
+                    <div class="card-icon" style="font-size:18px;">🎨</div>
+                    <div class="card-content">
+                        <div class="card-label">Modo Visual</div>
+                        <div class="card-value" id="themeLabel">OSCURO</div>
+                    </div>
+                    <div style="font-size:10px; opacity:0.5;">TAP 🔄</div>
                 </div>
-                <div class="config-row">
-                    <label style="font-weight:900; font-size:13px;">CAPITAL GLOBAL</label>
-                    <span id="cfgCapDisplay" style="color:var(--dir-color); font-weight:900;">$5.00</span>
+
+                <div class="standard-card" onclick="handleEdit('capital')">
+                    <div class="card-icon" style="font-size:18px; color:var(--long-green)">$</div>
+                    <div class="card-content">
+                        <div class="card-label">Capital Global</div>
+                        <div class="card-value" id="cfgCapVal">$5.00</div>
+                    </div>
+                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
+                </div>
+
+                <div class="standard-card" onclick="handleEdit('normal')">
+                    <div class="card-icon" style="font-size:18px; color:var(--dir-color)">📊</div>
+                    <div class="card-content">
+                        <div class="card-label">% Predeterminada</div>
+                        <div class="card-value" id="cfgBaseVal">7%</div>
+                    </div>
+                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
+                </div>
+
+                <div class="standard-card" onclick="handleEdit('agresiva')">
+                    <div class="card-icon" style="font-size:18px; color:var(--warning)">⚡</div>
+                    <div class="card-content">
+                        <div class="card-label">% Descuento</div>
+                        <div class="card-value" id="cfgAggVal">66%</div>
+                    </div>
+                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
                 </div>
             </div>
 
-            <div class="config-group" style="border-color: var(--warning);">
-                <div style="font-size:9px; color:var(--warning); font-weight:900; margin-bottom:10px;">PARÁMETROS DE ESTRATEGIA</div>
-                <div class="config-row" onclick="handleStratEdit('normal')">
-                    <label style="font-size:12px;">% PREDETERMINADA</label>
-                    <span id="cfgBasePct" style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">7%</span>
-                </div>
-                <div class="config-row" onclick="handleStratEdit('agresiva')">
-                    <label style="font-size:12px;">% DESCUENTO</label>
-                    <span id="cfgAggPct" style="font-family:'Roboto Mono'; font-weight:900; color:var(--short-red)">66%</span>
-                </div>
+            <div style="text-align:center; padding:40px; opacity:0.2; font-size:10px; font-family:'Orbitron'; letter-spacing:2px;">
+                C5X ENGINE V22.3
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item" id="btn-history" onclick="switchTab('tab-history', this)">
-            <span>📜</span><label>Bitácora</label>
-        </button>
-        <button class="nav-item active" id="btn-trade" onclick="switchTab('tab-trade', this)">
-            <span>📊</span><label>Operar</label>
-        </button>
-        <button class="nav-item" id="btn-config" onclick="switchTab('tab-config', this)">
-            <span>⚙️</span><label>Ajustes</label>
-        </button>
+        <button class="nav-item" id="btn-history" onclick="switchTab('tab-history', this)"><span>📜</span><label>Bitácora</label></button>
+        <button class="nav-item active" id="btn-trade" onclick="switchTab('tab-trade', this)"><span>📊</span><label>Operar</label></button>
+        <button class="nav-item" id="btn-config" onclick="switchTab('tab-config', this)"><span>⚙️</span><label>Ajustes</label></button>
     </nav>
 
     <input type="hidden" id="incInput" value="7">
@@ -199,16 +204,16 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
-        let assetIdx = 0, modalCallback = null;
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
+        let modalCallback = null;
 
         function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️ CLARO'; } 
+            if(isLight) document.body.classList.add('light-mode');
+            document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO';
             switchTab('tab-trade', document.getElementById('btn-trade'));
-            renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
+            renderNav(); selectSlot(activeIdx); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            setInterval(fetchTicker, 10000); 
+            fetchTicker(); setInterval(fetchTicker, 10000); 
         }
 
         function switchTab(tabId, btn) {
@@ -216,61 +221,33 @@
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).classList.add('active-tab');
             btn.classList.add('active');
-            
-            // Control de visibilidad de Temporalidad
-            const tfBar = document.getElementById('tfBar');
-            if(tabId === 'tab-trade') {
-                tfBar.style.display = 'flex';
-                if(slots[activeIdx].name) loadChart(slots[activeIdx].name);
-            } else {
-                tfBar.style.display = 'none';
-            }
+            document.getElementById('tfBar').style.display = (tabId === 'tab-trade') ? 'flex' : 'none';
         }
 
-        async function fetchTicker() { 
-            try { 
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
-                const data = await res.json(); 
-                document.getElementById('t-sym').textContent = assets[assetIdx].replace("USDT",""); 
-                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
-                document.getElementById('t-dot').style.background = parseFloat(data.priceChangePercent) >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
-                assetIdx = (assetIdx + 1) % assets.length; 
-            } catch(e) {} 
+        async function fetchTicker() {
+            try {
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
+                const data = await res.json();
+                document.getElementById('t-price').textContent = '$' + parseFloat(data.price).toLocaleString();
+                document.getElementById('t-dot').style.background = 'var(--long-green)';
+            } catch(e){}
         }
 
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); if(s.name) loadChart(s.name); updateDashUI(); }
-        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        
-        function rotateDash() { 
-            const s = slots[activeIdx]; 
-            if(s.locked) return; 
-            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
-            save(); 
-            updateDashUI(); 
-        }
-
-        function updateDashUI() {
-            const s = slots[activeIdx], isNormal = s.strat === "normal";
-            document.getElementById('stratName').textContent = isNormal ? "PREDETERMINADA" : "DESCUENTO";
-            document.getElementById('stratName').style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('dashMain').style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
-            
-            // UI de Ajustes
-            document.getElementById('cfgCapDisplay').textContent = '$' + s.capital;
-            document.getElementById('cfgBasePct').textContent = document.getElementById('incInput').value + '%';
-            document.getElementById('cfgAggPct').textContent = document.getElementById('descInput').value + '%';
-            calculate();
-        }
-
-        function handleStratEdit(type) {
+        function handleEdit(type) {
             openPrompt((p) => {
                 if(p === "2524") {
-                    const isNormal = type === "normal";
-                    document.getElementById('configTitle').textContent = isNormal ? "% PREDETERMINADA" : "% DESCUENTO";
-                    document.getElementById('configInputVal').value = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-                    document.getElementById('configInputVal').dataset.type = type;
+                    const cInput = document.getElementById('configInputVal');
+                    cInput.dataset.type = type;
+                    if(type === 'capital') {
+                        document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
+                        cInput.value = slots[activeIdx].capital;
+                    } else if(type === 'normal') {
+                        document.getElementById('configTitle').textContent = "% PREDETERMINADA";
+                        cInput.value = document.getElementById('incInput').value;
+                    } else {
+                        document.getElementById('configTitle').textContent = "% DESCUENTO";
+                        cInput.value = document.getElementById('descInput').value;
+                    }
                     document.getElementById('configModal').style.display = 'flex';
                 } else { showToast("CLAVE INCORRECTA"); }
             });
@@ -279,15 +256,31 @@
         function saveConfigValue() {
             const val = document.getElementById('configInputVal').value;
             const type = document.getElementById('configInputVal').dataset.type;
-            if(type === "normal") document.getElementById('incInput').value = val;
-            else document.getElementById('descInput').value = val;
-            closeConfigModal();
-            updateDashUI();
-            showToast("PARÁMETRO ACTUALIZADO");
+            if(type === 'capital') {
+                slots.forEach(s => s.capital = parseFloat(val));
+                document.getElementById('capitalInput').value = val;
+            } else if(type === 'normal') {
+                document.getElementById('incInput').value = val;
+            } else {
+                document.getElementById('descInput').value = val;
+            }
+            save(); closeConfigModal(); updateDashUI(); showToast("ACTUALIZADO");
         }
 
-        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
+        function updateDashUI() {
+            const s = slots[activeIdx], isN = s.strat === "normal";
+            document.getElementById('stratName').textContent = isN ? "PREDETERMINADA" : "DESCUENTO";
+            document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            // Update Config Tab Values
+            document.getElementById('cfgCapVal').textContent = '$' + s.capital.toFixed(2);
+            document.getElementById('cfgBaseVal').textContent = document.getElementById('incInput').value + '%';
+            document.getElementById('cfgAggVal').textContent = document.getElementById('descInput').value + '%';
+            calculate();
+        }
+
+        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; renderLevels(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], dPct = parseFloat(document.getElementById('descInput').value), iPct = parseFloat(document.getElementById('incInput').value);
@@ -298,7 +291,7 @@
                 if(i>0) curD = ((s.price - pL)/s.price)*100;
                 const m = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { tS += m; tQ += (m/pL); }
-                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div style="flex:1"><span style="font-size:9px; color:var(--short-red); font-weight:900;">${i===0?'ENTRADA':'CAÍDA -'+curD.toFixed(1)+'%'}</span><div style="font-family:'Roboto Mono'; font-size:20px; font-weight:900;">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><span style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</span></div></div>`;
+                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'ENTRADA':'CAÍDA -'+curD.toFixed(1)+'%'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><div style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div></div>`;
                 lP = pL;
             }
             grid.innerHTML = h;
@@ -310,20 +303,24 @@
         }
 
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) if(!s.buys.includes(i)) s.buys.push(i); } else { s.buys = s.buys.filter(v => v < idx); } calculate(); }
-        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function loadChart(c) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${c.replace('USDT','')||'BTC'}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); if(s.name) loadChart(s.name); updateDashUI(); }
+        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
+        function rotateDash() { const s = slots[activeIdx]; if(!s.locked) { s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); } }
+        function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; save(); updateDashUI(); }
+        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function showToast(t) { const x = document.getElementById("toast"); x.textContent = t; x.className = "show"; setTimeout(() => x.className = "", 2000); }
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(c) { const v = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(c) modalCallback(v); }
-        function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } else { showToast("ERROR"); } }); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️ CLARO' : '🌙 OSCURO'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function renderHistory() { document.getElementById('logGrid').innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div style="flex:1"><span style="font-size:9px; opacity:0.5;">${h.date}</span><div style="font-weight:900;">${h.coin}</div></div><div style="text-align:right"><span style="color:var(--long-green); font-weight:900;">+$${h.profit}</span></div></div>`).reverse().join(''); }
-        function releaseSlot() { const s = slots[activeIdx]; if(s.buys.length === 0) return; openPrompt((p) => { if(p === "2524") { history.push({ date: new Date().toLocaleString(), coin: s.name, profit: document.getElementById('resProfit').textContent.replace('$','') }); localStorage.setItem('c5x_history', JSON.stringify(history)); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }; save(); selectSlot(0); renderHistory(); showToast("LIQUIDADO"); } }); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
-        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } }); }
-        function exportExcel() { if(history.length === 0) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Reporte"); XLSX.writeFile(wb, "C5X_Reporte.xlsx"); }
-        function exportPDF() { if(history.length === 0) return; const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text("REPORTE C5X", 14, 20); doc.save("C5X_Reporte.pdf"); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function renderHistory() { document.getElementById('logGrid').innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join(''); }
+        function loadChart(c) { if(!c) return; new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${c.replace('USDT','')}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
+        function releaseSlot() { const s = slots[activeIdx]; if(s.buys.length === 0) return; openPrompt((p) => { if(p === "2524") { history.push({ date: new Date().toLocaleString(), coin: s.name, profit: document.getElementById('resProfit').textContent.replace('$','') }); localStorage.setItem('c5x_history', JSON.stringify(history)); slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false }; save(); selectSlot(0); renderHistory(); showToast("LIQUIDADO"); } }); }
+        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("LIMPIADO"); } }); }
+        function exportExcel() { if(history.length === 0) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Log"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
+        function exportPDF() { showToast("PDF no disponible en esta vista"); }
     </script>
 </body>
 </html>
