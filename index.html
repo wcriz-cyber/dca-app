@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.1 Master</title>
+    <title>C5X - V20.2 Master</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -34,7 +34,7 @@
         .content-spacer { margin-top: 108px; }
         
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
@@ -53,7 +53,7 @@
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
         .dash-data { text-align: center; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; }
         .sub-info { display: flex; justify-content: center; gap: 15px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
         .info-item label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
@@ -66,14 +66,19 @@
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 80%; text-align: center; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
     </style>
 </head>
 <body onload="init()">
 
+    <div id="toast">MENSAJE</div>
+
     <div id="customModal">
         <div class="modal-content">
             <div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--text)">SEGURIDAD C5X</div>
-            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%; padding:12px; text-align:center; font-size:20px; margin-bottom:20px;">
+            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" style="width:100%; padding:12px; text-align:center; font-size:20px; margin-bottom:20px; outline:none;">
             <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; width:100%;" onclick="closeMyModal(true)">CONFIRMAR</button>
             <button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeMyModal(false)">CANCELAR</button>
         </div>
@@ -171,7 +176,6 @@
             if(!s.price) { grid.innerHTML = ''; return; }
 
             let totalSpent = 0, totalTokens = 0, html = '', currentDrop = 10;
-
             for(let i=0; i<12; i++) {
                 let pLvl;
                 if(i === 0) pLvl = s.price;
@@ -216,9 +220,11 @@
             const dash = document.getElementById('dashMain');
             const label = document.getElementById('stratName');
             const lBtn = document.getElementById('lockBtn');
+            const targetEl = document.getElementById('resTarget');
             label.textContent = s.strat === "normal" ? "PREDETERMINADA" : "AGRESIVA";
             label.style.color = s.strat === "normal" ? "var(--dir-color)" : "var(--warning)";
             dash.style.borderColor = s.strat === "normal" ? "var(--dir-color)" : "var(--warning)";
+            targetEl.style.color = s.strat === "normal" ? "var(--long-green)" : "var(--warning)";
             lBtn.textContent = s.locked ? '🔒' : '🔓';
             lBtn.classList.toggle('locked', s.locked);
         }
@@ -240,6 +246,7 @@
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked:false };
                     save();
                     selectSlot(activeIdx);
+                    showToast("OPERACIÓN CERRADA");
                 }
             });
         }
@@ -266,6 +273,7 @@
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode'); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function viewTickerChart() { loadChart(currentTickerSymbol); }
+        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(c) { document.getElementById('customModal').style.display = 'none'; if(c) modalCallback(document.getElementById('modalInput').value); }
