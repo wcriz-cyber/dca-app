@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.7 Fast Flow</title>
+    <title>C5X - V22.8 Fast Flow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -20,16 +20,29 @@
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 85px; transition: 0.3s; overflow-x: hidden; }
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 65px; }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 18px; color: var(--dir-color); flex-shrink: 0; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 65px; gap: 10px; }
         
-        /* Ticker Dinámico Mejorado */
-        .ticker-container { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); padding: 5px 12px; border-radius: 12px; border: 1px solid var(--border); min-width: 180px; transition: all 0.5s ease; }
-        .coin-logo { width: 24px; height: 24px; border-radius: 50%; object-fit: contain; }
-        .ticker-info { display: flex; flex-direction: column; }
-        #t-sym { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; }
-        #t-price { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
-        #t-change { font-size: 10px; font-weight: 900; }
+        /* Logo C5X más grande */
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 26px; color: var(--dir-color); flex-shrink: 0; letter-spacing: -1px; }
+        
+        /* Ticker Horizontal */
+        .ticker-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: rgba(255,255,255,0.03); 
+            padding: 6px 10px; 
+            border-radius: 10px; 
+            border: 1px solid var(--border); 
+            flex: 1; 
+            overflow: hidden; 
+            white-space: nowrap;
+        }
+        .coin-logo { width: 20px; height: 20px; border-radius: 50%; object-fit: contain; }
+        .ticker-horiz-info { display: flex; align-items: center; gap: 6px; width: 100%; justify-content: space-between; }
+        #t-sym { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; color: var(--dir-color); }
+        #t-price { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; }
+        #t-change { font-size: 11px; font-weight: 900; }
         
         #tfBar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
@@ -40,7 +53,7 @@
         .tab-content.active-tab { display: block; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--surface); display: flex; justify-content: space-around; border-top: 1px solid var(--border); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; cursor: pointer; }
+        .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
         .nav-item.active { color: var(--dir-color); }
         .nav-item label { font-size: 10px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
 
@@ -83,13 +96,12 @@
             <div class="logo-area">C5X</div>
             <div class="ticker-container" id="tickerBox">
                 <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" id="t-logo" class="coin-logo">
-                <div class="ticker-info">
+                <div class="ticker-horiz-info">
                     <span id="t-sym">BTC</span>
                     <span id="t-price">$0.00</span>
+                    <span id="t-change">0.00%</span>
                 </div>
-                <span id="t-change">0.00%</span>
             </div>
-            <div style="width: 10px;"></div>
         </header>
         <div id="tfBar" class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
@@ -179,7 +191,6 @@
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
-        // Ticker logic
         const TICKER_COINS = [
             {id: 'BTC', name: 'BTC', logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png'},
             {id: 'ETH', name: 'ETH', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'},
@@ -195,7 +206,6 @@
             switchTab('tab-trade', document.getElementById('btn-trade'));
             renderNav(); selectSlot(activeIdx); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            
             updateTicker();
             setInterval(updateTicker, 7000); 
         }
@@ -205,19 +215,15 @@
             try {
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${coin.id}USDT`);
                 const data = await res.json();
-                
-                const price = parseFloat(data.lastPrice).toLocaleString(undefined, {minimumFractionDigits: 2});
-                const change = parseFloat(data.priceChangePercent).toFixed(2);
-                
                 document.getElementById('t-logo').src = coin.logo;
                 document.getElementById('t-sym').textContent = coin.name;
-                document.getElementById('t-price').textContent = `$${price}`;
+                document.getElementById('t-price').textContent = `$${parseFloat(data.lastPrice).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const ch = parseFloat(data.priceChangePercent).toFixed(2);
                 const cEl = document.getElementById('t-change');
-                cEl.textContent = `${change}%`;
-                cEl.style.color = change >= 0 ? 'var(--long-green)' : 'var(--short-red)';
-                
+                cEl.textContent = `${ch}%`;
+                cEl.style.color = ch >= 0 ? 'var(--long-green)' : 'var(--short-red)';
                 currentTickerIdx = (currentTickerIdx + 1) % TICKER_COINS.length;
-            } catch(e) { console.log("Ticker Error", e); }
+            } catch(e) {}
         }
 
         function switchTab(tabId, btn) {
@@ -232,16 +238,9 @@
             const modal = document.getElementById('configModal');
             const input = document.getElementById('configInputVal');
             input.dataset.type = type;
-            if(type === 'capital') {
-                document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
-                input.value = slots[activeIdx].capital;
-            } else if(type === 'normal') {
-                document.getElementById('configTitle').textContent = "% ESTRATEGIA NORMAL";
-                input.value = document.getElementById('incInput').value;
-            } else {
-                document.getElementById('configTitle').textContent = "% ESTRATEGIA AGRESIVA";
-                input.value = document.getElementById('descInput').value;
-            }
+            if(type === 'capital') { document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)"; input.value = slots[activeIdx].capital; }
+            else if(type === 'normal') { document.getElementById('configTitle').textContent = "% ESTRATEGIA NORMAL"; input.value = document.getElementById('incInput').value; }
+            else { document.getElementById('configTitle').textContent = "% ESTRATEGIA AGRESIVA"; input.value = document.getElementById('descInput').value; }
             modal.style.display = 'flex';
             input.focus();
         }
@@ -267,7 +266,7 @@
             localStorage.setItem('c5x_history', JSON.stringify(history));
             slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false };
             save(); selectSlot(activeIdx); renderHistory();
-            showToast("OPERACIÓN GUARDADA EN BITÁCORA");
+            showToast("OPERACIÓN GUARDADA");
         }
 
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; renderLevels(); }
@@ -337,35 +336,26 @@
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900; font-size:18px;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
         
+        // Vínculo con GATEIO para las velas
         function loadChart(c) { 
             if(!c) c = 'BTC';
             const symbol = c.includes('USDT') ? c : c + 'USDT';
             new TradingView.widget({
                 "autosize": true,
-                "symbol": `BINANCE:${symbol}`,
+                "symbol": `GATEIO:${symbol}`,
                 "interval": activeTF,
                 "timezone": "Etc/UTC",
                 "theme": isLight ? "light" : "dark",
                 "style": "1",
                 "locale": "es",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
                 "hide_top_toolbar": true,
-                "save_image": false,
                 "container_id": "tv_chart",
                 "backgroundColor": isLight ? "#ffffff" : "#050708"
             });
         }
 
-        function updateTF(tf, b) { 
-            activeTF = tf; 
-            localStorage.setItem('c5x_last_tf', tf); 
-            document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); 
-            b.classList.add('active'); 
-            loadChart(slots[activeIdx].name || 'BTC'); 
-        }
-
-        function clearLogs() { if(confirm("¿Borrar todos los registros?")) { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("BITÁCORA LIMPIA"); } }
+        function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); loadChart(slots[activeIdx].name || 'BTC'); }
+        function clearLogs() { if(confirm("¿Borrar historial?")) { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); } }
         function exportExcel() { if(!history.length) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
     </script>
 </body>
