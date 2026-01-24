@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.2 Master</title>
+    <title>C5X - V20.3 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -68,16 +68,25 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
+        /* Estilos de Tarjetas de Niveles */
+        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
+        .level-card { background: var(--surface); border-radius: 15px; padding: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); transition: 0.2s; position: relative; overflow: hidden; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); box-shadow: inset 0 0 15px rgba(52, 152, 219, 0.1); }
+        
+        .level-card .check-icon { position: absolute; right: 10px; top: 5px; font-size: 10px; color: var(--dir-color); opacity: 0; }
+        .level-card.active .check-icon { opacity: 1; }
+
+        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); line-height: 1.2; }
+        .level-label { font-size: 10px; font-weight: 900; color: var(--dir-color); display: block; margin-bottom: 2px; }
+        .monto-display { text-align: right; }
+        .monto-label { font-size: 8px; color: #848e9c; display: block; margin-bottom: 2px; }
+        .monto-val { font-family: 'Roboto Mono'; font-weight: 900; font-size: 16px; color: var(--text); }
+
         /* Modales */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
 
-        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); }
-        
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
@@ -161,9 +170,7 @@
                 <div class="dash-data">
                     <span style="font-size:11px; color:var(--dir-color); font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</span>
                     <div class="main-target" id="resTarget">0.000000</div>
-                    
                     <div class="btn-strat-val" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
-
                     <div class="sub-info">
                         <div class="info-item"><label>Promedio</label><span id="resAvg">0.0000</span></div>
                         <div class="info-item"><label>Ganancia</label><span id="resProfit" style="color:var(--long-green)">$0.00</span></div>
@@ -190,7 +197,6 @@
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
-
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
@@ -230,52 +236,40 @@
             const label = document.getElementById('stratName');
             const targetEl = document.getElementById('resTarget');
             const btnStrat = document.getElementById('btnStratToggle');
-            
             const isNormal = currentStrat === "normal";
             label.textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
             label.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
             dash.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             targetEl.style.color = isNormal ? "var(--long-green)" : "var(--warning)";
-            
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
             btnStrat.textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             btnStrat.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             btnStrat.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-
             calculate();
         }
 
-        // --- LÓGICA DE EDICIÓN FLUIDA ---
         function handleStratEdit() {
             openPrompt((p) => {
                 if(p === "2524") {
                     const isNormal = currentStrat === "normal";
                     const currentVal = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-                    
                     document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %";
                     document.getElementById('configInputVal').value = currentVal;
                     document.getElementById('configModal').style.display = 'flex';
                     setTimeout(() => document.getElementById('configInputVal').focus(), 100);
-                } else {
-                    showToast("CLAVE INCORRECTA");
-                }
+                } else { showToast("CLAVE INCORRECTA"); }
             });
         }
 
         function saveConfigValue() {
             const newVal = document.getElementById('configInputVal').value;
             if(!newVal) return;
-            
             if(currentStrat === "normal") document.getElementById('incInput').value = newVal;
             else document.getElementById('descInput').value = newVal;
-            
-            closeConfigModal();
-            updateDashUI();
-            showToast("VALOR ACTUALIZADO");
+            closeConfigModal(); updateDashUI(); showToast("VALOR ACTUALIZADO");
         }
 
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
-        // --------------------------------
 
         function calculate() {
             const s = slots[activeIdx];
@@ -284,11 +278,27 @@
             save(); renderLevels();
         }
 
+        // LÓGICA DE SELECCIÓN ACUMULATIVA
+        function toggleLvl(idx) {
+            const s = slots[activeIdx];
+            const isAlreadyActive = s.buys.includes(idx);
+            
+            if (!isAlreadyActive) {
+                // Activa desde el 0 hasta el seleccionado
+                for(let i=0; i<=idx; i++) {
+                    if(!s.buys.includes(i)) s.buys.push(i);
+                }
+            } else {
+                // Desactiva desde el seleccionado hasta el final (11)
+                s.buys = s.buys.filter(val => val < idx);
+            }
+            calculate();
+        }
+
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             const incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = ''; return; }
             
@@ -308,19 +318,20 @@
                         pLevel = lastPrice * (1 - (descPct / 100));
                     }
                 }
-                
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
 
-                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                html += `
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <span class="check-icon">✔</span>
                     <div>
-                        <span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span>
+                        <span class="level-label">NIVEL ${i+1}</span>
                         <div class="price-display">${pLevel.toFixed(6)}</div>
                     </div>
-                    <div style="text-align:right">
-                        <span style="font-size:8px; color:#848e9c">MONTO</span>
-                        <div style="font-weight:900">$${mUSD.toFixed(1)}</div>
+                    <div class="monto-display">
+                        <span class="monto-label">INVERSIÓN</span>
+                        <div class="monto-val">$${mUSD.toFixed(1)}</div>
                     </div>
                 </div>`;
                 lastPrice = pLevel;
@@ -338,8 +349,7 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    currentStrat = "normal";
-                    isDashLocked = false;
+                    currentStrat = "normal"; isDashLocked = false;
                     document.getElementById('lockBtn').textContent = '🔓';
                     document.getElementById('lockBtn').classList.remove('locked');
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
@@ -362,7 +372,6 @@
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; calculate(); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
     </script>
