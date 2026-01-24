@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.4 Master</title>
+    <title>C5X - V21.5 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -71,13 +71,11 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
-        /* TARJETAS ESTÁNDAR */
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
         .standard-card { background: var(--surface); border-radius: 22px; padding: 18px 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
         
         .card-icon { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: #848e9c; margin-right: 18px; }
-        .standard-card.active .card-icon { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.2); }
 
         .card-body { flex: 1; }
         .card-tag { font-size: 10px; font-weight: 900; color: var(--short-red); margin-bottom: 4px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -87,25 +85,17 @@
         .card-side label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; text-transform: uppercase; }
         .card-side span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
 
-        /* BITÁCORA SLIDER (6 MÁXIMO VISIBLE) */
         .log-section { margin-top: 40px; }
         .log-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .log-title { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
         .log-actions { display: flex; gap: 8px; }
         .log-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 900; cursor: pointer; font-family: 'Orbitron'; }
         
-        /* Contenedor con Scroll para Bitácora */
-        .log-grid-container { 
-            max-height: 585px; /* Altura aproximada de 6 tarjetas + gaps */
-            overflow-y: auto; 
-            padding-bottom: 20px;
-            scrollbar-width: none; /* Firefox */
-        }
-        .log-grid-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .log-grid-container { max-height: 585px; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
+        .log-grid-container::-webkit-scrollbar { display: none; }
 
         .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
 
-        /* MODALES */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
@@ -244,17 +234,13 @@
         function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
 
         function updateDashUI() {
-            const s = slots[activeIdx], dash = document.getElementById('dashMain'), label = document.getElementById('stratName'), targetEl = document.getElementById('resTarget'), btnStrat = document.getElementById('btnStratToggle'), lockBtn = document.getElementById('lockBtn'), isNormal = s.strat === "normal";
-            label.textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
-            label.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            dash.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
-            targetEl.style.color = isNormal ? "var(--long-green)" : "var(--warning)";
+            const s = slots[activeIdx], isNormal = s.strat === "normal";
+            document.getElementById('stratName').textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
+            document.getElementById('stratName').style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('dashMain').style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-            btnStrat.textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
-            btnStrat.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
-            btnStrat.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            lockBtn.textContent = s.locked ? '🔒' : '🔓';
-            lockBtn.style.color = s.locked ? 'var(--warning)' : 'var(--text)';
+            document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
+            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
             calculate();
         }
 
@@ -301,7 +287,16 @@
             if(s.buys.length === 0) return showToast("SLOT VACÍO");
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$','') });
+                    // SNAPSHOT DETALLADO PARA REPORTES
+                    history.push({ 
+                        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                        coin: s.name || 'S/N', 
+                        profit: document.getElementById('resProfit').textContent.replace('$',''),
+                        base: s.price.toFixed(4),
+                        avg: document.getElementById('resAvg').textContent,
+                        totalInv: document.getElementById('resInv').textContent.replace('$',''),
+                        strategy: s.strat.toUpperCase()
+                    });
                     localStorage.setItem('c5x_history', JSON.stringify(history));
                     renderHistory();
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
@@ -313,8 +308,37 @@
         }
 
         function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } else { showToast("CLAVE INCORRECTA"); } }); }
-        function exportExcel() { if(history.length === 0) return showToast("SIN DATOS"); const ws = XLSX.utils.json_to_sheet(history), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Bitacora.xlsx"); }
-        function exportPDF() { if(history.length === 0) return showToast("SIN DATOS"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("Bitacora C5X", 14, 15); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, h.profit]), startY: 20 }); doc.save("C5X_Bitacora.pdf"); }
+        
+        function exportExcel() { 
+            if(history.length === 0) return showToast("SIN DATOS"); 
+            // Formatear datos detallados para Excel
+            const detailedData = history.map(h => ({
+                "FECHA": h.date,
+                "MONEDA": h.coin,
+                "ESTRATEGIA": h.strategy || 'N/A',
+                "P. BASE": h.base || '0',
+                "P. PROMEDIO": h.avg || '0',
+                "INVERSIÓN TOTAL": "$" + (h.totalInv || '0'),
+                "PROFIT ($)": "$" + h.profit
+            }));
+            const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, ws, "Bitacora_Detallada"); 
+            XLSX.writeFile(wb, "C5X_Reporte_Master.xlsx"); 
+        }
+
+        function exportPDF() { 
+            if(history.length === 0) return showToast("SIN DATOS"); 
+            const { jsPDF } = window.jspdf, doc = new jsPDF('l', 'mm', 'a4'); 
+            doc.setFontSize(18); doc.text("REPORTE DETALLADO DE OPERACIONES C5X", 14, 20);
+            doc.setFontSize(10); doc.text("Generado el: " + new Date().toLocaleString(), 14, 28);
+            
+            const head = [['Fecha', 'Moneda', 'Estrategia', 'P. Base', 'Promedio', 'Inversión', 'Profit']];
+            const body = history.map(h => [h.date, h.coin, h.strategy || 'NORMAL', h.base || '0', h.avg || '0', '$'+(h.totalInv || '0'), '$'+h.profit]);
+            
+            doc.autoTable({ head: head, body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [52, 152, 219] } }); 
+            doc.save("C5X_Reporte_Master.pdf"); 
+        }
+
         function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
         function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
