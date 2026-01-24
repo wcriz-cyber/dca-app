@@ -11,78 +11,79 @@
     
     <style>
         :root {
-            --bg: #050708; --surface: #111418; --text: #f0f2f5; 
-            --border: #2d3339; --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
+            --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
+            --border: #2d3339; --header-bg: #12151a;
+            --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
-            --tf-bg-active: #ffffff; --tf-text-active: #000000;
+            --tf-active-bg: #4a5568; --tf-active-text: #ffffff;
         }
         body.light-mode { 
-            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db;
-            --tf-bg-active: #000000; --tf-text-active: #ffffff;
+            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff;
+            --tf-active-bg: #2d3748; --tf-active-text: #ffffff;
         }
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; width: 100vw; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* HEADER COMPACTO: TODO EN UNA LINEA */
+        /* HEADER RECONSTRUIDO */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; height: 50px; border-bottom: 2px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 18px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); height: 55px; }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 19px; color: var(--text); }
         
-        .btc-live-box { display: flex; align-items: center; gap: 5px; background: rgba(128,128,128,0.1); padding: 4px 8px; border-radius: 6px; font-family: 'Orbitron'; font-size: 11px; border: 1px solid var(--border); }
-        .theme-toggle { background: transparent; border: none; color: var(--text); font-size: 18px; cursor: pointer; }
+        .btc-live-box { display: flex; align-items: center; gap: 6px; background: rgba(128,128,128,0.1); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 12px; }
+        .theme-toggle { background: transparent; border: none; color: var(--text); font-size: 18px; cursor: pointer; padding: 5px; }
         
         /* SLIDER TEMPORALIDADES NEUTRO */
-        .tf-bar { display: flex; overflow-x: auto; gap: 6px; padding: 6px 10px; background: var(--bg); scrollbar-width: none; border-bottom: 1px solid var(--border); }
+        .tf-bar { display: flex; overflow-x: auto; gap: 6px; padding: 8px 12px; background: var(--bg); border-bottom: 1px solid var(--border); scrollbar-width: none; }
         .tf-bar::-webkit-scrollbar { display: none; }
-        .tf-btn { flex: 0 0 auto; padding: 4px 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: #848e9c; font-size: 10px; font-weight: 900; }
-        .tf-btn.active { background: var(--tf-bg-active); color: var(--tf-text-active); border-color: var(--tf-bg-active); }
+        .tf-btn { flex: 0 0 auto; padding: 6px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: #848e9c; font-size: 11px; font-weight: 900; transition: 0.2s; }
+        .tf-btn.active { background: var(--tf-active-bg); color: var(--tf-active-text); border-color: var(--tf-active-bg); }
 
-        .content-spacer { margin-top: 95px; }
+        .content-spacer { margin-top: 105px; }
         
-        /* 6 SLOTS AJUSTADOS AL ANCHO */
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; padding: 5px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 6px; font-size: 9px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
+        /* 6 SLOTS PERFECTAMENTE AJUSTADOS */
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 8px; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; }
+        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); background: rgba(128,128,128,0.05); }
         
-        /* GRÁFICO LIMPIO */
-        .chart-container { width: 100%; height: 260px; background: #000; }
+        /* GRÁFICO ZEN */
+        .chart-container { width: 100%; height: 280px; background: #000; border-bottom: 1px solid var(--border); }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr; gap: 5px; padding: 8px; }
-        .control-box { background: var(--surface); padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; position: relative; }
-        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
-        .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.8fr; gap: 8px; padding: 12px; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
+        .control-box label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
+        .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .locked-input { pointer-events: none; opacity: 0.8; }
-        .lock-icon { position: absolute; top: 1px; right: 3px; font-size: 7px; opacity: 0.4; }
+        .lock-icon { position: absolute; top: 2px; right: 4px; font-size: 8px; opacity: 0.4; }
 
         /* DASHBOARD SLIDER */
-        .dash-viewport { margin: 8px; overflow: hidden; }
-        .dash-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; scrollbar-width: none; }
+        .dash-viewport { margin: 12px; overflow: hidden; }
+        .dash-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; scrollbar-width: none; }
         .dash-slider::-webkit-scrollbar { display: none; }
-        .dash-slide { flex: 0 0 100%; scroll-snap-align: center; background: var(--surface); border-radius: 15px; border: 2px solid var(--border); padding: 15px; }
+        .dash-slide { flex: 0 0 100%; scroll-snap-align: center; background: var(--surface); border-radius: 20px; border: 2px solid var(--border); padding: 18px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .dash-slide.active-strategy { border-color: var(--dir-color); }
         .dash-slide.desc-strategy { border-color: var(--warning); }
 
-        .slide-header { display: flex; justify-content: space-between; font-size: 10px; font-family: 'Orbitron'; font-weight: 900; margin-bottom: 8px; }
-        .dash-big-num { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; text-align: center; margin: 5px 0; }
-        .dash-stats { display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 10px; font-size: 11px; }
+        .slide-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .dash-big-num { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; text-align: center; margin: 10px 0; letter-spacing: -1px; }
+        .dash-stats { display: flex; justify-content: space-around; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; }
+        .stat-val { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 900; }
 
-        /* NIVELES */
-        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 12px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
-        .price-display { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; }
-        .data-val-usd { font-size: 14px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
+        /* NIVELES ESTILO V18 */
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .level-card { background: var(--surface); border-radius: 16px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
+        .level-card.active { border-color: var(--dir-color); background: rgba(128,128,128,0.05); }
+        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; }
         
-        .panic-btn { position: absolute; top: 0; right: 10px; background: var(--dir-color); color: #fff; border: none; padding: 2px 8px; border-radius: 0 0 6px 6px; font-size: 8px; font-weight: 900; }
-        .btn-release { width: 94%; margin: 15px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
+        .panic-btn { position: absolute; top: 0; right: 12px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
+        .btn-release { width: 94%; margin: 20px auto; display: block; padding: 20px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
 
-        /* MODAL Y TOAST */
-        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; width: 80%; text-align: center; border: 1px solid var(--border); }
-        #toast { visibility: hidden; background: var(--dir-color); color: #fff; padding: 10px 20px; position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); border-radius: 20px; font-weight: 900; font-size: 12px; z-index: 10000; }
+        /* MODALES */
+        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--surface); padding: 30px; border-radius: 25px; width: 85%; max-width: 320px; text-align: center; border: 1px solid var(--border); }
+        #toast { visibility: hidden; background: var(--dir-color); color: #fff; padding: 12px 25px; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); border-radius: 50px; font-weight: 900; font-size: 13px; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         #toast.show { visibility: visible; }
     </style>
 </head>
@@ -92,10 +93,10 @@
 
     <div id="customModal">
         <div class="modal-content">
-            <div id="modalTitle" style="font-family:'Orbitron'; font-size:12px; margin-bottom:15px;">CLAVE</div>
-            <input type="password" id="modalInput" style="width:100%; padding:10px; text-align:center; font-size:20px; margin-bottom:15px; border-radius:10px; border:1px solid var(--border); background:rgba(0,0,0,0.2); color:#fff;">
-            <button onclick="closeMyModal(true)" style="width:100%; padding:12px; background:var(--long-green); border:none; border-radius:10px; color:#fff; font-weight:900; margin-bottom:10px;">OK</button>
-            <button onclick="closeMyModal(false)" style="background:transparent; border:none; color:var(--text); opacity:0.5;">Cerrar</button>
+            <div id="modalTitle" style="font-family:'Orbitron'; font-size:13px; margin-bottom:20px;">SEGURIDAD</div>
+            <input type="password" id="modalInput" style="width:100%; padding:15px; text-align:center; font-size:24px; margin-bottom:20px; border-radius:15px; border:1px solid var(--border); background:rgba(0,0,0,0.3); color:#fff; outline:none;">
+            <button onclick="closeMyModal(true)" style="width:100%; padding:15px; background:var(--long-green); border:none; border-radius:15px; color:#fff; font-weight:900; margin-bottom:10px; font-family:'Orbitron';">CONFIRMAR</button>
+            <button onclick="closeMyModal(false)" style="background:transparent; border:none; color:var(--text); opacity:0.5; font-size:11px;">CANCELAR</button>
         </div>
     </div>
 
@@ -103,10 +104,10 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
-                <span id="t-dot" style="width:6px; height:6px; border-radius:50%; background:grey;"></span>
+                <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
                 <span id="t-sym">BTC</span>
                 <span id="t-price">--</span>
-                <span id="t-pct">0%</span>
+                <span id="t-pct" style="font-weight:900;">0%</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
@@ -140,19 +141,19 @@
         <div class="dash-viewport">
             <div class="dash-slider">
                 <div class="dash-slide active-strategy">
-                    <div class="slide-header"><span style="color:var(--dir-color)">PREDETERMINADA</span><span>1/2</span></div>
-                    <div id="resTarget7" class="dash-big-num" style="color:var(--dir-color)">0.00</div>
+                    <div class="slide-header"><span style="color:var(--dir-color); font-size:11px; font-weight:900;">PREDETERMINADA</span><span style="opacity:0.5; font-size:10px;">1/2</span></div>
+                    <div id="resTarget7" class="dash-big-num" style="color:var(--dir-color)">0.0000</div>
                     <div class="dash-stats">
-                        <div>AVG: <span id="resAvg7">0.0</span></div>
-                        <div>INV: <span id="resInv" style="color:var(--long-green)">$0</span></div>
+                        <div>AVG: <span id="resAvg7" class="stat-val">0.00</span></div>
+                        <div>INV: <span id="resInv" class="stat-val" style="color:var(--long-green)">$0</span></div>
                     </div>
                 </div>
                 <div class="dash-slide desc-strategy">
-                    <div class="slide-header"><span style="color:var(--warning)">AGRESIVA</span><span>2/2</span></div>
-                    <div id="resTargetDesc" class="dash-big-num" style="color:var(--warning)">0.00</div>
+                    <div class="slide-header"><span style="color:var(--warning); font-size:11px; font-weight:900;">AGRESIVA</span><span style="opacity:0.5; font-size:10px;">2/2</span></div>
+                    <div id="resTargetDesc" class="dash-big-num" style="color:var(--warning)">0.0000</div>
                     <div class="dash-stats">
-                        <div>AVG: <span id="resAvgDesc">0.0</span></div>
-                        <div>PROF: <span id="resProf" style="color:var(--long-green)">$0</span></div>
+                        <div>AVG: <span id="resAvgDesc" class="stat-val">0.00</span></div>
+                        <div>PROF: <span id="resProf" class="stat-val" style="color:var(--long-green)">$0</span></div>
                     </div>
                 </div>
             </div>
@@ -184,8 +185,10 @@
                 const data = await res.json();
                 document.getElementById('t-price').textContent = Math.round(data.lastPrice).toLocaleString();
                 const pct = parseFloat(data.priceChangePercent);
-                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(1) + "%";
-                document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
+                const el = document.getElementById('t-pct');
+                el.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(1) + "%";
+                el.style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
+                document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)';
             } catch(e) {}
         }
 
@@ -213,7 +216,8 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:20px;">C5X READY</p>'; return; }
+            updateBodyMode(s.name);
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:40px; font-weight:900;">C5X READY</p>'; return; }
             
             let totalSpent = 0, tokens7 = 0, tokensDesc = 0;
             let html = '', lastP7 = s.price, lastPDesc = s.price, drop7 = 10.0;
@@ -229,17 +233,17 @@
                 if(on) { totalSpent += usd; tokens7 += (usd/p7); tokensDesc += (usd/pDesc); }
 
                 html += `<div class="level-card ${on?'active':''}">
-                    <button class="panic-btn" onclick="panicFill(${i})">FILL</button>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" style="width:22px; height:22px;" ${on?'checked':''} onclick="toggleLvl(${i})">
+                    <button class="panic-btn" onclick="panicFill(${i})">AUTO FILL</button>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" style="width:28px; height:28px;" ${on?'checked':''} onclick="toggleLvl(${i})">
                         <div onclick="copy('${p7.toFixed(6)}')">
-                            <div style="font-size:9px; color:var(--dir-color); font-weight:900;">L${i+1}</div>
+                            <div style="font-size:10px; color:var(--dir-color); font-weight:900; margin-bottom:2px;">NIVEL ${i+1}</div>
                             <div class="price-display">${p7.toFixed(5)}</div>
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-size:8px; opacity:0.6;">INVERSIÓN</div>
-                        <div class="data-val-usd">$${usd}</div>
+                        <div style="font-size:9px; opacity:0.6; font-weight:900;">INV</div>
+                        <div style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green);">$${usd.toFixed(1)}</div>
                     </div>
                 </div>`;
                 lastP7=p7; lastPDesc=pDesc;
@@ -255,43 +259,48 @@
             document.getElementById('resProf').textContent = `$${totalSpent.toFixed(1)}`;
         }
 
-        function secureEdit(f) {
-            openModal("CLAVE", (p) => {
-                if(p === "2524") {
-                    setTimeout(() => {
-                        openModal(f==='cap'?"NUEVO CAPITAL":"% DESC", (val) => {
-                            if(f==='cap') document.getElementById('capitalInput').value = val;
-                            else document.getElementById('descInput').value = val;
-                            calculate();
-                        });
-                    }, 300);
-                } else showToast("ERROR");
-            });
-        }
-
         function loadChart(coin) {
             let sym = (coin || 'BTC3L').toUpperCase().replace('USDT','');
-            let ex = sym.includes('3L') || sym.includes('3S') ? 'GATEIO' : 'BINANCE';
+            let ex = sym.includes('3L') || sym.includes('3S') || sym.includes('5L') ? 'GATEIO' : 'BINANCE';
             new TradingView.widget({
                 "autosize": true, "symbol": `${ex}:${sym}USDT`, "interval": activeTF,
                 "theme": isLight ? "light" : "dark", "style": "1", "container_id": "tv_chart",
                 "hide_top_toolbar": true, "hide_side_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#050708",
-                "save_image": false, "enable_publishing": false
+                "save_image": false, "enable_publishing": false, "allow_symbol_change": false
             });
         }
 
-        function openModal(t, cb) { modalCallback = cb; document.getElementById('modalTitle').textContent=t; document.getElementById('modalInput').value=''; document.getElementById('customModal').style.display='flex'; }
+        function secureEdit(f) {
+            openModal("INGRESAR CLAVE", (p) => {
+                if(p === "2524") {
+                    setTimeout(() => {
+                        openModal(f==='cap'?"NUEVO CAPITAL":"NUEVO % DESC", (val) => {
+                            if(val && !isNaN(val)) {
+                                if(f==='cap') slots[activeIdx].capital = parseFloat(val);
+                                else slots[activeIdx].desc = parseFloat(val);
+                                selectSlot(activeIdx);
+                                showToast("ACTUALIZADO");
+                            }
+                        });
+                    }, 300);
+                } else showToast("CLAVE INCORRECTA");
+            });
+        }
+
+        function openModal(t, cb) { modalCallback = cb; document.getElementById('modalTitle').textContent=t; document.getElementById('modalInput').value=''; document.getElementById('customModal').style.display='flex'; document.getElementById('modalInput').focus(); }
         function closeMyModal(c) { document.getElementById('customModal').style.display='none'; if(c && modalCallback) modalCallback(document.getElementById('modalInput').value); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i===activeIdx?'active':''}" onclick="selectSlot(${i})">${s.name||'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('c5x_slots', JSON.stringify(slots)); }
         function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); calculate(); loadChart(slots[activeIdx].name); renderNav(); }
         function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
         function toggleTheme() { isLight = !isLight; localStorage.setItem('theme', isLight?'light':'dark'); location.reload(); }
+        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function showToast(m) { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
         function copy(v) { navigator.clipboard.writeText(v); showToast("COPIADO"); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x=>x!==i) : [...b,i]; calculate(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length:i+1},(_,k)=>k); calculate(); }
-        function releaseSlot() { openModal("CLAVE CIERRE", (p) => { if(p==="2524") { slots[activeIdx].buys=[]; calculate(); showToast("CERRADO"); } }); }
+        function releaseSlot() { openModal("CLAVE CIERRE", (p) => { if(p==="2524") { slots[activeIdx].buys=[]; calculate(); showToast("OPERACIÓN CERRADA"); } else { showToast("CLAVE INCORRECTA"); } }); }
+        function viewTickerChart() { loadChart('BTC'); showToast("VIENDO BTC"); }
     </script>
 </body>
-    </html>
+</html>
