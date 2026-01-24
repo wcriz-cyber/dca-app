@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.9 Ultra Fixed</title>
+    <title>C5X - V18.9 Ultra Dash</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -48,18 +48,18 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        /* DASHBOARD REPARADO */
-        .dash { margin: 8px 12px 12px 12px; padding: 12px; background: var(--surface); border-radius: 25px; border: 3px solid var(--dir-color); box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; }
+        /* DASHBOARD AJUSTADO */
+        .dash { margin: 10px 12px 15px 12px; padding: 20px 15px; background: var(--surface); border-radius: 28px; border: 3px solid var(--dir-color); box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
         
-        .dash-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .dash-label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
-        .dash-val-main { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; line-height: 1; }
+        .dash-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1.5px solid var(--border); }
+        .dash-label { font-size: 11px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
 
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .strat-card { padding: 12px 4px; border-radius: 18px; border: 2px solid var(--border); text-align: center; background: rgba(0,0,0,0.2); }
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .strat-card { padding: 15px 5px; border-radius: 20px; border: 2px solid var(--border); text-align: center; background: rgba(0,0,0,0.25); }
         
-        .avg-mini { font-family: 'Roboto Mono'; font-size: 11px; font-weight: 700; color: #848e9c; margin-bottom: 4px; display: block; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -1.5px; line-height: 1; }
+        .avg-mini { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: #848e9c; margin-bottom: 8px; display: block; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -2px; line-height: 1; }
 
         /* NIVELES */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -154,8 +154,8 @@
 
         <div class="dash">
             <div class="dash-summary">
-                <div style="text-align:center"><span class="dash-label">INVERSIÓN TOTAL</span><div id="resInv" class="dash-val-main" style="color:var(--text)">$0.00</div></div>
-                <div style="text-align:center"><span class="dash-label">GANANCIA 100%</span><div id="resProf" class="dash-val-main" style="color:var(--dir-color)">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-main" style="color:var(--text)">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">GANANCIA</span><div id="resProf" class="dash-val-main" style="color:var(--dir-color)">$0.00</div></div>
             </div>
             
             <div class="target-grid">
