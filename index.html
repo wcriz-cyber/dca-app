@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.9 Master</title>
+    <title>C5X - V20.0 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -45,7 +45,7 @@
         
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         
-        .controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
+        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
@@ -60,7 +60,14 @@
 
         .dash-data { text-align: center; }
         .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -2px; }
-        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
+        
+        /* Contenedor de Inputs dentro del Dashboard */
+        .dash-strat-settings { display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 10px; }
+        .dash-input-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 5px; position: relative; }
+        .dash-input-box label { font-size: 9px; font-weight: 900; color: var(--dir-color); }
+        .dash-input-box input { background: transparent; border: none; color: var(--text); font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; width: 40px; text-align: center; outline: none; }
+
+        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
         .info-item { text-align: center; }
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
@@ -133,11 +140,6 @@
                 <label>CAP $</label>
                 <input type="number" id="capitalInput" readonly>
             </div>
-            <div class="control-box">
-                <div class="secure-overlay" onclick="requestControlAccess('descInput')"></div>
-                <label>% DESC</label>
-                <input type="number" id="descInput" value="66" readonly>
-            </div>
         </div>
 
         <div class="dash-container">
@@ -147,6 +149,20 @@
                     <div class="strat-indicator" id="stratName">PREDETERMINADA</div>
                     <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                 </div>
+                
+                <div class="dash-strat-settings" id="stratSettings">
+                    <div class="dash-input-box" id="boxPredeterminada">
+                        <div class="secure-overlay" onclick="requestControlAccess('incInput')"></div>
+                        <label>% BASE INC</label>
+                        <input type="number" id="incInput" value="7" oninput="calculate()" readonly>
+                    </div>
+                    <div class="dash-input-box" id="boxAgresiva" style="display:none;">
+                        <div class="secure-overlay" onclick="requestControlAccess('descInput')"></div>
+                        <label>% DESC</label>
+                        <input type="number" id="descInput" value="66" oninput="calculate()" readonly>
+                    </div>
+                </div>
+
                 <div class="dash-data">
                     <span style="font-size:11px; color:var(--dir-color); font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</span>
                     <div class="main-target" id="resTarget">0.000000</div>
@@ -212,10 +228,18 @@
             const dash = document.getElementById('dashMain');
             const label = document.getElementById('stratName');
             const targetEl = document.getElementById('resTarget');
-            label.textContent = currentStrat === "normal" ? "PREDETERMINADA" : "AGRESIVA";
-            label.style.color = currentStrat === "normal" ? "var(--dir-color)" : "var(--warning)";
-            dash.style.borderColor = currentStrat === "normal" ? "var(--dir-color)" : "var(--warning)";
-            targetEl.style.color = currentStrat === "normal" ? "var(--long-green)" : "var(--warning)";
+            
+            const isNormal = currentStrat === "normal";
+            
+            label.textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
+            label.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
+            dash.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
+            targetEl.style.color = isNormal ? "var(--long-green)" : "var(--warning)";
+            
+            // Alternar inputs internos
+            document.getElementById('boxPredeterminada').style.display = isNormal ? 'flex' : 'none';
+            document.getElementById('boxAgresiva').style.display = isNormal ? 'none' : 'flex';
+            
             calculate();
         }
 
@@ -229,6 +253,8 @@
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
+            const incPct = parseFloat(document.getElementById('incInput').value) || 7;
+            
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = ''; return; }
             
@@ -243,7 +269,7 @@
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
-                        currentDropPercent += 7; 
+                        currentDropPercent += incPct; 
                         pLevel = lastPrice * (1 - (currentDropPercent / 100));
                     } else {
                         pLevel = lastPrice * (1 - (descPct / 100));
