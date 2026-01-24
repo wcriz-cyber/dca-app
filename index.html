@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.0 Multi-Mode</title>
+    <title>C5X - V22.1 Theme Restored</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -41,6 +41,9 @@
         
         .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 16px; cursor: pointer; }
         #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
+
+        /* RESTITUIDO: BOTÓN DE TEMA */
+        .theme-toggle { background: transparent; border: none; color: var(--text); width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
         /* TIME FRAME BAR */
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
@@ -215,6 +218,7 @@
             <div class="btc-live-box" onclick="viewTickerChart()">
                 <div id="t-dot"></div><span id="t-sym">BTC</span><span id="t-price" style="font-weight: 900;">$--,---</span>
             </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
@@ -282,9 +286,9 @@
                 <li class="setting-item">
                     <div class="setting-left">
                         <h4>Apariencia</h4>
-                        <p>Alternar entre modo claro y oscuro</p>
+                        <p>También accesible desde el header</p>
                     </div>
-                    <button class="setting-btn outline" onclick="toggleTheme()" id="themeBtnText">CLARO/OSCURO</button>
+                    <button class="setting-btn outline" onclick="toggleTheme()" id="themeBtnText">CAMBIAR</button>
                 </li>
                 <li class="setting-item">
                     <div class="setting-left">
@@ -294,7 +298,7 @@
                     <button class="setting-btn" style="background:var(--danger)" onclick="resetApp()">RESET</button>
                 </li>
                 <li class="setting-item" style="justify-content:center; border:none; background:transparent;">
-                    <span style="color:var(--sub-text); font-size:10px; font-weight:900;">C5X - V22.0 MASTER</span>
+                    <span style="color:var(--sub-text); font-size:10px; font-weight:900;">C5X - V22.1 RESTORED</span>
                 </li>
             </ul>
         </div>
@@ -307,183 +311,4 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
-        let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        let chartSymbol = '', history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
-        let currentView = 'operate'; // Estado inicial
-
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
-        let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
-        const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-
-        function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); } 
-            renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
-            document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            setInterval(fetchTicker, 10000); 
-            updateMenuUI();
-        }
-
-        // --- MENU LOGIC ---
-        function openMainMenu() { document.getElementById('mainMenuModal').style.display = 'flex'; }
-        function closeMainMenu() { document.getElementById('mainMenuModal').style.display = 'none'; }
-        
-        function switchView(viewName) {
-            currentView = viewName;
-            // Ocultar todas
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            // Mostrar seleccionada
-            document.getElementById('view-' + viewName).classList.add('active');
-            
-            closeMainMenu();
-            updateMenuUI();
-            
-            // Si volvemos a operar, redibujamos gráfico por si acaso
-            if(viewName === 'operate') {
-               // Pequeño hack para forzar repintado del chart si es necesario
-            }
-            window.scrollTo(0,0);
-        }
-
-        function updateMenuUI() {
-            // Actualizar visualmente la selección en el menú
-            document.querySelectorAll('.menu-option').forEach(el => el.classList.remove('selected'));
-            document.getElementById('opt-' + currentView).classList.add('selected');
-        }
-
-        function resetApp() {
-            openPrompt((pass) => {
-                if(pass === "2524") {
-                    localStorage.clear();
-                    location.reload();
-                } else { showToast("CLAVE INCORRECTA"); }
-            });
-        }
-        // ------------------
-
-        async function fetchTicker() { 
-            try { 
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
-                const data = await res.json(); 
-                currentTickerSymbol = assets[assetIdx].replace("USDT",""); 
-                document.getElementById('t-sym').textContent = currentTickerSymbol; 
-                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
-                document.getElementById('t-dot').style.background = parseFloat(data.priceChangePercent) >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
-                assetIdx = (assetIdx + 1) % assets.length; 
-            } catch(e) {} 
-        }
-
-        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return; s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
-        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
-
-        function updateDashUI() {
-            const s = slots[activeIdx], isNormal = s.strat === "normal";
-            document.getElementById('stratName').textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
-            document.getElementById('stratName').style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('dashMain').style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
-            const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-            document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
-            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
-            calculate();
-        }
-
-        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; document.getElementById('configModal').style.display = 'flex'; setTimeout(() => document.getElementById('configInputVal').focus(), 100); } else { showToast("CLAVE INCORRECTA"); } }); }
-        function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeConfigModal(); updateDashUI(); }
-        function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
-
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
-        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
-
-        function renderLevels() {
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = ''; return; }
-            let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
-            for(let i=0; i<12; i++){
-                let pLevel;
-                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
-                else { 
-                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } 
-                    else { currentStepDrop = descPct; }
-                    pLevel = lastPrice * (1 - (currentStepDrop / 100));
-                }
-                const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
-                if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
-                html += `<div class="standard-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-body"><span class="card-tag">${i===0 ? 'PRECIO ENTRADA' : 'CAÍDA -'+currentStepDrop.toFixed(1)+'%'}</span><div class="card-main-val">${pLevel.toFixed(6)}</div></div><div class="card-side"><label>INVERSIÓN</label><span>$${mUSD.toFixed(1)}</span></div></div>`;
-                lastPrice = pLevel;
-            }
-            grid.innerHTML = html;
-            const avg = totalQty > 0 ? totalSpent/totalQty : 0;
-            document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
-            document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
-        }
-
-        function renderHistory() { 
-            const grid = document.getElementById('logGrid');
-            grid.innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="font-size:12px; border-color:var(--dir-color); color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-body"><span class="card-tag" style="color:#848e9c">${h.date}</span><div class="card-main-val" style="font-size:20px">${h.coin}</div></div><div class="card-side"><label>PROFIT</label><span style="color:var(--long-green)">+$${h.profit}</span></div></div>`).reverse().join(''); 
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length === 0) return showToast("SLOT VACÍO");
-            openPrompt((pass) => {
-                if(pass === "2524") {
-                    history.push({ 
-                        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                        coin: s.name || 'S/N', 
-                        profit: document.getElementById('resProfit').textContent.replace('$',''),
-                        base: s.price.toFixed(4),
-                        avg: document.getElementById('resAvg').textContent,
-                        totalInv: document.getElementById('resInv').textContent.replace('$',''),
-                        strategy: s.strat.toUpperCase()
-                    });
-                    localStorage.setItem('c5x_history', JSON.stringify(history));
-                    renderHistory();
-                    slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                    const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                    slots = [...filled, ...empty];
-                    save(); selectSlot(0); showToast("CERRADO Y REGISTRADO");
-                } else { showToast("CLAVE INCORRECTA"); }
-            });
-        }
-
-        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } else { showToast("CLAVE INCORRECTA"); } }); }
-        
-        function exportExcel() { 
-            if(history.length === 0) return showToast("SIN DATOS"); 
-            const detailedData = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "ESTRATEGIA": h.strategy || 'N/A', "P. BASE": h.base || '0', "P. PROMEDIO": h.avg || '0', "INVERSIÓN TOTAL": "$" + (h.totalInv || '0'), "PROFIT ($)": "$" + h.profit }));
-            const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
-            XLSX.utils.book_append_sheet(wb, ws, "Bitacora_Detallada"); 
-            XLSX.writeFile(wb, "C5X_Reporte_Master.xlsx"); 
-        }
-
-        function exportPDF() { 
-            if(history.length === 0) return showToast("SIN DATOS"); 
-            const { jsPDF } = window.jspdf, doc = new jsPDF('l', 'mm', 'a4'); 
-            doc.setFontSize(18); doc.text("REPORTE DETALLADO DE OPERACIONES C5X", 14, 20);
-            doc.setFontSize(10); doc.text("Generado el: " + new Date().toLocaleString(), 14, 28);
-            const head = [['Fecha', 'Moneda', 'Estrategia', 'P. Base', 'Promedio', 'Inversión', 'Profit']];
-            const body = history.map(h => [h.date, h.coin, h.strategy || 'NORMAL', h.base || '0', h.avg || '0', '$'+(h.totalInv || '0'), '$'+h.profit]);
-            doc.autoTable({ head: head, body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [52, 152, 219] } }); 
-            doc.save("C5X_Reporte_Master.pdf"); 
-        }
-
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); switchView('operate'); } // Forzar vista operar si se toca ticker
-        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
-        function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
-        function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } else { showToast("CLAVE INCORRECTA"); } }); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-btn ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
-    </script>
-</body>
-</html>
+        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot
