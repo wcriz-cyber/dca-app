@@ -75,9 +75,8 @@
         .tf-btn { flex: 1; padding: 12px 5px; border: none; background: transparent; color: #848e9c; font-size: 12px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        /* ESPACIO REDUCIDO ENTRE TEMPORALIDADES Y SLOTS */
-        .content-spacer { margin-top: 135px; } /* Reducido de 145px */
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 5px 10px; } /* Padding vertical reducido */
+        .content-spacer { margin-top: 135px; }
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 5px 10px; }
         
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -229,8 +228,6 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
-        
-        // TEMPORALIDAD PREDETERMINADA: 1H (60)
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         
         let currentChartSymbol = ''; 
@@ -248,7 +245,6 @@
             renderHistory(); 
             fetchTicker(); 
             
-            // MARCAR TF ACTIVO EN LA BARRA
             document.querySelectorAll('.tf-btn').forEach(btn => {
                 if(btn.dataset.tf === activeTF) btn.classList.add('active');
             });
@@ -365,6 +361,7 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
+                    // Registrar en historial
                     history.unshift({ 
                         coin: s.name, 
                         date: new Date().toLocaleDateString(), 
@@ -374,9 +371,18 @@
                     });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory();
+
+                    // Limpiar el slot actual
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
-                    save(); selectSlot(activeIdx); 
-                    showToast("OPERACIÓN CERRADA");
+                    
+                    // REORDENAR: Filtrar los llenos primero, luego los vacíos al final
+                    const filledSlots = slots.filter(sl => sl.name !== '');
+                    const emptySlots = slots.filter(sl => sl.name === '');
+                    slots = [...filledSlots, ...emptySlots];
+                    
+                    save(); 
+                    selectSlot(0); // Volver al primer slot (que ahora tiene una operación activa si existía)
+                    showToast("OPERACIÓN CERRADA Y REORDENADA");
                 } else { alert("CLAVE INCORRECTA"); }
             });
         }
