@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.9 Ultra Dash</title>
+    <title>C5X - V18.10 Ultra Visibility</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -17,8 +17,13 @@
             --border: #2d3339; --header-bg: #12151a;
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
+            --dash-txt: #ffffff;
         }
-        body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
+        /* Ajustes Modo Claro para máxima visibilidad */
+        body.light-mode { 
+            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; 
+            --dash-txt: #000000;
+        }
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -48,18 +53,19 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        /* DASHBOARD AJUSTADO */
-        .dash { margin: 10px 12px 15px 12px; padding: 20px 15px; background: var(--surface); border-radius: 28px; border: 3px solid var(--dir-color); box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+        /* DASHBOARD - MÁS ALTURA Y VISIBILIDAD */
+        .dash { margin: 12px 12px 20px 12px; padding: 25px 15px; background: var(--surface); border-radius: 32px; border: 4px solid var(--dir-color); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
         
-        .dash-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1.5px solid var(--border); }
-        .dash-label { font-size: 11px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .dash-val-main { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
+        .dash-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--border); }
+        .dash-label { font-size: 13px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; line-height: 1; letter-spacing: -1.5px; color: var(--dash-txt); }
 
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .strat-card { padding: 15px 5px; border-radius: 20px; border: 2px solid var(--border); text-align: center; background: rgba(0,0,0,0.25); }
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .strat-card { padding: 20px 8px; border-radius: 24px; border: 2.5px solid var(--border); text-align: center; background: rgba(0,0,0,0.2); }
         
-        .avg-mini { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; color: #848e9c; margin-bottom: 8px; display: block; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -2px; line-height: 1; }
+        /* AVG CON MÁS TAMAÑO Y VISIBILIDAD */
+        .avg-mini { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--dash-txt); margin-bottom: 12px; display: block; background: rgba(128,128,128,0.1); padding: 4px; border-radius: 8px; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -2px; line-height: 1; }
 
         /* NIVELES */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
@@ -154,20 +160,20 @@
 
         <div class="dash">
             <div class="dash-summary">
-                <div style="text-align:center"><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-main" style="color:var(--text)">$0.00</div></div>
+                <div style="text-align:center"><span class="dash-label">INVERSIÓN</span><div id="resInv" class="dash-val-main">$0.00</div></div>
                 <div style="text-align:center"><span class="dash-label">GANANCIA</span><div id="resProf" class="dash-val-main" style="color:var(--dir-color)">$0.00</div></div>
             </div>
             
             <div class="target-grid">
-                <div class="strat-card" style="border-color: rgba(52, 152, 219, 0.4);">
+                <div class="strat-card" style="border-color: rgba(52, 152, 219, 0.6);">
                     <span class="dash-label">PREDETERMINADA</span>
-                    <span class="avg-mini">AVG: <span id="resAvg7">0.00</span></span>
-                    <b id="resTarget7" class="target-price">0.00</b>
+                    <span class="avg-mini">AVG: <span id="resAvg7">0.000000</span></span>
+                    <b id="resTarget7" class="target-price">0.000000</b>
                 </div>
-                <div class="strat-card" style="border-color: rgba(241, 196, 15, 0.4);">
+                <div class="strat-card" style="border-color: rgba(241, 196, 15, 0.6);">
                     <span class="dash-label" style="color:var(--warning)">AGRESIVA</span>
-                    <span class="avg-mini">AVG: <span id="resAvgDesc">0.00</span></span>
-                    <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.00</b>
+                    <span class="avg-mini">AVG: <span id="resAvgDesc">0.000000</span></span>
+                    <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.000000</b>
                 </div>
             </div>
         </div>
@@ -296,11 +302,12 @@
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resProf').textContent = `$${totalSpent.toFixed(2)}`;
             
-            document.getElementById('resAvg7').textContent = avg7.toFixed(5);
-            document.getElementById('resTarget7').textContent = (avg7 * 2).toFixed(5);
+            // CAMBIO A 6 DECIMALES PARA TOKENS DE BAJO VALOR
+            document.getElementById('resAvg7').textContent = avg7.toFixed(6);
+            document.getElementById('resTarget7').textContent = (avg7 * 2).toFixed(6);
             
-            document.getElementById('resAvgDesc').textContent = avgDesc.toFixed(5);
-            document.getElementById('resTargetDesc').textContent = (avgDesc * 2).toFixed(5);
+            document.getElementById('resAvgDesc').textContent = avgDesc.toFixed(6);
+            document.getElementById('resTargetDesc').textContent = (avgDesc * 2).toFixed(6);
         }
 
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
