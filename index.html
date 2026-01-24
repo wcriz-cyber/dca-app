@@ -21,35 +21,35 @@
 
         /* HEADER */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 4px solid var(--dir-color); background: var(--surface); }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 4px solid var(--dir-color); background: var(--surface); transition: border-color 0.3s; }
         .logo { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--text); }
         .ticker-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-weight: 900; color: var(--dir-color); font-size: 14px; }
         #t-price { font-family: 'Roboto Mono'; color: var(--text); }
 
-        /* TEMPORALIDAD */
+        /* TEMPORALIDAD SLIDER */
         .tf-section { background: rgba(0,0,0,0.2); padding: 10px 20px; border-bottom: 1px solid var(--border); }
         .tf-labels { display: flex; justify-content: space-between; font-family: 'Orbitron'; font-size: 11px; font-weight: 900; margin-bottom: 6px; }
-        .slider { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border); outline: none; border-radius: 2px; }
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--dir-color); border: 2px solid #fff; }
+        .slider-tf { -webkit-appearance: none; width: 100%; height: 4px; background: var(--border); outline: none; border-radius: 2px; }
+        .slider-tf::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--dir-color); border: 2px solid #fff; }
 
         .content-spacer { margin-top: 130px; }
 
-        /* SLOTS NAVEGACIÓN */
-        .slot-nav-container { overflow: hidden; padding: 10px 0; }
-        .slot-track { display: flex; width: 200%; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .slot-page { display: grid; grid-template-columns: repeat(4, 1fr); width: 50%; gap: 6px; padding: 0 10px; }
-        .slot-btn { padding: 15px 0; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); text-align: center; text-transform: uppercase; }
-        .slot-btn.active { border: 3px solid var(--dir-color); color: var(--dir-color); }
+        /* SLOTS 8 (4x2) */
+        .slot-nav-container { overflow: hidden; padding: 12px 0; }
+        .slot-track { display: flex; width: 200%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .slot-page { display: grid; grid-template-columns: repeat(4, 1fr); width: 50%; gap: 8px; padding: 0 10px; }
+        .slot-btn { padding: 15px 0; border-radius: 10px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); text-align: center; text-transform: uppercase; transition: 0.3s; }
+        .slot-btn.active { border: 3px solid var(--dir-color); color: var(--dir-color); background: rgba(255,255,255,0.05); }
 
         .dots-row { display: flex; justify-content: center; gap: 8px; margin-top: 5px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
-        .dot.active { background: var(--dir-color); transform: scale(1.2); }
+        .dot.active { background: var(--dir-color); transform: scale(1.3); }
 
         /* CHART */
         .chart-frame { width: 100%; height: 280px; background: #000; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-        /* DASHBOARD */
-        .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); height: 175px; overflow: hidden; }
+        /* DASHBOARD DUAL */
+        .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); height: 180px; overflow: hidden; transition: border-color 0.3s; }
         .dash-slider { display: flex; width: 200%; height: 100%; transition: transform 0.4s ease; }
         .dash-page { width: 50%; padding: 15px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; }
         
@@ -58,25 +58,25 @@
         .dash-item small { display: block; font-size: 9px; font-weight: 900; opacity: 0.6; margin-bottom: 2px; }
         .dash-item b { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; }
         
-        .avg-display { background: rgba(255,255,255,0.06); padding: 5px 20px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Roboto Mono'; font-size: 18px; font-weight: 700; }
-        .target-display { font-family: 'Roboto Mono'; font-size: 48px; font-weight: 900; color: var(--long-green); line-height: 1; }
+        .avg-pill { background: rgba(255,255,255,0.06); padding: 5px 20px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Roboto Mono'; font-size: 18px; font-weight: 700; }
+        .target-val { font-family: 'Roboto Mono'; font-size: 50px; font-weight: 900; color: var(--long-green); line-height: 1; }
 
-        .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .lock-btn.locked { background: var(--danger); border: none; color: #fff; }
 
-        /* INPUTS */
+        /* CONTROLES */
         .input-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 10px; }
         .input-box { background: var(--surface); padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
         .input-box label { display: block; font-size: 7px; font-weight: 900; color: var(--dir-color); margin-bottom: 2px; }
-        .input-box input { width: 100%; background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; text-align: center; outline: none; }
+        .input-box input { width: 100%; background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; text-align: center; outline: none; }
 
-        /* NIVELES */
+        /* LISTA NIVELES */
         .levels-area { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
-        .level-card.active { border: 2.5px solid var(--dir-color); background: rgba(52, 152, 219, 0.05); }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
+        .level-card.active { border: 3px solid var(--dir-color); background: rgba(255,255,255,0.03); }
         .price-text { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; }
         
-        .btn-liquidate { width: 92%; margin: 20px auto; display: block; padding: 22px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; }
+        .btn-action { width: 92%; margin: 25px auto; display: block; padding: 22px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; }
     </style>
 </head>
 <body onload="init()">
@@ -84,205 +84,213 @@
     <div class="fixed-header">
         <header class="app-header">
             <div class="logo">C5X</div>
-            <div class="ticker-box" onclick="syncSymbolToChart()">
+            <div class="ticker-box">
                 <span id="t-sym">BTCUSDT</span>
                 <span id="t-price">0.00</span>
             </div>
-            <div onclick="location.reload()" style="font-size: 20px;">🌓</div>
+            <div onclick="location.reload()" style="font-size: 18px;">🔄</div>
         </header>
         <div class="tf-section">
             <div class="tf-labels"><span>15M</span><span>30M</span><span>1H</span><span>4H</span><span>1D</span><span>1W</span></div>
-            <input type="range" min="0" max="5" value="2" class="slider" oninput="updateTF(this.value)">
+            <input type="range" min="0" max="5" value="2" class="slider-tf" id="tfRange" oninput="changeTimeframe(this.value)">
         </div>
     </div>
 
     <div class="content-spacer">
-        <div class="slot-nav-container">
+        <div class="slot-nav-container" id="slotNav">
             <div class="slot-track" id="slotTrack">
-                <div class="slot-page" id="p1"></div>
-                <div class="slot-page" id="p2"></div>
+                <div class="slot-page" id="page1"></div>
+                <div class="slot-page" id="page2"></div>
             </div>
-            <div class="dots-row"><div class="dot active" id="d1"></div><div class="dot" id="d2"></div></div>
+            <div class="dots-row"><div class="dot active" id="dot1"></div><div class="dot" id="dot2"></div></div>
         </div>
 
         <div id="tv_chart" class="chart-frame"></div>
 
         <div class="input-grid">
-            <div class="input-box"><label>MONEDA</label><input type="text" id="coinInp" oninput="this.value=this.value.toUpperCase()" onblur="saveAndRefresh()"></div>
-            <div class="input-box"><label>P. BASE</label><input type="number" id="baseInp" oninput="doCalc()" step="any"></div>
-            <div class="input-box" onclick="askPin('capInp')"><label>CAPITAL</label><input type="number" id="capInp" readonly value="5"></div>
-            <div class="input-box" onclick="askPin('descInp')"><label>% DESC</label><input type="number" id="descInp" readonly value="55"></div>
+            <div class="input-box"><label>MONEDA</label><input type="text" id="coinInp" oninput="this.value=this.value.toUpperCase()" onblur="updateCoinData()"></div>
+            <div class="input-box"><label>P. BASE</label><input type="number" id="baseInp" oninput="calculateAll()" step="any"></div>
+            <div class="input-box" onclick="unlockField('capInp')"><label>CAPITAL</label><input type="number" id="capInp" readonly value="5"></div>
+            <div class="input-box" onclick="unlockField('descInp')"><label>% DESC</label><input type="number" id="descInp" readonly value="55"></div>
         </div>
 
         <div class="dash-container">
-            <button class="lock-btn" id="lockB" onclick="toggleLock()">🔓</button>
+            <button class="lock-btn" id="lockBtn" onclick="toggleDashboardLock()">🔓</button>
             <div class="dash-slider" id="dashSlider">
                 <div class="dash-page">
-                    <span style="font-family:'Orbitron'; font-size:10px; color:var(--dir-color)">PREDETERMINADA</span>
+                    <span style="font-family:'Orbitron'; font-size:10px; color:var(--dir-color); letter-spacing:1px;">PREDETERMINADA</span>
                     <div class="dash-row">
-                        <div class="dash-item"><small>INVERTIDO</small><b id="invP">$0.00</b></div>
-                        <div class="dash-item"><small style="color:var(--dir-color)">WIN 100%</small><b id="winP" style="color:var(--dir-color)">$0.00</b></div>
+                        <div class="dash-item"><small>INVERTIDO</small><b id="resInvP">$0.00</b></div>
+                        <div class="dash-item"><small style="color:var(--dir-color)">WIN 100%</small><b id="resWinP" style="color:var(--dir-color)">$0.00</b></div>
                     </div>
-                    <div class="avg-display">AVG: <span id="avgP">0.00</span></div>
-                    <div class="target-display" id="tgP">0.00</div>
+                    <div class="avg-pill">AVG: <span id="resAvgP">0.00</span></div>
+                    <div class="target-val" id="resTgP">0.00</div>
                 </div>
                 <div class="dash-page">
-                    <span style="font-family:'Orbitron'; font-size:10px; color:var(--warning)">AGRESIVA</span>
+                    <span style="font-family:'Orbitron'; font-size:10px; color:var(--warning); letter-spacing:1px;">AGRESIVA</span>
                     <div class="dash-row">
-                        <div class="dash-item"><small>INVERTIDO</small><b id="invA" style="color:var(--warning)">$0.00</b></div>
-                        <div class="dash-item"><small style="color:var(--warning)">WIN 100%</small><b id="winA" style="color:var(--warning)">$0.00</b></div>
+                        <div class="dash-item"><small>INVERTIDO</small><b id="resInvA" style="color:var(--warning)">$0.00</b></div>
+                        <div class="dash-item"><small style="color:var(--warning)">WIN 100%</small><b id="resWinA" style="color:var(--warning)">$0.00</b></div>
                     </div>
-                    <div class="avg-display" style="color:var(--warning)">AVG: <span id="avgA">0.00</span></div>
-                    <div class="target-display" id="tgA" style="color:var(--warning)">0.00</div>
+                    <div class="avg-pill" style="color:var(--warning)">AVG: <span id="resAvgA">0.00</span></div>
+                    <div class="target-val" id="resTgA" style="color:var(--warning)">0.00</div>
                 </div>
             </div>
         </div>
 
         <div class="levels-area" id="levelsGrid"></div>
-        <button class="btn-liquidate" onclick="liquidateAndCompact()">LIQUIDAR Y COMPACTAR AL INICIO</button>
+        <button class="btn-action" onclick="closeAndCompact()">CERRAR Y COMPACTAR AL INICIO</button>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        let activeIdx = 0, currentTF = '60', currentSymbol = 'BTCUSDT';
-        let slots = JSON.parse(localStorage.getItem('c5x_final')) || Array(8).fill(null).map(()=>({name:'',price:0,cap:5,buys:[],dp:0,lock:false}));
+        let currentIdx = 0, activeTF = '60', globalSymbol = 'BTCUSDT';
+        let slots = JSON.parse(localStorage.getItem('c5x_vStable')) || Array(8).fill(null).map(()=>({name:'',price:0,cap:5,buys:[],dp:0,lock:false}));
 
         function init() {
-            renderNav();
+            renderSlotButtons();
             loadSlot(0);
-            updateTicker();
-            setInterval(updateTicker, 5000);
-            initSwipes();
+            updatePriceTicker();
+            setInterval(updatePriceTicker, 5000);
+            setupSwipeEvents();
         }
 
-        function renderNav() {
-            const p1 = document.getElementById('p1'), p2 = document.getElementById('p2');
+        function renderSlotButtons() {
+            const p1 = document.getElementById('page1'), p2 = document.getElementById('page2');
             let h1='', h2='';
             slots.forEach((s,i)=>{
-                const b = `<div class="slot-btn ${i==activeIdx?'active':''}" onclick="loadSlot(${i})">${s.name||'S'+(i+1)}</div>`;
-                if(i<4) h1+=b; else h2+=b;
+                const label = s.name || 'S'+(i+1);
+                const html = `<div class="slot-btn ${i==currentIdx?'active':''}" onclick="loadSlot(${i})">${label}</div>`;
+                if(i<4) h1+=html; else h2+=html;
             });
             p1.innerHTML=h1; p2.innerHTML=h2;
         }
 
         function loadSlot(i) {
-            activeIdx = i;
+            currentIdx = i;
             const s = slots[i];
-            if(s.name) currentSymbol = s.name.includes('USDT') ? s.name : s.name + 'USDT';
+            
+            // Actualizar símbolo global y ticket
+            if(s.name) {
+                globalSymbol = s.name.includes('USDT') ? s.name : s.name + 'USDT';
+                document.getElementById('t-sym').innerText = globalSymbol;
+            }
             
             document.getElementById('coinInp').value = s.name;
             document.getElementById('baseInp').value = s.price || '';
             document.getElementById('capInp').value = s.cap || 5;
             
-            updateTheme(s.name);
-            renderNav();
-            moveNav(i < 4 ? 0 : 1);
-            updateLockUI();
-            setDashPage(s.dp || 0, false);
-            loadTV();
-            doCalc();
+            applyDirectionTheme(s.name);
+            renderSlotButtons();
+            scrollSlotNav(i < 4 ? 0 : 1);
+            refreshLockButton();
+            setDashboard(s.dp || 0, false);
+            refreshChart();
+            calculateAll();
         }
 
-        function liquidateAndCompact() {
-            if(!confirm("¿Cerrar y reorganizar slots activos?")) return;
-            slots[activeIdx] = {name:'',price:0,cap:5,buys:[],dp:0,lock:false};
-            let actives = slots.filter(s => s.name !== '');
-            let empties = Array(8 - actives.length).fill(null).map(()=>({name:'',price:0,cap:5,buys:[],dp:0,lock:false}));
-            slots = [...actives, ...empties];
-            save();
+        function closeAndCompact() {
+            if(!confirm("¿Cerrar operación y compactar activos al inicio?")) return;
+            // Limpiamos el actual
+            slots[currentIdx] = {name:'',price:0,cap:5,buys:[],dp:0,lock:false};
+            // Filtramos solo los que tienen moneda escrita
+            let activos = slots.filter(s => s.name !== '');
+            let vacios = Array(8 - activos.length).fill(null).map(()=>({name:'',price:0,cap:5,buys:[],dp:0,lock:false}));
+            slots = [...activos, ...vacios];
+            saveData();
             loadSlot(0);
         }
 
-        function doCalc() {
-            const s = slots[activeIdx];
+        function calculateAll() {
+            const s = slots[currentIdx];
             s.name = document.getElementById('coinInp').value;
             s.price = parseFloat(document.getElementById('baseInp').value) || 0;
             s.cap = parseFloat(document.getElementById('capInp').value) || 5;
             
             const grid = document.getElementById('levelsGrid');
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:40px;">LISTO</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.2; padding:40px;">SIN DATOS</p>'; return; }
 
             const mults = [1, 1, 1.5, 1.5, 2, 2, 5, 5, 8, 8, 16, 16];
             const dPct = parseFloat(document.getElementById('descInp').value) || 55;
-            let html = '', spent=0, tP=0, tA=0, lp=s.price, la=s.price, dropP=10;
+            let html = '', totalSpent=0, tokensP=0, tokensA=0, lastP=s.price, lastA=s.price, drop=10;
 
             for(let i=0; i<12; i++) {
-                let pp = (i==0) ? s.price : lp * (1 - (dropP/100));
-                let pa = (i==0) ? s.price : la * (1 - (dPct/100));
-                if(i>0) dropP += 7;
+                let pP = (i==0) ? s.price : lastP * (1 - (drop/100));
+                let pA = (i==0) ? s.price : lastA * (1 - (dPct/100));
+                if(i>0) drop += 7;
+                
                 const cost = mults[i] * s.cap;
-                const active = s.buys.includes(i);
-                if(active) { spent += cost; tP += (cost/pp); tA += (cost/pa); }
+                const isActive = s.buys.includes(i);
+                if(isActive) { totalSpent += cost; tokensP += (cost/pP); tokensA += (cost/pA); }
 
-                html += `<div class="level-card ${active?'active':''}" onclick="toggleLv(${i})">
-                    <span style="font-size:11px; font-weight:900; opacity:0.3;">${i+1}</span>
-                    <div class="price-text">${(s.dp==1?pa:pp).toFixed(6)}</div>
+                html += `<div class="level-card ${isActive?'active':''}" onclick="toggleLevel(${i})">
+                    <span style="font-size:10px; font-weight:900; opacity:0.3;">${i+1}</span>
+                    <div class="price-text">${(s.dp==1?pA:pP).toFixed(6)}</div>
                     <b style="color:var(--long-green)">$${cost.toFixed(1)}</b>
                 </div>`;
-                lp=pp; la=pa;
+                lastP=pP; lastA=pA;
             }
             grid.innerHTML = html;
             
-            const ap = tP>0?(spent/tP):0, aa = tA>0?(spent/tA):0;
-            document.getElementById('invP').innerText = document.getElementById('invA').innerText = `$${spent.toFixed(2)}`;
-            document.getElementById('winP').innerText = document.getElementById('winA').innerText = `$${(spent*2).toFixed(2)}`;
-            document.getElementById('avgP').innerText = ap.toFixed(6);
-            document.getElementById('tgP').innerText = (ap*2).toFixed(6);
-            document.getElementById('avgA').innerText = aa.toFixed(6);
-            document.getElementById('tgA').innerText = (aa*2).toFixed(6);
-            save();
+            const avgP = tokensP>0?(totalSpent/tokensP):0, avgA = tokensA>0?(totalSpent/tokensA):0;
+            document.getElementById('resInvP').innerText = document.getElementById('resInvA').innerText = `$${totalSpent.toFixed(2)}`;
+            document.getElementById('resWinP').innerText = document.getElementById('resWinA').innerText = `$${(totalSpent*2).toFixed(2)}`;
+            document.getElementById('resAvgP').innerText = avgP.toFixed(6);
+            document.getElementById('resTgP').innerText = (avgP*2).toFixed(6);
+            document.getElementById('resAvgA').innerText = avgA.toFixed(6);
+            document.getElementById('resTgA').innerText = (avgA*2).toFixed(6);
+            saveData();
         }
 
-        function loadTV() {
+        function refreshChart() {
             new TradingView.widget({
-                "autosize": true, "symbol": "GATEIO:" + currentSymbol.replace("USDT","") + "USDT",
-                "interval": currentTF, "theme": "dark", "style": "1", "container_id": "tv_chart",
+                "autosize": true, "symbol": "GATEIO:" + globalSymbol.replace("USDT","") + "USDT",
+                "interval": activeTF, "theme": "dark", "style": "1", "container_id": "tv_chart",
                 "hide_top_toolbar": true, "backgroundColor": "#050708"
             });
         }
 
-        function updateTF(v) {
-            currentTF = ['15','30','60','240','D','W'][v];
-            loadTV();
+        function changeTimeframe(val) {
+            activeTF = ['15','30','60','240','D','W'][val];
+            refreshChart();
         }
 
-        function toggleLv(idx) {
-            const b = slots[activeIdx].buys;
-            slots[activeIdx].buys = b.includes(idx) ? b.filter(x=>x<idx) : Array.from({length:idx+1},(_,i)=>i);
-            doCalc();
+        function toggleLevel(idx) {
+            const b = slots[currentIdx].buys;
+            slots[currentIdx].buys = b.includes(idx) ? b.filter(x=>x<idx) : Array.from({length:idx+1},(_,i)=>i);
+            calculateAll();
         }
 
-        function updateTheme(n) {
+        function applyDirectionTheme(n) {
             document.body.classList.remove('mode-long', 'mode-short');
             if(n.endsWith('L')) document.body.classList.add('mode-long');
             if(n.endsWith('S')) document.body.classList.add('mode-short');
         }
 
-        function setDashPage(p, sFlag=true) {
-            slots[activeIdx].dp = p;
+        function setDashboard(p, save=true) {
+            slots[currentIdx].dp = p;
             document.getElementById('dashSlider').style.transform = `translateX(-${p*50}%)`;
-            if(sFlag) { save(); doCalc(); }
+            if(save) { saveData(); calculateAll(); }
         }
 
-        function toggleLock() { slots[activeIdx].lock = !slots[activeIdx].lock; updateLockUI(); save(); }
-        function updateLockUI() {
-            const b = document.getElementById('lockB');
-            b.innerText = slots[activeIdx].lock ? '🔒' : '🔓';
-            b.className = 'lock-btn' + (slots[activeIdx].lock ? ' locked' : '');
+        function toggleDashboardLock() { slots[currentIdx].lock = !slots[currentIdx].lock; refreshLockButton(); saveData(); }
+        function refreshLockButton() {
+            const b = document.getElementById('lockBtn');
+            b.innerText = slots[currentIdx].lock ? '🔒' : '🔓';
+            b.className = 'lock-btn' + (slots[currentIdx].lock ? ' locked' : '');
         }
 
-        function moveNav(p) {
+        function scrollSlotNav(p) {
             document.getElementById('slotTrack').style.transform = `translateX(-${p*50}%)`;
-            document.getElementById('d1').classList.toggle('active', p==0);
-            document.getElementById('d2').classList.toggle('active', p==1);
+            document.getElementById('dot1').classList.toggle('active', p==0);
+            document.getElementById('dot2').classList.toggle('active', p==1);
         }
 
-        function save() { localStorage.setItem('c5x_final', JSON.stringify(slots)); }
-        function saveAndRefresh() { doCalc(); renderNav(); loadTV(); }
-        function syncSymbolToChart() { currentSymbol = document.getElementById('t-sym').innerText; loadTV(); }
-        function askPin(id) { if(prompt("PIN:")=="2524") { const i = document.getElementById(id); i.readOnly=false; i.focus(); i.onblur=()=>{i.readOnly=true; doCalc();}; } }
+        function saveData() { localStorage.setItem('c5x_vStable', JSON.stringify(slots)); }
+        function updateCoinData() { loadSlot(currentIdx); }
+        function unlockField(id) { if(prompt("PIN:")=="2524") { const i = document.getElementById(id); i.readOnly=false; i.focus(); i.onblur=()=>{i.readOnly=true; calculateAll();}; } }
 
-        async function updateTicker() {
+        async function updatePriceTicker() {
             try {
                 const r = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
                 const d = await r.json();
@@ -290,13 +298,21 @@
             } catch(e) {}
         }
 
-        function initSwipes() {
-            let sX = 0;
-            document.getElementById('dashSlider').addEventListener('touchstart', e => sX = e.touches[0].clientX);
+        function setupSwipeEvents() {
+            let startX = 0;
+            const track = document.getElementById('slotNav');
+            track.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+            track.addEventListener('touchend', e => {
+                let diff = startX - e.changedTouches[0].clientX;
+                if(Math.abs(diff) > 60) loadSlot(currentIdx < 4 ? 4 : 0);
+            });
+
+            let dX = 0;
+            document.getElementById('dashSlider').addEventListener('touchstart', e => dX = e.touches[0].clientX);
             document.getElementById('dashSlider').addEventListener('touchend', e => {
-                if(slots[activeIdx].lock) return;
-                let diff = sX - e.changedTouches[0].clientX;
-                if(Math.abs(diff) > 50) setDashPage(diff > 0 ? 1 : 0);
+                if(slots[currentIdx].lock) return;
+                let diff = dX - e.changedTouches[0].clientX;
+                if(Math.abs(diff) > 50) setDashboard(diff > 0 ? 1 : 0);
             });
         }
     </script>
