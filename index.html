@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.0 Master</title>
+    <title>C5X - V22.1 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -29,68 +29,63 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 20px; transition: 0.3s; overflow-x: hidden; }
 
-        /* Estilos del Header */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 60px; }
+        
         .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--dir-color); cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .logo-area::after { content: '▾'; font-size: 14px; opacity: 0.7; }
         
-        .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 18px; }
+        .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 16px; }
         #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
         
-        /* Navegación por Modos (Estilo Imagen) */
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        .theme-toggle { font-size: 20px; cursor: pointer; background: none; border: none; color: var(--text); }
+
+        /* Menú de Selección de Modo */
         #modeMenu { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; backdrop-filter: blur(10px); }
         .menu-content { position:absolute; bottom:0; width:100%; background:var(--surface); border-radius:25px 25px 0 0; padding:30px 20px; animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from {transform: translateY(100%);} to {transform: translateY(0);} }
-        
         .menu-title { font-size: 20px; font-weight: 900; margin-bottom: 25px; padding-left: 10px; }
-        .mode-option { display: flex; align-items: center; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-        .mode-option:active { background: rgba(255,255,255,0.05); }
+        .mode-option { display: flex; align-items: center; padding: 15px; border-radius: 15px; margin-bottom: 10px; cursor: pointer; }
+        .mode-option.active { background: rgba(52, 152, 219, 0.1); border: 1px solid var(--dir-color); }
         .mode-icon { width: 45px; height: 45px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-right: 15px; }
         .mode-info { flex: 1; }
         .mode-name { font-weight: 900; font-size: 16px; display: block; }
         .mode-desc { font-size: 12px; color: #848e9c; }
-        .mode-check { color: var(--long-green); font-size: 20px; display: none; }
-        .mode-option.active .mode-check { display: block; }
 
-        /* Contenedores de Vistas */
         .view-section { display: none; margin-top: 108px; animation: fadeIn 0.4s; }
         .view-section.active { display: block; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
 
-        /* Estética de Componentes Existentes */
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
         
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
+        .chart-container { width: 100%; height: 260px; background: #000; }
         
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
+        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
-        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
+        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-        .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; position: relative; box-shadow: 0 6px 25px rgba(0,0,0,0.5); }
-        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); text-align: center; letter-spacing: -1px; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; text-align: center; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); }
 
-        .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
-        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); }
-        .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
+        .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
+        .standard-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; border: 1px solid var(--border); }
 
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
 
-        /* Modales */
-        #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
-        .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
+        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 20px; border-radius: 10px; margin-bottom: 20px; }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 3000; left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 40px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 40px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
@@ -101,33 +96,18 @@
 
     <div id="modeMenu" onclick="closeMenu()">
         <div class="menu-content" onclick="event.stopPropagation()">
-            <div class="menu-title">Selecciona tu modo</div>
-            
+            <div class="menu-title">C5X Navegación</div>
             <div class="mode-option active" id="opt-operar" onclick="switchView('operar')">
                 <div class="mode-icon">📊</div>
-                <div class="mode-info">
-                    <span class="mode-name">Operar</span>
-                    <span class="mode-desc">Gráficos, estrategias y gestión activa</span>
-                </div>
-                <div class="mode-check">✓</div>
+                <div class="mode-info"><span class="mode-name">Operar</span><span class="mode-desc">Panel de trading y estrategia</span></div>
             </div>
-
             <div class="mode-option" id="opt-bitacora" onclick="switchView('bitacora')">
                 <div class="mode-icon">📜</div>
-                <div class="mode-info">
-                    <span class="mode-name">Bitácora</span>
-                    <span class="mode-desc">Historial completo de operaciones cerradas</span>
-                </div>
-                <div class="mode-check">✓</div>
+                <div class="mode-info"><span class="mode-name">Bitácora</span><span class="mode-desc">Historial de operaciones</span></div>
             </div>
-
             <div class="mode-option" id="opt-ajustes" onclick="switchView('ajustes')">
                 <div class="mode-icon">⚙️</div>
-                <div class="mode-info">
-                    <span class="mode-name">Ajustes</span>
-                    <span class="mode-desc">Personalización y configuración del sistema</span>
-                </div>
-                <div class="mode-check">✓</div>
+                <div class="mode-info"><span class="mode-name">Ajustes</span><span class="mode-desc">Configuración del sistema</span></div>
             </div>
         </div>
     </div>
@@ -147,9 +127,12 @@
         <header class="app-header">
             <div class="logo-area" onclick="openMenu()">C5X</div>
             <div class="btc-live-box">
-                <div id="t-dot"></div><span id="t-sym">BTC</span> <span id="t-price" style="font-weight: 900;">$--,---</span>
+                <div id="t-dot"></div><span id="t-sym">---</span> <span id="t-price" style="font-weight: 900;">$0.00</span>
             </div>
-            <div style="width:22px"></div> </header>
+            <div class="header-actions">
+                <button class="theme-toggle" id="headerThemeBtn" onclick="toggleTheme()">🌙</button>
+            </div>
+        </header>
         <div id="topBarControls">
             <div class="tf-bar">
                 <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
@@ -168,7 +151,7 @@
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box"><div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
+            <div class="control-box"><div style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:5" onclick="requestControlAccess('capitalInput')"></div><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
         </div>
 
         <div class="dash-main" id="dashMain">
@@ -181,7 +164,7 @@
             <div style="text-align:center; margin:10px 0">
                 <button class="slot-btn" style="padding:5px 15px; border-radius:15px; border-color:var(--dir-color)" onclick="handleStratEdit()" id="btnStratToggle">BASE: 7%</button>
             </div>
-            <div style="display:grid; grid-template-columns: repeat(3, 1fr); border-top:1px solid var(--border); padding-top:10px; text-align:center;">
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); border-top:1px solid var(--border); padding-top:10px;">
                 <div><label style="font-size:9px; color:#848e9c; display:block">Promedio</label><span id="resAvg" style="font-weight:900; font-size:14px">0.00</span></div>
                 <div><label style="font-size:9px; color:#848e9c; display:block">Profit</label><span id="resProfit" style="font-weight:900; font-size:14px; color:var(--long-green)">$0.00</span></div>
                 <div><label style="font-size:9px; color:#848e9c; display:block">Inversión</label><span id="resInv" style="font-weight:900; font-size:14px">$0.00</span></div>
@@ -206,21 +189,13 @@
 
     <section id="view-ajustes" class="view-section" style="padding:20px;">
         <h2 style="font-family:'Orbitron'; font-size:18px; margin-bottom:20px;">AJUSTES</h2>
-        
         <div class="standard-card" onclick="toggleTheme()" style="cursor:pointer; margin-bottom:15px;">
-            <div class="mode-icon" id="themeIcon">🌙</div>
-            <div class="mode-info">
-                <span class="mode-name">Modo Visual</span>
-                <span class="mode-desc">Cambiar entre tema Oscuro y Claro</span>
-            </div>
+            <div class="mode-icon">🌓</div>
+            <div class="mode-info"><span class="mode-name">Cambiar Tema</span><span class="mode-desc">Alternar entre oscuro y claro</span></div>
         </div>
-
-        <div class="standard-card" style="opacity:0.6">
+        <div class="standard-card" style="opacity:0.5">
             <div class="mode-icon">🔑</div>
-            <div class="mode-info">
-                <span class="mode-name">Cambiar PIN</span>
-                <span class="mode-desc">Próximamente disponible</span>
-            </div>
+            <div class="mode-info"><span class="mode-name">Seguridad</span><span class="mode-desc">Configurar nuevo PIN (Próximamente)</span></div>
         </div>
     </section>
 
@@ -233,21 +208,21 @@
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let currentView = 'operar';
-        let chartSymbol = '', history = JSON.parse(localStorage.getItem('c5x_history')) || [];
+        let chartSymbol = '';
+        let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
-
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
-        let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
+        let modalCallback = null;
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) applyTheme(true);
-            renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
+            applyTheme(isLight);
+            renderNav(); 
+            selectSlot(activeIdx);
+            renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            setInterval(fetchTicker, 10000); 
+            setInterval(fetchTicker, 5000); 
         }
 
-        // --- SISTEMA DE NAVEGACIÓN ---
         function openMenu() { document.getElementById('modeMenu').style.display = 'block'; }
         function closeMenu() { document.getElementById('modeMenu').style.display = 'none'; }
 
@@ -255,26 +230,82 @@
             currentView = viewId;
             document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.mode-option').forEach(o => o.classList.remove('active'));
-            
             document.getElementById('view-' + viewId).classList.add('active');
             document.getElementById('opt-' + viewId).classList.add('active');
-            
-            // Ocultar controles de arriba si no es operar
             document.getElementById('topBarControls').style.display = (viewId === 'operar') ? 'block' : 'none';
-            
             closeMenu();
+            if(viewId === 'operar') loadChart(slots[activeIdx].name);
         }
 
         async function fetchTicker() { 
+            const coin = slots[activeIdx].name || 'BTC';
+            const symbol = coin.includes('USDT') ? coin : coin + 'USDT';
             try { 
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`); 
                 const data = await res.json(); 
-                currentTickerSymbol = assets[assetIdx].replace("USDT",""); 
-                document.getElementById('t-sym').textContent = currentTickerSymbol; 
-                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
-                document.getElementById('t-dot').style.background = parseFloat(data.priceChangePercent) >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
-                assetIdx = (assetIdx + 1) % assets.length; 
-            } catch(e) {} 
+                if(data.price) {
+                    document.getElementById('t-sym').textContent = coin; 
+                    document.getElementById('t-price').textContent = '$' + parseFloat(data.price).toLocaleString(); 
+                    document.getElementById('t-dot').style.background = 'var(--long-green)';
+                }
+            } catch(e) { document.getElementById('t-dot').style.background = 'grey'; } 
+        }
+
+        function toggleTheme() { 
+            isLight = !isLight; 
+            applyTheme(isLight); 
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            if(currentView === 'operar') loadChart(slots[activeIdx].name);
+        }
+
+        function applyTheme(light) {
+            document.body.classList.toggle('light-mode', light);
+            document.getElementById('headerThemeBtn').textContent = light ? '☀️' : '🌙';
+        }
+
+        function loadChart(coin) { 
+            chartSymbol = (coin || 'BTC').toUpperCase(); 
+            const formattedSymbol = chartSymbol.includes('USDT') ? chartSymbol : chartSymbol + 'USDT';
+            new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${formattedSymbol}`, 
+                "interval": activeTF, 
+                "theme": isLight ? "light" : "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": isLight ? "#ffffff" : "#050708" 
+            }); 
+        }
+
+        function updateTF(tf, btn) { 
+            activeTF = tf; 
+            localStorage.setItem('c5x_last_tf', tf); 
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            loadChart(slots[activeIdx].name); 
+        }
+
+        function selectSlot(i) { 
+            activeIdx = i; 
+            localStorage.setItem('c5x_last_slot', i); 
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); 
+            loadChart(s.name); 
+            updateDashUI();
+            fetchTicker();
+        }
+
+        function updateCoin() { 
+            const val = document.getElementById('coinInput').value.toUpperCase(); 
+            slots[activeIdx].name = val; 
+            save(); 
+            renderNav(); 
+            loadChart(val); 
+            calculate();
+            fetchTicker();
         }
 
         function rotateDash() { const s = slots[activeIdx]; if(s.locked) return; s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
@@ -291,8 +322,20 @@
             calculate();
         }
 
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
-        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
+        function calculate() { 
+            const s = slots[activeIdx]; 
+            s.price = parseFloat(document.getElementById('baseInput').value) || 0; 
+            s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; 
+            save(); 
+            renderLevels(); 
+        }
+
+        function toggleLvl(idx) { 
+            const s = slots[activeIdx]; 
+            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } 
+            else { s.buys = s.buys.filter(val => val < idx); } 
+            calculate(); 
+        }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
@@ -337,51 +380,40 @@
                     localStorage.setItem('c5x_history', JSON.stringify(history));
                     renderHistory();
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                    save(); selectSlot(0); showToast("CERRADO Y REGISTRADO");
+                    save(); selectSlot(activeIdx); showToast("REGISTRADO EN BITÁCORA");
                 } else { showToast("CLAVE INCORRECTA"); }
             });
         }
 
         function renderHistory() { 
             const grid = document.getElementById('logGrid');
-            grid.innerHTML = history.map(h => `<div class="standard-card"><div style="width:40px; font-size:10px; font-weight:900; color:var(--dir-color)">${h.coin.substring(0,3)}</div><div style="flex:1"><span style="font-size:9px; opacity:0.6">${h.date}</span><div style="font-weight:900">${h.coin}</div></div><div style="text-align:right"><span style="color:var(--long-green); font-weight:900">+$${h.profit}</span></div></div>`).reverse().join(''); 
+            grid.innerHTML = history.slice().reverse().map(h => `<div class="standard-card"><div style="width:45px; font-size:10px; font-weight:900; color:var(--dir-color)">${h.coin.substring(0,4)}</div><div style="flex:1"><span style="font-size:9px; opacity:0.6">${h.date}</span><div style="font-weight:900">${h.coin}</div></div><div style="text-align:right"><span style="color:var(--long-green); font-weight:900">+$${h.profit}</span></div></div>`).join(''); 
         }
 
         function exportExcel() { 
-            const detailedData = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "P. BASE": h.base, "P. PROMEDIO": h.avg, "INVERSIÓN": "$"+h.totalInv, "PROFIT": "$"+h.profit }));
-            const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
-            XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); 
-            XLSX.writeFile(wb, "C5X_Reporte.xlsx"); 
+            const ws = XLSX.utils.json_to_sheet(history); 
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, ws, "Historial"); 
+            XLSX.writeFile(wb, "C5X_Bitacora.xlsx"); 
         }
 
         function exportPDF() { 
-            const { jsPDF } = window.jspdf, doc = new jsPDF(); 
-            doc.text("REPORTE C5X", 14, 20);
-            doc.autoTable({ head: [['Fecha', 'Moneda', 'Inversión', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.totalInv, '$'+h.profit]), startY: 30 }); 
-            doc.save("C5X_Reporte.pdf"); 
+            const { jsPDF } = window.jspdf; 
+            const doc = new jsPDF(); 
+            doc.text("Historial C5X", 14, 15);
+            doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.profit]) });
+            doc.save("C5X_Bitacora.pdf");
         }
 
-        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } else { showToast("CLAVE INCORRECTA"); } }); }
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#050708" }); }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
-        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        
-        function toggleTheme() { isLight = !isLight; applyTheme(isLight); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function applyTheme(light) {
-            document.body.classList.toggle('light-mode', light);
-            document.getElementById('themeIcon').textContent = light ? '☀️' : '🌙';
-            if(chartSymbol) loadChart(chartSymbol);
-        }
-
+        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); } }); }
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
-        function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } else { showToast("CLAVE INCORRECTA"); } }); }
+        function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-btn ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
-        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { showToast("MODO EDICIÓN"); } }); }
+        function handleStratEdit() { openPrompt((p) => { if(p === "2524") showToast("MODO EDICIÓN"); }); }
     </script>
 </body>
 </html>
