@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.5 Menu Design</title>
+    <title>C5X - V24.0 Accounting Pro</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -178,46 +178,18 @@
         .btn-reset { background: var(--danger); color: #fff; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; width: 100%; margin-top: 10px; }
         .btn-save-config { width: 100%; background: var(--long); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(14, 203, 129, 0.2); }
 
-        /* --- NUEVO MENÚ MODAL (DISEÑO MEJORADO) --- */
-        #navModal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); 
-            z-index: 2000; display: none; justify-content: center; align-items: center;
-        }
-        .nav-content { 
-            background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; 
-            padding: 35px 25px; border: 1px solid var(--border); 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            display: flex; flex-direction: column; gap: 15px;
-        }
+        /* --- MENÚ MODAL --- */
+        #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 2000; display: none; justify-content: center; align-items: center; }
+        .nav-content { background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; padding: 35px 25px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 15px; }
         .nav-title { font-family: 'Orbitron'; font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
-        
-        .nav-item { 
-            display: flex; align-items: center; padding: 20px; border-radius: 18px; 
-            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
-            cursor: pointer; transition: 0.3s;
-        }
+        .nav-item { display: flex; align-items: center; padding: 20px; border-radius: 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
         .nav-item:active { transform: scale(0.98); }
-        .nav-item.selected { 
-            background: rgba(59, 130, 246, 0.1); border-color: var(--brand); 
-            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.15); 
-        }
-        
-        /* ICONOS SVG PARA EL MENÚ */
-        .nav-icon { 
-            width: 40px; height: 40px; margin-right: 20px; display: flex; 
-            align-items: center; justify-content: center; color: var(--text-secondary);
-        }
+        .nav-item.selected { background: rgba(59, 130, 246, 0.1); border-color: var(--brand); box-shadow: 0 5px 20px rgba(59, 130, 246, 0.15); }
+        .nav-icon { width: 40px; height: 40px; margin-right: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
         .nav-item.selected .nav-icon { color: var(--brand); }
         .nav-icon svg { width: 24px; height: 24px; fill: currentColor; }
-        
         .nav-text { font-family: 'Orbitron'; font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
-
-        /* BOTÓN CERRAR MENÚ REDISEÑADO */
-        .btn-close-menu {
-            margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border);
-            background: var(--surface); color: var(--danger); font-family: 'Orbitron'; font-weight: 900;
-            font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+        .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: 'Orbitron'; font-weight: 900; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-close-menu:active { background: rgba(207, 48, 74, 0.1); }
 
         /* Toast & Modales */
@@ -243,23 +215,17 @@
             <div class="nav-title">Navegación</div>
             
             <div class="nav-item selected" id="nav-operate" onclick="switchView('operate')">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
                 <div class="nav-text">OPERAR</div>
             </div>
             
             <div class="nav-item" id="nav-log" onclick="switchView('log')">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
                 <div class="nav-text">BITÁCORA</div>
             </div>
 
             <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
-                <div class="nav-icon">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-                </div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
                 <div class="nav-text">AJUSTES</div>
             </div>
 
@@ -285,7 +251,6 @@
             </div>
             <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        
         <div class="tf-bar" id="tfBarContainer">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
@@ -299,13 +264,11 @@
         <div id="section-operate" class="app-section active">
             <nav id="slotNav" class="slot-nav"></nav>
             <div id="tv_chart" class="chart-wrapper"></div>
-            
             <div class="controls-grid">
                 <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
                 <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any"></div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
-
             <div class="dashboard-card" id="dashMain">
                 <div class="dash-header">
                     <div class="icon-btn" onclick="rotateDash()" id="btnRotate"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></div>
@@ -319,7 +282,6 @@
                     <div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div>
                 </div>
             </div>
-
             <main id="levelsGrid" class="levels-container"></main>
         </div>
 
@@ -348,7 +310,7 @@
             <div class="settings-card">
                 <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
                 <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.5 MENU DESIGN</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V24.0 ACCOUNTING PRO</div>
             </div>
         </div>
     </div>
@@ -400,15 +362,8 @@
             document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
             document.getElementById('nav-' + viewName).classList.add('selected');
-
             const tfBar = document.getElementById('tfBarContainer');
-            if(viewName === 'operate') {
-                tfBar.style.display = 'flex';
-                if(chartSymbol) loadChart(chartSymbol); 
-            } else {
-                tfBar.style.display = 'none';
-            }
-
+            if(viewName === 'operate') { tfBar.style.display = 'flex'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; }
             if(viewName === 'settings') loadSettingsValues();
             if(toggle) toggleMenu(); 
         }
@@ -553,8 +508,43 @@
         function executeRelease() {
             closeModals();
             const s = slots[activeIdx];
-            history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
-            localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
+            
+            // --- CÁLCULO DE DATOS FINANCIEROS (V24.0) ---
+            const totalInvStr = document.getElementById('resInv').textContent.replace('$','');
+            const totalInv = parseFloat(totalInvStr) || 0;
+            const avgPriceStr = document.getElementById('resAvg').textContent;
+            const avgPrice = parseFloat(avgPriceStr) || 0;
+            const exitPrice = avgPrice * 2; // Target estandar del sistema
+            
+            // Cantidad de monedas (Qty)
+            const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0;
+            
+            // Profit Neto (estimado al target) o Real (si cerramos manual, asume target por logica sistema)
+            const profitStr = document.getElementById('resProfit').textContent.replace('$','');
+            const profit = parseFloat(profitStr);
+            
+            // Rendimiento %
+            const roi = totalInv > 0 ? ((profit / totalInv) * 100) : 0;
+
+            const logEntry = { 
+                date: new Date().toLocaleDateString(), 
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                coin: s.name || 'S/N', 
+                strategy: s.strat.toUpperCase(),
+                basePrice: s.price.toFixed(8),
+                avgPrice: avgPrice.toFixed(8),
+                exitPrice: exitPrice.toFixed(8), // Target
+                qty: qty.toFixed(8),
+                totalInv: totalInv.toFixed(2),
+                profit: profit.toFixed(2),
+                roi: roi.toFixed(2) + '%',
+                levelsUsed: s.buys.length
+            };
+
+            history.push(logEntry);
+            localStorage.setItem('c5x_history', JSON.stringify(history)); 
+            renderHistory();
+            
             slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
             const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
             slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); 
@@ -569,10 +559,97 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
-        function renderHistory() { const grid = document.getElementById('logGrid'); if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-center"><div class="level-price" style="font-size:16px">${h.coin}</div><div class="copy-hint" style="margin-top:0">${h.date}</div></div><div class="level-right"><div class="invest-val" style="color:var(--long)">+$${h.profit}</div><div class="drop-val" style="color:var(--text-tertiary)">PROFIT</div></div></div>`).reverse().join(''); }
+        
+        function renderHistory() { 
+            const grid = document.getElementById('logGrid'); 
+            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
+            // Mostramos versión simplificada en la tarjeta, pero el excel tiene todo
+            grid.innerHTML = history.map(h => `
+                <div class="level-card">
+                    <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
+                    <div class="level-center">
+                        <div class="level-price" style="font-size:16px">${h.coin}</div>
+                        <div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="invest-val" style="color:var(--long)">+$${h.profit}</div>
+                        <div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div>
+                    </div>
+                </div>`).reverse().join(''); 
+        }
+
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
-        function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const d = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT": "$" + h.profit })); const ws = XLSX.utils.json_to_sheet(d), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
-        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("C5X Reporte", 10, 10); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.profit]) }); doc.save("C5X.pdf"); }
+        
+        // --- EXPORTACIÓN AVANZADA V24.0 ---
+        function exportExcel() { 
+            if(history.length === 0) return showToast("⚠️ Sin Datos"); 
+            
+            // Mapeo detallado para Excel
+            const data = history.map(h => ({
+                "FECHA": h.date,
+                "HORA": h.time || '-',
+                "MONEDA": h.coin,
+                "ESTRATEGIA": h.strategy,
+                "P. BASE": parseFloat(h.basePrice) || 0,
+                "P. PROMEDIO": parseFloat(h.avgPrice) || 0,
+                "P. SALIDA": parseFloat(h.exitPrice) || 0,
+                "NIVELES": h.levelsUsed || 0,
+                "CANTIDAD": parseFloat(h.qty) || 0,
+                "INVERSIÓN ($)": parseFloat(h.totalInv) || 0,
+                "PROFIT ($)": parseFloat(h.profit) || 0,
+                "RENDIMIENTO": h.roi || '0%'
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new(); 
+            XLSX.utils.book_append_sheet(wb, ws, "Contabilidad_C5X"); 
+            XLSX.writeFile(wb, "C5X_Reporte_Financiero.xlsx"); 
+        }
+
+        function exportPDF() { 
+            if(history.length === 0) return showToast("⚠️ Sin Datos"); 
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4
+            
+            // Header
+            doc.setFontSize(18);
+            doc.setTextColor(59, 130, 246); // Brand Color
+            doc.text("REPORTE FINANCIERO C5X", 14, 20);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text("Generado el: " + new Date().toLocaleString(), 14, 28);
+
+            // Table Data
+            const body = history.map(h => [
+                h.date, 
+                h.coin, 
+                h.strategy, 
+                h.avgPrice, 
+                h.qty, 
+                '$' + h.totalInv, 
+                '$' + h.profit,
+                h.roi
+            ]);
+
+            // Totals Calculation
+            const totalInv = history.reduce((acc, curr) => acc + (parseFloat(curr.totalInv)||0), 0);
+            const totalProfit = history.reduce((acc, curr) => acc + (parseFloat(curr.profit)||0), 0);
+
+            doc.autoTable({
+                head: [['Fecha', 'Moneda', 'Estrat.', 'P. Prom', 'Cant.', 'Inversión', 'Profit', 'ROI']],
+                body: body,
+                startY: 35,
+                theme: 'striped',
+                headStyles: { fillColor: [59, 130, 246] },
+                foot: [['', '', '', '', 'TOTALES:', '$' + totalInv.toFixed(2), '$' + totalProfit.toFixed(2), '']],
+                footStyles: { fillColor: [20, 20, 25], textColor: [255, 255, 255], fontStyle: 'bold' }
+            });
+
+            doc.save("C5X_Reporte_Ejecutivo.pdf"); 
+        }
+
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
