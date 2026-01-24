@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19 Dual Dash</title>
+    <title>C5X - V19.2 Master Dual</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -28,6 +28,8 @@
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 65px; }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 20px; color: var(--dir-color); }
+        
+        /* TICKER MINIMALISTA */
         .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 18px; cursor: pointer; }
         #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
         .theme-toggle { background: transparent; border: none; color: var(--text); width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.8; }
@@ -38,7 +40,7 @@
 
         .content-spacer { margin-top: 125px; }
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 5px 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
         .chart-container { width: 100%; height: 260px; background: #000; }
@@ -49,32 +51,31 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        /* NUEVO DASHBOARD ROTATIVO */
-        .dash-container { margin: 12px; position: relative; }
-        .dash-main { background: var(--surface); border-radius: 24px; border: 3px solid var(--dir-color); padding: 15px; position: relative; overflow: hidden; }
-        
-        .dash-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .strat-indicator { font-family: 'Orbitron'; font-size: 10px; font-weight: 900; color: var(--dir-color); letter-spacing: 1px; }
-        
-        .dash-tools { display: flex; gap: 10px; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 35px; height: 35px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        /* DASHBOARD DUAL */
+        .dash-container { margin: 12px; }
+        .dash-main { background: var(--surface); border-radius: 24px; border: 3px solid var(--dir-color); padding: 15px; position: relative; transition: 0.3s; }
+        .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .strat-indicator { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; }
+        .dash-tools { display: flex; gap: 8px; }
+        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
         .dash-data { text-align: center; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -1px; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 8px 0; letter-spacing: -1px; }
         .sub-info { display: flex; justify-content: center; gap: 20px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-        .info-item label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
+        .info-item label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 2px; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
         
+        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); }
         .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; }
+        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; letter-spacing: 8px; }
         
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -87,10 +88,10 @@
 
     <div id="customModal">
         <div class="modal-content">
-            <div class="modal-label" style="font-family:'Orbitron'; font-size:12px; margin-bottom:20px;">INGRESAR CLAVE</div>
+            <div style="font-family:'Orbitron'; font-size:12px; margin-bottom:20px;">INGRESAR CLAVE</div>
             <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••">
             <div style="display:flex; flex-direction:column; gap:10px;">
-                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="closeMyModal(true)">CONFIRMAR</button>
+                <button style="background:var(--long-green); color:#fff; padding:15px; border:none; border-radius:15px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">CONFIRMAR</button>
                 <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeMyModal(false)">CANCELAR</button>
             </div>
         </div>
@@ -106,7 +107,7 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        <div class="tf-bar">
+        <div class="tf-bar" id="tfBar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
@@ -137,35 +138,25 @@
         <div class="dash-container">
             <div class="dash-main" id="dashMain">
                 <div class="dash-top">
-                    <div class="strat-indicator" id="stratName">ESTRATEGIA PREDETERMINADA</div>
+                    <div class="strat-indicator" id="stratName">PREDETERMINADA</div>
                     <div class="dash-tools">
                         <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                         <button class="tool-btn" onclick="rotateDash()">🔄</button>
                     </div>
                 </div>
-                
                 <div class="dash-data">
-                    <span style="font-size:10px; color:var(--dir-color); font-weight:900;">TARGET PRICE (100%)</span>
+                    <span style="font-size:10px; color:var(--dir-color); font-weight:900; opacity:0.7;">TARGET PRICE (100%)</span>
                     <div class="main-target" id="resTarget">0.000000</div>
-                    
                     <div class="sub-info">
-                        <div class="info-item">
-                            <label>AVERAGE</label>
-                            <span id="resAvg">0.000000</span>
-                        </div>
-                        <div class="info-item">
-                            <label>INVERSIÓN</label>
-                            <span id="resInv">$0.00</span>
-                        </div>
+                        <div class="info-item"><label>Average</label><span id="resAvg">0.000000</span></div>
+                        <div class="info-item"><label>Inversión</label><span id="resInv" style="color:var(--text)">$0.00</span></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
-
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
-
         <div id="historyList" style="padding: 0 12px; margin-bottom: 40px;"></div>
     </div>
 
@@ -174,23 +165,37 @@
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        
+        let currentStrat = "normal"; 
+        let isDashLocked = false;
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
-        
-        // Variables Dashboard Rotativo
-        let currentStrat = "normal"; // normal o agresiva
-        let isDashLocked = false;
+        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
+        let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
 
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) document.body.classList.add('light-mode');
+            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } 
             renderNav(); selectSlot(activeIdx); renderHistory(); fetchTicker();
-            setInterval(fetchTicker, 10000);
+            document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+            setInterval(fetchTicker, 10000); 
+        }
+
+        async function fetchTicker() { 
+            try { 
+                const symbol = assets[assetIdx]; 
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`); 
+                const data = await res.json(); 
+                currentTickerSymbol = symbol.replace("USDT",""); 
+                document.getElementById('t-sym').textContent = currentTickerSymbol; 
+                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
+                document.getElementById('t-dot').style.background = parseFloat(data.priceChangePercent) >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
+                assetIdx = (assetIdx + 1) % assets.length; 
+            } catch(e) {} 
         }
 
         function rotateDash() {
+            if(isDashLocked) { showToast("VISTA BLOQUEADA"); return; }
             currentStrat = (currentStrat === "normal") ? "agresiva" : "normal";
             updateDashUI();
         }
@@ -200,64 +205,60 @@
             const btn = document.getElementById('lockBtn');
             btn.textContent = isDashLocked ? '🔒' : '🔓';
             btn.classList.toggle('locked', isDashLocked);
-            showToast(isDashLocked ? "VISTA FIJADA" : "ROTACIÓN LIBRE");
         }
 
         function updateDashUI() {
-            const s = slots[activeIdx];
             const dash = document.getElementById('dashMain');
             const label = document.getElementById('stratName');
             const targetEl = document.getElementById('resTarget');
-            const avgEl = document.getElementById('resAvg');
-
-            // Valores calculados en renderLevels
             if (currentStrat === "normal") {
-                label.textContent = "ESTRATEGIA PREDETERMINADA";
+                label.textContent = "PREDETERMINADA";
                 label.style.color = "var(--dir-color)";
                 dash.style.borderColor = "var(--dir-color)";
                 targetEl.style.color = "var(--long-green)";
             } else {
-                label.textContent = "ESTRATEGIA AGRESIVA (DESC)";
+                label.textContent = "AGRESIVA";
                 label.style.color = "var(--warning)";
                 dash.style.borderColor = "var(--warning)";
                 targetEl.style.color = "var(--warning)";
             }
-            calculate(); // Refrescar números
+            calculate();
         }
 
         function calculate() {
             const s = slots[activeIdx];
             s.price = parseFloat(document.getElementById('baseInput').value) || 0;
             s.capital = parseFloat(document.getElementById('capitalInput').value) || 5;
-            renderLevels();
+            save(); renderLevels();
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
+            updateBodyMode(s.name);
+            if(!s.price) { grid.innerHTML = ''; return; }
             
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3;">Configura Precio Base</p>'; return; }
-
             let totalSpent = 0, t7 = 0, tD = 0;
-            let lastP7 = s.price, lastPD = s.price, drop7 = 10;
+            let lastP7 = s.price, lastPD = s.price, drop7 = 10, html = '';
 
             for(let i=0; i<12; i++){
-                let p7, pD;
-                if(i===0){ p7=s.price; pD=s.price; }
-                else { 
-                    drop7 += 7; 
-                    p7 = lastP7 * (1 - (drop7/100)); 
-                    pD = lastPD * (1 - (descPct/100));
-                }
+                let p7, pD, label;
+                if(i===0){ p7=s.price; pD=s.price; label="BASE"; }
+                else { drop7 += 7; p7 = lastP7 * (1 - (drop7/100)); pD = lastPD * (1 - (descPct/100)); label=`-${drop7}%`; }
+                
                 const mUSD = MULTIPLIERS[i] * s.capital;
-                if(s.buys.includes(i)) { totalSpent += mUSD; t7 += (mUSD/p7); tD += (mUSD/pD); }
+                const on = s.buys.includes(i);
+                if(on) { totalSpent += mUSD; t7 += (mUSD/p7); tD += (mUSD/pD); }
+
+                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div><span style="font-size:10px; font-weight:900; color:var(--dir-color)">NV ${i+1} (${label})</span><div class="price-display">${p7.toFixed(6)}</div></div>
+                    <div style="text-align:right"><span style="font-size:9px; color:#848e9c">MONTO</span><div style="font-weight:900">$${mUSD.toFixed(1)}</div></div>
+                </div>`;
                 lastP7 = p7; lastPD = pD;
             }
-
+            grid.innerHTML = html;
             const avg7 = t7 > 0 ? totalSpent/t7 : 0;
             const avgD = tD > 0 ? totalSpent/tD : 0;
-
-            // Actualizar Dash según estrategia actual
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             if(currentStrat === "normal") {
                 document.getElementById('resAvg').textContent = avg7.toFixed(6);
@@ -266,10 +267,6 @@
                 document.getElementById('resAvg').textContent = avgD.toFixed(6);
                 document.getElementById('resTarget').textContent = (avgD * 2).toFixed(6);
             }
-
-            // Renderizar mini lista de niveles (compacta)
-            grid.innerHTML = s.buys.length > 0 ? `<div style="text-align:center; font-size:10px; opacity:0.5;">${s.buys.length} Niveles Activos</div>` : '';
-            // (Nota: se puede expandir para ver los niveles de nuevo si lo deseas)
         }
 
         function releaseSlot() {
@@ -277,37 +274,33 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.unshift({ coin: s.name, inv: `$${document.getElementById('resInv').textContent}` });
+                    history.unshift({ coin: s.name, inv: document.getElementById('resInv').textContent });
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
-                    
-                    // REORDENAR
                     const filled = slots.filter(sl => sl.name !== '');
                     const empty = slots.filter(sl => sl.name === '');
                     slots = [...filled, ...empty];
-                    
-                    // RESET DASHBOARD
-                    currentStrat = "normal";
-                    isDashLocked = false;
-                    document.getElementById('lockBtn').textContent = '🔓';
-                    document.getElementById('lockBtn').classList.remove('locked');
-
-                    save(); selectSlot(0); renderHistory();
-                    showToast("CERRADO Y REORDENADO");
-                }
+                    currentStrat = "normal"; isDashLocked = false;
+                    const btn = document.getElementById('lockBtn'); btn.textContent = '🔓'; btn.classList.remove('locked');
+                    save(); selectSlot(0); renderHistory(); showToast("OPERACIÓN CERRADA");
+                } else { alert("CLAVE INCORRECTA"); }
             });
         }
 
-        // --- Funciones de soporte ---
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; }
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
-        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); updateDashUI(); }
-        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        async function fetchTicker() { try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`); const data = await res.json(); document.getElementById('t-price').textContent = parseFloat(data.price).toLocaleString(); } catch(e){} }
-        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
-        function renderHistory() { /* historial */ }
+        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
+        function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; calculate(); }
+        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
+        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
+        function viewTickerChart() { loadChart(currentTickerSymbol); }
+        function renderHistory() { /* logic history */ }
     </script>
 </body>
 </html>
