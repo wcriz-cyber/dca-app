@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.5 Master</title>
+    <title>C5X - V20.6 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -68,23 +68,22 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
-        /* --- TARJETAS MÁS GRANDES --- */
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
         .level-card { 
             background: var(--surface); 
             border-radius: 22px; 
-            padding: 18px 20px; /* Aumentado */
+            padding: 18px 20px; 
             display: flex; 
             align-items: center; 
             border: 1px solid var(--border); 
             transition: 0.3s; 
             position: relative;
-            min-height: 85px; /* Altura mínima asegurada */
+            min-height: 85px; 
         }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         
         .lvl-circle { 
-            width: 46px; /* Más grande */
+            width: 46px; 
             height: 46px; 
             border-radius: 50%; 
             background: rgba(255,255,255,0.05); 
@@ -109,7 +108,6 @@
         .lvl-side-info label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; }
         .lvl-side-info span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
 
-        /* Modales */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
@@ -325,28 +323,27 @@
             
             let totalSpent = 0, totalQty = 0;
             let lastPrice = s.price;
-            let currentDropPercent = 17; // Empieza en 17 para el Nivel 2
+            let currentStepDrop = 0;
             let html = '';
 
             for(let i=0; i<12; i++){
-                let pLevel, currentStepDrop;
+                let pLevel;
                 if(i === 0) {
                     pLevel = s.price;
                     currentStepDrop = 0;
                 } else {
                     if(currentStrat === "normal") {
                         if(i === 1) {
-                            currentStepDrop = 17; // Nivel 2 forzado a 17%
+                            currentStepDrop = 17; // Nivel 2 empieza en 17%
                         } else {
-                            currentStepDrop = currentDropPercent; 
-                            currentDropPercent += incPct;
+                            currentStepDrop += incPct; // Niveles siguientes suman el incremento base (7%) al anterior
                         }
-                        pLevel = lastPrice * (1 - (currentStepDrop / 100));
                     } else {
-                        currentStepDrop = descPct;
-                        pLevel = lastPrice * (1 - (descPct / 100));
+                        currentStepDrop = descPct; // Estrategia agresiva mantiene descuento fijo
                     }
+                    pLevel = lastPrice * (1 - (currentStepDrop / 100));
                 }
+                
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
