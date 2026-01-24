@@ -233,34 +233,43 @@
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = ''; return; }
             
-            let totalSpent = 0, t7 = 0, tD = 0;
-            let lastP7 = s.price, lastPD = s.price, drop7 = 10, html = '';
+            let totalSpent = 0, totalQty = 0;
+            let lastLevelPrice = s.price;
+            let drop7 = 10; 
+            let html = '';
 
             for(let i=0; i<12; i++){
-                let p7, pD;
-                if(i===0){ p7=s.price; pD=s.price; }
-                else { drop7 += 7; p7 = lastP7 * (1 - (drop7/100)); pD = lastPD * (1 - (descPct/100)); }
+                let pLevel;
+                if(i === 0){
+                    pLevel = s.price;
+                } else {
+                    if(currentStrat === "normal") {
+                        drop7 += 7;
+                        pLevel = s.price * (1 - (drop7/100));
+                    } else {
+                        // Agresiva: 66% de caída del nivel anterior
+                        pLevel = lastLevelPrice * (1 - (descPct/100));
+                    }
+                }
                 
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { totalSpent += mUSD; t7 += (mUSD/p7); tD += (mUSD/pD); }
+                if(on) { 
+                    totalSpent += mUSD; 
+                    totalQty += (mUSD/pLevel); 
+                }
 
                 html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <div><span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span><div class="price-display">${p7.toFixed(6)}</div></div>
+                    <div><span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span><div class="price-display">${pLevel.toFixed(6)}</div></div>
                     <div style="text-align:right"><span style="font-size:8px; color:#848e9c">MONTO</span><div style="font-weight:900">$${mUSD.toFixed(1)}</div></div>
                 </div>`;
-                lastP7 = p7; lastPD = pD;
+                lastLevelPrice = pLevel;
             }
             grid.innerHTML = html;
-            const avg7 = t7 > 0 ? totalSpent/t7 : 0, avgD = tD > 0 ? totalSpent/tD : 0;
+            const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            if(currentStrat === "normal") {
-                document.getElementById('resAvg').textContent = avg7.toFixed(6);
-                document.getElementById('resTarget').textContent = (avg7 * 2).toFixed(6);
-            } else {
-                document.getElementById('resAvg').textContent = avgD.toFixed(6);
-                document.getElementById('resTarget').textContent = (avgD * 2).toFixed(6);
-            }
+            document.getElementById('resAvg').textContent = avg.toFixed(6);
+            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
         }
 
         function releaseSlot() {
@@ -268,21 +277,17 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    // RESET DASHBOARD A PREDETERMINADA AL CERRAR
-                    currentStrat = "normal"; 
+                    // RESET DASHBOARD AL CERRAR
+                    currentStrat = "normal";
                     isDashLocked = false;
-                    const lckBtn = document.getElementById('lockBtn');
-                    lckBtn.textContent = '🔓';
-                    lckBtn.classList.remove('locked');
+                    document.getElementById('lockBtn').textContent = '🔓';
+                    document.getElementById('lockBtn').classList.remove('locked');
                     
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
                     const filled = slots.filter(sl => sl.name !== '');
                     const empty = slots.filter(sl => sl.name === '');
                     slots = [...filled, ...empty];
-                    
-                    save(); 
-                    selectSlot(0); 
-                    showToast("OPERACIÓN CERRADA");
+                    save(); selectSlot(0); showToast("OPERACIÓN CERRADA");
                 }
             });
         }
