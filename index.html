@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.2 Pro Nav</title>
+    <title>C5X - V22.3 Pro Tweaks</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -66,18 +66,17 @@
         .app-header { 
             display: flex; justify-content: space-between; align-items: center; 
             height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto;
+            position: relative; /* Necesario para centrar el ticker */
         }
 
-        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 8px 0; }
+        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 8px 0; z-index: 2; }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
         
-        .header-actions { display: flex; gap: 10px; align-items: center; }
-
-        .theme-btn {
-            width: 36px; height: 36px; border-radius: 50%; background: transparent; 
-            border: 1px solid var(--border); color: var(--text-primary); display: flex; 
-            align-items: center; justify-content: center; font-size: 16px; cursor: pointer;
+        /* TICKER CENTRADO */
+        .ticker-container {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            z-index: 1;
         }
 
         .ticker-pill { 
@@ -88,20 +87,23 @@
         .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
 
+        /* THEME BTN RIGHT */
+        .theme-btn {
+            width: 36px; height: 36px; border-radius: 50%; background: transparent; 
+            border: 1px solid var(--border); color: var(--text-primary); display: flex; 
+            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 2;
+        }
+
         /* --- SECCIONES (NAVEGACIÓN) --- */
         .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
         
-        /* La magia: Ocultar/Mostrar secciones */
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- VISTA OPERAR --- */
         .tf-bar { display: flex; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--border); justify-content: center; }
-        .tf-btn { 
-            flex: 1; max-width: 60px; padding: 6px 0; border: none; background: transparent; 
-            color: var(--text-secondary); font-size: 11px; font-weight: 700; border-radius: 6px;
-        }
+        .tf-btn { flex: 1; max-width: 60px; padding: 6px 0; border: none; background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 700; border-radius: 6px; }
         .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
 
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
@@ -140,7 +142,9 @@
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text-primary); }
 
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 80px; }
+        /* GRID CON MENOS ESPACIO INFERIOR */
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
+        
         .level-card { 
             background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
             padding: 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;
@@ -153,8 +157,9 @@
         .level-invest { text-align: right; }
         .level-invest span { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; color: var(--long); }
 
+        /* BOTÓN CERCA DEL ULTIMO NIVEL */
         .btn-liquidate { 
-            width: 94%; margin: 25px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
+            width: 94%; margin: 10px auto 40px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
             color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; cursor: pointer; display: block;
         }
 
@@ -241,15 +246,17 @@
                 <span class="brand-caret" style="margin-left:5px">▼</span>
             </div>
             
-            <div class="header-actions">
+            <div class="ticker-container">
                 <div class="ticker-pill" onclick="viewTickerChart()">
                     <div class="ticker-dot" id="t-dot"></div>
                     <span class="ticker-sym" id="t-sym">BTC</span>
                     <span class="ticker-price" id="t-price">--.--</span>
                 </div>
-                <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
             </div>
+            
+            <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
+        
         <div class="tf-bar" id="tfBarContainer">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
@@ -321,7 +328,7 @@
                     </div>
                 </div>
                 <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">
-                    C5X V22.2 PROFESSIONAL
+                    C5X V22.3 PROFESSIONAL
                 </div>
             </div>
         </div>
@@ -367,10 +374,8 @@
         function init() { 
             if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
             
-            // Render Inicial
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             
-            // Active TF
             document.querySelectorAll('.tf-btn').forEach(btn => { 
                 if(btn.dataset.tf === activeTF) btn.classList.add('active'); 
             });
@@ -378,7 +383,7 @@
             setInterval(fetchTicker, 8000); 
         }
 
-        // --- SISTEMA DE NAVEGACIÓN (LO QUE PEDISTE) ---
+        // --- NAVEGACIÓN ---
         function toggleMenu() {
             const m = document.getElementById('navModal');
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
@@ -386,27 +391,21 @@
 
         function switchView(viewName) {
             currentSection = viewName;
-            
-            // Ocultar todas las secciones
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
-            // Mostrar la seleccionada
             document.getElementById('section-' + viewName).classList.add('active');
             
-            // Actualizar UI del Menú
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
             document.getElementById('nav-' + viewName).classList.add('selected');
 
-            // Manejo especial: Si vamos a operar, asegurar que el TF bar se ve
             const tfBar = document.getElementById('tfBarContainer');
             if(viewName === 'operate') {
                 tfBar.style.display = 'flex';
-                // Pequeño fix para TradingView si se ocultó
                 if(chartSymbol) loadChart(chartSymbol); 
             } else {
                 tfBar.style.display = 'none';
             }
 
-            toggleMenu(); // Cerrar menú
+            toggleMenu(); 
         }
 
         function resetApp() {
@@ -416,7 +415,7 @@
             });
         }
 
-        // --- FUNCIONES CORE ---
+        // --- CORE ---
         async function fetchTicker() { 
             try { 
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
@@ -459,7 +458,7 @@
             calculate();
         }
 
-        // --- SEGURIDAD Y MODALES ---
+        // --- SEGURIDAD ---
         function openSecurity(cb) {
             modalCallback = cb;
             document.getElementById('secInput').value = '';
@@ -587,7 +586,7 @@
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                 slots = [...filled, ...empty];
                 save(); selectSlot(0); showToast("✅ Operación Cerrada");
-                switchView('log'); // Ir a bitácora
+                switchView('log'); 
             });
         }
 
