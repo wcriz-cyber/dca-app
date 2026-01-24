@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.0 Trend Slider</title>
+    <title>C5X - V22.0 Restoration Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -18,49 +18,55 @@
             --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; 
             --dash-txt: #000000;
         }
+        /* COLORES DE TENDENCIA DINÁMICOS */
+        body.mode-long { --dir-color: var(--long-green); }
+        body.mode-short { --dir-color: var(--short-red); }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; transition: 0.3s; overflow-x: hidden; }
 
-        /* CABECERA CON TICKER DE TENDENCIA */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); gap: 8px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); gap: 10px; }
         
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 26px; color: var(--dir-color); height: var(--h-size); display: flex; align-items: center; }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 28px; color: var(--dir-color); height: var(--h-size); display: flex; align-items: center; }
         
-        .ticker-box { flex: 1; background: rgba(128,128,128,0.1); border-radius: 14px; border: 1px solid var(--border); height: var(--h-size); display: flex; align-items: center; padding: 0 10px; gap: 8px; cursor: pointer; transition: 0.3s; }
-        .coin-logo { width: 24px; height: 24px; border-radius: 50%; background: var(--dir-color); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; color: #000; }
-        .ticker-info { display: flex; flex-direction: column; align-items: flex-start; }
-        .t-sym { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; }
-        .t-pct { font-family: 'Roboto Mono'; font-size: 10px; font-weight: 900; }
+        .ticker-box { flex: 1; background: rgba(128,128,128,0.1); border-radius: 12px; border: 1px solid var(--border); height: var(--h-size); display: flex; align-items: center; padding: 0 12px; gap: 10px; cursor: pointer; }
+        .coin-logo { width: 28px; height: 28px; border-radius: 50%; background: var(--dir-color); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #000; }
+        .ticker-info { display: flex; flex-direction: column; flex: 1; }
+        .t-sym { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--text); }
+        .t-pct { font-family: 'Roboto Mono'; font-size: 11px; font-weight: 900; }
 
-        .theme-toggle { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: var(--h-size); height: var(--h-size); border-radius: 14px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: var(--h-size); height: var(--h-size); border-radius: 12px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
 
-        /* SLIDER DE TEMPORALIDAD */
-        .tf-slider-container { background: rgba(0,0,0,0.1); padding: 12px 20px; border-bottom: 1px solid var(--border); text-align: center; }
-        .tf-slider-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; font-weight: 900; color: var(--dir-color); font-family: 'Orbitron'; }
+        .tf-slider-container { background: rgba(0,0,0,0.1); padding: 10px 20px; border-bottom: 1px solid var(--border); }
+        .tf-labels { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 10px; font-weight: 900; color: var(--dir-color); }
         .slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: var(--border); outline: none; }
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--dir-color); cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--dir-color); border: 2px solid #fff; }
 
-        .content-spacer { margin-top: 135px; }
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 10px; }
-        .slot-btn { height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        .content-spacer { margin-top: 130px; }
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 8px 12px; }
+        .slot-btn { height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2.5px; }
         
-        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
-        
-        /* DASHBOARD */
-        .dash-container { position: relative; margin: 10px 12px; overflow: hidden; border-radius: 24px; border: 3px solid var(--dir-color); background: var(--surface); }
-        .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; }
+        .chart-container { width: 100%; height: 260px; background: #000; }
+
+        /* DASHBOARD RECONSTRUIDO CON SWIPE */
+        .dash-container { position: relative; margin: 10px 12px; overflow: hidden; border-radius: 24px; border: 3px solid var(--dir-color); background: var(--surface); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .dash-viewport { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
         .dash-page { width: 50%; padding: 15px; flex-shrink: 0; position: relative; }
+        
+        .dash-header { display: flex; justify-content: space-around; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--dash-txt); }
+        .strat-title { font-size: 10px; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; display: block; }
         
         .avg-val { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--dash-txt); display: block; margin: 5px 0; }
         .target-val { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; letter-spacing: -2px; }
 
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
+        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); min-height: 80px; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
-        
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2.5px; }
+
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 50px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
     </style>
@@ -76,17 +82,15 @@
                 <div class="coin-logo" id="t-logo">B</div>
                 <div class="ticker-info">
                     <span class="t-sym" id="t-name">BTC</span>
-                    <span id="t-price" style="font-size:14px; font-weight:900;">...</span>
+                    <span id="t-price" style="font-size:15px; font-weight:900;">...</span>
                 </div>
-                <div style="margin-left:auto; text-align:right">
-                    <span class="t-pct" id="t-pct">0.00%</span>
-                </div>
+                <span class="t-pct" id="t-pct">0.00%</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         
         <div class="tf-slider-container">
-            <div class="tf-slider-label">
+            <div class="tf-labels">
                 <span>15M</span><span>30M</span><span style="color:#fff">1H</span><span>4H</span><span>1D</span><span>1S</span>
             </div>
             <input type="range" min="0" max="5" value="2" class="slider" id="tfRange" oninput="handleSlider(this.value)">
@@ -107,13 +111,23 @@
         <div class="dash-container" id="dashContainer">
             <div class="dash-viewport" id="dashViewport">
                 <div class="dash-page">
-                    <div style="display:flex; justify-content:space-around; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-                        <div style="text-align:center"><span style="font-size:9px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv1" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900;">$0.00</div></div>
-                        <div style="text-align:center"><span style="font-size:9px; color:var(--dir-color); font-weight:900;">WIN +100%</span><div id="resProf1" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900; color:var(--long-green)">$0.00</div></div>
+                    <div class="dash-header">
+                        <div style="text-align:center"><span class="strat-title" style="color:var(--dir-color)">PREDETERMINADA</span><div id="resInv1" class="dash-val-main">$0.00</div></div>
+                        <div style="text-align:center"><span class="strat-title" style="color:var(--long-green)">TARGET +100%</span><div id="resProf1" class="dash-val-main" style="color:var(--long-green)">$0.00</div></div>
                     </div>
                     <div style="text-align:center;">
                         <span id="resAvg7" class="avg-val">0.000000</span>
                         <div class="target-val" id="resTarget7">0.000000</div>
+                    </div>
+                </div>
+                <div class="dash-page">
+                    <div class="dash-header">
+                        <div style="text-align:center"><span class="strat-title" style="color:var(--warning)">AGRESIVA</span><div id="resInv2" class="dash-val-main">$0.00</div></div>
+                        <div style="text-align:center"><span class="strat-title" style="color:var(--warning)">TARGET +100%</span><div id="resProf2" class="dash-val-main" style="color:var(--warning)">$0.00</div></div>
+                    </div>
+                    <div style="text-align:center;">
+                        <span id="resAvgDesc" class="avg-val" style="color:var(--warning)">0.000000</span>
+                        <div class="target-val" id="resTargetDesc" style="color:var(--warning)">0.000000</div>
                     </div>
                 </div>
             </div>
@@ -137,21 +151,32 @@
         ];
         let tickerIdx = 0;
 
+        // Swipe Logic
+        let startX = 0;
+        const viewport = document.getElementById('dashViewport');
+        document.getElementById('dashContainer').addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        document.getElementById('dashContainer').addEventListener('touchend', e => {
+            let diff = startX - e.changedTouches[0].clientX;
+            if(Math.abs(diff) > 50) setDashPage(diff > 0 ? 1 : 0);
+        });
+
+        function setDashPage(p) {
+            slots[activeIdx].dashPage = p;
+            viewport.style.transform = `translateX(-${p * 50}%)`;
+            save(); renderLevels();
+        }
+
         async function rotateTicker() {
             const item = tickerList[tickerIdx];
             try {
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${item.s}`);
                 const data = await res.json();
                 const pct = parseFloat(data.priceChangePercent);
-                const color = pct >= 0 ? 'var(--long-green)' : 'var(--short-red)';
-                
                 document.getElementById('t-logo').textContent = item.l;
-                document.getElementById('t-logo').style.background = color;
                 document.getElementById('t-name').textContent = item.n;
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString();
                 document.getElementById('t-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-                document.getElementById('t-pct').style.color = color;
-                document.getElementById('mainTicker').style.borderColor = color;
+                document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--short-red)';
             } catch(e) {}
             tickerIdx = (tickerIdx + 1) % tickerList.length;
         }
@@ -159,7 +184,6 @@
         function handleSlider(val) {
             activeTF = tfValues[val];
             loadChart(slots[activeIdx].name);
-            showToast("TF: " + (val == 5 ? '1 SEMANA' : activeTF + (val < 4 ? ' MIN' : ' DÍA')));
         }
 
         function init() { 
@@ -175,6 +199,7 @@
             document.getElementById('coinInput').value = s.name;
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
+            setDashPage(s.dashPage || 0);
             renderNav(); loadChart(s.name); calculate();
         }
 
@@ -188,41 +213,63 @@
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
+            const mode = s.dashPage; // 0=Predeterminada, 1=Agresiva
+            const descPct = parseFloat(document.getElementById('descInput').value) || 55;
+            
+            updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:20px;">Sin Datos</p>'; return; }
 
             const MULT = [1, 1, 1.5, 1.5, 2, 2, 5, 5, 8, 8, 16, 16];
-            let spent = 0, tok7 = 0;
-            let html = '', last7 = s.price, drop7 = 10;
+            let spent = 0, tokP = 0, tokA = 0;
+            let html = '', lastP = s.price, lastA = s.price, dropP = 10;
 
             for(let i=0; i<12; i++) {
-                let p7 = (i===0) ? s.price : (last7*(1-( (drop7+(i>0?(i*7):0)) /100)));
-                if(i>0) drop7 += 7; // Incremento progresivo
+                let pP, pA;
+                if(i===0) { pP = s.price; pA = s.price; }
+                else { 
+                    dropP += 7; 
+                    pP = lastP * (1 - (dropP / 100)); 
+                    pA = lastA * (1 - (descPct / 100));
+                }
 
                 const mUSD = MULT[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { spent += mUSD; tok7 += (mUSD/p7); }
+                if(on) { spent += mUSD; tokP += (mUSD/pP); tokA += (mUSD/pA); }
+
+                let pDisp = (mode === 0) ? pP : pA;
+                let cLvl = (mode === 0) ? 'var(--dir-color)' : 'var(--warning)';
 
                 html += `
                 <div class="level-card ${on?'active':''}">
                     <div style="display:flex; align-items:center; gap:12px;">
                         <input type="checkbox" style="width:32px; height:32px" ${on?'checked':''} onclick="toggleLvl(${i})">
-                        <div onclick="copy('${p7.toFixed(6)}')">
-                            <span style="font-size:9px; font-weight:900; color:var(--dir-color)">L${i+1}</span>
-                            <div style="font-family:'Roboto Mono'; font-size:22px; font-weight:900;">${p7.toFixed(6)}</div>
+                        <div onclick="copy('${pDisp.toFixed(6)}')">
+                            <span style="font-size:9px; font-weight:900; color:${cLvl}">L${i+1}</span>
+                            <div style="font-family:'Roboto Mono'; font-size:22px; font-weight:900;">${pDisp.toFixed(6)}</div>
                         </div>
                     </div>
                     <div style="text-align:right"><span style="font-size:22px; color:var(--long-green); font-weight:900;">$${mUSD.toFixed(1)}</span></div>
                 </div>`;
-                last7 = p7;
+                lastP = pP; lastA = pA;
             }
             grid.innerHTML = html;
-            const a7 = tok7>0 ? (spent/tok7) : 0;
-            document.getElementById('resInv1').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resProf1').textContent = `$${spent.toFixed(2)}`;
-            document.getElementById('resAvg7').textContent = a7.toFixed(6);
-            document.getElementById('resTarget7').textContent = (a7*2).toFixed(6);
+            
+            const aP = tokP>0 ? (spent/tokP) : 0;
+            const aA = tokA>0 ? (spent/tokA) : 0;
+
+            document.getElementById('resInv1').textContent = document.getElementById('resInv2').textContent = `$${spent.toFixed(2)}`;
+            document.getElementById('resProf1').textContent = document.getElementById('resProf2').textContent = `$${spent.toFixed(2)}`;
+            document.getElementById('resAvg7').textContent = aP.toFixed(6);
+            document.getElementById('resTarget7').textContent = (aP*2).toFixed(6);
+            document.getElementById('resAvgDesc').textContent = aA.toFixed(6);
+            document.getElementById('resTargetDesc').textContent = (aA*2).toFixed(6);
         }
 
+        function updateBodyMode(n) { 
+            document.body.classList.remove('mode-long', 'mode-short'); 
+            if(n.endsWith('L')) document.body.classList.add('mode-long'); 
+            if(n.endsWith('S')) document.body.classList.add('mode-short'); 
+        }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x!==i) : [...b, i]; save(); renderLevels(); }
         function copy(v) { navigator.clipboard.writeText(v); showToast("COPIADO"); }
         function showToast(m) { const t=document.getElementById("toast"); t.textContent=m; t.className="show"; setTimeout(()=>t.className="", 2000); }
@@ -231,7 +278,6 @@
         function updateCoin() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function loadChart(c) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(c || 'BTC').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function loadTickerChart() { loadChart(tickerList[tickerIdx === 0 ? 5 : tickerIdx - 1].n); }
     </script>
 </body>
 </html>
