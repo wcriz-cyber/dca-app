@@ -64,7 +64,7 @@
         .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
         .info-item { text-align: center; }
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 17px; font-weight: 900; color: var(--text); display: block; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -235,7 +235,7 @@
             
             let totalSpent = 0, totalQty = 0;
             let lastPrice = s.price;
-            let currentDropPercent = 10; // Para que al sumar 7 el Nivel 2 sea 17%
+            let currentDropPercent = 10; // Base inicial para el primer salto de 7% (10+7=17)
             let html = '';
 
             for(let i=0; i<12; i++){
@@ -244,9 +244,9 @@
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
-                        // Estrategia Predeterminada corregida
-                        currentDropPercent += 7; // Nivel 2 = 17%, Nivel 3 = 24%, etc.
-                        pLevel = s.price * (1 - (currentDropPercent / 100));
+                        // CÁLCULO EN CASCADA: Se basa en el precio del nivel ANTERIOR
+                        currentDropPercent += 7; 
+                        pLevel = lastPrice * (1 - (currentDropPercent / 100));
                     } else {
                         // Agresiva: 66% de caída respecto al nivel anterior
                         pLevel = lastPrice * (1 - (descPct / 100));
@@ -270,7 +270,7 @@
                         <div style="font-weight:900">$${mUSD.toFixed(1)}</div>
                     </div>
                 </div>`;
-                lastPrice = pLevel;
+                lastPrice = pLevel; // Guardamos este precio como base para el siguiente nivel
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
