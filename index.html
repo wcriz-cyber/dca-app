@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V33.8 Final</title>
+    <title>C5X - V34.0 Tactical</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -42,7 +42,6 @@
 
         .content-spacer { margin-top: 135px; }
 
-        /* SLOTS 4x4 FIX */
         .slot-outer-container { width: 100%; overflow: hidden; padding: 10px 0; }
         .slot-nav-track { display: flex; width: 200%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .slot-page { display: grid; grid-template-columns: repeat(4, 1fr); width: 50%; gap: 6px; padding: 0 10px; }
@@ -61,17 +60,19 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         .locked-input { pointer-events: none; opacity: 0.6; }
 
-        /* DASHBOARD */
-        .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; }
+        /* DASHBOARD - FUENTES MÁS GRANDES */
+        .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; height: 160px; }
         .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
         .lock-btn.locked { background: var(--danger); color: white; border: none; }
 
-        .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; }
-        .dash-page { width: 50%; padding: 20px 15px; flex-shrink: 0; text-align: center; }
-        .dash-main-row { display: flex; justify-content: space-around; align-items: center; margin-bottom: 10px; }
-        .dash-main-val { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; display: block; }
-        .avg-box { display: inline-block; padding: 4px 12px; border-radius: 8px; background: rgba(255,255,255,0.05); font-family: 'Roboto Mono'; font-size: 13px; margin-bottom: 4px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); display: block; }
+        .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; height: 100%; }
+        .dash-page { width: 50%; padding: 15px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        
+        .dash-main-row { display: flex; justify-content: space-around; align-items: center; margin-bottom: 8px; }
+        .dash-main-val { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; display: block; } /* Antes 22px */
+        .avg-box { display: inline-block; padding: 6px 15px; border-radius: 8px; background: rgba(255,255,255,0.08); font-family: 'Roboto Mono'; font-size: 16px; margin-bottom: 6px; font-weight: 700; } /* Antes 13px */
+        .target-price { font-family: 'Roboto Mono'; font-size: 44px; font-weight: 900; color: var(--long-green); display: block; line-height: 1; } /* Antes 38px */
+        .dash-tag { font-size: 11px; font-weight: 900; margin-bottom: 4px; display: block; letter-spacing: 1px; }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -131,61 +132,60 @@
             <button class="lock-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
             <div class="dash-viewport" id="dashViewport">
                 <div class="dash-page">
-                    <span style="font-size:10px; font-weight:900; color:var(--dir-color); display:block; margin-bottom:5px;">PREDETERMINADA</span>
+                    <span class="dash-tag" style="color:var(--dir-color);">PREDETERMINADA</span>
                     <div class="dash-main-row">
-                        <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvP" class="dash-main-val">$0.00</span></div>
-                        <div><small style="font-size:8px; color:var(--dir-color)">WIN +100%</small><span id="resWinP" class="dash-main-val" style="color:var(--dir-color)">$0.00</span></div>
+                        <div><small style="font-size:9px;">INV</small><span id="resInvP" class="dash-main-val">$0.00</span></div>
+                        <div><small style="font-size:9px; color:var(--dir-color)">WIN 100%</small><span id="resWinP" class="dash-main-val" style="color:var(--dir-color)">$0.00</span></div>
                     </div>
-                    <div class="avg-box">AVG: <span id="resAvgP">0.000000</span></div>
-                    <b id="resTargetP" class="target-price">0.000000</b>
+                    <div><div class="avg-box">AVG: <span id="resAvgP">0.0000</span></div></div>
+                    <b id="resTargetP" class="target-price">0.0000</b>
                 </div>
                 <div class="dash-page">
-                    <span style="font-size:10px; font-weight:900; color:var(--warning); display:block; margin-bottom:5px;">AGRESIVA</span>
+                    <span class="dash-tag" style="color:var(--warning);">AGRESIVA</span>
                     <div class="dash-main-row">
-                        <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
-                        <div><small style="font-size:8px; color:var(--warning)">WIN +100%</small><span id="resWinA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
+                        <div><small style="font-size:9px;">INV</small><span id="resInvA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
+                        <div><small style="font-size:9px; color:var(--warning)">WIN 100%</small><span id="resWinA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
                     </div>
-                    <div class="avg-box" style="color:var(--warning)">AVG: <span id="resAvgA">0.000000</span></div>
-                    <b id="resTargetA" class="target-price" style="color:var(--warning)">0.000000</b>
+                    <div><div class="avg-box" style="color:var(--warning)">AVG: <span id="resAvgA">0.0000</span></div></div>
+                    <b id="resTargetA" class="target-price" style="color:var(--warning)">0.0000</b>
                 </div>
             </div>
         </div>
 
         <main id="levelsGrid" class="levels-container"></main>
         <button class="btn-release" onclick="liquidateOperation()">LIQUIDAR OPERACIÓN</button>
-        <div id="bitacoraList" style="padding:15px; font-size:11px; opacity:0.6;"></div>
+        <div id="bitacoraList" style="padding:15px; font-size:12px; opacity:0.6;"></div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_active_idx')) || 0; 
-        let currentTF = '60', currentPage = 0;
+        let currentTF = localStorage.getItem('c5x_tf') || '60';
+        let currentPage = 0;
         
-        // Inicialización forzada de 8 slots
-        let savedSlots = JSON.parse(localStorage.getItem('dca_v33_slots'));
-        let slots = (savedSlots && savedSlots.length === 8) ? savedSlots : Array(8).fill(null).map(() => ({ 
+        let slots = JSON.parse(localStorage.getItem('dca_v34_slots')) || Array(8).fill(null).map(() => ({ 
             name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false 
         }));
-
         let bitacora = JSON.parse(localStorage.getItem('dca_bitacora')) || [];
+
         const MULTIPLIERS = [1, 1, 1.5, 1.5, 2, 2, 5, 5, 8, 8, 16, 16];
         const ASSETS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "AVAXUSDT", "SUIUSDT", "BNBUSDT"];
         let assetIdx = 0;
 
         function init() {
             if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
+            const tfVal = {'15':0,'30':1,'60':2,'240':3,'D':4,'W':5}[currentTF];
+            document.getElementById('tfRange').value = tfVal;
             renderNav(); selectSlot(activeIdx); renderBitacora(); fetchTicker();
             setInterval(fetchTicker, 8000);
             
-            // Swipe para slots
             let sx = 0;
             document.getElementById('slotOuter').addEventListener('touchstart', e => sx = e.touches[0].clientX);
             document.getElementById('slotOuter').addEventListener('touchend', e => {
                 if(Math.abs(sx - e.changedTouches[0].clientX) > 50) toggleSlotPage();
             });
 
-            // Swipe para dash
             let sdx = 0;
             document.getElementById('dashBox').addEventListener('touchstart', e => { if(!slots[activeIdx].locked) sdx = e.touches[0].clientX; });
             document.getElementById('dashBox').addEventListener('touchend', e => {
@@ -294,10 +294,17 @@
         }
 
         function liquidateOperation() {
-            if(confirm("¿LIQUIDAR OPERACIÓN?")) {
+            if(confirm("¿LIQUIDAR Y MOVER AL FINAL?")) {
                 bitacora.unshift({ coin: slots[activeIdx].name, total: document.getElementById('resInvP').textContent, date: new Date().toLocaleTimeString() });
-                slots[activeIdx] = { name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false };
-                save(); selectSlot(activeIdx); renderBitacora();
+                
+                // Mover slot actual al final
+                let closedSlot = { name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false };
+                slots.splice(activeIdx, 1);
+                slots.push(closedSlot);
+                
+                save(); 
+                selectSlot(activeIdx >= slots.length ? 0 : activeIdx); 
+                renderBitacora();
             }
         }
 
@@ -317,6 +324,11 @@
             });
         }
 
+        function lockTickerToChart() {
+            const sym = document.getElementById('t-sym').textContent;
+            loadChart(sym); // Carga ticker sin cambiar el slot activo
+        }
+
         function reqPin(id) {
             if(prompt("PIN:") === "2524") {
                 const el = document.getElementById(id); el.readOnly = false; el.classList.remove('locked-input'); el.focus();
@@ -328,10 +340,13 @@
         function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; updateLockUI(); save(); }
         function updateLockUI() { const b = document.getElementById('lockBtn'); b.textContent = slots[activeIdx].locked ? '🔒' : '🔓'; b.className = 'lock-btn' + (slots[activeIdx].locked ? ' locked' : ''); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode'); document.getElementById('themeBtn').textContent = isLight?'☀️':'🌙'; localStorage.setItem('theme', isLight?'light':'dark'); loadChart(slots[activeIdx].name); }
-        function changeTF(v) { currentTF = ['15','30','60','240','D','W'][v]; loadChart(slots[activeIdx].name); }
-        function save() { localStorage.setItem('dca_v33_slots', JSON.stringify(slots)); localStorage.setItem('dca_bitacora', JSON.stringify(bitacora)); }
+        function changeTF(v) { 
+            currentTF = ['15','30','60','240','D','W'][v]; 
+            localStorage.setItem('c5x_tf', currentTF);
+            loadChart(slots[activeIdx].name || document.getElementById('t-sym').textContent); 
+        }
+        function save() { localStorage.setItem('dca_v34_slots', JSON.stringify(slots)); localStorage.setItem('dca_bitacora', JSON.stringify(bitacora)); }
         function updateCoinName() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
-        function lockTickerToChart() { calculate(); loadChart(document.getElementById('t-sym').textContent); }
     </script>
 </body>
 </html>
