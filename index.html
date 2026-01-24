@@ -43,11 +43,12 @@
             font-size: 22px; 
         }
         
+        /* TICKER OPTIMIZADO CON EL MISMO FONDO DE LA BARRA */
         .btc-live-box { 
             display: flex; 
             align-items: center; 
             gap: 10px; 
-            background: rgba(128,128,128,0.1); 
+            background: var(--header-bg); /* Unificado con la barra */
             padding: 8px 16px; 
             border-radius: 14px; 
             border: 1px solid var(--border); 
@@ -55,6 +56,7 @@
             font-size: 15px; 
             cursor: pointer;
         }
+        
         .theme-toggle { 
             background: var(--bg); 
             border: 1px solid var(--border); 
@@ -226,7 +228,7 @@
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        let currentChartSymbol = ''; // RASTREO DE MONEDA EN PANTALLA
+        let currentChartSymbol = ''; 
         
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
@@ -268,7 +270,6 @@
             document.getElementById('baseInput').value = s.price || ''; 
             document.getElementById('capitalInput').value = s.capital; 
             renderNav(); 
-            // CARGA LA MONEDA DEL SLOT AL SELECCIONARLO
             loadChart(s.name); 
             calculate(); 
         }
@@ -404,7 +405,6 @@
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         
-        // MODIFICADO: MANTIENE LA MONEDA QUE YA ESTABA EN EL GRÁFICO
         function updateTF(tf, btn) { 
             activeTF = tf; 
             localStorage.setItem('c5x_last_tf', tf); 
@@ -417,7 +417,7 @@
         
         function loadChart(coin) { 
             const symbolToLoad = coin || 'BTC3L';
-            currentChartSymbol = symbolToLoad; // ACTUALIZA EL RASTREO
+            currentChartSymbol = symbolToLoad; 
             new TradingView.widget({ 
                 "autosize": true, 
                 "symbol": `GATEIO:${symbolToLoad.replace('USDT','') }USDT`, 
@@ -434,7 +434,6 @@
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
         
         function viewTickerChart() { 
-            // CARGA LA MONEDA DEL TICKER (BTC, ETH, ETC)
             loadChart(currentTickerSymbol); 
         }
     </script>
