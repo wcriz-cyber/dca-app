@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.5 Master</title>
+    <title>C5X - V21.6 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -74,31 +74,61 @@
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
         .standard-card { background: var(--surface); border-radius: 22px; padding: 18px 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
-        
         .card-icon { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: #848e9c; margin-right: 18px; }
-
         .card-body { flex: 1; }
         .card-tag { font-size: 10px; font-weight: 900; color: var(--short-red); margin-bottom: 4px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
         .card-main-val { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--text); line-height: 1; }
-        
         .card-side { text-align: right; }
         .card-side label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; text-transform: uppercase; }
         .card-side span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
 
+        /* BITÁCORA */
         .log-section { margin-top: 40px; }
         .log-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .log-title { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
         .log-actions { display: flex; gap: 8px; }
         .log-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 900; cursor: pointer; font-family: 'Orbitron'; }
-        
         .log-grid-container { max-height: 585px; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
         .log-grid-container::-webkit-scrollbar { display: none; }
 
         .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
 
-        #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
+        /* MODALES OPTIMIZADOS (SE SUBIERON PARA EL TECLADO) */
+        #customModal, #configModal { 
+            display:none; 
+            position:fixed; 
+            top:0; left:0; width:100%; height:100%; 
+            background:rgba(0,0,0,0.85); 
+            z-index:9999; 
+            justify-content:center; 
+            align-items: flex-start; /* Sube la ventana */
+            padding-top: 20%; /* Distancia desde arriba */
+            backdrop-filter: blur(10px); 
+        }
+        .modal-content { 
+            background: var(--surface); 
+            padding: 25px; 
+            border-radius: 28px; 
+            border: 1px solid var(--border); 
+            width: 85%; 
+            max-width: 320px; 
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .modal-input { 
+            width: 100%; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid var(--dir-color); 
+            color: var(--text); 
+            padding: 15px; 
+            text-align: center; 
+            font-size: 28px; 
+            border-radius: 18px; 
+            margin-bottom: 20px; 
+            outline: none;
+            font-family: 'Roboto Mono';
+            letter-spacing: 8px;
+        }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -112,21 +142,21 @@
     <div id="configModal">
         <div class="modal-content">
             <div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">VALOR %</div>
-            <input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="saveConfigValue()">ACEPTAR</button>
-                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeConfigModal()">CANCELAR</button>
+            <input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal" style="letter-spacing:0; font-size:22px;">
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button style="background:var(--dir-color); color:#fff; padding:15px; border:none; border-radius:15px; font-weight:900; font-family:'Orbitron';" onclick="saveConfigValue()">GUARDAR CAMBIO</button>
+                <button style="background:transparent; color:var(--text); opacity:0.5; border:none; padding:10px;" onclick="closeConfigModal()">CANCELAR</button>
             </div>
         </div>
     </div>
 
     <div id="customModal">
         <div class="modal-content">
-            <div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px;">SEGURIDAD</div>
-            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:6px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">VALIDAR</button>
-                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeMyModal(false)">CANCELAR</button>
+            <div style="font-family:'Orbitron'; font-size:12px; font-weight:900; margin-bottom:20px; color:var(--dir-color); letter-spacing:2px;">AUTORIZACIÓN</div>
+            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input">
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button style="background:var(--long-green); color:#fff; padding:15px; border:none; border-radius:15px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">CONFIRMAR</button>
+                <button style="background:transparent; color:var(--text); opacity:0.5; border:none; padding:10px;" onclick="closeMyModal(false)">SALIR</button>
             </div>
         </div>
     </div>
@@ -244,7 +274,7 @@
             calculate();
         }
 
-        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; document.getElementById('configModal').style.display = 'flex'; setTimeout(() => document.getElementById('configInputVal').focus(), 100); } else { showToast("CLAVE INCORRECTA"); } }); }
+        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; document.getElementById('configModal').style.display = 'flex'; setTimeout(() => document.getElementById('configInputVal').focus(), 300); } else { showToast("CLAVE INCORRECTA"); } }); }
         function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeConfigModal(); updateDashUI(); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
 
@@ -287,15 +317,11 @@
             if(s.buys.length === 0) return showToast("SLOT VACÍO");
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    // SNAPSHOT DETALLADO PARA REPORTES
                     history.push({ 
                         date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
                         coin: s.name || 'S/N', 
                         profit: document.getElementById('resProfit').textContent.replace('$',''),
-                        base: s.price.toFixed(4),
-                        avg: document.getElementById('resAvg').textContent,
-                        totalInv: document.getElementById('resInv').textContent.replace('$',''),
-                        strategy: s.strat.toUpperCase()
+                        base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase()
                     });
                     localStorage.setItem('c5x_history', JSON.stringify(history));
                     renderHistory();
@@ -311,16 +337,7 @@
         
         function exportExcel() { 
             if(history.length === 0) return showToast("SIN DATOS"); 
-            // Formatear datos detallados para Excel
-            const detailedData = history.map(h => ({
-                "FECHA": h.date,
-                "MONEDA": h.coin,
-                "ESTRATEGIA": h.strategy || 'N/A',
-                "P. BASE": h.base || '0',
-                "P. PROMEDIO": h.avg || '0',
-                "INVERSIÓN TOTAL": "$" + (h.totalInv || '0'),
-                "PROFIT ($)": "$" + h.profit
-            }));
+            const detailedData = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "ESTRATEGIA": h.strategy || 'N/A', "P. BASE": h.base || '0', "P. PROMEDIO": h.avg || '0', "INVERSIÓN TOTAL": "$" + (h.totalInv || '0'), "PROFIT ($)": "$" + h.profit }));
             const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
             XLSX.utils.book_append_sheet(wb, ws, "Bitacora_Detallada"); 
             XLSX.writeFile(wb, "C5X_Reporte_Master.xlsx"); 
@@ -329,13 +346,10 @@
         function exportPDF() { 
             if(history.length === 0) return showToast("SIN DATOS"); 
             const { jsPDF } = window.jspdf, doc = new jsPDF('l', 'mm', 'a4'); 
-            doc.setFontSize(18); doc.text("REPORTE DETALLADO DE OPERACIONES C5X", 14, 20);
-            doc.setFontSize(10); doc.text("Generado el: " + new Date().toLocaleString(), 14, 28);
-            
+            doc.setFontSize(18); doc.text("REPORTE DETALLADO C5X", 14, 20);
             const head = [['Fecha', 'Moneda', 'Estrategia', 'P. Base', 'Promedio', 'Inversión', 'Profit']];
             const body = history.map(h => [h.date, h.coin, h.strategy || 'NORMAL', h.base || '0', h.avg || '0', '$'+(h.totalInv || '0'), '$'+h.profit]);
-            
-            doc.autoTable({ head: head, body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [52, 152, 219] } }); 
+            doc.autoTable({ head: head, body: body, startY: 30, theme: 'striped' }); 
             doc.save("C5X_Reporte_Master.pdf"); 
         }
 
@@ -344,7 +358,14 @@
         function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
         function viewTickerChart() { loadChart(currentTickerSymbol); }
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
+        
+        function openPrompt(cb) { 
+            modalCallback = cb; 
+            document.getElementById('customModal').style.display = 'flex'; 
+            document.getElementById('modalInput').value = ''; 
+            setTimeout(() => document.getElementById('modalInput').focus(), 300); 
+        }
+        
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } else { showToast("CLAVE INCORRECTA"); } }); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
