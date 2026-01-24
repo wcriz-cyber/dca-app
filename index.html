@@ -51,7 +51,7 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        /* DASHBOARD - INFORMACIÓN MÁS GRANDE */
+        /* DASHBOARD - DATOS VISIBLES */
         .dash-container { margin: 10px 8px; }
         .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 6px 25px rgba(0,0,0,0.5); }
         .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 12px; }
@@ -61,10 +61,10 @@
 
         .dash-data { text-align: center; }
         .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -2px; }
-        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; padding-top: 15px; border-top: 1px solid var(--border); }
         .info-item { text-align: center; }
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 17px; font-weight: 900; color: var(--text); display: block; }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -162,7 +162,6 @@
 
         <main id="levelsGrid" class="levels-container"></main>
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
-        <div id="historyList" style="padding: 0 8px; margin-bottom: 40px;"></div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -235,8 +234,8 @@
             if(!s.price) { grid.innerHTML = ''; return; }
             
             let totalSpent = 0, totalQty = 0;
-            let lastLevelPrice = s.price;
-            let currentDrop = 10; // Empieza en 10 para que el primer salto sea a 17%
+            let lastPrice = s.price;
+            let currentDropPercent = 10; // Para que al sumar 7 el Nivel 2 sea 17%
             let html = '';
 
             for(let i=0; i<12; i++){
@@ -245,13 +244,12 @@
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
-                        // Nivel 2: 17% (10 + 7)
-                        // Nivel 3: 24% (17 + 7)...
-                        currentDrop += 7;
-                        pLevel = s.price * (1 - (currentDrop/100));
+                        // Estrategia Predeterminada corregida
+                        currentDropPercent += 7; // Nivel 2 = 17%, Nivel 3 = 24%, etc.
+                        pLevel = s.price * (1 - (currentDropPercent / 100));
                     } else {
-                        // Agresiva: 66% del valor anterior
-                        pLevel = lastLevelPrice * (1 - (descPct/100));
+                        // Agresiva: 66% de caída respecto al nivel anterior
+                        pLevel = lastPrice * (1 - (descPct / 100));
                     }
                 }
                 
@@ -263,10 +261,16 @@
                 }
 
                 html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <div><span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span><div class="price-display">${pLevel.toFixed(6)}</div></div>
-                    <div style="text-align:right"><span style="font-size:8px; color:#848e9c">MONTO</span><div style="font-weight:900">$${mUSD.toFixed(1)}</div></div>
+                    <div>
+                        <span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span>
+                        <div class="price-display">${pLevel.toFixed(6)}</div>
+                    </div>
+                    <div style="text-align:right">
+                        <span style="font-size:8px; color:#848e9c">MONTO</span>
+                        <div style="font-weight:900">$${mUSD.toFixed(1)}</div>
+                    </div>
                 </div>`;
-                lastLevelPrice = pLevel;
+                lastPrice = pLevel;
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
@@ -330,9 +334,7 @@
             updateDashUI(); 
         }
 
-        function viewTickerChart() { 
-            loadChart(currentTickerSymbol); 
-        }
+        function viewTickerChart() { loadChart(currentTickerSymbol); }
 
         function updateCoin() { 
             const val = document.getElementById('coinInput').value.toUpperCase();
