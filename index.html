@@ -27,44 +27,45 @@
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         
-        /* CABECERA CON FUENTES NIVELADAS */
+        /* CABECERA OPTIMIZADA: MÁS GRANDE PERO COMPACTA */
         .app-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 12px 15px; 
+            padding: 10px 12px; 
             background: var(--header-bg); 
             border-bottom: 3px solid var(--dir-color); 
-            min-height: 70px;
+            min-height: 75px; /* Ligeramente más alta para alojar fuentes grandes */
         }
         .logo-area { 
             font-family: 'Orbitron'; 
             font-weight: 900; 
             letter-spacing: 1px; 
-            font-size: 18px; /* Nivelado */
+            font-size: 22px; /* Aumentado */
         }
         
         .btc-live-box { 
             display: flex; 
             align-items: center; 
-            gap: 8px; 
+            gap: 10px; 
             background: var(--header-bg); 
-            padding: 8px 12px; 
-            border-radius: 12px; 
-            border: 1px solid var(--border); 
+            padding: 10px 15px; /* Más relleno interno */
+            border-radius: 14px; 
+            border: 2px solid var(--border); /* Borde más definido */
             font-family: 'Orbitron'; 
-            font-size: 18px; /* Nivelado con el logo */
+            font-size: 22px; /* Aumentado a la par del logo */
             cursor: pointer;
         }
+        #t-dot { width: 10px; height: 10px; border-radius: 50%; background: grey; }
 
         .theme-toggle { 
             background: var(--header-bg); 
-            border: 1px solid var(--border); 
+            border: 2px solid var(--border); 
             color: var(--text); 
-            width: 45px;
-            height: 45px;
-            border-radius: 12px; 
-            font-size: 18px; /* Nivelado */
+            width: 55px; /* Más ancho */
+            height: 55px; /* Más alto */
+            border-radius: 14px; 
+            font-size: 24px; /* Icono más grande */
             cursor: pointer; 
             display: flex; 
             align-items: center; 
@@ -72,10 +73,10 @@
         }
         
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
-        .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
+        .tf-btn { flex: 1; padding: 12px 5px; border: none; background: transparent; color: #848e9c; font-size: 12px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        .content-spacer { margin-top: 130px; }
+        .content-spacer { margin-top: 145px; } /* Ajustado por la nueva altura */
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -161,7 +162,7 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
-                <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
+                <span id="t-dot"></span>
                 <span id="t-sym">BTC</span>
                 <span id="t-price" style="font-weight: 900;">$--,---</span>
             </div>
