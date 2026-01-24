@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.3 Master</title>
+    <title>C5X - V21.4 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -60,7 +60,6 @@
         .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 8px; }
         .strat-indicator { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 2px; text-align: center; }
         .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
-        .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
         .dash-data { text-align: center; }
         .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 2px 0; letter-spacing: -2px; }
@@ -72,8 +71,9 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
+        /* TARJETAS ESTÁNDAR */
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
-        .standard-card { background: var(--surface); border-radius: 22px; padding: 18px 20px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.3s; position: relative; min-height: 85px; }
+        .standard-card { background: var(--surface); border-radius: 22px; padding: 18px 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
         
         .card-icon { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: #848e9c; margin-right: 18px; }
@@ -87,17 +87,28 @@
         .card-side label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; text-transform: uppercase; }
         .card-side span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
 
+        /* BITÁCORA SLIDER (6 MÁXIMO VISIBLE) */
         .log-section { margin-top: 40px; }
         .log-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .log-title { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
         .log-actions { display: flex; gap: 8px; }
         .log-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 900; cursor: pointer; font-family: 'Orbitron'; }
+        
+        /* Contenedor con Scroll para Bitácora */
+        .log-grid-container { 
+            max-height: 585px; /* Altura aproximada de 6 tarjetas + gaps */
+            overflow-y: auto; 
+            padding-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .log-grid-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
+        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
+
+        /* MODALES */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
-
-        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -110,7 +121,7 @@
 
     <div id="configModal">
         <div class="modal-content">
-            <div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">NUEVO VALOR %</div>
+            <div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">VALOR %</div>
             <input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal">
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="saveConfigValue()">ACEPTAR</button>
@@ -138,7 +149,7 @@
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
-        <div class="tf-bar" id="tfBar">
+        <div class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
@@ -189,7 +200,9 @@
                     <button class="log-btn" style="color:var(--danger)" onclick="clearLogs()">🗑️</button>
                 </div>
             </div>
-            <div id="logGrid" class="card-grid"></div>
+            <div class="log-grid-container">
+                <div id="logGrid" class="card-grid"></div>
+            </div>
         </section>
     </div>
 
@@ -202,11 +215,7 @@
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '', history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        
-        // Estructura de Slots actualizada para incluir la estrategia por slot
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ 
-            name:'', price:0, capital:5, buys:[], strat:'normal', locked: false 
-        }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
@@ -231,42 +240,26 @@
             } catch(e) {} 
         }
 
-        function rotateDash() { 
-            const s = slots[activeIdx];
-            if(s.locked) return; 
-            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
-            save(); updateDashUI(); 
-        }
-
-        function toggleLock() { 
-            const s = slots[activeIdx];
-            s.locked = !s.locked; 
-            save(); updateDashUI();
-        }
+        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return; s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
 
         function updateDashUI() {
-            const s = slots[activeIdx];
-            const dash = document.getElementById('dashMain'), label = document.getElementById('stratName'), targetEl = document.getElementById('resTarget'), btnStrat = document.getElementById('btnStratToggle'), lockBtn = document.getElementById('lockBtn');
-            const isNormal = s.strat === "normal";
-            
+            const s = slots[activeIdx], dash = document.getElementById('dashMain'), label = document.getElementById('stratName'), targetEl = document.getElementById('resTarget'), btnStrat = document.getElementById('btnStratToggle'), lockBtn = document.getElementById('lockBtn'), isNormal = s.strat === "normal";
             label.textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
             label.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
             dash.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             targetEl.style.color = isNormal ? "var(--long-green)" : "var(--warning)";
-            
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
             btnStrat.textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             btnStrat.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             btnStrat.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            
             lockBtn.textContent = s.locked ? '🔒' : '🔓';
-            lockBtn.classList.toggle('locked', s.locked);
-            
+            lockBtn.style.color = s.locked ? 'var(--warning)' : 'var(--text)';
             calculate();
         }
 
         function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; document.getElementById('configModal').style.display = 'flex'; setTimeout(() => document.getElementById('configInputVal').focus(), 100); } else { showToast("CLAVE INCORRECTA"); } }); }
-        function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeConfigModal(); updateDashUI(); showToast("VALOR ACTUALIZADO"); }
+        function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeConfigModal(); updateDashUI(); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
 
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
@@ -298,20 +291,20 @@
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
-        function renderHistory() { document.getElementById('logGrid').innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="font-size:12px; border-color:var(--dir-color); color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-body"><span class="card-tag" style="color:#848e9c">${h.date}</span><div class="card-main-val" style="font-size:20px">${h.coin}</div></div><div class="card-side"><label>PROFIT</label><span style="color:var(--long-green)">+$${h.profit}</span></div></div>`).reverse().join(''); }
+        function renderHistory() { 
+            const grid = document.getElementById('logGrid');
+            grid.innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="font-size:12px; border-color:var(--dir-color); color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-body"><span class="card-tag" style="color:#848e9c">${h.date}</span><div class="card-main-val" style="font-size:20px">${h.coin}</div></div><div class="card-side"><label>PROFIT</label><span style="color:var(--long-green)">+$${h.profit}</span></div></div>`).reverse().join(''); 
+        }
 
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length === 0) return showToast("SLOT VACÍO");
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, cap: document.getElementById('resInv').textContent.replace('$',''), profit: document.getElementById('resProfit').textContent.replace('$','') });
+                    history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$','') });
                     localStorage.setItem('c5x_history', JSON.stringify(history));
                     renderHistory();
-                    
-                    // Resetear slot a valores iniciales (Estrategia Predeterminada y Desbloqueado)
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                    
                     const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                     slots = [...filled, ...empty];
                     save(); selectSlot(0); showToast("CERRADO Y REGISTRADO");
@@ -321,7 +314,7 @@
 
         function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } else { showToast("CLAVE INCORRECTA"); } }); }
         function exportExcel() { if(history.length === 0) return showToast("SIN DATOS"); const ws = XLSX.utils.json_to_sheet(history), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Bitacora.xlsx"); }
-        function exportPDF() { if(history.length === 0) return showToast("SIN DATOS"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("Bitacora C5X", 14, 15); doc.autoTable({ head: [['Fecha', 'Moneda', 'Base', 'Promedio', 'Capital', 'Profit']], body: history.map(h => [h.date, h.coin, h.base, h.avg, h.cap, h.profit]), startY: 20 }); doc.save("C5X_Bitacora.pdf"); }
+        function exportPDF() { if(history.length === 0) return showToast("SIN DATOS"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("Bitacora C5X", 14, 15); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, h.profit]), startY: 20 }); doc.save("C5X_Bitacora.pdf"); }
         function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
         function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
