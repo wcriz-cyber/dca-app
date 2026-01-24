@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.9 Optimized</title>
+    <title>C5X - V18.9 Optimized Secure</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -84,10 +84,13 @@
         .chart-container { width: 100%; height: 260px; background: #000; }
         
         .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 12px 12px 0 12px; }
-        .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; }
+        .control-box { background: var(--surface); padding: 10px; border-radius: 14px; border: 1px solid var(--border); text-align: center; position: relative; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
+        /* Capa para bloquear interacción accidental */
+        .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; cursor: pointer; }
+
         .dash { margin: 8px 12px 12px 12px; padding: 20px; background: var(--surface); border-radius: 28px; border: 3px solid var(--dir-color); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         .dash-summary { display: flex; justify-content: space-around; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
         .dash-label { font-size: 10px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
@@ -184,8 +187,18 @@
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()" placeholder="BTC3L"></div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" oninput="calculate()"></div>
-            <div class="control-box" style="border-color: var(--warning);"><label>% DESC</label><input type="number" id="descInput" value="55" oninput="calculate()"></div>
+            
+            <div class="control-box">
+                <div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div>
+                <label>CAP $</label>
+                <input type="number" id="capitalInput" oninput="calculate()" readonly>
+            </div>
+
+            <div class="control-box" style="border-color: var(--warning);">
+                <div class="secure-overlay" onclick="requestControlAccess('descInput')"></div>
+                <label>% DESC</label>
+                <input type="number" id="descInput" value="66" oninput="calculate()" readonly>
+            </div>
         </div>
 
         <div class="dash">
@@ -286,9 +299,24 @@
             renderLevels(); 
         }
 
+        function requestControlAccess(targetId) {
+            openPrompt((pass) => {
+                if(pass === "2524") {
+                    const input = document.getElementById(targetId);
+                    input.readOnly = false;
+                    input.focus();
+                    showToast("ACCESO CONCEDIDO");
+                    // Volver a bloquear al perder el foco
+                    input.onblur = () => { input.readOnly = true; };
+                } else {
+                    alert("CLAVE INCORRECTA");
+                }
+            });
+        }
+
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
-            const descPct = parseFloat(document.getElementById('descInput').value) || 55;
+            const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             updateBodyMode(s.name);
             if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.4; padding:20px;">Esperando configuración...</p>'; return; }
             
@@ -361,7 +389,6 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    // Registrar en historial
                     history.unshift({ 
                         coin: s.name, 
                         date: new Date().toLocaleDateString(), 
@@ -371,18 +398,13 @@
                     });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history)); 
                     renderHistory();
-
-                    // Limpiar el slot actual
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
-                    
-                    // REORDENAR: Filtrar los llenos primero, luego los vacíos al final
                     const filledSlots = slots.filter(sl => sl.name !== '');
                     const emptySlots = slots.filter(sl => sl.name === '');
                     slots = [...filledSlots, ...emptySlots];
-                    
                     save(); 
-                    selectSlot(0); // Volver al primer slot (que ahora tiene una operación activa si existía)
-                    showToast("OPERACIÓN CERRADA Y REORDENADA");
+                    selectSlot(0); 
+                    showToast("OPERACIÓN CERRADA");
                 } else { alert("CLAVE INCORRECTA"); }
             });
         }
