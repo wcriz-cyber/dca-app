@@ -45,7 +45,6 @@
         
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         
-        /* AJUSTE: LOS 4 SLOTS CON EL MISMO TAMAÑO */
         .controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
@@ -269,13 +268,21 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
+                    // RESET DASHBOARD A PREDETERMINADA AL CERRAR
+                    currentStrat = "normal"; 
+                    isDashLocked = false;
+                    const lckBtn = document.getElementById('lockBtn');
+                    lckBtn.textContent = '🔓';
+                    lckBtn.classList.remove('locked');
+                    
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
                     const filled = slots.filter(sl => sl.name !== '');
                     const empty = slots.filter(sl => sl.name === '');
                     slots = [...filled, ...empty];
-                    currentStrat = "normal"; isDashLocked = false;
-                    document.getElementById('lockBtn').textContent = '🔓';
-                    save(); selectSlot(0); showToast("OPERACIÓN CERRADA");
+                    
+                    save(); 
+                    selectSlot(0); 
+                    showToast("OPERACIÓN CERRADA");
                 }
             });
         }
