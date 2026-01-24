@@ -51,19 +51,21 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        /* DASHBOARD MEJORADO */
+        /* DASHBOARD REDISEÑADO */
         .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .dash-top { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; margin-bottom: 12px; }
-        .strat-indicator { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; letter-spacing: 1.5px; text-align: center; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+        .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 12px; }
+        .strat-indicator { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 2px; text-align: center; }
+        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: 0.2s; }
+        .tool-btn:active { transform: scale(0.9); }
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
-        .dash-data { text-align: center; padding: 5px 0; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 10px rgba(14, 203, 129, 0.2); }
-        .sub-info { display: flex; justify-content: space-around; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-        .info-item label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--text); }
+        .dash-data { text-align: center; padding: 2px 0; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 44px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -1.5px; text-shadow: 0 0 15px rgba(14, 203, 129, 0.3); }
+        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
+        .info-item { text-align: center; }
+        .info-item label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; color: var(--text); display: block; }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -148,11 +150,12 @@
                     <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                 </div>
                 <div class="dash-data">
-                    <span style="font-size:10px; color:var(--dir-color); font-weight:900; text-transform:uppercase;">Target Price (100%)</span>
+                    <span style="font-size:11px; color:var(--dir-color); font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</span>
                     <div class="main-target" id="resTarget">0.000000</div>
                     <div class="sub-info">
-                        <div class="info-item"><label>Average</label><span id="resAvg">0.000000</span></div>
+                        <div class="info-item"><label>Promedio</label><span id="resAvg">0.0000</span></div>
                         <div class="info-item"><label>Inversión</label><span id="resInv">$0.00</span></div>
+                        <div class="info-item"><label>Ganancia</label><span id="resProfit" style="color:var(--long-green)">$0.00</span></div>
                     </div>
                 </div>
             </div>
@@ -233,20 +236,20 @@
             if(!s.price) { grid.innerHTML = ''; return; }
             
             let totalSpent = 0, totalQty = 0;
-            let lastPrice = s.price;
+            let lastLevelPrice = s.price;
             let drop7 = 10; 
             let html = '';
 
             for(let i=0; i<12; i++){
                 let pLevel;
-                if(i === 0) {
+                if(i === 0){
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
                         drop7 += 7;
                         pLevel = s.price * (1 - (drop7/100));
                     } else {
-                        pLevel = lastPrice * (1 - (descPct/100));
+                        pLevel = lastLevelPrice * (1 - (descPct/100));
                     }
                 }
                 
@@ -261,13 +264,17 @@
                     <div><span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span><div class="price-display">${pLevel.toFixed(6)}</div></div>
                     <div style="text-align:right"><span style="font-size:8px; color:#848e9c">MONTO</span><div style="font-weight:900">$${mUSD.toFixed(1)}</div></div>
                 </div>`;
-                lastPrice = pLevel;
+                lastLevelPrice = pLevel;
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
+            const target = avg * 2;
+            
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
+            document.getElementById('resTarget').textContent = target.toFixed(6);
+            // Ganancia estimada (Inversión * 1 ya que el target es 100% arriba del promedio)
+            document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
         function releaseSlot() {
@@ -275,11 +282,10 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    currentStrat = "normal"; 
+                    currentStrat = "normal";
                     isDashLocked = false;
-                    const lckBtn = document.getElementById('lockBtn');
-                    lckBtn.textContent = '🔓';
-                    lckBtn.classList.remove('locked');
+                    document.getElementById('lockBtn').textContent = '🔓';
+                    document.getElementById('lockBtn').classList.remove('locked');
                     
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
                     const filled = slots.filter(sl => sl.name !== '');
