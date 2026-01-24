@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.2 Streamlined</title>
+    <title>C5X - V23.3 Logic Fixed</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -297,7 +297,7 @@
             <div class="settings-card">
                 <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
                 <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.2 STREAMLINED</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.3 FIXED</div>
             </div>
         </div>
     </div>
@@ -343,7 +343,8 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        function switchView(viewName) {
+        // --- SWITCH VIEW (LOGIC FIXED) ---
+        function switchView(viewName, toggle = true) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + viewName).classList.add('active');
@@ -359,7 +360,9 @@
             }
 
             if(viewName === 'settings') loadSettingsValues();
-            toggleMenu(); 
+            
+            // Only toggle menu if requested (prevents auto-open on liquidation)
+            if(toggle) toggleMenu(); 
         }
 
         function loadSettingsValues() {
@@ -398,7 +401,7 @@
             if(e) e.stopPropagation(); 
             chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase();
             loadChart(chartSymbol); 
-            if(currentSection !== 'operate') switchView('operate');
+            if(currentSection !== 'operate') switchView('operate', false); // False avoids toggling menu
         }
 
         function updateTF(tf, btn) { 
@@ -510,7 +513,10 @@
             localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
             slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
             const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-            slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
+            slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); 
+            
+            // FIXED: NO ABRIR MENU AL CAMBIAR VISTA
+            switchView('log', false); 
         }
 
         // --- SISTEMA GENÉRICO DE SEGURIDAD (SOLO PARA RESET/BORRAR) ---
