@@ -27,7 +27,6 @@
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         
-        /* CABECERA OPTIMIZADA */
         .app-header { 
             display: flex; 
             justify-content: space-between; 
@@ -227,6 +226,7 @@
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
+        let currentChartSymbol = ''; // RASTREO DE MONEDA EN PANTALLA
         
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
@@ -260,7 +260,18 @@
             } catch(e) {} 
         }
 
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); calculate(); }
+        function selectSlot(i) { 
+            activeIdx = i; 
+            localStorage.setItem('c5x_last_slot', i); 
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); 
+            // CARGA LA MONEDA DEL SLOT AL SELECCIONARLO
+            loadChart(s.name); 
+            calculate(); 
+        }
         
         function calculate() { 
             const s = slots[activeIdx]; 
@@ -392,13 +403,40 @@
         function updateCoin() { const v = document.getElementById('coinInput').value.trim().toUpperCase(); if(v) { slots[activeIdx].name = v; save(); renderNav(); loadChart(v); calculate(); } }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
+        
+        // MODIFICADO: MANTIENE LA MONEDA QUE YA ESTABA EN EL GRÁFICO
+        function updateTF(tf, btn) { 
+            activeTF = tf; 
+            localStorage.setItem('c5x_last_tf', tf); 
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            loadChart(currentChartSymbol); 
+        }
+
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function loadChart(coin) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(coin || 'BTC3L').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        
+        function loadChart(coin) { 
+            const symbolToLoad = coin || 'BTC3L';
+            currentChartSymbol = symbolToLoad; // ACTUALIZA EL RASTREO
+            new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${symbolToLoad.replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": "#050708" 
+            }); 
+        }
+
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; save(); renderLevels(); }
         function panicFill(i) { slots[activeIdx].buys = Array.from({length: i + 1}, (_, k) => k); save(); renderLevels(); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
+        
+        function viewTickerChart() { 
+            // CARGA LA MONEDA DEL TICKER (BTC, ETH, ETC)
+            loadChart(currentTickerSymbol); 
+        }
     </script>
 </body>
 </html>
