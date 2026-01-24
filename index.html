@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.3 Card Config</title>
+    <title>C5X - V22.4 Fast Flow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         :root {
@@ -17,8 +15,6 @@
             --warning: #f1c40f; --danger: #e74c3c;
         }
         body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
-        body.mode-long { --dir-color: var(--long-green); }
-        body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 85px; transition: 0.3s; overflow-x: hidden; }
@@ -34,64 +30,58 @@
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
 
-        /* Tabs Logic */
         .tab-content { display: none; margin-top: 108px; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
         .no-tf-margin { margin-top: 65px !important; }
         .tab-content.active-tab { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--surface); display: flex; justify-content: space-around; border-top: 1px solid var(--border); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
         .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--dir-color); }
         .nav-item span { font-size: 22px; }
         .nav-item label { font-size: 10px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
 
-        /* Componentes de Trading */
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
         .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         
         .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
-        .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
+        .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-        .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
         .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; position: relative; }
         .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); text-align: center; }
         
-        /* Grid de Tarjetas (Usado en Niveles y Ajustes) */
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
-        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.2s; }
+        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.1s; }
+        .standard-card:active { transform: scale(0.98); background: rgba(52, 152, 219, 0.05); }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
         .card-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; margin-right: 15px; flex-shrink: 0; }
         .card-content { flex: 1; }
         .card-label { font-size: 9px; color: var(--dir-color); font-weight: 900; text-transform: uppercase; }
         .card-value { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; }
 
-        /* Modales */
-        #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+        #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; border: 1px solid var(--border); width: 80%; max-width: 300px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 20px; border-radius: 10px; margin-bottom: 20px; }
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; }
+        .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 24px; font-weight: 900; border-radius: 10px; margin-bottom: 20px; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 90px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 90px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body onload="init()">
 
     <div id="toast">MENSAJE</div>
 
-    <div id="configModal"><div class="modal-content"><div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">EDITAR VALOR</div><input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal"><button style="width:100%; background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="saveConfigValue()">GUARDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeConfigModal()">CANCELAR</button></div></div>
-    <div id="customModal"><div class="modal-content"><div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px;">SEGURIDAD</div><input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:6px;"><button style="width:100%; background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900;" onclick="closeMyModal(true)">VALIDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:10px;" onclick="closeMyModal(false)">CANCELAR</button></div></div>
+    <div id="configModal"><div class="modal-content"><div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">EDITAR</div><input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal"><button style="width:100%; background:var(--long-green); color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900;" onclick="saveConfigValue()">GUARDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:15px;" onclick="closeConfigModal()">CANCELAR</button></div></div>
 
     <div class="fixed-header">
         <header class="app-header">
             <div class="logo-area">C5X</div>
-            <div class="btc-live-box">
-                <div id="t-dot"></div><span id="t-sym">BTC</span><span id="t-price" style="font-weight: 900; margin-left:5px;">$--,---</span>
-            </div>
+            <div class="btc-live-box"><div id="t-dot"></div><span id="t-sym">BTC</span><span id="t-price" style="font-weight: 900; margin-left:5px;">$--,---</span></div>
             <div style="width: 20px;"></div>
         </header>
         <div id="tfBar" class="tf-bar">
@@ -106,13 +96,10 @@
     <div id="tab-history" class="tab-content no-tf-margin">
         <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
             <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">HISTORIAL</h2>
-            <div style="display:flex; gap:5px;">
-                <button onclick="exportExcel()" style="padding:8px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">XLS</button>
-                <button onclick="exportPDF()" style="padding:8px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">PDF</button>
-            </div>
+            <button onclick="exportExcel()" style="padding:8px 15px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">EXPORTAR</button>
         </div>
         <div id="logGrid" class="card-grid"></div>
-        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:20px; font-weight:900;">LIMPIAR TODO</button></center>
+        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:25px; font-weight:900; opacity:0.6;">BORRAR BITÁCORA</button></center>
     </div>
 
     <div id="tab-trade" class="tab-content active-tab">
@@ -120,70 +107,46 @@
         <div id="tv_chart" class="chart-container"></div>
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC" onblur="updateCoin()"></div>
-            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
+            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any" inputmode="decimal"></div>
             <div class="control-box"><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
         </div>
         <div class="dash-main" id="dashMain">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <button class="tool-btn" style="background:none; border:none; font-size:20px;" onclick="rotateDash()">🔄</button>
+                <button style="background:none; border:none; font-size:20px;" onclick="rotateDash()">🔄</button>
                 <div id="stratName" style="font-family:'Orbitron'; font-size:11px; font-weight:900;">PREDETERMINADA</div>
-                <button class="tool-btn" style="background:none; border:none; font-size:20px;" id="lockBtn" onclick="toggleLock()">🔓</button>
+                <button style="background:none; border:none; font-size:20px;" id="lockBtn" onclick="toggleLock()">🔓</button>
             </div>
             <div class="main-target" id="resTarget">0.000000</div>
-            <div class="sub-info" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border);">
-                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Promedio</label><span id="resAvg" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900;">0.0000</span></div>
-                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Ganancia</label><span id="resProfit" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--long-green)">$0.00</span></div>
-                <div style="text-align: center;"><label style="font-size: 9px; color: #848e9c; display: block;">Inversión</label><span id="resInv" style="font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900;">$0.00</span></div>
+            <div class="sub-info" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:15px; padding-top:15px; border-top:1px solid var(--border);">
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Promedio</label><span id="resAvg" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900;">0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Ganancia</label><span id="resProfit" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900; color:var(--long-green)">$0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6;">Inversión</label><span id="resInv" style="font-family:'Roboto Mono'; font-size:16px; font-weight:900;">$0.00</span></div>
             </div>
         </div>
         <main id="levelsGrid" class="card-grid"></main>
-        <button class="btn-release" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';" onclick="releaseSlot()">LIQUIDAR</button>
+        <button onclick="releaseSlot()" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';">LIQUIDAR</button>
     </div>
 
     <div id="tab-config" class="tab-content no-tf-margin">
         <div style="padding:15px;">
             <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:20px;">CONFIGURACIÓN</h2>
-            
             <div class="card-grid">
                 <div class="standard-card" onclick="toggleTheme()">
-                    <div class="card-icon" style="font-size:18px;">🎨</div>
-                    <div class="card-content">
-                        <div class="card-label">Modo Visual</div>
-                        <div class="card-value" id="themeLabel">OSCURO</div>
-                    </div>
-                    <div style="font-size:10px; opacity:0.5;">TAP 🔄</div>
+                    <div class="card-icon">🎨</div>
+                    <div class="card-content"><div class="card-label">Modo Visual</div><div class="card-value" id="themeLabel">OSCURO</div></div>
                 </div>
-
-                <div class="standard-card" onclick="handleEdit('capital')">
-                    <div class="card-icon" style="font-size:18px; color:var(--long-green)">$</div>
-                    <div class="card-content">
-                        <div class="card-label">Capital Global</div>
-                        <div class="card-value" id="cfgCapVal">$5.00</div>
-                    </div>
-                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
+                <div class="standard-card" onclick="openFastEdit('capital')">
+                    <div class="card-icon" style="color:var(--long-green)">$</div>
+                    <div class="card-content"><div class="card-label">Capital Global</div><div class="card-value" id="cfgCapVal">$5.00</div></div>
                 </div>
-
-                <div class="standard-card" onclick="handleEdit('normal')">
-                    <div class="card-icon" style="font-size:18px; color:var(--dir-color)">📊</div>
-                    <div class="card-content">
-                        <div class="card-label">% Predeterminada</div>
-                        <div class="card-value" id="cfgBaseVal">7%</div>
-                    </div>
-                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
+                <div class="standard-card" onclick="openFastEdit('normal')">
+                    <div class="card-icon" style="color:var(--dir-color)">📊</div>
+                    <div class="card-content"><div class="card-label">% Predeterminada</div><div class="card-value" id="cfgBaseVal">7%</div></div>
                 </div>
-
-                <div class="standard-card" onclick="handleEdit('agresiva')">
-                    <div class="card-icon" style="font-size:18px; color:var(--warning)">⚡</div>
-                    <div class="card-content">
-                        <div class="card-label">% Descuento</div>
-                        <div class="card-value" id="cfgAggVal">66%</div>
-                    </div>
-                    <div style="font-size:10px; opacity:0.5;">EDIT 🔒</div>
+                <div class="standard-card" onclick="openFastEdit('agresiva')">
+                    <div class="card-icon" style="color:var(--warning)">⚡</div>
+                    <div class="card-content"><div class="card-label">% Descuento</div><div class="card-value" id="cfgAggVal">66%</div></div>
                 </div>
-            </div>
-
-            <div style="text-align:center; padding:40px; opacity:0.2; font-size:10px; font-family:'Orbitron'; letter-spacing:2px;">
-                C5X ENGINE V22.3
             </div>
         </div>
     </div>
@@ -205,7 +168,6 @@
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-        let modalCallback = null;
 
         function init() { 
             if(isLight) document.body.classList.add('light-mode');
@@ -233,51 +195,46 @@
             } catch(e){}
         }
 
-        function handleEdit(type) {
-            openPrompt((p) => {
-                if(p === "2524") {
-                    const cInput = document.getElementById('configInputVal');
-                    cInput.dataset.type = type;
-                    if(type === 'capital') {
-                        document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
-                        cInput.value = slots[activeIdx].capital;
-                    } else if(type === 'normal') {
-                        document.getElementById('configTitle').textContent = "% PREDETERMINADA";
-                        cInput.value = document.getElementById('incInput').value;
-                    } else {
-                        document.getElementById('configTitle').textContent = "% DESCUENTO";
-                        cInput.value = document.getElementById('descInput').value;
-                    }
-                    document.getElementById('configModal').style.display = 'flex';
-                } else { showToast("CLAVE INCORRECTA"); }
-            });
+        function openFastEdit(type) {
+            const modal = document.getElementById('configModal');
+            const input = document.getElementById('configInputVal');
+            input.dataset.type = type;
+            if(type === 'capital') {
+                document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
+                input.value = slots[activeIdx].capital;
+            } else if(type === 'normal') {
+                document.getElementById('configTitle').textContent = "% PREDETERMINADA";
+                input.value = document.getElementById('incInput').value;
+            } else {
+                document.getElementById('configTitle').textContent = "% DESCUENTO";
+                input.value = document.getElementById('descInput').value;
+            }
+            modal.style.display = 'flex';
+            input.focus();
         }
 
         function saveConfigValue() {
-            const val = document.getElementById('configInputVal').value;
+            const val = parseFloat(document.getElementById('configInputVal').value);
             const type = document.getElementById('configInputVal').dataset.type;
-            if(type === 'capital') {
-                slots.forEach(s => s.capital = parseFloat(val));
-                document.getElementById('capitalInput').value = val;
-            } else if(type === 'normal') {
-                document.getElementById('incInput').value = val;
-            } else {
-                document.getElementById('descInput').value = val;
-            }
+            if(isNaN(val)) return;
+            if(type === 'capital') { slots.forEach(s => s.capital = val); document.getElementById('capitalInput').value = val; }
+            else if(type === 'normal') { document.getElementById('incInput').value = val; }
+            else { document.getElementById('descInput').value = val; }
             save(); closeConfigModal(); updateDashUI(); showToast("ACTUALIZADO");
         }
 
-        function updateDashUI() {
-            const s = slots[activeIdx], isN = s.strat === "normal";
-            document.getElementById('stratName').textContent = isN ? "PREDETERMINADA" : "DESCUENTO";
-            document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
-            // Update Config Tab Values
-            document.getElementById('cfgCapVal').textContent = '$' + s.capital.toFixed(2);
-            document.getElementById('cfgBaseVal').textContent = document.getElementById('incInput').value + '%';
-            document.getElementById('cfgAggVal').textContent = document.getElementById('descInput').value + '%';
-            calculate();
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(s.buys.length === 0) return;
+            history.push({ 
+                date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                coin: s.name || "S"+(activeIdx+1), 
+                profit: document.getElementById('resProfit').textContent.replace('$','') 
+            });
+            localStorage.setItem('c5x_history', JSON.stringify(history));
+            slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false };
+            save(); selectSlot(activeIdx); renderHistory();
+            showToast("OPERACIÓN CERRADA Y GUARDADA");
         }
 
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; renderLevels(); }
@@ -297,9 +254,21 @@
             grid.innerHTML = h;
             const avg = tQ > 0 ? tS/tQ : 0;
             document.getElementById('resInv').textContent = `$${tS.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
+            document.getElementById('resAvg').textContent = avg.toFixed(4);
             document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
             document.getElementById('resProfit').textContent = `$${tS.toFixed(2)}`;
+        }
+
+        function updateDashUI() {
+            const s = slots[activeIdx], isN = s.strat === "normal";
+            document.getElementById('stratName').textContent = isN ? "PREDETERMINADA" : "DESCUENTO";
+            document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            document.getElementById('cfgCapVal').textContent = '$' + s.capital.toFixed(2);
+            document.getElementById('cfgBaseVal').textContent = document.getElementById('incInput').value + '%';
+            document.getElementById('cfgAggVal').textContent = document.getElementById('descInput').value + '%';
+            calculate();
         }
 
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) if(!s.buys.includes(i)) s.buys.push(i); } else { s.buys = s.buys.filter(v => v < idx); } calculate(); }
@@ -310,17 +279,13 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function showToast(t) { const x = document.getElementById("toast"); x.textContent = t; x.className = "show"; setTimeout(() => x.className = "", 2000); }
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
-        function closeMyModal(c) { const v = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(c) modalCallback(v); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function renderHistory() { document.getElementById('logGrid').innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join(''); }
+        function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
         function loadChart(c) { if(!c) return; new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${c.replace('USDT','')}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
-        function releaseSlot() { const s = slots[activeIdx]; if(s.buys.length === 0) return; openPrompt((p) => { if(p === "2524") { history.push({ date: new Date().toLocaleString(), coin: s.name, profit: document.getElementById('resProfit').textContent.replace('$','') }); localStorage.setItem('c5x_history', JSON.stringify(history)); slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false }; save(); selectSlot(0); renderHistory(); showToast("LIQUIDADO"); } }); }
-        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("LIMPIADO"); } }); }
-        function exportExcel() { if(history.length === 0) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Log"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
-        function exportPDF() { showToast("PDF no disponible en esta vista"); }
+        function clearLogs() { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("BITÁCORA LIMPIA"); }
+        function exportExcel() { if(!history.length) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
     </script>
 </body>
 </html>
