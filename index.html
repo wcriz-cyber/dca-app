@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.2 Ultra Slim</title>
+    <title>C5X - V20.5 Symmetry</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -13,6 +13,7 @@
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
             --dash-txt: #ffffff; --dash-sub: #848e9c;
+            --h-size: 45px; /* Altura uniforme para cabecera */
         }
         body.light-mode { 
             --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; 
@@ -24,53 +25,51 @@
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 30px; transition: 0.3s; overflow-x: hidden; }
 
-        /* CABECERA ULTRA COMPACTA */
+        /* CABECERA SIMÉTRICA */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 26px; color: var(--dir-color); letter-spacing: -1px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); gap: 10px; }
         
-        .single-ticker { background: rgba(128,128,128,0.1); padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 12px; cursor: pointer; min-width: 130px; text-align: center; }
-        .t-up { color: var(--long-green); }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 28px; color: var(--dir-color); height: var(--h-size); display: flex; align-items: center; }
         
-        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 2px; border-bottom: 1px solid var(--border); }
-        .tf-btn { flex: 1; padding: 6px; border: none; background: transparent; color: #848e9c; font-size: 10px; font-weight: 900; }
-        .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
+        .single-ticker { flex: 1; background: rgba(128,128,128,0.1); border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; cursor: pointer; text-align: center; height: var(--h-size); display: flex; align-items: center; justify-content: center; font-weight: 900; }
+        
+        .theme-toggle { background: var(--surface); border: 1px solid var(--border); color: var(--text); width: var(--h-size); height: var(--h-size); border-radius: 12px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        
+        /* TEMPORALIDADES Y SLOTS IGUALADOS */
+        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.05); padding: 5px; gap: 5px; }
+        .tf-btn { flex: 1; height: 48px; border: none; background: var(--surface); color: #848e9c; font-size: 11px; font-weight: 900; border-radius: 10px; border: 1px solid var(--border); }
+        .tf-btn.active { background: var(--dir-color); color: #fff; border-color: var(--dir-color); }
 
-        .content-spacer { margin-top: 82px; } /* Reducido de 125px */
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 5px 10px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+        .content-spacer { margin-top: 115px; } 
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 5px 12px; }
+        .slot-btn { height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 250px; background: #000; }
+        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 5px; }
         
-        /* CONTROLES Y DASHBOARD */
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 6px; padding: 8px 12px; }
-        .control-box { background: var(--surface); padding: 6px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
+        /* DASHBOARD Y CONTROLES */
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 6px; padding: 10px 12px; }
+        .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 7px; color: var(--dir-color); font-weight: 900; display: block; }
-        .control-box input { background: transparent; border: none; color: var(--text); font-size: 13px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         
         .dash-container { position: relative; margin: 0 12px 10px 12px; overflow: hidden; border-radius: 24px; border: 3px solid var(--dir-color); background: var(--surface); }
         .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; }
         .dash-page { width: 50%; padding: 15px; flex-shrink: 0; position: relative; }
         
-        .btn-lock { position: absolute; top: 8px; right: 12px; background: rgba(128,128,128,0.1); border: 1px solid var(--border); padding: 5px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .btn-lock { position: absolute; top: 10px; right: 12px; background: rgba(128,128,128,0.2); border: 1px solid var(--border); width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10; }
         .btn-lock.locked { background: var(--danger); color: #fff; }
 
-        .dash-header { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
-        .dash-label { font-size: 9px; color: var(--dir-color); font-weight: 900; display: block; }
-        .dash-val-main { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--dash-txt); }
-
-        .strat-info { text-align: center; padding: 10px; border-radius: 15px; background: rgba(128,128,128,0.05); border: 1px solid var(--border); }
-        .avg-val { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--dash-txt); display: block; margin: 4px 0; letter-spacing: -1px; }
-        .target-val { font-family: 'Roboto Mono'; font-size: 40px; font-weight: 900; color: var(--long-green); line-height: 1; letter-spacing: -2px; }
+        .avg-val { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--dash-txt); display: block; margin: 5px 0; }
+        .target-val { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; letter-spacing: -2px; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 8px; }
-        .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); min-height: 75px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); min-height: 80px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2px; }
         
-        .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
+        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
         
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 8px; position: fixed; z-index: 2000; left: 50%; bottom: 50px; transform: translateX(-50%); font-weight: 900; font-size: 11px; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 50px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
     </style>
 </head>
@@ -82,16 +81,17 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="single-ticker" id="mainTicker" onclick="loadTickerChart()">
-                <span id="t-name">BTC</span>: <span id="t-val" class="t-up">...</span>
+                <span id="t-name">BTC</span>: <span id="t-val" style="color:var(--long-green); margin-left:5px">...</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
-            <button class="tf-btn active" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn active" id="defaultTF" onclick="updateTF('60', this)">1H</button>
             <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" onclick="updateTF('D', this)">1D</button>
+            <button class="tf-btn" onclick="updateTF('W', this)">1S</button>
         </div>
     </div>
 
@@ -110,23 +110,23 @@
             <div class="btn-lock" id="lockBtn" onclick="toggleLock()">🔓</div>
             <div class="dash-viewport" id="dashViewport">
                 <div class="dash-page">
-                    <div class="dash-header">
-                        <div><span class="dash-label">INVERSIÓN</span><div id="resInv1" class="dash-val-main">$0.00</div></div>
-                        <div><span class="dash-label">WIN +100%</span><div id="resProf1" class="dash-val-main" style="color:var(--long-green)">$0.00</div></div>
+                    <div style="display:flex; justify-content:space-around; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                        <div style="text-align:center"><span style="font-size:9px; color:var(--dir-color); font-weight:900;">INVERSIÓN</span><div id="resInv1" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900;">$0.00</div></div>
+                        <div style="text-align:center"><span style="font-size:9px; color:var(--dir-color); font-weight:900;">WIN +100%</span><div id="resProf1" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900; color:var(--long-green)">$0.00</div></div>
                     </div>
                     <div class="strat-info">
-                        <span style="font-size:10px; font-weight:900; color:var(--dir-color)">PREDETERMINADA</span>
+                        <span style="font-size:10px; font-weight:900; color:var(--dir-color)">ESTRATEGIA PREDETERMINADA</span>
                         <span id="resAvg7" class="avg-val">0.000000</span>
                         <div class="target-val" id="resTarget7">0.000000</div>
                     </div>
                 </div>
                 <div class="dash-page">
-                    <div class="dash-header">
-                        <div><span class="dash-label">INVERSIÓN</span><div id="resInv2" class="dash-val-main">$0.00</div></div>
-                        <div><span class="dash-label">WIN +100%</span><div id="resProf2" class="dash-val-main" style="color:var(--warning)">$0.00</div></div>
+                    <div style="display:flex; justify-content:space-around; margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:10px;">
+                        <div style="text-align:center"><span style="font-size:9px; color:var(--warning); font-weight:900;">INVERSIÓN</span><div id="resInv2" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900;">$0.00</div></div>
+                        <div style="text-align:center"><span style="font-size:9px; color:var(--warning); font-weight:900;">WIN +100%</span><div id="resProf2" style="font-family:'Roboto Mono'; font-size:24px; font-weight:900; color:var(--warning)">$0.00</div></div>
                     </div>
                     <div class="strat-info" style="border-color:var(--warning)">
-                        <span style="font-size:10px; font-weight:900; color:var(--warning)">AGRESIVA</span>
+                        <span style="font-size:10px; font-weight:900; color:var(--warning)">ESTRATEGIA AGRESIVA</span>
                         <span id="resAvgDesc" class="avg-val">0.000000</span>
                         <div class="target-val" id="resTargetDesc" style="color:var(--warning)">0.000000</div>
                     </div>
@@ -145,11 +145,9 @@
         let activeTF = '60';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], dashPage: 0, locked: false }));
         
-        // Ticker Dinámico
         const tickerList = [
             {n:'BTC', s:'BTCUSDT'}, {n:'ETH', s:'ETHUSDT'}, {n:'AVAX', s:'AVAXUSDT'},
-            {n:'SOL', s:'SOLUSDT'}, {n:'SUI', s:'SUIUSDT'}, {n:'LTC', s:'LTCUSDT'},
-            {n:'XMR', s:'XMRUSDT'}, {n:'ORO', s:'PAXGUSDT'}, {n:'PLATA', s:'XAGUSDT'}
+            {n:'SOL', s:'SOLUSDT'}, {n:'SUI', s:'SUIUSDT'}, {n:'LTC', s:'LTCUSDT'}
         ];
         let tickerIdx = 0;
 
@@ -165,11 +163,10 @@
         }
 
         function loadTickerChart() {
-            const sym = tickerList[(tickerIdx === 0 ? tickerList.length - 1 : tickerIdx - 1)].n;
-            loadChart(sym);
+            const currentName = tickerList[tickerIdx === 0 ? tickerList.length - 1 : tickerIdx - 1].n;
+            loadChart(currentName);
         }
 
-        // Swipe y Bloqueo
         let startX = 0;
         const viewport = document.getElementById('dashViewport');
         const dashContainer = document.getElementById('dashContainer');
@@ -192,13 +189,13 @@
             btn.textContent = slots[activeIdx].locked ? '🔒' : '🔓';
             btn.classList.toggle('locked', slots[activeIdx].locked);
             save();
-            showToast(slots[activeIdx].locked ? "BLOQUEADO" : "DESBLOQUEADO");
+            showToast(slots[activeIdx].locked ? "ANCLADO" : "LIBRE");
         }
 
         function init() { 
             if(isLight) document.body.classList.add('light-mode');
             renderNav(); selectSlot(activeIdx); 
-            rotateTicker(); setInterval(rotateTicker, 5000);
+            rotateTicker(); setInterval(rotateTicker, 7000); // Rota cada 7 segundos
         }
 
         function selectSlot(i) { 
@@ -228,7 +225,7 @@
             const descPct = parseFloat(document.getElementById('descInput').value) || 55;
             const mode = s.dashPage;
             updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:20px;">Esperando Precio Base...</p>'; return; }
+            if(!s.price) { grid.innerHTML = '<p style="text-align:center; opacity:0.3; padding:20px;">Sin Precio Base</p>'; return; }
 
             const MULT = [1, 1, 1.5, 1.5, 2, 2, 5, 5, 8, 8, 16, 16];
             let spent = 0, tok7 = 0, tokD = 0;
@@ -247,13 +244,13 @@
                 html += `
                 <div class="level-card ${on?'active':''}">
                     <div style="display:flex; align-items:center; gap:12px;">
-                        <input type="checkbox" style="width:30px; height:30px" ${on?'checked':''} onclick="toggleLvl(${i})">
+                        <input type="checkbox" style="width:32px; height:32px" ${on?'checked':''} onclick="toggleLvl(${i})">
                         <div onclick="copy('${pDisp.toFixed(6)}')">
                             <span style="font-size:9px; font-weight:900; color:${cLvl}">L${i+1}</span>
-                            <div class="price-display">${pDisp.toFixed(6)}</div>
+                            <div style="font-family:'Roboto Mono'; font-size:22px; font-weight:900;">${pDisp.toFixed(6)}</div>
                         </div>
                     </div>
-                    <div style="text-align:right"><span style="font-size:20px; color:var(--long-green); font-weight:900;">$${mUSD.toFixed(1)}</span></div>
+                    <div style="text-align:right"><span style="font-size:22px; color:var(--long-green); font-weight:900;">$${mUSD.toFixed(1)}</span></div>
                 </div>`;
                 last7=p7; lastD=pD;
             }
@@ -270,10 +267,10 @@
         function releaseSlot() {
             const s = slots[activeIdx];
             if(s.buys.length === 0) return;
-            if(confirm("¿LIQUIDAR OPERACIÓN?")) {
+            if(confirm("¿CERRAR OPERACIÓN?")) {
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], dashPage: 0, locked: false };
                 save(); selectSlot(activeIdx);
-                showToast("LIQUIDADO");
+                showToast("CERRADO");
             }
         }
 
