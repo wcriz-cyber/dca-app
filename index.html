@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.8 Anchor System</title>
+    <title>C5X - V19.9 Stable</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -19,7 +19,6 @@
             --warning: #f1c40f; --danger: #e74c3c;
             --dash-txt: #ffffff; --dash-sub: #848e9c;
         }
-        /* AJUSTES MODO CLARO PARA MÁXIMA VISIBILIDAD */
         body.light-mode { 
             --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; 
             --dash-txt: #000000; --dash-sub: #4b5563;
@@ -32,62 +31,55 @@
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: var(--header-bg); border-bottom: 3px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; font-size: 18px; }
         
         .btc-live-box { display: flex; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 6px 12px; border-radius: 12px; border: 1px solid var(--border); font-family: 'Orbitron'; font-size: 13px; }
+        #t-dot { width: 8px; height: 8px; border-radius: 50%; background: #848e9c; }
         .theme-toggle { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 16px; cursor: pointer; }
         
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 5px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        .content-spacer { margin-top: 110px; }
+        .content-spacer { margin-top: 115px; }
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
-        .chart-container { width: 100%; height: 240px; background: #000; }
+        .chart-container { width: 100%; height: 260px; background: #000; }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 10px 12px 0 12px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 10px 12px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 7px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         
-        /* DASHBOARD SWIPEABLE CON BLOQUEO */
-        .dash-container { position: relative; margin: 12px; overflow: hidden; border-radius: 28px; border: 4px solid var(--dir-color); background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* DASHBOARD */
+        .dash-container { position: relative; margin: 0 12px 12px 12px; overflow: hidden; border-radius: 28px; border: 4px solid var(--dir-color); background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .dash-viewport { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
         .dash-page { width: 50%; padding: 20px 15px; flex-shrink: 0; position: relative; }
         
-        .btn-lock { position: absolute; top: 10px; right: 15px; background: rgba(128,128,128,0.15); border: 1px solid var(--border); padding: 8px; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10; font-size: 14px; }
-        .btn-lock.locked { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-lock { position: absolute; top: 10px; right: 15px; background: rgba(128,128,128,0.15); border: 1px solid var(--border); padding: 8px; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .btn-lock.locked { background: var(--danger); color: #fff; }
 
         .dash-header { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 15px; border-bottom: 1.5px solid var(--border); margin-bottom: 15px; }
         .dash-label { font-size: 11px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; margin-bottom: 5px; }
-        .dash-val-main { font-family: 'Roboto Mono'; font-size: 32px; font-weight: 900; color: var(--dash-txt); line-height: 1; }
+        .dash-val-main { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--dash-txt); line-height: 1; }
 
         .strat-info { text-align: center; padding: 12px; border-radius: 20px; background: rgba(128,128,128,0.05); border: 1.5px solid var(--border); }
-        .strat-title { font-family: 'Orbitron'; font-size: 14px; font-weight: 900; letter-spacing: 1px; display: block; margin-bottom: 10px; }
-        .avg-box { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .avg-label { font-size: 13px; font-weight: 900; color: var(--dash-sub); }
-        .avg-val { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--dash-txt); background: rgba(128,128,128,0.12); padding: 6px; border-radius: 10px; }
-        .target-val { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; letter-spacing: -2px; }
+        .strat-title { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 1px; display: block; margin-bottom: 8px; }
+        .avg-val { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; color: var(--dash-txt); background: rgba(128,128,128,0.12); padding: 6px; border-radius: 10px; display: block; margin: 5px 0; }
+        .target-val { font-family: 'Roboto Mono'; font-size: 40px; font-weight: 900; color: var(--long-green); line-height: 1; letter-spacing: -2px; }
 
         .dash-dots { display: flex; justify-content: center; gap: 8px; padding-bottom: 12px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: 0.3s; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
         .dot.active { width: 25px; border-radius: 10px; background: var(--dir-color); }
 
-        /* NIVELES RESTAURADOS */
+        /* NIVELES */
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
         .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); border-width: 2.5px; }
         
-        .card-left { display: flex; align-items: center; gap: 12px; flex: 1.2; }
-        .check-box-large { width: 30px; height: 30px; accent-color: var(--dir-color); cursor: pointer; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 23px; font-weight: 900; color: var(--text); line-height: 1; }
-        .card-right { text-align: right; }
-        .data-val-usd { font-size: 18px; color: var(--long-green); font-weight: 900; font-family: 'Roboto Mono'; }
-        
-        .panic-btn { position: absolute; top: 0; right: 15px; background: var(--dir-color); color: #fff; border: none; padding: 3px 10px; border-radius: 0 0 8px 8px; font-size: 9px; font-weight: 900; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); }
         .btn-release { width: 92%; margin: 10px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; }
         
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
@@ -96,8 +88,8 @@
         @keyframes fadeout { from {bottom: 80px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 
         #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.94); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--surface); padding: 35px 25px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 30px; outline: none; font-family: 'Roboto Mono'; }
+        .modal-content { background: var(--surface); padding: 30px; border-radius: 30px; border: 1px solid var(--border); width: 85%; max-width: 320px; text-align: center; }
+        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; border-radius: 15px; margin-bottom: 20px; outline: none; font-family: 'Roboto Mono'; }
     </style>
 </head>
 <body onload="init()">
@@ -117,13 +109,17 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="btc-live-box">
+                <span id="t-dot"></span>
+                <span id="t-sym">BTC</span>
                 <span id="t-price">$--,---</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar" id="tfBar">
             <button class="tf-btn" onclick="updateTF('15', this)">15M</button>
+            <button class="tf-btn" onclick="updateTF('30', this)">30M</button>
             <button class="tf-btn" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn active" onclick="updateTF('D', this)">1D</button>
         </div>
     </div>
@@ -149,7 +145,7 @@
                     </div>
                     <div class="strat-info">
                         <span class="strat-title" style="color:var(--dir-color)">PREDETERMINADA</span>
-                        <div class="avg-box"><span class="avg-label">AVG PRICE</span><span id="resAvg7" class="avg-val">0.000000</span></div>
+                        <span id="resAvg7" class="avg-val">0.000000</span>
                         <div class="target-val" id="resTarget7">0.000000</div>
                     </div>
                 </div>
@@ -160,7 +156,7 @@
                     </div>
                     <div class="strat-info" style="border-color:var(--warning)">
                         <span class="strat-title" style="color:var(--warning)">AGRESIVA</span>
-                        <div class="avg-box"><span class="avg-label">AVG PRICE</span><span id="resAvgDesc" class="avg-val">0.000000</span></div>
+                        <span id="resAvgDesc" class="avg-val">0.000000</span>
                         <div class="target-val" id="resTargetDesc" style="color:var(--warning)">0.000000</div>
                     </div>
                 </div>
@@ -177,11 +173,11 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
+        let activeTF = 'D';
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], dashPage: 0, locked: false }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         let modalCallback = null;
 
-        // Swipe Logic con Bloqueo
         let startX = 0;
         const viewport = document.getElementById('dashViewport');
         const dashContainer = document.getElementById('dashContainer');
@@ -193,21 +189,21 @@
             if(Math.abs(diff) > 50) setDashPage(diff > 0 ? 1 : 0);
         });
 
-        function toggleLock() {
-            slots[activeIdx].locked = !slots[activeIdx].locked;
-            const btn = document.getElementById('lockBtn');
-            btn.textContent = slots[activeIdx].locked ? '🔒' : '🔓';
-            btn.classList.toggle('locked', slots[activeIdx].locked);
-            save();
-            showToast(slots[activeIdx].locked ? "ESTRATEGIA ANCLADA" : "ANCLAJE QUITADO");
-        }
-
         function setDashPage(p) {
             slots[activeIdx].dashPage = p;
             viewport.style.transform = `translateX(-${p * 50}%)`;
             document.getElementById('dot0').classList.toggle('active', p === 0);
             document.getElementById('dot1').classList.toggle('active', p === 1);
             save(); renderLevels();
+        }
+
+        function toggleLock() {
+            slots[activeIdx].locked = !slots[activeIdx].locked;
+            const btn = document.getElementById('lockBtn');
+            btn.textContent = slots[activeIdx].locked ? '🔒' : '🔓';
+            btn.classList.toggle('locked', slots[activeIdx].locked);
+            save();
+            showToast(slots[activeIdx].locked ? "BLOQUEADO" : "DESBLOQUEADO");
         }
 
         function init() { 
@@ -221,7 +217,8 @@
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
                 const data = await res.json();
                 document.getElementById('t-price').textContent = parseFloat(data.price).toLocaleString();
-            } catch(e) {}
+                document.getElementById('t-dot').style.background = '#0ecb81';
+            } catch(e) { document.getElementById('t-dot').style.background = '#f6465d'; }
         }
 
         function selectSlot(i) { 
@@ -232,7 +229,6 @@
             document.getElementById('baseInput').value = s.price || '';
             document.getElementById('capitalInput').value = s.capital;
             
-            // Actualizar Lock UI
             const btn = document.getElementById('lockBtn');
             btn.textContent = s.locked ? '🔒' : '🔓';
             btn.classList.toggle('locked', s.locked);
@@ -274,15 +270,14 @@
 
                 html += `
                 <div class="level-card ${on?'active':''}">
-                    <button class="panic-btn" onclick="panic(${i})">AUTO</button>
-                    <div class="card-left">
-                        <input type="checkbox" class="check-box-large" ${on?'checked':''} onclick="toggleLvl(${i})">
-                        <div class="price-group" onclick="copy('${pDisp.toFixed(6)}')">
-                            <span style="font-size:10px; font-weight:900; color:${cLvl}">L${i+1} ${i===0?'BASE':''}</span>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" style="width:28px; height:28px" ${on?'checked':''} onclick="toggleLvl(${i})">
+                        <div onclick="copy('${pDisp.toFixed(6)}')">
+                            <span style="font-size:10px; font-weight:900; color:${cLvl}">L${i+1}</span>
                             <div class="price-display">${pDisp.toFixed(6)}</div>
                         </div>
                     </div>
-                    <div class="card-right"><span class="data-val-usd">$${mUSD.toFixed(1)}</span></div>
+                    <div style="text-align:right"><span style="font-size:18px; color:var(--long-green); font-weight:900; font-family:'Roboto Mono';">$${mUSD.toFixed(1)}</span></div>
                 </div>`;
                 last7=p7; lastD=pD;
             }
@@ -302,7 +297,6 @@
                 if(pass === "2524") {
                     history.unshift({ coin: s.name, inv: `$${document.getElementById('resInv1').textContent}`, date: new Date().toLocaleDateString() });
                     localStorage.setItem('dca_history_v2', JSON.stringify(history));
-                    // RESET COMPLETO AL CERRAR
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[], dashPage: 0, locked: false };
                     save(); selectSlot(activeIdx);
                     showToast("CERRADO Y RESETEADO");
@@ -313,15 +307,14 @@
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display='flex'; document.getElementById('modalInput').value=''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { document.getElementById('customModal').style.display='none'; if(confirm) modalCallback(document.getElementById('modalInput').value); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x!==i) : [...b, i]; save(); renderLevels(); }
-        function panic(i) { slots[activeIdx].buys = Array.from({length: i+1}, (_, k) => k); save(); renderLevels(); }
         function copy(v) { navigator.clipboard.writeText(v); showToast("COPIADO"); }
         function showToast(m) { const t=document.getElementById("toast"); t.textContent=m; t.className="show"; setTimeout(()=>t.className="", 2000); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function updateCoin() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
-        function updateTF(tf, btn) { document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name, tf); }
+        function updateTF(tf, btn) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(slots[activeIdx].name); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function loadChart(c, tf='D') { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(c || 'BTC').replace('USDT','') }USDT`, "interval": tf, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        function loadChart(c) { new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${(c || 'BTC').replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
         function renderHistory() { document.getElementById('historyList').innerHTML = history.slice(0,5).map(h => `<div style="background:var(--surface); border:1px solid var(--border); padding:12px; margin-top:8px; border-radius:12px; display:flex; justify-content:space-between"><span>${h.coin}</span><b>${h.inv}</b></div>`).join(''); }
     </script>
