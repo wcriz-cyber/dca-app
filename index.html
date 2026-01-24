@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.4 Master</title>
+    <title>C5X - V20.5 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -23,7 +23,7 @@
         body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
+        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; transition: 0.3s; overflow-x: hidden; }
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 60px; }
@@ -68,29 +68,53 @@
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
 
-        /* --- MEJORAS VISUALES 12 NIVELES --- */
-        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 18px; padding: 12px 16px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.3s; position: relative; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.08); box-shadow: 0 0 15px rgba(52, 152, 219, 0.15); }
+        /* --- TARJETAS MÁS GRANDES --- */
+        .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
+        .level-card { 
+            background: var(--surface); 
+            border-radius: 22px; 
+            padding: 18px 20px; /* Aumentado */
+            display: flex; 
+            align-items: center; 
+            border: 1px solid var(--border); 
+            transition: 0.3s; 
+            position: relative;
+            min-height: 85px; /* Altura mínima asegurada */
+        }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); box-shadow: 0 5px 20px rgba(0,0,0,0.3); }
         
-        /* Círculo del número */
-        .lvl-circle { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; font-weight: 900; color: #848e9c; margin-right: 15px; transition: 0.3s; }
-        .level-card.active .lvl-circle { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.1); transform: scale(1.1); }
+        .lvl-circle { 
+            width: 46px; /* Más grande */
+            height: 46px; 
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.05); 
+            border: 2px solid var(--border); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Orbitron'; 
+            font-size: 16px; 
+            font-weight: 900; 
+            color: #848e9c; 
+            margin-right: 18px; 
+            transition: 0.3s; 
+        }
+        .level-card.active .lvl-circle { border-color: var(--dir-color); color: var(--dir-color); background: rgba(52, 152, 219, 0.2); transform: scale(1.05); }
 
         .lvl-main-info { flex: 1; }
-        .lvl-drop-tag { font-size: 9px; font-weight: 900; color: var(--short-red); margin-bottom: 2px; display: block; }
-        .price-display { font-family: 'Roboto Mono'; font-size: 20px; font-weight: 900; color: var(--text); line-height: 1; }
+        .lvl-drop-tag { font-size: 10px; font-weight: 900; color: var(--short-red); margin-bottom: 4px; display: block; letter-spacing: 0.5px; }
+        .price-display { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--text); line-height: 1; }
         
         .lvl-side-info { text-align: right; }
-        .lvl-side-info label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 2px; }
-        .lvl-side-info span { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--long-green); }
+        .lvl-side-info label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; }
+        .lvl-side-info span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
 
         /* Modales */
         #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
 
-        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
+        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -301,7 +325,7 @@
             
             let totalSpent = 0, totalQty = 0;
             let lastPrice = s.price;
-            let currentDropPercent = 10;
+            let currentDropPercent = 17; // Empieza en 17 para el Nivel 2
             let html = '';
 
             for(let i=0; i<12; i++){
@@ -311,8 +335,12 @@
                     currentStepDrop = 0;
                 } else {
                     if(currentStrat === "normal") {
-                        currentStepDrop = currentDropPercent; // El que se aplicó para este nivel
-                        currentDropPercent += incPct; 
+                        if(i === 1) {
+                            currentStepDrop = 17; // Nivel 2 forzado a 17%
+                        } else {
+                            currentStepDrop = currentDropPercent; 
+                            currentDropPercent += incPct;
+                        }
                         pLevel = lastPrice * (1 - (currentStepDrop / 100));
                     } else {
                         currentStepDrop = descPct;
