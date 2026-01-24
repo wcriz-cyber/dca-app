@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.9 Fast Flow</title>
+    <title>C5X - V23.0 Fast Flow</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -23,33 +23,17 @@
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 12px; background: var(--header-bg); border-bottom: 2px solid var(--border); min-height: 65px; gap: 15px; }
         
-        /* Logo C5X Mejorado */
+        /* Logo C5X Neón */
         .logo-area { 
-            font-family: 'Orbitron'; 
-            font-weight: 900; 
-            font-size: 28px; 
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            flex-shrink: 0; 
-            letter-spacing: -1px;
-            filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.3));
+            font-family: 'Orbitron'; font-weight: 900; font-size: 28px; 
+            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            flex-shrink: 0; letter-spacing: -1px; filter: drop-shadow(0 0 5px rgba(52, 152, 219, 0.3));
         }
         
-        /* Ticker Horizontal Sin Bordes */
-        .ticker-container { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            background: transparent; 
-            padding: 6px 0; 
-            flex: 1; 
-            overflow: hidden; 
-            white-space: nowrap;
-            cursor: pointer; /* Indica que es clickable */
-        }
+        /* Ticker Horizontal Integrado (Sin Bordes) */
+        .ticker-container { display: flex; align-items: center; gap: 10px; background: transparent; padding: 6px 0; flex: 1; overflow: hidden; cursor: pointer; }
         .coin-logo { width: 22px; height: 22px; border-radius: 50%; object-fit: contain; }
-        .ticker-horiz-info { display: flex; align-items: center; gap: 8px; width: 100%; justify-content: flex-start; }
+        .ticker-horiz-info { display: flex; align-items: center; gap: 8px; width: 100%; }
         #t-sym { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--text); }
         #t-price { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
         #t-change { font-size: 12px; font-weight: 900; }
@@ -58,6 +42,7 @@
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
 
+        /* Estructura de Pestañas */
         .tab-content { display: none; margin-top: 115px; animation: fadeIn 0.3s ease; padding-bottom: 20px; }
         .no-tf-margin { margin-top: 70px !important; }
         .tab-content.active-tab { display: block; }
@@ -70,6 +55,7 @@
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
         .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
+        
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         
         .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
@@ -77,21 +63,29 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
 
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 18px; margin: 10px 8px; position: relative; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); text-align: center; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 18px; margin: 10px 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .main-target { font-family: 'Roboto Mono'; font-size: 40px; font-weight: 900; color: var(--long-green); text-align: center; }
         
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
         .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); }
+        .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
         .card-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; margin-right: 15px; }
+        .card-content { flex: 1; }
+        .card-label { font-size: 9px; color: var(--dir-color); font-weight: 900; text-transform: uppercase; }
+        .card-value { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; }
+
+        #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; width: 85%; max-width: 320px; text-align: center; border: 1px solid var(--border); }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 12px; position: fixed; z-index: 3000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; }
         
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body onload="init()">
 
     <div id="toast">MENSAJE</div>
+
+    <div id="configModal"><div class="modal-content"><div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">EDITAR</div><input type="number" id="configInputVal" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 15px; text-align: center; font-size: 24px; font-weight: 900; border-radius: 12px; margin-bottom: 20px;" step="any" inputmode="decimal"><button style="width:100%; background:var(--long-green); color:#fff; padding:15px; border:none; border-radius:12px; font-weight:900;" onclick="saveConfigValue()">GUARDAR</button><button style="background:transparent; color:var(--text); opacity:0.5; border:none; margin-top:15px;" onclick="closeConfigModal()">CANCELAR</button></div></div>
 
     <div class="fixed-header">
         <header class="app-header">
@@ -114,6 +108,15 @@
         </div>
     </div>
 
+    <div id="tab-history" class="tab-content no-tf-margin">
+        <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">BITÁCORA</h2>
+            <button onclick="exportExcel()" style="padding:8px 15px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">EXPORTAR</button>
+        </div>
+        <div id="logGrid" class="card-grid"></div>
+        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:25px; font-weight:900; opacity:0.6;">BORRAR REGISTROS</button></center>
+    </div>
+
     <div id="tab-trade" class="tab-content active-tab">
         <nav id="slotNav" class="slot-nav"></nav>
         <div id="tv_chart" class="chart-container"></div>
@@ -126,33 +129,65 @@
         <div class="dash-main" id="dashMain">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <button style="background:none; border:none; font-size:22px;" onclick="rotateDash()">🔄</button>
-                <div id="stratName" style="font-family:'Orbitron'; font-size:13px; font-weight:900;">NORMAL</div>
+                <div id="stratName" style="font-family:'Orbitron'; font-size:13px; font-weight:900; letter-spacing:1px;">NORMAL</div>
                 <button style="background:none; border:none; font-size:22px;" id="lockBtn" onclick="toggleLock()">🔓</button>
             </div>
-            <center><div style="font-size: 10px; opacity: 0.6;">TAKE PROFIT (2X)</div></center>
+            <center><div style="font-size: 10px; opacity: 0.6; text-transform: uppercase;">Take Profit (2x)</div></center>
             <div class="main-target" id="resTarget">0.000000</div>
             <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:15px; padding-top:15px; border-top:1px solid var(--border);">
-                <div style="text-align:center;"><label style="font-size:9px; font-weight:900; opacity:0.6;">AVG</label><div id="resAvg" style="font-weight:900;">0.00</div></div>
-                <div style="text-align:center;"><label style="font-size:9px; font-weight:900; opacity:0.6;">GAIN</label><div id="resProfit" style="font-weight:900; color:var(--long-green)">$0.00</div></div>
-                <div style="text-align:center;"><label style="font-size:9px; font-weight:900; opacity:0.6;">TOTAL</label><div id="resInv" style="font-weight:900;">$0.00</div></div>
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6; display:block;">AVG</label><span id="resAvg" style="font-family:'Roboto Mono'; font-weight:900;">0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6; display:block;">GAIN</label><span id="resProfit" style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$0.00</span></div>
+                <div style="text-align:center;"><label style="font-size:9px; opacity:0.6; display:block;">TOTAL</label><span id="resInv" style="font-family:'Roboto Mono'; font-weight:900;">$0.00</span></div>
             </div>
         </div>
+
         <main id="levelsGrid" class="card-grid"></main>
+        <button onclick="releaseSlot()" style="width: 92%; margin: 20px auto; display: block; padding: 18px; border-radius: 15px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron';">LIQUIDAR POSICIÓN</button>
+    </div>
+
+    <div id="tab-config" class="tab-content no-tf-margin">
+        <div style="padding:15px;">
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:20px;">CONFIGURACIÓN</h2>
+            <div class="card-grid">
+                <div class="standard-card" onclick="toggleTheme()">
+                    <div class="card-icon">🎨</div>
+                    <div class="card-content"><div class="card-label">Modo Visual</div><div class="card-value" id="themeLabel">OSCURO</div></div>
+                </div>
+                <div class="standard-card" onclick="openFastEdit('capital')">
+                    <div class="card-icon" style="color:var(--long-green)">$</div>
+                    <div class="card-content"><div class="card-label">Capital Global</div><div class="card-value" id="cfgCapVal">$5.00</div></div>
+                </div>
+                <div class="standard-card" onclick="openFastEdit('normal')">
+                    <div class="card-icon" style="color:var(--dir-color)">📊</div>
+                    <div class="card-content"><div class="card-label">% Estrategia Normal</div><div class="card-value" id="cfgBaseVal">7%</div></div>
+                </div>
+                <div class="standard-card" onclick="openFastEdit('agresiva')">
+                    <div class="card-icon" style="color:var(--warning)">⚡</div>
+                    <div class="card-content"><div class="card-label">% Estrategia Agresiva</div><div class="card-value" id="cfgAggVal">66%</div></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item" onclick="location.reload()"><span>📊</span><label>Operar</label></button>
+        <button class="nav-item" id="btn-history" onclick="switchTab('tab-history', this)"><span>📜</span><label>Bitácora</label></button>
+        <button class="nav-item active" id="btn-trade" onclick="switchTab('tab-trade', this)"><span>📊</span><label>Operar</label></button>
+        <button class="nav-item" id="btn-config" onclick="switchTab('tab-config', this)"><span>⚙️</span><label>Ajustes</label></button>
     </nav>
+
+    <input type="hidden" id="incInput" value="7">
+    <input type="hidden" id="descInput" value="66">
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        let currentChartSymbol = 'BTC'; // Para mantener la moneda al cambiar TF
-
+        let currentChartSymbol = 'BTC'; 
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
-        
+        let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
+        const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
+
         const TICKER_COINS = [
             {id: 'BTC', name: 'BTC', logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png'},
             {id: 'ETH', name: 'ETH', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'},
@@ -163,8 +198,11 @@
         let currentTickerIdx = 0;
 
         function init() { 
+            if(isLight) document.body.classList.add('light-mode');
+            document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO';
             renderNav(); 
             selectSlot(activeIdx);
+            renderHistory();
             updateTicker();
             setInterval(updateTicker, 7000); 
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
@@ -186,19 +224,38 @@
             } catch(e) {}
         }
 
-        // Función para abrir la moneda del Ticker en el gráfico
         function loadTickerChart() {
             const currentCoin = TICKER_COINS[(currentTickerIdx === 0 ? TICKER_COINS.length - 1 : currentTickerIdx - 1)].id;
             loadChart(currentCoin);
+            showToast("GRÁFICO: " + currentCoin);
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-tab');
+            btn.classList.add('active');
+            document.getElementById('tfBar').style.display = (tabId === 'tab-trade') ? 'flex' : 'none';
+        }
+
+        function selectSlot(i) { 
+            activeIdx = i; 
+            localStorage.setItem('c5x_last_slot', i);
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital;
+            renderNav(); 
+            loadChart(s.name || 'BTC'); 
+            updateDashUI();
         }
 
         function loadChart(c) { 
             if(!c) c = 'BTC';
-            currentChartSymbol = c; // Guardar estado actual
-            const symbol = c.includes('USDT') ? c : c + 'USDT';
+            currentChartSymbol = c;
             new TradingView.widget({
                 "autosize": true,
-                "symbol": `GATEIO:${symbol}`,
+                "symbol": `GATEIO:${c.replace('USDT','')}USDT`,
                 "interval": activeTF,
                 "timezone": "Etc/UTC",
                 "theme": "dark",
@@ -210,42 +267,110 @@
             });
         }
 
+        function updateCoin() { 
+            let raw = document.getElementById('coinInput').value.toUpperCase();
+            if(!raw) raw = 'BTC';
+            slots[activeIdx].name = raw; 
+            save(); 
+            renderNav(); 
+            loadChart(raw); 
+            calculate();
+        }
+
+        function calculate() {
+            const s = slots[activeIdx], dPct = parseFloat(document.getElementById('descInput').value), iPct = parseFloat(document.getElementById('incInput').value);
+            const grid = document.getElementById('levelsGrid');
+            if(!s.price) { grid.innerHTML = ''; return; }
+            let tS = 0, tQ = 0, lP = s.price, curD = 0, h = '';
+            for(let i=0; i<12; i++){
+                let pL = (i===0) ? s.price : (s.strat==="normal" ? (i===1 ? lP*0.83 : lP*(1-(iPct/100))) : lP*(1-(dPct/100)));
+                if(i>0) curD = ((s.price - pL)/s.price)*100;
+                const m = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
+                if(on) { tS += m; tQ += (m/pL); }
+                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'BASE':'CAÍDA -'+curD.toFixed(1)+'%'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><div style="font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div></div>`;
+                lP = pL;
+            }
+            grid.innerHTML = h;
+            const avg = tQ > 0 ? tS/tQ : 0;
+            document.getElementById('resInv').textContent = `$${tS.toFixed(2)}`;
+            document.getElementById('resAvg').textContent = avg.toFixed(4);
+            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
+            document.getElementById('resProfit').textContent = `$${tS.toFixed(2)}`;
+        }
+
+        function toggleLvl(idx) { 
+            const s = slots[activeIdx]; 
+            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) if(!s.buys.includes(i)) s.buys.push(i); } 
+            else { s.buys = s.buys.filter(v => v < idx); } 
+            save(); calculate(); 
+        }
+
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(s.buys.length === 0) return;
+            history.push({ 
+                date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                coin: s.name || "S"+(activeIdx+1), 
+                profit: document.getElementById('resProfit').textContent.replace('$','') 
+            });
+            localStorage.setItem('c5x_history', JSON.stringify(history));
+            slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false };
+            save(); selectSlot(activeIdx); renderHistory();
+            showToast("OPERACIÓN CERRADA");
+        }
+
         function updateTF(tf, b) { 
             activeTF = tf; 
             localStorage.setItem('c5x_last_tf', tf); 
             document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); 
             b.classList.add('active'); 
-            loadChart(currentChartSymbol); // Usa la moneda que estaba en pantalla
+            loadChart(currentChartSymbol); 
         }
 
-        function selectSlot(i) { 
-            activeIdx = i; 
-            const s = slots[i]; 
-            document.getElementById('coinInput').value = s.name; 
-            document.getElementById('baseInput').value = s.price || ''; 
-            renderNav(); 
-            loadChart(s.name || 'BTC'); 
+        function rotateDash() { const s = slots[activeIdx]; if(!s.locked) { s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); } }
+        function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; save(); updateDashUI(); }
+        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        
+        function updateDashUI() {
+            const s = slots[activeIdx], isN = s.strat === "normal";
+            document.getElementById('stratName').textContent = isN ? "NORMAL" : "AGRESIVA";
+            document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            document.getElementById('cfgCapVal').textContent = '$' + s.capital.toFixed(2);
+            document.getElementById('cfgBaseVal').textContent = document.getElementById('incInput').value + '%';
+            document.getElementById('cfgAggVal').textContent = document.getElementById('descInput').value + '%';
             calculate();
         }
 
-        function updateCoin() { 
-            let raw = document.getElementById('coinInput').value.toUpperCase();
-            if(!raw) raw = 'BTC';
-            slots[activeIdx].name = raw; 
-            localStorage.setItem('dca_v18_slots', JSON.stringify(slots));
-            renderNav(); 
-            loadChart(raw); 
+        function openFastEdit(type) {
+            const modal = document.getElementById('configModal');
+            const input = document.getElementById('configInputVal');
+            input.dataset.type = type;
+            if(type === 'capital') { document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)"; input.value = slots[activeIdx].capital; }
+            else if(type === 'normal') { document.getElementById('configTitle').textContent = "% ESTRATEGIA NORMAL"; input.value = document.getElementById('incInput').value; }
+            else { document.getElementById('configTitle').textContent = "% ESTRATEGIA AGRESIVA"; input.value = document.getElementById('descInput').value; }
+            modal.style.display = 'flex';
+            input.focus();
         }
 
-        function renderNav() { 
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => 
-                `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`
-            ).join(''); 
+        function saveConfigValue() {
+            const val = parseFloat(document.getElementById('configInputVal').value);
+            const type = document.getElementById('configInputVal').dataset.type;
+            if(isNaN(val)) return;
+            if(type === 'capital') { slots.forEach(s => s.capital = val); document.getElementById('capitalInput').value = val; }
+            else if(type === 'normal') { document.getElementById('incInput').value = val; }
+            else { document.getElementById('descInput').value = val; }
+            save(); closeConfigModal(); updateDashUI(); showToast("ACTUALIZADO");
         }
 
-        function calculate() { /* Lógica de cálculo mantenida igual */ }
-        function rotateDash() { /* Lógica de estrategia mantenida igual */ }
-        function toggleLock() { /* Lógica de bloqueo mantenida igual */ }
+        function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
+        function showToast(t) { const x = document.getElementById("toast"); x.textContent = t; x.className = "show"; setTimeout(() => x.className = "", 2000); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
+        function clearLogs() { if(confirm("¿Borrar bitácora?")) { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); } }
+        function exportExcel() { if(!history.length) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_History.xlsx"); }
     </script>
 </body>
 </html>
