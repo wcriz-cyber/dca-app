@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.9 Ultra Compact</title>
+    <title>C5X - V18.9 Optimized</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -27,7 +27,6 @@
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         
-        /* CABECERA OPTIMIZADA: MÁS GRANDE PERO COMPACTA */
         .app-header { 
             display: flex; 
             justify-content: space-between; 
@@ -35,13 +34,13 @@
             padding: 10px 12px; 
             background: var(--header-bg); 
             border-bottom: 3px solid var(--dir-color); 
-            min-height: 75px; /* Ligeramente más alta para alojar fuentes grandes */
+            min-height: 75px;
         }
         .logo-area { 
             font-family: 'Orbitron'; 
             font-weight: 900; 
             letter-spacing: 1px; 
-            font-size: 22px; /* Aumentado */
+            font-size: 22px; 
         }
         
         .btc-live-box { 
@@ -49,11 +48,11 @@
             align-items: center; 
             gap: 10px; 
             background: var(--header-bg); 
-            padding: 10px 15px; /* Más relleno interno */
+            padding: 10px 15px; 
             border-radius: 14px; 
-            border: 2px solid var(--border); /* Borde más definido */
+            border: 2px solid var(--border); 
             font-family: 'Orbitron'; 
-            font-size: 22px; /* Aumentado a la par del logo */
+            font-size: 22px; 
             cursor: pointer;
         }
         #t-dot { width: 10px; height: 10px; border-radius: 50%; background: grey; }
@@ -62,10 +61,10 @@
             background: var(--header-bg); 
             border: 2px solid var(--border); 
             color: var(--text); 
-            width: 55px; /* Más ancho */
-            height: 55px; /* Más alto */
+            width: 55px; 
+            height: 55px; 
             border-radius: 14px; 
-            font-size: 24px; /* Icono más grande */
+            font-size: 24px; 
             cursor: pointer; 
             display: flex; 
             align-items: center; 
@@ -76,8 +75,10 @@
         .tf-btn { flex: 1; padding: 12px 5px; border: none; background: transparent; color: #848e9c; font-size: 12px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        .content-spacer { margin-top: 145px; } /* Ajustado por la nueva altura */
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
+        /* ESPACIO REDUCIDO ENTRE TEMPORALIDADES Y SLOTS */
+        .content-spacer { margin-top: 135px; } /* Reducido de 145px */
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 5px 10px; } /* Padding vertical reducido */
+        
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
@@ -162,7 +163,7 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
-                <span id="t-dot"></span>
+                <div id="t-dot"></div>
                 <span id="t-sym">BTC</span>
                 <span id="t-price" style="font-weight: 900;">$--,---</span>
             </div>
@@ -228,9 +229,11 @@
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
-        let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        let currentChartSymbol = ''; 
         
+        // TEMPORALIDAD PREDETERMINADA: 1H (60)
+        let activeTF = localStorage.getItem('c5x_last_tf') || '60';
+        
+        let currentChartSymbol = ''; 
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
         let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
@@ -244,6 +247,12 @@
             selectSlot(activeIdx); 
             renderHistory(); 
             fetchTicker(); 
+            
+            // MARCAR TF ACTIVO EN LA BARRA
+            document.querySelectorAll('.tf-btn').forEach(btn => {
+                if(btn.dataset.tf === activeTF) btn.classList.add('active');
+            });
+
             setInterval(fetchTicker, 10000); 
         }
 
