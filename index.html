@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V20.0 Master</title>
+    <title>C5X - V20.1 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -53,24 +53,26 @@
 
         .dash-container { margin: 10px 8px; }
         .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 6px 25px rgba(0,0,0,0.5); }
-        .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 12px; }
+        .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 8px; }
         .strat-indicator { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 2px; text-align: center; }
         .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
         .dash-data { text-align: center; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -2px; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 2px 0; letter-spacing: -2px; }
         
-        /* Contenedor de Inputs dentro del Dashboard */
-        .dash-strat-settings { display: flex; justify-content: center; align-items: center; gap: 5px; margin-bottom: 10px; }
-        .dash-input-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 5px; position: relative; }
-        .dash-input-box label { font-size: 9px; font-weight: 900; color: var(--dir-color); }
-        .dash-input-box input { background: transparent; border: none; color: var(--text); font-family: 'Roboto Mono'; font-weight: 900; font-size: 14px; width: 40px; text-align: center; outline: none; }
+        /* Botón de Estrategia Config */
+        .btn-strat-val { background: rgba(52, 152, 219, 0.1); border: 1px solid var(--dir-color); color: var(--dir-color); padding: 6px 15px; border-radius: 20px; font-family: 'Orbitron'; font-size: 10px; font-weight: 900; margin-top: 5px; cursor: pointer; display: inline-block; }
 
         .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
         .info-item { text-align: center; }
         .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
         .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
+
+        /* Estilos Modales */
+        #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
+        .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
+        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -78,10 +80,6 @@
         .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); }
         
         .btn-release { width: 92%; margin: 15px auto; display: block; padding: 18px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 12px; }
-
-        #customModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 80%; max-width: 300px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; letter-spacing: 6px; }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -95,10 +93,22 @@
     <div id="customModal">
         <div class="modal-content">
             <div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px;">INGRESAR CLAVE</div>
-            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••">
+            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:6px;">
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">CONFIRMAR</button>
                 <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeMyModal(false)">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="configModal">
+        <div class="modal-content">
+            <div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">ESTRATEGIA</div>
+            <input type="number" id="configInputVal" class="modal-input" step="any">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button id="btnModify" style="background:var(--dir-color); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="unlockConfigInput()">MODIFICAR</button>
+                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron'; display:none;" id="btnSaveConfig" onclick="saveConfigValue()">GUARDAR CAMBIOS</button>
+                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeConfigModal()">CERRAR</button>
             </div>
         </div>
     </div>
@@ -149,23 +159,13 @@
                     <div class="strat-indicator" id="stratName">PREDETERMINADA</div>
                     <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                 </div>
-                
-                <div class="dash-strat-settings" id="stratSettings">
-                    <div class="dash-input-box" id="boxPredeterminada">
-                        <div class="secure-overlay" onclick="requestControlAccess('incInput')"></div>
-                        <label>% BASE INC</label>
-                        <input type="number" id="incInput" value="7" oninput="calculate()" readonly>
-                    </div>
-                    <div class="dash-input-box" id="boxAgresiva" style="display:none;">
-                        <div class="secure-overlay" onclick="requestControlAccess('descInput')"></div>
-                        <label>% DESC</label>
-                        <input type="number" id="descInput" value="66" oninput="calculate()" readonly>
-                    </div>
-                </div>
 
                 <div class="dash-data">
                     <span style="font-size:11px; color:var(--dir-color); font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</span>
                     <div class="main-target" id="resTarget">0.000000</div>
+                    
+                    <div class="btn-strat-val" id="btnStratToggle" onclick="openConfigModal()">VALOR BASE: 7%</div>
+
                     <div class="sub-info">
                         <div class="info-item"><label>Promedio</label><span id="resAvg">0.0000</span></div>
                         <div class="info-item"><label>Ganancia</label><span id="resProfit" style="color:var(--long-green)">$0.00</span></div>
@@ -178,6 +178,9 @@
         <main id="levelsGrid" class="levels-container"></main>
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
     </div>
+
+    <input type="hidden" id="incInput" value="7">
+    <input type="hidden" id="descInput" value="66">
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
@@ -228,20 +231,58 @@
             const dash = document.getElementById('dashMain');
             const label = document.getElementById('stratName');
             const targetEl = document.getElementById('resTarget');
+            const btnStrat = document.getElementById('btnStratToggle');
             
             const isNormal = currentStrat === "normal";
-            
             label.textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
             label.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
             dash.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
             targetEl.style.color = isNormal ? "var(--long-green)" : "var(--warning)";
             
-            // Alternar inputs internos
-            document.getElementById('boxPredeterminada').style.display = isNormal ? 'flex' : 'none';
-            document.getElementById('boxAgresiva').style.display = isNormal ? 'none' : 'flex';
-            
+            // Actualizar texto del botón central
+            const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
+            btnStrat.textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
+            btnStrat.style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
+            btnStrat.style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
+
             calculate();
         }
+
+        function openConfigModal() {
+            const isNormal = currentStrat === "normal";
+            const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
+            
+            document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE (%)" : "DESCUENTO AGRESIVO (%)";
+            document.getElementById('configInputVal').value = val;
+            document.getElementById('configInputVal').readOnly = true;
+            document.getElementById('btnModify').style.display = 'block';
+            document.getElementById('btnSaveConfig').style.display = 'none';
+            document.getElementById('configModal').style.display = 'flex';
+        }
+
+        function unlockConfigInput() {
+            openPrompt((p) => {
+                if(p === "2524") {
+                    document.getElementById('configInputVal').readOnly = false;
+                    document.getElementById('configInputVal').focus();
+                    document.getElementById('btnModify').style.display = 'none';
+                    document.getElementById('btnSaveConfig').style.display = 'block';
+                }
+            });
+        }
+
+        function saveConfigValue() {
+            const isNormal = currentStrat === "normal";
+            const newVal = document.getElementById('configInputVal').value;
+            if(isNormal) document.getElementById('incInput').value = newVal;
+            else document.getElementById('descInput').value = newVal;
+            
+            closeConfigModal();
+            updateDashUI();
+            showToast("VALOR ACTUALIZADO");
+        }
+
+        function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
 
         function calculate() {
             const s = slots[activeIdx];
@@ -265,9 +306,8 @@
 
             for(let i=0; i<12; i++){
                 let pLevel;
-                if(i === 0){
-                    pLevel = s.price;
-                } else {
+                if(i === 0) pLevel = s.price;
+                else {
                     if(currentStrat === "normal") {
                         currentDropPercent += incPct; 
                         pLevel = lastPrice * (1 - (currentDropPercent / 100));
@@ -278,10 +318,7 @@
                 
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
-                if(on) { 
-                    totalSpent += mUSD; 
-                    totalQty += (mUSD/pLevel); 
-                }
+                if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
 
                 html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                     <div>
@@ -297,11 +334,9 @@
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
-            const target = avg * 2;
-            
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = target.toFixed(6);
+            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
@@ -314,7 +349,6 @@
                     isDashLocked = false;
                     document.getElementById('lockBtn').textContent = '🔓';
                     document.getElementById('lockBtn').classList.remove('locked');
-                    
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
                     const filled = slots.filter(sl => sl.name !== '');
                     const empty = slots.filter(sl => sl.name === '');
@@ -324,50 +358,11 @@
             });
         }
 
-        function updateTF(tf, btn) { 
-            activeTF = tf; 
-            localStorage.setItem('c5x_last_tf', tf); 
-            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
-            btn.classList.add('active'); 
-            loadChart(chartSymbol); 
-        }
-
-        function loadChart(coin) { 
-            chartSymbol = (coin || 'BTC3L').toUpperCase();
-            new TradingView.widget({ 
-                "autosize": true, 
-                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
-                "interval": activeTF, 
-                "theme": "dark", 
-                "container_id": "tv_chart", 
-                "hide_top_toolbar": true, 
-                "backgroundColor": "#050708" 
-            }); 
-        }
-
-        function selectSlot(i) { 
-            activeIdx = i; 
-            localStorage.setItem('c5x_last_slot', i); 
-            const s = slots[i]; 
-            document.getElementById('coinInput').value = s.name; 
-            document.getElementById('baseInput').value = s.price || ''; 
-            document.getElementById('capitalInput').value = s.capital; 
-            renderNav(); 
-            loadChart(s.name); 
-            updateDashUI(); 
-        }
-
+        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
+        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
         function viewTickerChart() { loadChart(currentTickerSymbol); }
-
-        function updateCoin() { 
-            const val = document.getElementById('coinInput').value.toUpperCase();
-            slots[activeIdx].name = val; 
-            save(); 
-            renderNav(); 
-            loadChart(val); 
-            calculate(); 
-        }
-
+        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
