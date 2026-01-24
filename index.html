@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.3 Pro Tweaks</title>
+    <title>C5X - V22.4 Ticker Fix</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -18,7 +18,7 @@
 
     <style>
         :root {
-            /* --- SISTEMA DE DISEÑO PROFESIONAL --- */
+            /* --- SISTEMA DE DISEÑO --- */
             --bg: #0b0e11; 
             --surface: #151a21;
             --surface-hover: #1e2329;
@@ -66,35 +66,43 @@
         .app-header { 
             display: flex; justify-content: space-between; align-items: center; 
             height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto;
-            position: relative; /* Necesario para centrar el ticker */
+            position: relative;
         }
 
-        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 8px 0; z-index: 2; }
+        /* MENÚ A LA IZQUIERDA */
+        .brand-btn { 
+            display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; 
+            z-index: 10; position: relative; /* Asegura que esté por encima */
+        }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
         
-        /* TICKER CENTRADO */
+        /* TICKER CENTRADO ABSOLUTO (NO INTERFIERE CON MENÚ) */
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            z-index: 1;
+            z-index: 20; pointer-events: none; /* Permite clicks pasen a traves del contenedor vacío */
+            display: flex; justify-content: center; width: 100%;
         }
 
         .ticker-pill { 
+            pointer-events: auto; /* Reactiva clicks SOLO en el botón */
             display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
-            border: 1px solid var(--border); padding: 6px 12px; border-radius: 20px; cursor: pointer;
+            border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer;
+            transition: 0.2s;
         }
+        .ticker-pill:active { transform: scale(0.95); background: rgba(59, 130, 246, 0.1); }
         .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); }
         .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
 
-        /* THEME BTN RIGHT */
+        /* BOTÓN TEMA A LA DERECHA */
         .theme-btn {
             width: 36px; height: 36px; border-radius: 50%; background: transparent; 
             border: 1px solid var(--border); color: var(--text-primary); display: flex; 
-            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 2;
+            align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 10;
         }
 
-        /* --- SECCIONES (NAVEGACIÓN) --- */
+        /* --- SECCIONES --- */
         .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
         
         .app-section { display: none; animation: fadeIn 0.3s ease; }
@@ -142,7 +150,6 @@
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text-primary); }
 
-        /* GRID CON MENOS ESPACIO INFERIOR */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
         
         .level-card { 
@@ -157,7 +164,6 @@
         .level-invest { text-align: right; }
         .level-invest span { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; color: var(--long); }
 
-        /* BOTÓN CERCA DEL ULTIMO NIVEL */
         .btn-liquidate { 
             width: 94%; margin: 10px auto 40px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
             color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; cursor: pointer; display: block;
@@ -219,22 +225,9 @@
     <div id="navModal" onclick="if(event.target===this) toggleMenu()">
         <div class="nav-content">
             <div class="nav-title">MENÚ C5X</div>
-            
-            <div class="nav-item selected" id="nav-operate" onclick="switchView('operate')">
-                <div class="nav-icon">⚡</div>
-                <div class="nav-text">OPERAR</div>
-            </div>
-            
-            <div class="nav-item" id="nav-log" onclick="switchView('log')">
-                <div class="nav-icon">📋</div>
-                <div class="nav-text">BITÁCORA</div>
-            </div>
-
-            <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
-                <div class="nav-icon">⚙️</div>
-                <div class="nav-text">AJUSTES</div>
-            </div>
-
+            <div class="nav-item selected" id="nav-operate" onclick="switchView('operate')"><div class="nav-icon">⚡</div><div class="nav-text">OPERAR</div></div>
+            <div class="nav-item" id="nav-log" onclick="switchView('log')"><div class="nav-icon">📋</div><div class="nav-text">BITÁCORA</div></div>
+            <div class="nav-item" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon">⚙️</div><div class="nav-text">AJUSTES</div></div>
             <button class="btn-cancel" style="width:100%; margin-top:15px;" onclick="toggleMenu()">CERRAR</button>
         </div>
     </div>
@@ -247,7 +240,7 @@
             </div>
             
             <div class="ticker-container">
-                <div class="ticker-pill" onclick="viewTickerChart()">
+                <div class="ticker-pill" onclick="viewTickerChart(event)">
                     <div class="ticker-dot" id="t-dot"></div>
                     <span class="ticker-sym" id="t-sym">BTC</span>
                     <span class="ticker-price" id="t-price">--.--</span>
@@ -267,7 +260,6 @@
     </div>
 
     <div class="content-spacer">
-        
         <div id="section-operate" class="app-section active">
             <nav id="slotNav" class="slot-nav"></nav>
             <div id="tv_chart" class="chart-wrapper"></div>
@@ -314,51 +306,28 @@
         <div id="section-settings" class="app-section">
             <div class="settings-card">
                 <div class="setting-row">
-                    <div class="setting-info">
-                        <h4>Tema de la App</h4>
-                        <p>Alternar entre Claro y Oscuro</p>
-                    </div>
+                    <div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div>
                     <button class="action-btn" onclick="toggleTheme()">CAMBIAR</button>
                 </div>
                 <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;">
                     <div class="setting-info">
-                        <h4 style="color:var(--danger)">Zona de Peligro</h4>
-                        <p>Borrar todos los datos y reiniciar</p>
+                        <h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos y reiniciar</p>
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">
-                    C5X V22.3 PROFESSIONAL
-                </div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.4 PROFESSIONAL</div>
             </div>
         </div>
-
     </div>
 
-    <div id="configModal" class="generic-modal">
-        <div class="modal-box">
-            <div style="font-family:'Orbitron'; color:var(--brand); font-size:12px;">CONFIGURAR %</div>
-            <input type="number" id="configInputVal" class="modal-inp" step="any">
-            <button class="btn-modal btn-confirm" onclick="saveConfigValue()">ACEPTAR</button>
-            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
-        </div>
-    </div>
-
-    <div id="securityModal" class="generic-modal">
-        <div class="modal-box">
-            <div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div>
-            <input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4">
-            <button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button>
-            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
-        </div>
-    </div>
+    <div id="configModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; color:var(--brand); font-size:12px;">CONFIGURAR %</div><input type="number" id="configInputVal" class="modal-inp" step="any"><button class="btn-modal btn-confirm" onclick="saveConfigValue()">ACEPTAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
+    <div id="securityModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4"><button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
 
     <input type="hidden" id="incInput" value="7">
     <input type="hidden" id="descInput" value="66">
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // CONFIGURACIÓN INICIAL
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
@@ -373,17 +342,11 @@
 
         function init() { 
             if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
-            
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
-            
-            document.querySelectorAll('.tf-btn').forEach(btn => { 
-                if(btn.dataset.tf === activeTF) btn.classList.add('active'); 
-            });
-            
+            document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             setInterval(fetchTicker, 8000); 
         }
 
-        // --- NAVEGACIÓN ---
         function toggleMenu() {
             const m = document.getElementById('navModal');
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
@@ -393,7 +356,6 @@
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + viewName).classList.add('active');
-            
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
             document.getElementById('nav-' + viewName).classList.add('selected');
 
@@ -404,18 +366,9 @@
             } else {
                 tfBar.style.display = 'none';
             }
-
             toggleMenu(); 
         }
 
-        function resetApp() {
-            openSecurity(() => {
-                localStorage.clear();
-                location.reload();
-            });
-        }
-
-        // --- CORE ---
         async function fetchTicker() { 
             try { 
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
@@ -429,123 +382,60 @@
             } catch(e) {} 
         }
 
-        function rotateDash() { 
-            const s = slots[activeIdx]; 
-            if(s.locked) return showToast("⚠️ Slot Bloqueado"); 
-            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
-            save(); updateDashUI(); 
+        // --- TICKER CLICK LOGIC FIX ---
+        function viewTickerChart(e) { 
+            if(e) e.stopPropagation(); // Evita que el click suba y abra el menú
+            loadChart(currentTickerSymbol); // Carga la moneda actual del ticker
+            switchView('operate'); // Asegura que estamos en la vista de operar
+            // No seleccionamos slot, así que visualmente se ve el chart del ticker
+            // chartSymbol queda actualizado, así que updateTF usará esta moneda
         }
 
-        function toggleLock() { 
-            const s = slots[activeIdx]; 
-            s.locked = !s.locked; 
-            save(); updateDashUI(); 
+        function updateTF(tf, btn) { 
+            activeTF = tf; 
+            localStorage.setItem('c5x_last_tf', tf); 
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            loadChart(chartSymbol); // Mantiene la moneda actual (Slot o Ticker)
         }
 
+        function loadChart(coin) { 
+            chartSymbol = (coin || 'BTC3L').toUpperCase(); 
+            new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); 
+        }
+
+        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
+        
+        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
-            const elTitle = document.getElementById('stratName');
-            const elCard = document.getElementById('dashMain');
-            
-            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA";
-            elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)";
-            elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
-
+            const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
+            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
             document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
-            
             calculate();
         }
 
-        // --- SEGURIDAD ---
-        function openSecurity(cb) {
-            modalCallback = cb;
-            document.getElementById('secInput').value = '';
-            document.getElementById('securityModal').style.display = 'flex';
-        }
-        
-        function validateSecurity() {
-            const pass = document.getElementById('secInput').value;
-            closeModals();
-            if(pass === "2524") {
-                if(modalCallback) modalCallback();
-            } else {
-                showToast("⛔ Clave Incorrecta");
-            }
-        }
-
-        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
-
-        function requestControlAccess(id) {
-            openSecurity(() => {
-                const el = document.getElementById(id);
-                el.readOnly = false; el.focus(); 
-                el.onblur = () => el.readOnly = true;
-                showToast("🔓 Edición Habilitada");
-            });
-        }
-
-        function handleStratEdit() {
-            openSecurity(() => {
-                const s = slots[activeIdx];
-                const isNormal = s.strat === "normal";
-                document.getElementById('configInputVal').value = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
-                document.getElementById('configModal').style.display = 'flex';
-            });
-        }
-
-        function saveConfigValue() {
-            const newVal = document.getElementById('configInputVal').value;
-            if(!newVal) return;
-            if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; 
-            else document.getElementById('descInput').value = newVal; 
-            closeModals(); updateDashUI();
-        }
-
-        // --- CÁLCULOS ---
-        function calculate() { 
-            const s = slots[activeIdx]; 
-            s.price = parseFloat(document.getElementById('baseInput').value) || 0; 
-            s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; 
-            save(); renderLevels(); 
-        }
-
-        function toggleLvl(idx) { 
-            const s = slots[activeIdx]; 
-            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } 
-            else { s.buys = s.buys.filter(val => val < idx); } 
-            calculate(); 
-        }
+        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
+        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
-            const grid = document.getElementById('levelsGrid');
-            const s = slots[activeIdx];
-            const descPct = parseFloat(document.getElementById('descInput').value) || 66;
-            const incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            
+            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
             updateBodyMode(s.name);
-
             if(!s.price) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
-            
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
             for(let i=0; i<12; i++){
                 let pLevel;
-                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
-                else { 
-                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } 
-                    else { currentStepDrop = descPct; }
+                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } else { 
+                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; }
                     pLevel = lastPrice * (1 - (currentStepDrop / 100));
                 }
-                const mUSD = MULTIPLIERS[i] * s.capital; 
-                const on = s.buys.includes(i);
+                const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
-                
-                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                    <div class="level-index">${i+1}</div>
-                    <div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(5)}</div></div>
-                    <div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div>
-                </div>`;
+                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(5)}</div></div><div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div></div>`;
                 lastPrice = pLevel;
             }
             grid.innerHTML = html;
@@ -556,71 +446,34 @@
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
-        function renderHistory() { 
-            const grid = document.getElementById('logGrid');
-            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; }
-            grid.innerHTML = history.map(h => `
-                <div class="level-card">
-                    <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
-                    <div class="level-info"><span class="level-tag" style="color:var(--text-secondary)">${h.date}</span><div class="level-price" style="font-size:16px">${h.coin}</div></div>
-                    <div class="level-invest"><span style="color:var(--long)">+$${h.profit}</span></div>
-                </div>`).reverse().join(''); 
-        }
-
         function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
+            const s = slots[activeIdx]; if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
             openSecurity(() => {
-                history.push({ 
-                    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                    coin: s.name || 'S/N', 
-                    profit: document.getElementById('resProfit').textContent.replace('$',''),
-                    base: s.price.toFixed(4),
-                    avg: document.getElementById('resAvg').textContent,
-                    totalInv: document.getElementById('resInv').textContent.replace('$',''),
-                    strategy: s.strat.toUpperCase()
-                });
-                localStorage.setItem('c5x_history', JSON.stringify(history));
-                renderHistory();
+                history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
+                localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                slots = [...filled, ...empty];
-                save(); selectSlot(0); showToast("✅ Operación Cerrada");
-                switchView('log'); 
+                slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
             });
         }
 
-        function clearLogs() { 
-            openSecurity(() => { 
-                history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); 
-                renderHistory(); showToast("🗑️ Historial Borrado"); 
-            }); 
-        }
-
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { 
-            chartSymbol = (coin || 'BTC3L').toUpperCase(); 
-            new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); 
-        }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); switchView('operate'); }
-        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        
-        function toggleTheme() { 
-            isLight = !isLight; 
-            document.body.classList.toggle('light-mode', isLight); 
-            updateThemeIcon();
-            localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
-        }
+        function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
+        function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
+        function requestControlAccess(id) { openSecurity(() => { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; showToast("🔓 Edición Habilitada"); }); }
+        function handleStratEdit() { openSecurity(() => { const s = slots[activeIdx], isNormal = s.strat === "normal"; document.getElementById('configInputVal').value = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configModal').style.display = 'flex'; }); }
+        function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeModals(); updateDashUI(); }
+        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
-
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
-        
+        function renderHistory() { const grid = document.getElementById('logGrid'); if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-info"><span class="level-tag" style="color:var(--text-secondary)">${h.date}</span><div class="level-price" style="font-size:16px">${h.coin}</div></div><div class="level-invest"><span style="color:var(--long)">+$${h.profit}</span></div></div>`).reverse().join(''); }
+        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
         function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const d = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT": "$" + h.profit })); const ws = XLSX.utils.json_to_sheet(d), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
         function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("C5X Reporte", 10, 10); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.profit]) }); doc.save("C5X.pdf"); }
+        function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
 </html>
