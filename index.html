@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.4 Fast Flow</title>
+    <title>C5X - V22.5 Pro Log</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         :root {
@@ -15,6 +17,8 @@
             --warning: #f1c40f; --danger: #e74c3c;
         }
         body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
+        body.mode-long { --dir-color: var(--long-green); }
+        body.mode-short { --dir-color: var(--short-red); }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 85px; transition: 0.3s; overflow-x: hidden; }
@@ -22,9 +26,6 @@
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 60px; }
         .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 20px; color: var(--dir-color); }
-        
-        .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 18px; }
-        #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
         
         #tfBar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
@@ -36,7 +37,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: var(--surface); display: flex; justify-content: space-around; border-top: 1px solid var(--border); z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; cursor: pointer; }
+        .nav-item { background: none; border: none; color: #848e9c; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; }
         .nav-item.active { color: var(--dir-color); }
         .nav-item span { font-size: 22px; }
         .nav-item label { font-size: 10px; font-weight: 900; margin-top: 4px; text-transform: uppercase; }
@@ -44,8 +45,8 @@
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
         .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
-        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         
+        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
         .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
         .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
@@ -53,11 +54,16 @@
 
         .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; margin: 10px 8px; position: relative; }
         .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); text-align: center; }
-        
+
         .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 10px; }
-        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); transition: 0.1s; }
-        .standard-card:active { transform: scale(0.98); background: rgba(52, 152, 219, 0.05); }
+        .standard-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
         .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.05); }
+        
+        /* Indicador de dirección en historial */
+        .card-dir-strip { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .strip-long { background: var(--long-green); }
+        .strip-short { background: var(--short-red); }
+
         .card-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 14px; margin-right: 15px; flex-shrink: 0; }
         .card-content { flex: 1; }
         .card-label { font-size: 9px; color: var(--dir-color); font-weight: 900; text-transform: uppercase; }
@@ -66,10 +72,8 @@
         #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--surface); padding: 25px; border-radius: 20px; border: 1px solid var(--border); width: 80%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 24px; font-weight: 900; border-radius: 10px; margin-bottom: 20px; }
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 90px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 90px; opacity: 1;} to {bottom: 0; opacity: 0;} }
     </style>
 </head>
 <body onload="init()">
@@ -81,13 +85,13 @@
     <div class="fixed-header">
         <header class="app-header">
             <div class="logo-area">C5X</div>
-            <div class="btc-live-box"><div id="t-dot"></div><span id="t-sym">BTC</span><span id="t-price" style="font-weight: 900; margin-left:5px;">$--,---</span></div>
+            <div style="font-family: 'Orbitron'; font-size: 18px;"><span id="t-price" style="font-weight: 900;">$--,---</span></div>
             <div style="width: 20px;"></div>
         </header>
         <div id="tfBar" class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
             <button class="tf-btn" data-tf="30" onclick="updateTF('30', this)">30M</button>
-            <button class="tf-btn" data-tf="60" onclick="updateTF('60', this)">1H</button>
+            <button class="tf-btn active" data-tf="60" onclick="updateTF('60', this)">1H</button>
             <button class="tf-btn" data-tf="240" onclick="updateTF('240', this)">4H</button>
             <button class="tf-btn" data-tf="D" onclick="updateTF('D', this)">1D</button>
         </div>
@@ -95,11 +99,14 @@
 
     <div id="tab-history" class="tab-content no-tf-margin">
         <div style="padding: 15px; display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">HISTORIAL</h2>
-            <button onclick="exportExcel()" style="padding:8px 15px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">EXPORTAR</button>
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px;">BITÁCORA</h2>
+            <div style="display:flex; gap:8px;">
+                <button onclick="exportExcel()" style="padding:8px 12px; border-radius:8px; background:var(--surface); color:var(--text); border:1px solid var(--border); font-size:10px; font-weight:900;">XLS</button>
+                <button onclick="exportPDF()" style="padding:8px 12px; border-radius:8px; background:var(--dir-color); color:#fff; border:none; font-size:10px; font-weight:900;">PDF PRO</button>
+            </div>
         </div>
         <div id="logGrid" class="card-grid"></div>
-        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:11px; margin-top:25px; font-weight:900; opacity:0.6;">BORRAR BITÁCORA</button></center>
+        <center><button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); font-size:10px; margin-top:30px; font-weight:900; opacity:0.4;">BORRAR TODO</button></center>
     </div>
 
     <div id="tab-trade" class="tab-content active-tab">
@@ -114,7 +121,7 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <button style="background:none; border:none; font-size:20px;" onclick="rotateDash()">🔄</button>
                 <div id="stratName" style="font-family:'Orbitron'; font-size:11px; font-weight:900;">PREDETERMINADA</div>
-                <button style="background:none; border:none; font-size:20px;" id="lockBtn" onclick="toggleLock()">🔓</button>
+                <button style="background:none; border:none; font-size:20px;" onclick="toggleDir()">⚖️</button>
             </div>
             <div class="main-target" id="resTarget">0.000000</div>
             <div class="sub-info" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:15px; padding-top:15px; border-top:1px solid var(--border);">
@@ -129,32 +136,20 @@
 
     <div id="tab-config" class="tab-content no-tf-margin">
         <div style="padding:15px;">
-            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:20px;">CONFIGURACIÓN</h2>
+            <h2 style="font-family:'Orbitron'; color:var(--dir-color); font-size:16px; margin-bottom:20px;">AJUSTES</h2>
             <div class="card-grid">
-                <div class="standard-card" onclick="toggleTheme()">
-                    <div class="card-icon">🎨</div>
-                    <div class="card-content"><div class="card-label">Modo Visual</div><div class="card-value" id="themeLabel">OSCURO</div></div>
-                </div>
-                <div class="standard-card" onclick="openFastEdit('capital')">
-                    <div class="card-icon" style="color:var(--long-green)">$</div>
-                    <div class="card-content"><div class="card-label">Capital Global</div><div class="card-value" id="cfgCapVal">$5.00</div></div>
-                </div>
-                <div class="standard-card" onclick="openFastEdit('normal')">
-                    <div class="card-icon" style="color:var(--dir-color)">📊</div>
-                    <div class="card-content"><div class="card-label">% Predeterminada</div><div class="card-value" id="cfgBaseVal">7%</div></div>
-                </div>
-                <div class="standard-card" onclick="openFastEdit('agresiva')">
-                    <div class="card-icon" style="color:var(--warning)">⚡</div>
-                    <div class="card-content"><div class="card-label">% Descuento</div><div class="card-value" id="cfgAggVal">66%</div></div>
-                </div>
+                <div class="standard-card" onclick="toggleTheme()"><div class="card-icon">🎨</div><div class="card-content"><div class="card-label">Tema</div><div class="card-value" id="themeLabel">OSCURO</div></div></div>
+                <div class="standard-card" onclick="openFastEdit('capital')"><div class="card-icon" style="color:var(--long-green)">$</div><div class="card-content"><div class="card-label">Capital Global</div><div class="card-value" id="cfgCapVal">$5.00</div></div></div>
+                <div class="standard-card" onclick="openFastEdit('normal')"><div class="card-icon" style="color:var(--dir-color)">📊</div><div class="card-content"><div class="card-label">% Predeterminada</div><div class="card-value" id="cfgBaseVal">7%</div></div></div>
+                <div class="standard-card" onclick="openFastEdit('agresiva')"><div class="card-icon" style="color:var(--warning)">⚡</div><div class="card-content"><div class="card-label">% Descuento</div><div class="card-value" id="cfgAggVal">66%</div></div></div>
             </div>
         </div>
     </div>
 
     <nav class="bottom-nav">
-        <button class="nav-item" id="btn-history" onclick="switchTab('tab-history', this)"><span>📜</span><label>Bitácora</label></button>
-        <button class="nav-item active" id="btn-trade" onclick="switchTab('tab-trade', this)"><span>📊</span><label>Operar</label></button>
-        <button class="nav-item" id="btn-config" onclick="switchTab('tab-config', this)"><span>⚙️</span><label>Ajustes</label></button>
+        <button class="nav-item" onclick="switchTab('tab-history', this)"><span>📜</span><label>Bitácora</label></button>
+        <button class="nav-item active" onclick="switchTab('tab-trade', this)"><span>📊</span><label>Operar</label></button>
+        <button class="nav-item" onclick="switchTab('tab-config', this)"><span>⚙️</span><label>Ajustes</label></button>
     </nav>
 
     <input type="hidden" id="incInput" value="7">
@@ -165,16 +160,14 @@
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', dir:'long' }));
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
             if(isLight) document.body.classList.add('light-mode');
             document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO';
-            switchTab('tab-trade', document.getElementById('btn-trade'));
             renderNav(); selectSlot(activeIdx); renderHistory();
-            document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             fetchTicker(); setInterval(fetchTicker, 10000); 
         }
 
@@ -191,101 +184,135 @@
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT`);
                 const data = await res.json();
                 document.getElementById('t-price').textContent = '$' + parseFloat(data.price).toLocaleString();
-                document.getElementById('t-dot').style.background = 'var(--long-green)';
             } catch(e){}
         }
 
-        function openFastEdit(type) {
-            const modal = document.getElementById('configModal');
-            const input = document.getElementById('configInputVal');
-            input.dataset.type = type;
-            if(type === 'capital') {
-                document.getElementById('configTitle').textContent = "EDITAR CAPITAL ($)";
-                input.value = slots[activeIdx].capital;
-            } else if(type === 'normal') {
-                document.getElementById('configTitle').textContent = "% PREDETERMINADA";
-                input.value = document.getElementById('incInput').value;
-            } else {
-                document.getElementById('configTitle').textContent = "% DESCUENTO";
-                input.value = document.getElementById('descInput').value;
-            }
-            modal.style.display = 'flex';
-            input.focus();
-        }
-
-        function saveConfigValue() {
-            const val = parseFloat(document.getElementById('configInputVal').value);
-            const type = document.getElementById('configInputVal').dataset.type;
-            if(isNaN(val)) return;
-            if(type === 'capital') { slots.forEach(s => s.capital = val); document.getElementById('capitalInput').value = val; }
-            else if(type === 'normal') { document.getElementById('incInput').value = val; }
-            else { document.getElementById('descInput').value = val; }
-            save(); closeConfigModal(); updateDashUI(); showToast("ACTUALIZADO");
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length === 0) return;
-            history.push({ 
-                date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                coin: s.name || "S"+(activeIdx+1), 
-                profit: document.getElementById('resProfit').textContent.replace('$','') 
-            });
-            localStorage.setItem('c5x_history', JSON.stringify(history));
-            slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', locked: false };
-            save(); selectSlot(activeIdx); renderHistory();
-            showToast("OPERACIÓN CERRADA Y GUARDADA");
-        }
-
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; renderLevels(); }
-
-        function renderLevels() {
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], dPct = parseFloat(document.getElementById('descInput').value), iPct = parseFloat(document.getElementById('incInput').value);
-            if(!s.price) { grid.innerHTML = ''; return; }
-            let tS = 0, tQ = 0, lP = s.price, curD = 0, h = '';
-            for(let i=0; i<12; i++){
-                let pL = (i===0) ? s.price : (s.strat==="normal" ? (i===1 ? lP*0.83 : lP*(1-(iPct/100))) : lP*(1-(dPct/100)));
-                if(i>0) curD = ((s.price - pL)/s.price)*100;
-                const m = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
-                if(on) { tS += m; tQ += (m/pL); }
-                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'ENTRADA':'CAÍDA -'+curD.toFixed(1)+'%'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="text-align:right"><label style="font-size:8px; opacity:0.6;">USD</label><div style="font-family:'Roboto Mono'; font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div></div>`;
-                lP = pL;
-            }
-            grid.innerHTML = h;
-            const avg = tQ > 0 ? tS/tQ : 0;
-            document.getElementById('resInv').textContent = `$${tS.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(4);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
-            document.getElementById('resProfit').textContent = `$${tS.toFixed(2)}`;
+        function toggleDir() {
+            slots[activeIdx].dir = slots[activeIdx].dir === 'long' ? 'short' : 'long';
+            save(); updateDashUI();
         }
 
         function updateDashUI() {
             const s = slots[activeIdx], isN = s.strat === "normal";
+            document.body.classList.remove('mode-long', 'mode-short');
+            document.body.classList.add('mode-' + s.dir);
             document.getElementById('stratName').textContent = isN ? "PREDETERMINADA" : "DESCUENTO";
             document.getElementById('stratName').style.color = isN ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('dashMain').style.borderColor = isN ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            document.getElementById('dashMain').style.borderColor = "var(--dir-color)";
             document.getElementById('cfgCapVal').textContent = '$' + s.capital.toFixed(2);
             document.getElementById('cfgBaseVal').textContent = document.getElementById('incInput').value + '%';
             document.getElementById('cfgAggVal').textContent = document.getElementById('descInput').value + '%';
             calculate();
         }
 
+        function releaseSlot() {
+            const s = slots[activeIdx];
+            if(s.buys.length === 0) return;
+            history.push({ 
+                date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}), 
+                coin: s.name || "S"+(activeIdx+1), 
+                profit: document.getElementById('resProfit').textContent.replace('$',''),
+                strat: s.strat.toUpperCase(),
+                dir: s.dir
+            });
+            localStorage.setItem('c5x_history', JSON.stringify(history));
+            slots[activeIdx] = { name:'', price:0, capital:s.capital, buys:[], strat:'normal', dir:'long' };
+            save(); selectSlot(activeIdx); renderHistory();
+            showToast("OPERACIÓN GUARDADA EN BITÁCORA");
+        }
+
+        function renderHistory() {
+            const grid = document.getElementById('logGrid');
+            if(!history.length) { grid.innerHTML = `<center style="opacity:0.2; padding:40px;">HISTORIAL VACÍO</center>`; return; }
+            grid.innerHTML = history.map(h => `
+                <div class="standard-card">
+                    <div class="card-dir-strip ${h.dir === 'short' ? 'strip-short' : 'strip-long'}"></div>
+                    <div class="card-icon" style="border-color:${h.dir === 'short' ? 'var(--short-red)' : 'var(--long-green)'}">${h.coin.substring(0,3)}</div>
+                    <div class="card-content">
+                        <div class="card-label">${h.date} | ${h.strat}</div>
+                        <div class="card-value">${h.coin} <small style="font-size:10px; opacity:0.5;">${h.dir.toUpperCase()}</small></div>
+                    </div>
+                    <div style="color:var(--long-green); font-weight:900; font-family:'Roboto Mono';">+$${h.profit}</div>
+                </div>
+            `).reverse().join('');
+        }
+
+        function exportPDF() {
+            if(!history.length) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text("INFORME DE OPERACIONES C5X", 14, 20);
+            doc.setFontSize(10);
+            doc.text("Fecha de reporte: " + new Date().toLocaleString(), 14, 28);
+
+            const tableData = history.map(h => [h.date, h.coin, h.dir.toUpperCase(), h.strat, "$"+h.profit]);
+            
+            doc.autoTable({
+                startY: 35,
+                head: [['Fecha', 'Moneda', 'Tipo', 'Estrategia', 'Beneficio']],
+                body: tableData,
+                theme: 'striped',
+                headStyles: { fillColor: [52, 152, 219] }
+            });
+
+            const total = history.reduce((sum, h) => sum + parseFloat(h.profit), 0);
+            doc.setFontSize(12);
+            doc.text("BENEFICIO TOTAL ACUMULADO: $" + total.toFixed(2), 14, doc.lastAutoTable.finalY + 15);
+            
+            doc.save("C5X_Reporte_Detallado.pdf");
+            showToast("PDF GENERADO");
+        }
+
+        // Funciones Base
+        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; renderLevels(); }
+        function renderLevels() {
+            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], dPct = parseFloat(document.getElementById('descInput').value), iPct = parseFloat(document.getElementById('incInput').value);
+            if(!s.price) { grid.innerHTML = ''; return; }
+            let tS = 0, tQ = 0, lP = s.price, h = '';
+            for(let i=0; i<12; i++){
+                let pL = (i===0) ? s.price : (s.strat==="normal" ? (i===1 ? lP*0.83 : lP*(1-(iPct/100))) : lP*(1-(dPct/100)));
+                const m = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
+                if(on) { tS += m; tQ += (m/pL); }
+                h += `<div class="standard-card ${on?'active':''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-content"><div class="card-label" style="color:var(--short-red)">${i===0?'ENTRADA':'NIVEL'}</div><div class="card-value">${pL.toFixed(6)}</div></div><div style="font-weight:900; color:var(--long-green)">$${m.toFixed(1)}</div></div>`;
+                lP = pL;
+            }
+            grid.innerHTML = h;
+            const avg = tQ > 0 ? tS/tQ : 0;
+            document.getElementById('resInv').textContent = `$${tS.toFixed(2)}`;
+            document.getElementById('resAvg').textContent = avg.toFixed(4);
+            document.getElementById('resTarget').textContent = (avg * 1.01).toFixed(6);
+            document.getElementById('resProfit').textContent = `$${(tS * 0.01).toFixed(2)}`; // Estimado
+        }
+
+        function openFastEdit(type) {
+            const input = document.getElementById('configInputVal');
+            input.dataset.type = type;
+            document.getElementById('configTitle').textContent = type.toUpperCase();
+            document.getElementById('configModal').style.display = 'flex';
+        }
+        function saveConfigValue() {
+            const val = parseFloat(document.getElementById('configInputVal').value);
+            const type = document.getElementById('configInputVal').dataset.type;
+            if(type === 'capital') slots.forEach(s => s.capital = val);
+            else if(type === 'normal') document.getElementById('incInput').value = val;
+            else document.getElementById('descInput').value = val;
+            save(); closeConfigModal(); updateDashUI();
+        }
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) if(!s.buys.includes(i)) s.buys.push(i); } else { s.buys = s.buys.filter(v => v < idx); } calculate(); }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); if(s.name) loadChart(s.name); updateDashUI(); }
+        function selectSlot(i) { activeIdx = i; const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); if(s.name) loadChart(s.name); updateDashUI(); }
         function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
-        function rotateDash() { const s = slots[activeIdx]; if(!s.locked) { s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); } }
-        function toggleLock() { slots[activeIdx].locked = !slots[activeIdx].locked; save(); updateDashUI(); }
+        function rotateDash() { slots[activeIdx].strat = (slots[activeIdx].strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeLabel').textContent = isLight ? 'CLARO' : 'OSCURO'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
+        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); localStorage.setItem('theme', isLight ? 'light' : 'dark'); location.reload(); }
         function showToast(t) { const x = document.getElementById("toast"); x.textContent = t; x.className = "show"; setTimeout(() => x.className = "", 2000); }
         function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function renderHistory() { document.getElementById('logGrid').innerHTML = history.length ? history.map(h => `<div class="standard-card"><div class="card-icon" style="border-color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-content"><div class="card-label">${h.date}</div><div class="card-value">${h.coin}</div></div><div style="color:var(--long-green); font-weight:900;">+$${h.profit}</div></div>`).reverse().join('') : `<center style="opacity:0.3; padding:20px;">Sin registros</center>`; }
         function loadChart(c) { if(!c) return; new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${c.replace('USDT','')}USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function updateTF(tf, b) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
-        function clearLogs() { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("BITÁCORA LIMPIA"); }
-        function exportExcel() { if(!history.length) return; const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
+        function updateTF(tf, b) { activeTF = tf; document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); if(slots[activeIdx].name) loadChart(slots[activeIdx].name); }
+        function clearLogs() { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("LIMPIADO"); }
+        function exportExcel() { const ws = XLSX.utils.json_to_sheet(history); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
     </script>
 </body>
 </html>
