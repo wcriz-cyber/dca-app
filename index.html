@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.0 Professional</title>
+    <title>C5X - V30.0 Tactical</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
     
     <style>
@@ -13,71 +13,65 @@
             --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
             --warning: #f1c40f; --danger: #e74c3c;
         }
-        body.light-mode { 
-            --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; 
-        }
+        body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
         
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; transition: 0.3s; overflow-x: hidden; }
 
-        /* HEADER */
+        /* HEADER CORREGIDO (SIN DESBORDAMIENTO) */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--header-bg); border-bottom: 4px solid var(--dir-color); }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; color: var(--text); font-size: 24px; letter-spacing: 2px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--header-bg); border-bottom: 4px solid var(--dir-color); gap: 8px; }
+        .logo-area { font-family: 'Orbitron'; font-weight: 900; color: var(--text); font-size: 20px; flex-shrink: 0; }
         
-        .ticker-container { flex: 1; display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(128,128,128,0.1); margin: 0 15px; padding: 8px 20px; border-radius: 12px; border: 1px solid var(--border); cursor: pointer; }
-        #t-sym { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
-        #t-price { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; }
-        #t-pct { font-family: 'Roboto Mono'; font-size: 12px; font-weight: 900; }
+        .ticker-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 8px; background: rgba(128,128,128,0.1); padding: 8px; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+        #t-sym { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; color: var(--dir-color); }
+        #t-price { font-family: 'Roboto Mono'; font-size: 15px; font-weight: 900; }
+        #t-pct { font-family: 'Roboto Mono'; font-size: 10px; font-weight: 900; }
 
-        .theme-toggle { background: var(--surface); border: 2px solid var(--dir-color); color: var(--text); width: 45px; height: 45px; border-radius: 12px; font-size: 20px; display: flex; align-items: center; justify-content: center; }
+        .theme-toggle { background: var(--surface); border: 2px solid var(--dir-color); color: var(--text); width: 40px; height: 40px; border-radius: 10px; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        /* SLIDER TEMPORALIDADES */
-        .tf-slider-section { background: rgba(0,0,0,0.2); padding: 10px 25px; border-bottom: 1px solid var(--border); }
-        body.light-mode .tf-slider-section { background: rgba(0,0,0,0.05); }
-        .tf-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; font-weight: 900; color: var(--dir-color); font-family: 'Orbitron'; }
+        /* SLIDER ADAPTATIVO */
+        .tf-slider-section { background: rgba(0,0,0,0.2); padding: 10px 15px; border-bottom: 1px solid var(--border); }
+        .tf-labels { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; font-weight: 900; color: var(--dir-color); font-family: 'Orbitron'; }
         .slider { -webkit-appearance: none; width: 100%; height: 6px; border-radius: 5px; background: var(--border); outline: none; }
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--dir-color); border: 2px solid #fff; cursor: pointer; }
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--dir-color); border: 2px solid #fff; cursor: pointer; }
 
-        .content-spacer { margin-top: 130px; }
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 10px; }
-        .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+        .content-spacer { margin-top: 125px; }
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 8px; }
+        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 3px; }
         
-        .chart-container { width: 100%; height: 280px; background: #000; }
+        .chart-container { width: 100%; height: 260px; background: #000; }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.6fr; gap: 8px; padding: 10px; }
-        .control-box { background: var(--surface); padding: 10px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
-        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
-        .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; }
-        .locked-input { pointer-events: none; opacity: 0.5; }
+        /* CONTROLES CON BLOQUEO */
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr 0.7fr; gap: 6px; padding: 10px; }
+        .control-box { background: var(--surface); padding: 8px; border-radius: 10px; border: 1px solid var(--border); text-align: center; }
+        .control-box label { font-size: 7px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 3px; }
+        .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .locked-input { pointer-events: none; }
 
-        /* DASHBOARD */
-        .dash-container { position: relative; margin: 10px 15px; border-radius: 28px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .lock-btn { position: absolute; top: 15px; right: 15px; z-index: 10; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        /* DASHBOARD MEJORADO */
+        .dash-container { position: relative; margin: 10px; border-radius: 25px; border: 3px solid var(--dir-color); background: var(--surface); overflow: hidden; }
+        .lock-btn { position: absolute; top: 12px; right: 12px; z-index: 10; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.1); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
         .lock-btn.locked { background: var(--danger); color: white; border: none; }
 
-        .dash-viewport { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 200%; }
-        .dash-page { width: 50%; padding: 20px; flex-shrink: 0; text-align: center; }
+        .dash-viewport { display: flex; transition: transform 0.4s ease; width: 200%; }
+        .dash-page { width: 50%; padding: 15px; flex-shrink: 0; text-align: center; }
         
-        .dash-label { font-size: 10px; font-weight: 900; letter-spacing: 2px; margin-bottom: 8px; display: block; }
-        .dash-inv { font-family: 'Roboto Mono'; font-size: 26px; font-weight: 900; margin-bottom: 15px; display: block; }
-        .avg-box { display: inline-block; padding: 6px 15px; border-radius: 10px; background: rgba(255,255,255,0.05); font-family: 'Roboto Mono'; font-size: 14px; margin-bottom: 5px; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -1.5px; line-height: 1; }
+        .dash-label { font-size: 9px; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+        .dash-main-val { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; display: block; margin-bottom: 10px; }
+        .avg-box { display: inline-block; padding: 4px 12px; border-radius: 8px; background: rgba(255,255,255,0.05); font-family: 'Roboto Mono'; font-size: 13px; margin-bottom: 4px; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 36px; font-weight: 900; color: var(--long-green); display: block; letter-spacing: -1px; }
 
         /* NIVELES */
-        .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
-        .level-card { background: var(--surface); border-radius: 20px; padding: 16px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); cursor: pointer; }
-        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.12); border-width: 2.5px; }
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; }
+        .level-card { background: var(--surface); border-radius: 18px; padding: 14px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
+        .level-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); border-width: 2px; }
         
-        .price-display { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--text); }
-        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 22px; border-radius: 22px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 14px; }
-
-        /* BITÁCORA */
-        .bitacora-section { padding: 15px; margin-bottom: 30px; }
-        .bit-item { background: rgba(128,128,128,0.08); padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 11px; border: 1px solid var(--border); }
+        .price-display { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); }
+        .btn-release { width: 92%; margin: 20px auto; display: block; padding: 20px; border-radius: 18px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; }
 
         #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
@@ -111,13 +105,13 @@
         <div class="controls">
             <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoinName()" placeholder="BTC3L"></div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box" onclick="unlockField('capitalInput')">
+            <div class="control-box" style="background: rgba(255,255,255,0.03);" onclick="reqPin('capitalInput')">
                 <label>CAPITAL $</label>
-                <input type="number" id="capitalInput" class="locked-input" oninput="calculate()">
+                <input type="number" id="capitalInput" class="locked-input" readonly>
             </div>
-            <div class="control-box" style="border-color: var(--warning);" onclick="unlockField('descInput')">
+            <div class="control-box" style="border-color: var(--warning);" onclick="reqPin('descInput')">
                 <label>% DESC</label>
-                <input type="number" id="descInput" value="55" class="locked-input" oninput="calculate()">
+                <input type="number" id="descInput" value="55" class="locked-input" readonly>
             </div>
         </div>
 
@@ -126,13 +120,19 @@
             <div class="dash-viewport" id="dashViewport">
                 <div class="dash-page">
                     <span class="dash-label" style="color:var(--dir-color)">PREDETERMINADA</span>
-                    <span id="resInv1" class="dash-inv">$0.00</span>
+                    <div style="display:flex; justify-content:space-around; align-items:center;">
+                        <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvP" class="dash-main-val">$0.00</span></div>
+                        <div><small style="font-size:8px;">WIN +100%</small><span id="resWinP" class="dash-main-val" style="color:var(--dir-color)">$0.00</span></div>
+                    </div>
                     <div class="avg-box">AVG: <span id="resAvgP">0.000000</span></div>
                     <b id="resTargetP" class="target-price">0.000000</b>
                 </div>
                 <div class="dash-page">
                     <span class="dash-label" style="color:var(--warning)">AGRESIVA</span>
-                    <span id="resInv2" class="dash-inv" style="color:var(--warning)">$0.00</span>
+                    <div style="display:flex; justify-content:space-around; align-items:center;">
+                        <div><small style="font-size:8px;">INVERTIDO</small><span id="resInvA" class="dash-main-val">$0.00</span></div>
+                        <div><small style="font-size:8px;">WIN +100%</small><span id="resWinA" class="dash-main-val" style="color:var(--warning)">$0.00</span></div>
+                    </div>
                     <div class="avg-box" style="color:var(--warning)">AVG: <span id="resAvgA">0.000000</span></div>
                     <b id="resTargetA" class="target-price" style="color:var(--warning)">0.000000</b>
                 </div>
@@ -142,11 +142,7 @@
         <main id="levelsGrid" class="levels-container"></main>
 
         <button class="btn-release" onclick="liquidateOperation()">LIQUIDAR OPERACIÓN</button>
-        
-        <div class="bitacora-section">
-            <h5 style="font-size: 10px; color: var(--dir-color); margin-bottom: 10px; font-family: 'Orbitron';">REGISTRO DE CIERRES</h5>
-            <div id="bitacoraList"></div>
-        </div>
+        <div id="bitacoraList" style="padding: 10px; margin-bottom: 40px;"></div>
     </div>
 
     <script src="https://s3.tradingview.com/tv.js"></script>
@@ -156,7 +152,7 @@
         let currentTF = '60';
         let chartFocusSymbol = "";
         
-        let slots = JSON.parse(localStorage.getItem('dca_v29_slots')) || Array(6).fill(null).map(() => ({ 
+        let slots = JSON.parse(localStorage.getItem('dca_v30_slots')) || Array(6).fill(null).map(() => ({ 
             name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false 
         }));
         let bitacora = JSON.parse(localStorage.getItem('dca_bitacora')) || [];
@@ -176,11 +172,8 @@
         });
 
         function init() {
-            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; }
-            renderNav();
-            selectSlot(activeIdx);
-            renderBitacora();
-            fetchTicker();
+            if(isLight) document.body.classList.add('light-mode');
+            renderNav(); selectSlot(activeIdx); renderBitacora(); fetchTicker();
             setInterval(fetchTicker, 8000);
         }
 
@@ -223,7 +216,7 @@
         function toggleLock() {
             slots[activeIdx].locked = !slots[activeIdx].locked;
             updateLockUI(); save();
-            showToast(slots[activeIdx].locked ? "PANTALLA FIJA" : "PANTALLA LIBRE");
+            showToast(slots[activeIdx].locked ? "BLOQUEADO" : "LIBRE");
         }
 
         function updateLockUI() {
@@ -232,12 +225,15 @@
             btn.className = 'lock-btn' + (slots[activeIdx].locked ? ' locked' : '');
         }
 
-        function unlockField(id) {
-            const pin = prompt("Ingrese PIN (2524) para editar:");
-            if(pin === "2524") {
-                document.getElementById(id).classList.remove('locked-input');
-                showToast("EDITAR ACTIVADO");
-            } else { alert("PIN INCORRECTO"); }
+        function reqPin(id) {
+            const p = prompt("Contraseña:");
+            if(p === "2524") {
+                const el = document.getElementById(id);
+                el.readOnly = false;
+                el.classList.remove('locked-input');
+                el.focus();
+                el.onblur = () => { el.readOnly = true; el.classList.add('locked-input'); calculate(); };
+            }
         }
 
         function changeTF(val) {
@@ -248,7 +244,7 @@
         function lockTickerToChart() {
             chartFocusSymbol = currentTickerSym;
             loadChart(currentTickerSym);
-            showToast("GRÁFICO: " + currentTickerSym);
+            showToast("VER: " + currentTickerSym);
         }
 
         function calculate() {
@@ -263,9 +259,9 @@
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx];
             const isAgresiva = (s.dashPage === 1);
             const dPct = parseFloat(document.getElementById('descInput').value) || 55;
-            updateBodyTrend(s.name);
+            updateBodyColors(s.name);
 
-            if(!s.price) { grid.innerHTML = '<div style="opacity:0.2; text-align:center; padding:40px;">SIN DATOS</div>'; return; }
+            if(!s.price) { grid.innerHTML = '<div style="opacity:0.2; text-align:center; padding:40px;">VACÍO</div>'; return; }
 
             let spent = 0, tokP = 0, tokA = 0;
             let html = '', lastP = s.price, lastA = s.price, dropP = 10;
@@ -284,16 +280,14 @@
 
                 html += `
                 <div class="level-card ${checked ? 'active' : ''}" onclick="massSelect(${i})">
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <div style="width:32px; height:32px; border-radius:50%; border:2px solid ${cShow}; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:12px;">${i+1}</div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <div style="width:28px; height:28px; border-radius:50%; border:2px solid ${cShow}; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:11px;">${i+1}</div>
                         <div>
-                            <span style="font-size:9px; font-weight:900; color:${cShow}">PRECIO ${isAgresiva?'AGR':'PRE'}</span>
+                            <span style="font-size:8px; font-weight:900; color:${cShow}">PRECIO</span>
                             <div class="price-display">${pShow.toFixed(6)}</div>
                         </div>
                     </div>
-                    <div style="text-align:right">
-                        <span style="font-size:20px; color:var(--long-green); font-weight:900;">$${cost.toFixed(1)}</span>
-                    </div>
+                    <span style="font-size:18px; color:var(--long-green); font-weight:900;">$${cost.toFixed(1)}</span>
                 </div>`;
                 lastP = p_pre; lastA = p_agr;
             }
@@ -302,7 +296,8 @@
             const avgP = tokP > 0 ? (spent/tokP) : 0;
             const avgA = tokA > 0 ? (spent/tokA) : 0;
             
-            document.getElementById('resInv1').textContent = document.getElementById('resInv2').textContent = `$${spent.toFixed(2)}`;
+            document.getElementById('resInvP').textContent = document.getElementById('resInvA').textContent = `$${spent.toFixed(2)}`;
+            document.getElementById('resWinP').textContent = document.getElementById('resWinA').textContent = `$${(spent*2).toFixed(2)}`;
             document.getElementById('resAvgP').textContent = avgP.toFixed(6);
             document.getElementById('resTargetP').textContent = (avgP * 2).toFixed(6);
             document.getElementById('resAvgA').textContent = avgA.toFixed(6);
@@ -310,45 +305,36 @@
         }
 
         function massSelect(idx) {
-            let newBuys = [];
-            for(let i=0; i<=idx; i++) { newBuys.push(i); }
-            slots[activeIdx].buys = newBuys;
+            let buys = [];
+            for(let i=0; i<=idx; i++) buys.push(i);
+            slots[activeIdx].buys = buys;
             save(); renderLevels();
         }
 
         function liquidateOperation() {
             const s = slots[activeIdx];
             if(s.buys.length === 0) return;
-            if(confirm("¿CERRAR OPERACIÓN Y MOVER AL FINAL?")) {
-                bitacora.unshift({ coin: s.name, total: document.getElementById('resInv1').textContent, date: new Date().toLocaleString() });
-                localStorage.setItem('dca_bitacora', JSON.stringify(bitacora.slice(0, 15)));
-                
-                // Limpiar y Reordenar
-                const emptySlot = { name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false };
+            if(confirm("¿CERRAR Y MOVER AL FINAL?")) {
+                bitacora.unshift({ coin: s.name, total: document.getElementById('resInvP').textContent, date: new Date().toLocaleString() });
+                localStorage.setItem('dca_bitacora', JSON.stringify(bitacora.slice(0, 10)));
                 slots.splice(activeIdx, 1);
-                slots.push(emptySlot);
-                
-                activeIdx = 0;
-                save();
-                selectSlot(0);
-                renderBitacora();
+                slots.push({ name: '', price: 0, capital: 5, buys: [], dashPage: 0, locked: false });
+                activeIdx = 0; save(); selectSlot(0); renderBitacora();
             }
         }
 
         function renderBitacora() {
             document.getElementById('bitacoraList').innerHTML = bitacora.map(b => `
-                <div class="bit-item">
-                    <b style="color:var(--dir-color)">${b.coin}</b> 
-                    <span style="font-weight:900">${b.total}</span> 
-                    <small style="opacity:0.4">${b.date}</small>
+                <div style="background:rgba(128,128,128,0.1); padding:10px; border-radius:10px; margin-bottom:5px; display:flex; justify-content:space-between; font-size:10px;">
+                    <b>${b.coin}</b> <span>${b.total}</span> <small>${b.date}</small>
                 </div>
             `).join('');
         }
 
         function loadChart(coin) {
-            const target = (coin || 'BTC3L').replace('USDT','');
+            const sym = (coin || 'BTC3L').replace('USDT','');
             new TradingView.widget({
-                "autosize": true, "symbol": `GATEIO:${target}USDT`, "interval": currentTF,
+                "autosize": true, "symbol": `GATEIO:${sym}USDT`, "interval": currentTF,
                 "theme": isLight ? "light" : "dark", "container_id": "tv_chart",
                 "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#050708"
             });
@@ -356,27 +342,21 @@
 
         function updateCoinName() { calculate(); renderNav(); loadChart(slots[activeIdx].name); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i===activeIdx?'active':''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function save() { localStorage.setItem('dca_v29_slots', JSON.stringify(slots)); }
+        function save() { localStorage.setItem('dca_v30_slots', JSON.stringify(slots)); }
         
         function toggleTheme() { 
-            isLight = !isLight; 
-            document.body.classList.toggle('light-mode'); 
+            isLight = !isLight; document.body.classList.toggle('light-mode'); 
             document.getElementById('themeBtn').textContent = isLight?'☀️':'🌙'; 
-            localStorage.setItem('theme', isLight?'light':'dark'); 
-            loadChart(chartFocusSymbol);
+            localStorage.setItem('theme', isLight?'light':'dark'); loadChart(chartFocusSymbol);
         }
 
-        function updateBodyTrend(n) { 
+        function updateBodyColors(n) { 
             document.body.classList.remove('mode-long', 'mode-short'); 
             if(n.endsWith('L')) document.body.classList.add('mode-long'); 
-            if(n.endsWith('S')) document.body.classList.add('mode-short'); 
+            else if(n.endsWith('S')) document.body.classList.add('mode-short'); 
         }
 
-        function showToast(m) { 
-            const t = document.getElementById('toast'); 
-            t.textContent = m; t.className = "show"; 
-            setTimeout(()=>t.className="", 2000); 
-        }
+        function showToast(m) { const t = document.getElementById('toast'); t.textContent = m; t.className = "show"; setTimeout(()=>t.className="", 2000); }
     </script>
 </body>
 </html>
