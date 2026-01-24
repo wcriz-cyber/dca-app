@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V21.5 Master</title>
+    <title>C5X - V21.6 Professional</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Roboto:wght@400;700;900&family=Roboto+Mono:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -17,127 +17,327 @@
 
     <style>
         :root {
-            --bg: #050708; --surface: #12151a; --text: #f0f2f5; 
-            --border: #2d3339; --header-bg: #12151a;
-            --dir-color: #3498db; --long-green: #0ecb81; --short-red: #f6465d;
-            --warning: #f1c40f; --danger: #e74c3c;
+            /* PALETA PROFESIONAL REFINADA */
+            --bg: #050708; 
+            --surface: #121418; 
+            --surface-glass: rgba(18, 20, 24, 0.85);
+            --text: #ffffff; 
+            --text-muted: #6b7280;
+            --border: #2a2e35; 
+            
+            /* COLORES DE ACENTO VIBRANTES */
+            --dir-color: #3b82f6; /* Azul moderno */
+            --long-green: #10b981; /* Esmeralda */
+            --short-red: #ef4444; /* Rojo intenso */
+            --warning: #f59e0b; 
+            --danger: #dc2626;
+
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+            --radius-md: 14px;
+            --radius-lg: 20px;
         }
-        body.light-mode { --bg: #f5f7fa; --surface: #ffffff; --text: #1a1d23; --border: #d1d5db; --header-bg: #ffffff; }
+
+        body.light-mode { 
+            --bg: #f3f4f6; --surface: #ffffff; --surface-glass: rgba(255,255,255,0.9);
+            --text: #111827; --text-muted: #9ca3af; --border: #e5e7eb; 
+            --dir-color: #2563eb; 
+        }
+
         body.mode-long { --dir-color: var(--long-green); }
         body.mode-short { --dir-color: var(--short-red); }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 60px; transition: 0.3s; overflow-x: hidden; }
 
-        .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; background: var(--header-bg); border-bottom: 2px solid var(--dir-color); min-height: 60px; }
-        .logo-area { font-family: 'Orbitron'; font-weight: 900; font-size: 20px; color: var(--dir-color); }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         
-        .btc-live-box { display: flex; align-items: center; gap: 8px; font-family: 'Orbitron'; font-size: 18px; cursor: pointer; }
-        #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
-        .theme-toggle { background: transparent; border: none; color: var(--text); width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
-        .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
-        .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            padding-bottom: 80px; 
+            transition: background 0.3s ease, color 0.3s ease;
+            overflow-x: hidden; 
+        }
 
-        .content-spacer { margin-top: 108px; }
+        /* HEADER CON GLASSMORPHISM */
+        .fixed-header { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            background: rgba(5, 7, 8, 0.8); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
         
-        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
-        
-        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
-        
-        .controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 8px 8px 0 8px; }
-        .control-box { background: var(--surface); padding: 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; position: relative; }
-        .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 2px; }
-        .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
+        .app-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 10px 16px; min-height: 60px; max-width: 600px; margin: 0 auto;
+        }
+
+        /* LOGO ESTILO BOTÓN DE MENÚ */
+        .logo-area { 
+            font-family: 'Orbitron'; font-weight: 900; font-size: 20px; color: var(--dir-color); 
+            display: flex; align-items: center; gap: 6px; cursor: pointer;
+            padding: 5px 10px 5px 0;
+            transition: opacity 0.2s;
+        }
+        .logo-area:active { opacity: 0.7; }
+        .logo-caret { font-size: 10px; opacity: 0.6; transform: translateY(1px); }
+
+        .btc-live-box { 
+            display: flex; align-items: center; gap: 8px; 
+            background: rgba(255,255,255,0.03); padding: 6px 12px; border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+        .btc-val { font-family: 'Orbitron'; font-size: 13px; font-weight: 700; }
+        #t-dot { width: 6px; height: 6px; border-radius: 50%; background: grey; box-shadow: 0 0 5px currentColor;}
+
+        /* BARRA DE TEMPORALIDAD ESTILIZADA */
+        .tf-bar { 
+            display: flex; justify-content: center; gap: 5px; padding: 8px 10px; 
+            max-width: 600px; margin: 0 auto;
+        }
+        .tf-btn { 
+            flex: 1; padding: 6px 0; border: none; background: transparent; 
+            color: var(--text-muted); font-size: 11px; font-weight: 800; border-radius: 8px;
+            transition: 0.2s;
+        }
+        .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--dir-color); }
+
+        .content-spacer { margin-top: 115px; max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* SLOTS NAV */
+        .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 5px 10px; }
+        .slot-btn { 
+            padding: 12px 0; text-align: center; border-radius: 10px; 
+            font-size: 10px; font-weight: 800; background: var(--surface); 
+            border: 1px solid var(--border); color: var(--text-muted); 
+            transition: 0.2s; position: relative; overflow: hidden;
+        }
+        .slot-btn.active { 
+            background: var(--surface); border-color: var(--dir-color); 
+            color: var(--dir-color); box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+        }
+
+        .chart-container { width: 100%; height: 260px; background: #000; margin-top: 5px; border-radius: 0; }
+
+        /* CONTROLES PREMIUM */
+        .controls { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 15px 10px 5px 10px; }
+        .control-box { 
+            background: var(--surface); padding: 10px; border-radius: 14px; 
+            border: 1px solid var(--border); text-align: center; position: relative; 
+            box-shadow: var(--shadow-sm);
+        }
+        .control-box label { font-size: 9px; color: var(--text-muted); font-weight: 700; display: block; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .control-box input { 
+            font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; 
+            width: 100%; text-align: center; color: var(--text); background: transparent;
+        }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
-        .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 6px 25px rgba(0,0,0,0.5); }
-        .dash-top { display: grid; grid-template-columns: 45px 1fr 45px; align-items: center; margin-bottom: 8px; }
-        .strat-indicator { font-family: 'Orbitron'; font-size: 13px; font-weight: 900; letter-spacing: 2px; text-align: center; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+        /* DASHBOARD PRINCIPAL */
+        .dash-container { margin: 15px 10px; }
+        .dash-main { 
+            background: linear-gradient(145deg, var(--surface), rgba(20,20,25,1)); 
+            border-radius: 24px; padding: 20px; position: relative; 
+            box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+        }
+        .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .strat-indicator { font-family: 'Orbitron'; font-size: 12px; font-weight: 800; letter-spacing: 1px; color: var(--text-muted); }
+        
+        .tool-btn { 
+            background: rgba(255,255,255,0.03); border: none; color: var(--text); 
+            width: 36px; height: 36px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 16px; cursor: pointer; transition: 0.2s;
+        }
+        .tool-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
 
         .dash-data { text-align: center; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 46px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 2px 0; letter-spacing: -2px; }
+        .main-target { 
+            font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 700; 
+            color: var(--long-green); line-height: 1.1; letter-spacing: -1px; 
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
         
-        .btn-strat-val { background: rgba(52, 152, 219, 0.1); border: 1px solid var(--dir-color); color: var(--dir-color); padding: 6px 15px; border-radius: 20px; font-family: 'Orbitron'; font-size: 10px; font-weight: 900; margin-top: 5px; cursor: pointer; display: inline-block; }
+        .btn-strat-val { 
+            background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); 
+            color: var(--dir-color); padding: 6px 14px; border-radius: 20px; 
+            font-family: 'Orbitron'; font-size: 10px; font-weight: 800; 
+            margin-top: 8px; cursor: pointer; display: inline-block;
+        }
 
-        .sub-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
-        .info-item { text-align: center; }
-        .info-item label { font-size: 10px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 6px; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--text); display: block; }
+        .sub-info { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; 
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); 
+        }
+        .info-item label { font-size: 9px; color: var(--text-muted); display: block; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+        .info-item span { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text); }
 
-        .card-grid { padding: 0 8px; display: flex; flex-direction: column; gap: 12px; }
-        .standard-card { background: var(--surface); border-radius: 22px; padding: 18px 20px; display: flex; align-items: center; border: 1px solid var(--border); position: relative; min-height: 85px; }
-        .standard-card.active { border-color: var(--dir-color); background: rgba(52, 152, 219, 0.1); }
+        /* GRID DE NIVELES */
+        .card-grid { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; }
+        .standard-card { 
+            background: var(--surface); border-radius: 18px; padding: 15px; 
+            display: flex; align-items: center; border: 1px solid transparent; 
+            position: relative; box-shadow: var(--shadow-sm); transition: 0.2s;
+        }
+        .standard-card.active { 
+            border-color: var(--dir-color); background: rgba(59, 130, 246, 0.03); 
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        .standard-card:active { transform: scale(0.98); }
         
-        .card-icon { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: #848e9c; margin-right: 18px; }
-
+        .card-icon { 
+            width: 40px; height: 40px; border-radius: 12px; 
+            background: rgba(255,255,255,0.03); display: flex; align-items: center; 
+            justify-content: center; font-family: 'Orbitron'; font-size: 14px; 
+            font-weight: 800; color: var(--text-muted); margin-right: 15px; 
+        }
         .card-body { flex: 1; }
-        .card-tag { font-size: 10px; font-weight: 900; color: var(--short-red); margin-bottom: 4px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
-        .card-main-val { font-family: 'Roboto Mono'; font-size: 24px; font-weight: 900; color: var(--text); line-height: 1; }
+        .card-tag { font-size: 9px; font-weight: 800; color: var(--short-red); margin-bottom: 2px; display: block; text-transform: uppercase; }
+        .card-main-val { font-family: 'JetBrains Mono'; font-size: 20px; font-weight: 700; color: var(--text); }
         
         .card-side { text-align: right; }
-        .card-side label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; margin-bottom: 4px; text-transform: uppercase; }
-        .card-side span { font-family: 'Roboto Mono'; font-size: 18px; font-weight: 900; color: var(--long-green); }
+        .card-side label { font-size: 8px; color: var(--text-muted); display: block; font-weight: 700; margin-bottom: 2px; text-transform: uppercase; }
+        .card-side span { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; color: var(--long-green); }
 
-        .log-section { margin-top: 40px; }
-        .log-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .log-title { font-family: 'Orbitron'; font-size: 16px; font-weight: 900; color: var(--dir-color); }
-        .log-actions { display: flex; gap: 8px; }
-        .log-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 900; cursor: pointer; font-family: 'Orbitron'; }
+        /* BOTÓN DE LIQUIDAR */
+        .btn-release { 
+            width: 94%; margin: 30px auto; display: block; padding: 18px; 
+            border-radius: 18px; border: none; background: var(--danger); 
+            color: #fff; font-weight: 800; font-family: 'Orbitron'; font-size: 13px; 
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3); letter-spacing: 1px;
+            transition: 0.2s;
+        }
+        .btn-release:active { transform: scale(0.97); }
+
+        /* BITÁCORA */
+        .log-section { margin-top: 50px; padding: 20px 0 80px 0; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border); }
+        .log-header { padding: 0 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .log-title { font-family: 'Orbitron'; font-size: 18px; font-weight: 900; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .log-title::before { content:''; display:block; width:4px; height:18px; background:var(--dir-color); border-radius:2px; }
         
-        .log-grid-container { max-height: 585px; overflow-y: auto; padding-bottom: 20px; scrollbar-width: none; }
-        .log-grid-container::-webkit-scrollbar { display: none; }
+        .log-actions { display: flex; gap: 8px; }
+        .log-btn { 
+            background: var(--surface); border: 1px solid var(--border); color: var(--text); 
+            padding: 8px 14px; border-radius: 10px; font-size: 10px; font-weight: 800; 
+            cursor: pointer; font-family: 'Orbitron'; transition: 0.2s;
+        }
+        .log-btn:active { background: var(--dir-color); color: #fff; border-color: var(--dir-color); }
 
-        .btn-release { width: 92%; margin: 25px auto; display: block; padding: 20px; border-radius: 20px; border: none; background: var(--danger); color: #fff; font-weight: 900; font-family: 'Orbitron'; font-size: 13px; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
+        /* MODALES PROFESIONALES */
+        #customModal, #configModal, #menuModal { 
+            display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index:9999; justify-content:center; align-items:center; opacity: 0; transition: opacity 0.3s;
+        }
+        #customModal.visible, #configModal.visible, #menuModal.visible { opacity: 1; }
+        
+        .modal-content { 
+            background: var(--surface); padding: 30px 25px; border-radius: 28px; 
+            border: 1px solid rgba(255,255,255,0.08); width: 85%; max-width: 340px; text-align: center; 
+            box-shadow: var(--shadow-lg); transform: scale(0.95); transition: transform 0.3s;
+        }
+        #customModal.visible .modal-content, #configModal.visible .modal-content, #menuModal.visible .modal-content { transform: scale(1); }
 
-        #customModal, #configModal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center; backdrop-filter: blur(8px); }
-        .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 85%; max-width: 300px; text-align: center; }
-        .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; }
+        .modal-input { 
+            width: 100%; background: rgba(0,0,0,0.2); border: 2px solid var(--border); 
+            color: var(--text); padding: 15px; text-align: center; font-size: 24px; 
+            border-radius: 16px; margin-bottom: 25px; outline: none; font-family: 'JetBrains Mono';
+            transition: 0.3s;
+        }
+        .modal-input:focus { border-color: var(--dir-color); background: rgba(59, 130, 246, 0.05); }
 
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
+        .modal-btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn-accept { background: var(--long-green); color:#fff; padding:14px; border:none; border-radius:14px; font-weight:800; font-family:'Orbitron'; font-size: 12px; }
+        .btn-cancel { background:transparent; color:var(--text-muted); padding:10px; border:none; font-weight:700; font-size: 11px; }
+
+        /* ESTILOS DEL NUEVO MENÚ (LISTA) */
+        .menu-list { text-align: left; }
+        .menu-item { 
+            display: flex; align-items: center; padding: 16px; margin-bottom: 10px; 
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border); 
+            border-radius: 16px; cursor: pointer; transition: 0.2s;
+        }
+        .menu-item:active { background: rgba(59, 130, 246, 0.1); border-color: var(--dir-color); }
+        .menu-icon { 
+            width: 36px; height: 36px; background: rgba(59, 130, 246, 0.1); 
+            color: var(--dir-color); border-radius: 10px; display: flex; 
+            align-items: center; justify-content: center; margin-right: 15px; font-size: 16px;
+        }
+        .menu-text h4 { font-family: 'Orbitron'; font-size: 14px; margin-bottom: 2px; }
+        .menu-text p { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+
+        #toast { 
+            visibility: hidden; min-width: 150px; background-color: var(--dir-color); 
+            color: #fff; text-align: center; border-radius: 50px; padding: 12px 20px; 
+            position: fixed; z-index: 2000; left: 50%; bottom: 90px; transform: translateX(-50%); 
+            font-weight: 800; font-size: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            letter-spacing: 0.5px;
+        }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 90px; opacity: 1;} }
     </style>
 </head>
 <body onload="init()">
 
     <div id="toast">MENSAJE</div>
 
+    <div id="menuModal" onclick="if(event.target===this) toggleMenu()">
+        <div class="modal-content">
+            <div style="text-align:left; margin-bottom:20px; padding-left:5px;">
+                <h3 style="font-family:'Orbitron'; font-size:18px; color:var(--text);">Menú C5X</h3>
+                <p style="font-size:11px; color:var(--text-muted);">Selecciona una acción</p>
+            </div>
+            <div class="menu-list">
+                <div class="menu-item" onclick="navTo('top')">
+                    <div class="menu-icon">⚡</div>
+                    <div class="menu-text"><h4>Operar</h4><p>Panel de Trading</p></div>
+                </div>
+                <div class="menu-item" onclick="navTo('log')">
+                    <div class="menu-icon">📋</div>
+                    <div class="menu-text"><h4>Bitácora</h4><p>Historial y Reportes</p></div>
+                </div>
+                <div class="menu-item" onclick="toggleTheme(); toggleMenu();">
+                    <div class="menu-icon">🌗</div>
+                    <div class="menu-text"><h4>Tema</h4><p>Alternar Claro/Oscuro</p></div>
+                </div>
+                <div class="menu-item" onclick="resetApp()">
+                    <div class="menu-icon" style="background:rgba(239,68,68,0.1); color:var(--danger)">🗑️</div>
+                    <div class="menu-text"><h4>Reset</h4><p>Restablecer App</p></div>
+                </div>
+            </div>
+            <button class="btn-cancel" style="margin-top:10px; width:100%" onclick="toggleMenu()">CERRAR</button>
+        </div>
+    </div>
+
     <div id="configModal">
         <div class="modal-content">
-            <div id="configTitle" style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px; color:var(--dir-color)">VALOR %</div>
+            <div id="configTitle" style="font-family:'Orbitron'; font-size:12px; margin-bottom:15px; color:var(--dir-color)">VALOR %</div>
             <input type="number" id="configInputVal" class="modal-input" step="any" inputmode="decimal">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="saveConfigValue()">ACEPTAR</button>
-                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeConfigModal()">CANCELAR</button>
+            <div class="modal-btn-group">
+                <button class="btn-accept" onclick="saveConfigValue()">CONFIRMAR</button>
+                <button class="btn-cancel" onclick="closeConfigModal()">CANCELAR</button>
             </div>
         </div>
     </div>
 
     <div id="customModal">
         <div class="modal-content">
-            <div style="font-family:'Orbitron'; font-size:11px; margin-bottom:15px;">SEGURIDAD</div>
-            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:6px;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">VALIDAR</button>
-                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeMyModal(false)">CANCELAR</button>
+            <div style="font-family:'Orbitron'; font-size:12px; margin-bottom:15px; color:var(--text);">SEGURIDAD</div>
+            <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••" class="modal-input" style="letter-spacing:8px;">
+            <div class="modal-btn-group">
+                <button class="btn-accept" onclick="closeMyModal(true)">ACCEDER</button>
+                <button class="btn-cancel" onclick="closeMyModal(false)">CANCELAR</button>
             </div>
         </div>
     </div>
 
     <div class="fixed-header">
         <header class="app-header">
-            <div class="logo-area">C5X</div>
+            <div class="logo-area" onclick="toggleMenu()">C5X <span class="logo-caret">▼</span></div>
             <div class="btc-live-box" onclick="viewTickerChart()">
-                <div id="t-dot"></div><span id="t-sym">BTC</span><span id="t-price" style="font-weight: 900;">$--,---</span>
+                <div id="t-dot"></div>
+                <span id="t-sym" class="btc-val">BTC</span>
+                <span id="t-price" class="btc-val">$--,---</span>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar">
             <button class="tf-btn" data-tf="15" onclick="updateTF('15', this)">15M</button>
@@ -150,23 +350,34 @@
 
     <div class="content-spacer">
         <nav id="slotNav" class="slot-nav"></nav>
+        
         <div id="tv_chart" class="chart-container"></div>
 
         <div class="controls">
-            <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
-            <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
-            <div class="control-box"><div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
+            <div class="control-box">
+                <label>MONEDA</label>
+                <input type="text" id="coinInput" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
+            </div>
+            <div class="control-box">
+                <label>PRECIO BASE</label>
+                <input type="number" id="baseInput" oninput="calculate()" step="any">
+            </div>
+            <div class="control-box">
+                <div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div>
+                <label>CAPITAL $</label>
+                <input type="number" id="capitalInput" readonly>
+            </div>
         </div>
 
         <div class="dash-container">
             <div class="dash-main" id="dashMain">
                 <div class="dash-top">
                     <button class="tool-btn" onclick="rotateDash()">🔄</button>
-                    <div class="strat-indicator" id="stratName">PREDETERMINADA</div>
+                    <div class="strat-indicator" id="stratName">NORMAL</div>
                     <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                 </div>
                 <div class="dash-data">
-                    <span style="font-size:11px; color:var(--dir-color); font-weight:900; text-transform:uppercase; letter-spacing:1px;">Objetivo</span>
+                    <span style="font-size:10px; color:var(--text-muted); font-weight:800; text-transform:uppercase; letter-spacing:1px;">Objetivo de Salida</span>
                     <div class="main-target" id="resTarget">0.000000</div>
                     <div class="btn-strat-val" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
                     <div class="sub-info">
@@ -179,15 +390,16 @@
         </div>
 
         <main id="levelsGrid" class="card-grid"></main>
+        
         <button class="btn-release" onclick="releaseSlot()">LIQUIDAR OPERACIÓN</button>
 
-        <section class="log-section">
+        <section id="logSection" class="log-section">
             <div class="log-header">
                 <div class="log-title">BITÁCORA</div>
                 <div class="log-actions">
                     <button class="log-btn" onclick="exportExcel()">XLS</button>
                     <button class="log-btn" onclick="exportPDF()">PDF</button>
-                    <button class="log-btn" style="color:var(--danger)" onclick="clearLogs()">🗑️</button>
+                    <button class="log-btn" style="color:var(--danger); border-color:var(--danger)" onclick="clearLogs()">BORRAR</button>
                 </div>
             </div>
             <div class="log-grid-container">
@@ -201,22 +413,52 @@
 
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // CONFIGURACIÓN INICIAL
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '', history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
 
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
+        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); document.getElementById('themeBtn').textContent = '☀️'; } 
+            if(isLight) document.body.classList.add('light-mode');
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            setInterval(fetchTicker, 10000); 
+            setInterval(fetchTicker, 8000); 
         }
+
+        // --- LÓGICA DE NAVEGACIÓN SEGURA ---
+        function toggleMenu() {
+            const m = document.getElementById('menuModal');
+            if(m.style.display === 'flex') {
+                m.classList.remove('visible');
+                setTimeout(() => m.style.display = 'none', 300);
+            } else {
+                m.style.display = 'flex';
+                setTimeout(() => m.classList.add('visible'), 10);
+            }
+        }
+
+        function navTo(loc) {
+            toggleMenu();
+            if(loc === 'top') window.scrollTo({top: 0, behavior: 'smooth'});
+            if(loc === 'log') document.getElementById('logSection').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function resetApp() {
+            closeMyModal(false); // Close menu logic reuse
+            openPrompt((pass) => {
+                if(pass === "2524") {
+                    localStorage.clear();
+                    location.reload();
+                } else { showToast("CLAVE INCORRECTA"); }
+            });
+        }
+        // ------------------------------------
 
         async function fetchTicker() { 
             try { 
@@ -236,122 +478,21 @@
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             document.getElementById('stratName').textContent = isNormal ? "PREDETERMINADA" : "AGRESIVA";
-            document.getElementById('stratName').style.color = isNormal ? "var(--dir-color)" : "var(--warning)";
-            document.getElementById('dashMain').style.borderColor = isNormal ? "var(--dir-color)" : "var(--warning)";
+            document.getElementById('stratName').style.color = isNormal ? "var(--text-muted)" : "var(--warning)";
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
             document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
             calculate();
         }
 
-        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; document.getElementById('configModal').style.display = 'flex'; setTimeout(() => document.getElementById('configInputVal').focus(), 100); } else { showToast("CLAVE INCORRECTA"); } }); }
+        function handleStratEdit() { openPrompt((p) => { if(p === "2524") { const s = slots[activeIdx], isNormal = s.strat === "normal", val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configTitle').textContent = isNormal ? "INCREMENTO BASE %" : "DESCUENTO AGRESIVO %"; document.getElementById('configInputVal').value = val; openConfigModal(); } else { showToast("CLAVE INCORRECTA"); } }); }
+        
+        function openConfigModal() { const m = document.getElementById('configModal'); m.style.display = 'flex'; setTimeout(()=> { m.classList.add('visible'); document.getElementById('configInputVal').focus(); }, 10); }
+        function closeConfigModal() { const m = document.getElementById('configModal'); m.classList.remove('visible'); setTimeout(()=>m.style.display='none', 300); }
         function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeConfigModal(); updateDashUI(); }
-        function closeConfigModal() { document.getElementById('configModal').style.display = 'none'; }
 
         function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = ''; return; }
-            let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
-            for(let i=0; i<12; i++){
-                let pLevel;
-                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
-                else { 
-                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } 
-                    else { currentStepDrop = descPct; }
-                    pLevel = lastPrice * (1 - (currentStepDrop / 100));
-                }
-                const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
-                if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
-                html += `<div class="standard-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="card-icon">${i+1}</div><div class="card-body"><span class="card-tag">${i===0 ? 'PRECIO ENTRADA' : 'CAÍDA -'+currentStepDrop.toFixed(1)+'%'}</span><div class="card-main-val">${pLevel.toFixed(6)}</div></div><div class="card-side"><label>INVERSIÓN</label><span>$${mUSD.toFixed(1)}</span></div></div>`;
-                lastPrice = pLevel;
-            }
-            grid.innerHTML = html;
-            const avg = totalQty > 0 ? totalSpent/totalQty : 0;
-            document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(6);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(6);
-            document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
-        }
-
-        function renderHistory() { 
-            const grid = document.getElementById('logGrid');
-            grid.innerHTML = history.map(h => `<div class="standard-card"><div class="card-icon" style="font-size:12px; border-color:var(--dir-color); color:var(--dir-color)">${h.coin.substring(0,3)}</div><div class="card-body"><span class="card-tag" style="color:#848e9c">${h.date}</span><div class="card-main-val" style="font-size:20px">${h.coin}</div></div><div class="card-side"><label>PROFIT</label><span style="color:var(--long-green)">+$${h.profit}</span></div></div>`).reverse().join(''); 
-        }
-
-        function releaseSlot() {
-            const s = slots[activeIdx];
-            if(s.buys.length === 0) return showToast("SLOT VACÍO");
-            openPrompt((pass) => {
-                if(pass === "2524") {
-                    // SNAPSHOT DETALLADO PARA REPORTES
-                    history.push({ 
-                        date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                        coin: s.name || 'S/N', 
-                        profit: document.getElementById('resProfit').textContent.replace('$',''),
-                        base: s.price.toFixed(4),
-                        avg: document.getElementById('resAvg').textContent,
-                        totalInv: document.getElementById('resInv').textContent.replace('$',''),
-                        strategy: s.strat.toUpperCase()
-                    });
-                    localStorage.setItem('c5x_history', JSON.stringify(history));
-                    renderHistory();
-                    slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                    const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                    slots = [...filled, ...empty];
-                    save(); selectSlot(0); showToast("CERRADO Y REGISTRADO");
-                } else { showToast("CLAVE INCORRECTA"); }
-            });
-        }
-
-        function clearLogs() { openPrompt((p) => { if(p === "2524") { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("HISTORIAL BORRADO"); } else { showToast("CLAVE INCORRECTA"); } }); }
-        
-        function exportExcel() { 
-            if(history.length === 0) return showToast("SIN DATOS"); 
-            // Formatear datos detallados para Excel
-            const detailedData = history.map(h => ({
-                "FECHA": h.date,
-                "MONEDA": h.coin,
-                "ESTRATEGIA": h.strategy || 'N/A',
-                "P. BASE": h.base || '0',
-                "P. PROMEDIO": h.avg || '0',
-                "INVERSIÓN TOTAL": "$" + (h.totalInv || '0'),
-                "PROFIT ($)": "$" + h.profit
-            }));
-            const ws = XLSX.utils.json_to_sheet(detailedData), wb = XLSX.utils.book_new(); 
-            XLSX.utils.book_append_sheet(wb, ws, "Bitacora_Detallada"); 
-            XLSX.writeFile(wb, "C5X_Reporte_Master.xlsx"); 
-        }
-
-        function exportPDF() { 
-            if(history.length === 0) return showToast("SIN DATOS"); 
-            const { jsPDF } = window.jspdf, doc = new jsPDF('l', 'mm', 'a4'); 
-            doc.setFontSize(18); doc.text("REPORTE DETALLADO DE OPERACIONES C5X", 14, 20);
-            doc.setFontSize(10); doc.text("Generado el: " + new Date().toLocaleString(), 14, 28);
-            
-            const head = [['Fecha', 'Moneda', 'Estrategia', 'P. Base', 'Promedio', 'Inversión', 'Profit']];
-            const body = history.map(h => [h.date, h.coin, h.strategy || 'NORMAL', h.base || '0', h.avg || '0', '$'+(h.totalInv || '0'), '$'+h.profit]);
-            
-            doc.autoTable({ head: head, body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [52, 152, 219] } }); 
-            doc.save("C5X_Reporte_Master.pdf"); 
-        }
-
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#050708" }); }
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
-        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
-        function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
-        function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
-        function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } else { showToast("CLAVE INCORRECTA"); } }); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
-        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-btn ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
-        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
-    </script>
-</body>
-</html>
+            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').
