@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.1 Clean Cards</title>
+    <title>C5X - V23.2 Streamlined</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -18,26 +18,21 @@
 
     <style>
         :root {
-            /* --- SISTEMA DE DISEÑO --- */
             --bg: #0b0e11; 
             --surface: #151a21;
             --surface-glass: rgba(21, 26, 33, 0.95);
-            
             --text-primary: #eaecef;
             --text-secondary: #848e9c;
             --text-tertiary: #5e6673;
-
             --brand: #3b82f6;      
             --long: #0ecb81;       
             --short: #f6465d;      
             --warning: #f0b90b;    
             --danger: #cf304a;     
-            
             --border: #2b3139;
             --radius-m: 16px;
         }
 
-        /* TEMA CLARO */
         body.light-mode {
             --bg: #f5f7fa; 
             --surface: #ffffff;
@@ -66,10 +61,7 @@
             position: relative;
         }
 
-        .brand-btn { 
-            display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; 
-            z-index: 50; position: relative;
-        }
+        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; z-index: 50; position: relative; }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
         
@@ -80,8 +72,7 @@
 
         .ticker-pill { 
             pointer-events: auto; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
-            border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer;
-            transition: 0.2s;
+            border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s;
         }
         .ticker-pill:active { transform: scale(0.95); background: rgba(59, 130, 246, 0.1); }
         .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); }
@@ -94,9 +85,7 @@
             align-items: center; justify-content: center; font-size: 16px; cursor: pointer; z-index: 50;
         }
 
-        /* --- SECCIONES --- */
         .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
-        
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -107,11 +96,7 @@
         .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
 
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
-        .slot-card { 
-            background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
-            padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; 
-            font-weight: 700; cursor: pointer; transition: 0.2s;
-        }
+        .slot-card { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
 
         .chart-wrapper { height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; }
@@ -122,28 +107,12 @@
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* --- DASHBOARD VISUAL --- */
-        .dashboard-card { 
-            background: var(--surface);
-            border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; 
-            padding: 25px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative; overflow: hidden;
-        }
-        .dashboard-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--brand), var(--long));
-        }
+        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
-        
-        .icon-btn { 
-            width: 36px; height: 36px; border-radius: 50%; 
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; 
-            color: var(--text-secondary); cursor: pointer; transition: 0.3s;
-        }
+        .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
         .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
         .icon-btn:active { transform: scale(0.9); }
         .icon-btn.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
@@ -151,63 +120,46 @@
 
         .main-target-box { text-align: center; margin-bottom: 25px; }
         .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-        
-        .target-price { 
-            font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); 
-            line-height: 1; letter-spacing: -1.5px;
-            text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); 
-            transition: color 0.3s, text-shadow 0.3s;
-        }
+        .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; }
         
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .stat-box { 
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 12px; padding: 12px 5px; text-align: center;
-        }
+        .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 5px; text-align: center; }
         body.light-mode .stat-box { background: #f0f2f5; border-color: #e6e8ea; }
-
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES (CLEAN) --- */
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; }
+        /* --- LISTA DE NIVELES --- */
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
         .level-card { 
             background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-            padding: 20px 16px; 
-            display: flex; align-items: center; cursor: pointer; transition: 0.2s;
-            position: relative;
+            padding: 20px 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
         }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
         
-        .level-index { 
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; 
-            font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); 
-            margin-right: 15px; font-size: 13px; 
-        }
+        .level-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; }
         .level-card.active .level-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
 
         .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        
-        /* PRECIO GRANDE Y COPIABLE (Sin texto "Copiar") */
-        .level-price { 
-            font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; 
-            color: var(--text-primary); letter-spacing: -0.5px; 
-            cursor: copy; transition: 0.2s;
-        }
+        .level-price { font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; cursor: copy; transition: 0.2s; }
         .level-price:active { opacity: 0.7; transform: scale(0.98); }
 
         .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
         .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
         .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
 
-        .btn-liquidate { 
-            width: 94%; margin: 15px auto 40px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
-            color: #fff; font-family: 'Orbitron'; font-weight: 900; font-size: 14px; cursor: pointer; display: block;
-            box-shadow: 0 8px 25px rgba(207, 48, 74, 0.25);
+        /* TARJETA DE LIQUIDAR - MISMO ESTILO QUE LEVEL CARD */
+        .liquidate-card {
+            background: var(--danger);
+            color: #fff;
+            justify-content: center;
+            font-family: 'Orbitron';
+            font-weight: 900;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4);
+            border: none;
         }
+        .liquidate-card:active { transform: scale(0.98); }
 
         /* --- VISTA BITÁCORA --- */
         #section-log { padding-top: 20px; }
@@ -220,15 +172,10 @@
         #section-settings { padding: 20px; padding-bottom: 80px; }
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
         .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; }
-        
         .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
-        .config-input { 
-            width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px; 
-            border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; text-align: right;
-        }
+        .config-input { width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; text-align: right; }
         .config-input:focus { border-color: var(--brand); outline: none; }
-
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .setting-info h4 { font-size: 14px; margin-bottom: 4px; }
         .setting-info p { font-size: 11px; color: var(--text-secondary); }
@@ -236,20 +183,10 @@
         .btn-save-config { width: 100%; background: var(--long); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(14, 203, 129, 0.2); }
 
         /* --- MENÚ MODAL --- */
-        #navModal { 
-            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-            z-index: 2000; display: none; justify-content: center; align-items: center;
-        }
-        .nav-content { 
-            background: var(--surface); width: 80%; max-width: 320px; border-radius: 24px; 
-            padding: 30px 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+        #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; }
+        .nav-content { background: var(--surface); width: 80%; max-width: 320px; border-radius: 24px; padding: 30px 20px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .nav-title { font-family: 'Orbitron'; font-size: 16px; margin-bottom: 25px; color: var(--text-primary); text-align: center; font-weight: 900; letter-spacing: 2px; }
-        
-        .nav-item { 
-            display: flex; align-items: center; padding: 16px; border-radius: 14px; 
-            margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s;
-        }
+        .nav-item { display: flex; align-items: center; padding: 16px; border-radius: 14px; margin-bottom: 12px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
         .nav-item.selected { background: rgba(59, 130, 246, 0.1); border-color: var(--brand); box-shadow: 0 0 15px rgba(59, 130, 246, 0.1); }
         .nav-icon { width: 30px; font-size: 18px; text-align: center; margin-right: 15px; }
         .nav-text { font-family: 'Inter'; font-weight: 800; font-size: 13px; letter-spacing: 1px; }
@@ -261,10 +198,10 @@
 
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 20px; text-align: center; margin: 20px 0; }
         .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
         .btn-confirm { background: var(--brand); color: #fff; }
         .btn-cancel { background: transparent; color: var(--text-secondary); }
+        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 20px; text-align: center; margin: 20px 0; }
 
     </style>
 </head>
@@ -288,7 +225,6 @@
                 <span class="brand-text">C5X</span>
                 <span class="brand-caret" style="margin-left:5px">▼</span>
             </div>
-            
             <div class="ticker-container">
                 <div class="ticker-pill" onclick="viewTickerChart(event)">
                     <div class="ticker-dot" id="t-dot"></div>
@@ -296,7 +232,6 @@
                     <span class="ticker-price" id="t-price">--.--</span>
                 </div>
             </div>
-            
             <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         
@@ -315,56 +250,26 @@
             <div id="tv_chart" class="chart-wrapper"></div>
             
             <div class="controls-grid">
-                <div class="input-group">
-                    <label class="input-label">Moneda</label>
-                    <input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
-                </div>
-                <div class="input-group">
-                    <label class="input-label">Base</label>
-                    <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any">
-                </div>
-                <div class="input-group readonly">
-                    <label class="input-label">Capital</label>
-                    <input type="number" id="capitalInput" class="input-field" readonly>
-                </div>
+                <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any"></div>
+                <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
 
             <div class="dashboard-card" id="dashMain">
                 <div class="dash-header">
-                    <div class="icon-btn" onclick="rotateDash()" id="btnRotate">
-                        <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-                    </div>
-                    
+                    <div class="icon-btn" onclick="rotateDash()" id="btnRotate"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></div>
                     <div class="dash-title" id="stratName">NORMAL</div>
-                    
-                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()">
-                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>
-                    </div>
+                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg></div>
                 </div>
-                
-                <div class="main-target-box">
-                    <div class="target-label">OBJETIVO SALIDA</div>
-                    <div class="target-price" id="resTarget">0.00000000</div>
-                </div>
-
+                <div class="main-target-box"><div class="target-label">OBJETIVO SALIDA</div><div class="target-price" id="resTarget">0.00000000</div></div>
                 <div class="stats-grid">
-                    <div class="stat-box">
-                        <div class="stat-label">Promedio</div>
-                        <div class="stat-value" id="resAvg">0.00000000</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Ganancia</div>
-                        <div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">Inversión</div>
-                        <div class="stat-value" id="resInv">$0.00</div>
-                    </div>
+                    <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div>
+                    <div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div>
+                    <div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div>
                 </div>
             </div>
 
             <main id="levelsGrid" class="levels-container"></main>
-            <button class="btn-liquidate" onclick="releaseSlot()">LIQUIDAR POSICIÓN</button>
         </div>
 
         <div id="section-log" class="app-section">
@@ -383,35 +288,26 @@
             <div class="settings-card">
                 <div class="setting-header">PARÁMETROS DE TRADING (SLOT ACTUAL)</div>
                 <div class="config-grid">
-                    <div class="config-item">
-                        <label>CAPITAL DEL SLOT ($)</label>
-                        <input type="number" id="setCapital" class="config-input">
-                    </div>
-                    <div class="config-item">
-                        <label>INCREMENTO BASE (% NORMAL)</label>
-                        <input type="number" id="setInc" class="config-input">
-                    </div>
-                    <div class="config-item">
-                        <label>DESCUENTO AGRESIVO (%)</label>
-                        <input type="number" id="setDesc" class="config-input">
-                    </div>
+                    <div class="config-item"><label>CAPITAL DEL SLOT ($)</label><input type="number" id="setCapital" class="config-input"></div>
+                    <div class="config-item"><label>INCREMENTO BASE (% NORMAL)</label><input type="number" id="setInc" class="config-input"></div>
+                    <div class="config-item"><label>DESCUENTO AGRESIVO (%)</label><input type="number" id="setDesc" class="config-input"></div>
                 </div>
                 <button class="btn-save-config" onclick="applySettings()">GUARDAR CAMBIOS</button>
             </div>
-
             <div class="settings-card">
-                <div class="setting-row">
-                    <div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div>
-                    <button class="action-btn" onclick="toggleTheme()">CAMBIAR</button>
-                </div>
-                <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;">
-                    <div class="setting-info">
-                        <h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p>
-                        <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
-                    </div>
-                </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.1 CLEAN CARDS</div>
+                <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
+                <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V23.2 STREAMLINED</div>
             </div>
+        </div>
+    </div>
+
+    <div id="confirmModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div>
+            <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p>
+            <button class="btn-modal btn-confirm" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button>
+            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
         </div>
     </div>
 
@@ -429,9 +325,10 @@
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
         let currentSection = 'operate';
+        let modalCallback = null;
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
-        let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
+        let assetIdx = 0, currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
@@ -476,13 +373,10 @@
             const newCap = parseFloat(document.getElementById('setCapital').value);
             const newInc = document.getElementById('setInc').value;
             const newDesc = document.getElementById('setDesc').value;
-
             if(isNaN(newCap) || !newInc || !newDesc) return showToast("⚠️ Valores Inválidos");
-
             slots[activeIdx].capital = newCap;
             document.getElementById('incInput').value = newInc;
             document.getElementById('descInput').value = newDesc;
-
             save(); calculate(); updateDashUI();
             showToast("✅ Configuración Guardada");
         }
@@ -542,7 +436,6 @@
             elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
             elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
             elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
-            
             elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
             elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
 
@@ -555,17 +448,11 @@
                 btnLock.classList.remove('locked');
                 btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>';
             }
-
             document.getElementById('capitalInput').value = s.capital;
             calculate();
         }
 
-        function calculate() { 
-            const s = slots[activeIdx]; 
-            s.price = parseFloat(document.getElementById('baseInput').value) || 0; 
-            save(); renderLevels(); 
-        }
-
+        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; save(); renderLevels(); }
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
@@ -595,6 +482,10 @@
                 </div>`;
                 lastPrice = pLevel;
             }
+            
+            // AGREGAR BOTÓN DE LIQUIDAR AL FINAL DEL GRID
+            html += `<div class="level-card liquidate-card" onclick="openLiquidateConfirm()">LIQUIDAR POSICIÓN</div>`;
+
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
@@ -603,21 +494,26 @@
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
-        function copyText(txt) {
-            navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt));
+        function copyText(txt) { navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt)); }
+
+        // --- SISTEMA DE LIQUIDACIÓN ---
+        function openLiquidateConfirm() {
+            const s = slots[activeIdx];
+            if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
+            document.getElementById('confirmModal').style.display = 'flex';
         }
 
-        function releaseSlot() {
-            const s = slots[activeIdx]; if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
-            openSecurity(() => {
-                history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
-                localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
-                slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
-                const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
-            });
+        function executeRelease() {
+            closeModals();
+            const s = slots[activeIdx];
+            history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
+            localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
+            slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
+            const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
+            slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log'); 
         }
 
+        // --- SISTEMA GENÉRICO DE SEGURIDAD (SOLO PARA RESET/BORRAR) ---
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
