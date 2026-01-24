@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.9 High Vision</title>
+    <title>C5X - V18.9 Ultra Zoom</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -48,18 +48,18 @@
         .control-box label { font-size: 8px; color: var(--dir-color); font-weight: 900; display: block; margin-bottom: 4px; }
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 15px; font-weight: 700; width: 100%; text-align: center; outline: none; text-transform: uppercase; }
         
-        /* DASHBOARD PERSONALIZADO (ALTO Y FUENTES GRANDES) */
-        .dash { margin: 8px 12px 12px 12px; padding: 25px 15px; background: var(--surface); border-radius: 28px; border: 3px solid var(--dir-color); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
+        /* DASHBOARD ULTRA ZOOM */
+        .dash { margin: 8px 12px 12px 12px; padding: 15px; background: var(--surface); border-radius: 28px; border: 3.5px solid var(--dir-color); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         
-        .main-metrics { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; align-items: center; }
+        .main-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .metric-box { text-align: center; }
-        .dash-label { font-size: 10px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .val-large { font-family: 'Roboto Mono'; font-size: 22px; font-weight: 900; color: var(--text); }
+        .dash-label { font-size: 11px; color: var(--dir-color); font-weight: 900; display: block; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .val-large { font-family: 'Roboto Mono'; font-size: 28px; font-weight: 900; color: var(--text); line-height: 1; }
 
-        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .strat-card { padding: 18px 8px; border-radius: 22px; border: 2px solid var(--border); text-align: center; background: rgba(0,0,0,0.2); }
-        .avg-tag { font-family: 'Roboto Mono'; font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 8px; margin-bottom: 8px; display: inline-block; color: #848e9c; }
-        .target-price { font-family: 'Roboto Mono'; font-size: 34px; font-weight: 900; color: var(--long-green); display: block; line-height: 1; letter-spacing: -1px; }
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .strat-card { padding: 20px 5px; border-radius: 22px; border: 2px solid var(--border); text-align: center; background: rgba(0,0,0,0.25); }
+        .avg-tag { font-family: 'Roboto Mono'; font-size: 13px; font-weight: 700; background: rgba(255,255,255,0.08); padding: 3px 10px; border-radius: 8px; margin-bottom: 10px; display: inline-block; color: #848e9c; }
+        .target-price { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); display: block; line-height: 0.9; letter-spacing: -1.5px; }
 
         .levels-container { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .level-card { background: var(--surface); border-radius: 18px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); position: relative; min-height: 85px; }
@@ -157,10 +157,6 @@
                     <span class="dash-label">INVERSIÓN</span>
                     <div id="resInv" class="val-large">$0.00</div>
                 </div>
-                <div class="metric-box" style="background: rgba(255,255,255,0.03); padding: 10px 5px; border-radius: 15px; border: 1px solid var(--border);">
-                    <span class="dash-label" style="color:var(--text)">SIG. NIVEL</span>
-                    <div id="resNextLvl" class="val-large" style="color:var(--warning); font-size: 18px;">---</div>
-                </div>
                 <div class="metric-box">
                     <span class="dash-label">GANANCIA</span>
                     <div id="resProf" class="val-large" style="color:var(--dir-color)">$0.00</div>
@@ -169,12 +165,12 @@
             
             <div class="target-grid">
                 <div class="strat-card" style="border-color: var(--dir-color);">
-                    <span class="dash-label">TARGET STD</span>
+                    <span class="dash-label">PREDETERMINADA</span>
                     <span class="avg-tag">AVG: <span id="resAvg7">0.0000</span></span>
                     <b id="resTarget7" class="target-price">0.0000</b>
                 </div>
                 <div class="strat-card" style="border-color: var(--warning);">
-                    <span class="dash-label" style="color:var(--warning)">TARGET DESC</span>
+                    <span class="dash-label" style="color:var(--warning)">AGRESIVA</span>
                     <span class="avg-tag">AVG: <span id="resAvgDesc">0.0000</span></span>
                     <b id="resTargetDesc" class="target-price" style="color:var(--warning)">0.0000</b>
                 </div>
@@ -256,7 +252,6 @@
             let lastP7 = s.price;
             let lastPDesc = s.price;
             let drop7 = 10.0; 
-            let nextPrice = "---";
 
             for(let i = 0; i < 12; i++) {
                 let p7, pDesc, label7;
@@ -271,8 +266,6 @@
                 const mUSD = MULTIPLIERS[i] * s.capital;
                 const on = s.buys.includes(i);
                 
-                if(!on && nextPrice === "---") nextPrice = p7.toFixed(6);
-
                 if(on) { 
                     totalSpent += mUSD; 
                     tokens7 += (mUSD / p7); 
@@ -307,7 +300,6 @@
 
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resProf').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resNextLvl').textContent = nextPrice;
             
             document.getElementById('resAvg7').textContent = avg7.toFixed(6);
             document.getElementById('resTarget7').textContent = (avg7 * 2).toFixed(6);
