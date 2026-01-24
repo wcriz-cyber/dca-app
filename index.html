@@ -27,43 +27,44 @@
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); }
         
+        /* CABECERA CON FUENTES NIVELADAS */
         .app-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 12px 20px; 
+            padding: 12px 15px; 
             background: var(--header-bg); 
             border-bottom: 3px solid var(--dir-color); 
-            min-height: 65px;
+            min-height: 70px;
         }
         .logo-area { 
             font-family: 'Orbitron'; 
             font-weight: 900; 
-            letter-spacing: 2px; 
-            font-size: 22px; 
+            letter-spacing: 1px; 
+            font-size: 18px; /* Nivelado */
         }
         
-        /* TICKER OPTIMIZADO CON EL MISMO FONDO DE LA BARRA */
         .btc-live-box { 
             display: flex; 
             align-items: center; 
-            gap: 10px; 
-            background: var(--header-bg); /* Unificado con la barra */
-            padding: 8px 16px; 
-            border-radius: 14px; 
+            gap: 8px; 
+            background: var(--header-bg); 
+            padding: 8px 12px; 
+            border-radius: 12px; 
             border: 1px solid var(--border); 
             font-family: 'Orbitron'; 
-            font-size: 15px; 
+            font-size: 18px; /* Nivelado con el logo */
             cursor: pointer;
         }
-        
+
         .theme-toggle { 
-            background: var(--bg); 
+            background: var(--header-bg); 
             border: 1px solid var(--border); 
             color: var(--text); 
-            padding: 10px 15px; 
+            width: 45px;
+            height: 45px;
             border-radius: 12px; 
-            font-size: 20px; 
+            font-size: 18px; /* Nivelado */
             cursor: pointer; 
             display: flex; 
             align-items: center; 
@@ -74,7 +75,7 @@
         .tf-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 8px; }
 
-        .content-spacer { margin-top: 125px; }
+        .content-spacer { margin-top: 130px; }
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
         .slot-btn { padding: 12px 0; text-align: center; border-radius: 10px; font-size: 11px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
@@ -160,10 +161,9 @@
         <header class="app-header">
             <div class="logo-area">C5X</div>
             <div class="btc-live-box" onclick="viewTickerChart()">
-                <span id="t-dot" style="width:10px; height:10px; border-radius:50%; background:grey;"></span>
+                <span id="t-dot" style="width:8px; height:8px; border-radius:50%; background:grey;"></span>
                 <span id="t-sym">BTC</span>
                 <span id="t-price" style="font-weight: 900;">$--,---</span>
-                <span id="t-pct" style="font-size:11px; font-weight:900;">0.00%</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
@@ -255,8 +255,6 @@
                 document.getElementById('t-sym').textContent = currentTickerSymbol; 
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
                 const pct = parseFloat(data.priceChangePercent); 
-                document.getElementById('t-pct').textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; 
-                document.getElementById('t-pct').style.color = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
                 document.getElementById('t-dot').style.background = pct >= 0 ? 'var(--long-green)' : 'var(--danger)'; 
                 assetIdx = (assetIdx + 1) % assets.length; 
             } catch(e) {} 
