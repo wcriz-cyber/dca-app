@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.9 Final Polish</title>
+    <title>C5X - V23.0 Cards Update</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -122,7 +122,7 @@
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* --- DASHBOARD VISUAL (ICONOS MEJORADOS) --- */
+        /* --- DASHBOARD VISUAL --- */
         .dashboard-card { 
             background: var(--surface);
             border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; 
@@ -138,7 +138,6 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
         
-        /* BOTONES SVG DE ALTA CALIDAD */
         .icon-btn { 
             width: 36px; height: 36px; border-radius: 50%; 
             background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
@@ -170,25 +169,43 @@
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES --- */
-        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; }
+        /* --- LISTA DE NIVELES (NUEVO DISEÑO V23.0) --- */
+        .levels-container { 
+            padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 10px; 
+        }
         
         .level-card { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-            padding: 14px; display: flex; align-items: center; cursor: pointer; transition: 0.2s;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 20px 16px; /* Más alta */
+            display: flex; align-items: center; cursor: pointer; transition: 0.2s;
+            position: relative;
         }
-        .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
+        .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
         
+        /* Círculo para el índice */
         .level-index { 
-            width: 32px; height: 32px; border-radius: 8px; background: rgba(0,0,0,0.2); 
-            border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; 
-            font-family: 'Orbitron'; font-weight: 800; color: var(--text-secondary); margin-right: 12px; font-size: 11px; 
+            width: 36px; height: 36px; border-radius: 50%; /* Círculo */
+            background: rgba(0,0,0,0.3); border: 1px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; 
+            font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); 
+            margin-right: 15px; font-size: 13px; 
         }
-        .level-info { flex: 1; }
-        .level-tag { font-size: 8px; font-weight: 800; color: var(--short); text-transform: uppercase; display: block; margin-bottom: 3px; }
-        .level-price { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text-primary); }
-        .level-invest { text-align: right; }
-        .level-invest span { font-family: 'JetBrains Mono'; font-size: 14px; font-weight: 700; color: var(--long); }
+        .level-card.active .level-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
+
+        /* Centro: Precio Grande y Copiable */
+        .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .level-price { 
+            font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; 
+            color: var(--text-primary); letter-spacing: -0.5px; 
+            cursor: copy; transition: 0.2s;
+        }
+        .level-price:active { opacity: 0.7; transform: scale(0.98); }
+        .copy-hint { font-size: 8px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; font-weight: 700; }
+
+        /* Derecha: Inversión y Porcentaje */
+        .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+        .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
+        .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
 
         .btn-liquidate { 
             width: 94%; margin: 15px auto 40px auto; padding: 18px; background: var(--danger); border: none; border-radius: 16px;
@@ -414,7 +431,10 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
+        
+        // SLOTS INITIALIZATION: ASEGURAR ESTRATEGIA PREDETERMINADA 'normal'
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+        
         let currentSection = 'operate';
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
@@ -452,6 +472,7 @@
             toggleMenu(); 
         }
 
+        // --- SETTINGS ---
         function loadSettingsValues() {
             const s = slots[activeIdx];
             document.getElementById('setCapital').value = s.capital;
@@ -519,6 +540,7 @@
         function rotateDash() { 
             const s = slots[activeIdx]; 
             if(s.locked) return showToast("⚠️ Slot Bloqueado"); 
+            // CAMBIO DE ESTRATEGIA (PERSISTENTE)
             s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
             save(); updateDashUI(); 
         }
@@ -565,7 +587,12 @@
             save(); renderLevels(); 
         }
 
-        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
+        function toggleLvl(idx) { 
+            const s = slots[activeIdx]; 
+            if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } 
+            else { s.buys = s.buys.filter(val => val < idx); } 
+            calculate(); 
+        }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
@@ -581,7 +608,18 @@
                 const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
                 
-                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(8)}</div></div><div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div></div>`;
+                html += `
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div class="level-index">${i+1}</div>
+                    <div class="level-center" onclick="event.stopPropagation(); copyText('${pLevel.toFixed(8)}')">
+                        <div class="level-price">${pLevel.toFixed(8)}</div>
+                        <div class="copy-hint">COPIAR</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="invest-val">$${mUSD.toFixed(1)}</div>
+                        <div class="drop-val">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
+                    </div>
+                </div>`;
                 lastPrice = pLevel;
             }
             grid.innerHTML = html;
@@ -592,13 +630,17 @@
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
+        function copyText(txt) {
+            navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt));
+        }
+
         function releaseSlot() {
             const s = slots[activeIdx]; if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
             openSecurity(() => {
                 history.push({ date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', profit: document.getElementById('resProfit').textContent.replace('$',''), base: s.price.toFixed(4), avg: document.getElementById('resAvg').textContent, totalInv: document.getElementById('resInv').textContent.replace('$',''), strategy: s.strat.toUpperCase() });
                 localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
                 
-                // RESET TO NORMAL STRATEGY
+                // RESET: ESTRATEGIA VUELVE A NORMAL AL CERRAR
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
                 
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
@@ -615,7 +657,7 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
-        function renderHistory() { const grid = document.getElementById('logGrid'); if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-info"><span class="level-tag" style="color:var(--text-secondary)">${h.date}</span><div class="level-price" style="font-size:16px">${h.coin}</div></div><div class="level-invest"><span style="color:var(--long)">+$${h.profit}</span></div></div>`).reverse().join(''); }
+        function renderHistory() { const grid = document.getElementById('logGrid'); if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-center"><div class="level-price" style="font-size:16px">${h.coin}</div><div class="copy-hint" style="margin-top:0">${h.date}</div></div><div class="level-right"><div class="invest-val" style="color:var(--long)">+$${h.profit}</div><div class="drop-val" style="color:var(--text-tertiary)">PROFIT</div></div></div>`).reverse().join(''); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
         function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const d = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT": "$" + h.profit })); const ws = XLSX.utils.json_to_sheet(d), wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Bitacora"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
         function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf, doc = new jsPDF(); doc.text("C5X Reporte", 10, 10); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: history.map(h => [h.date, h.coin, '$'+h.profit]) }); doc.save("C5X.pdf"); }
