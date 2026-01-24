@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.6 Precision</title>
+    <title>C5X - V22.7 Config Shift</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -69,7 +69,6 @@
             position: relative;
         }
 
-        /* LOGO C5X (MENÚ TRIGGER) */
         .brand-btn { 
             display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; 
             z-index: 50; position: relative;
@@ -77,7 +76,6 @@
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
         
-        /* TICKER CENTRADO ABSOLUTO */
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
             z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto;
@@ -93,7 +91,6 @@
         .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
 
-        /* BOTÓN TEMA */
         .theme-btn {
             width: 36px; height: 36px; border-radius: 50%; background: transparent; 
             border: 1px solid var(--border); color: var(--text-primary); display: flex; 
@@ -124,10 +121,11 @@
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 10px; }
         .input-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; position: relative; }
+        /* Estilo visual para inputs deshabilitados/informativos */
+        .input-group.readonly { background: rgba(0,0,0,0.2); border-color: transparent; }
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
-        .locked-overlay { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
-
+        
         .dashboard-card { 
             background: linear-gradient(160deg, var(--surface) 0%, rgba(20,20,25,0.5) 100%);
             border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 20px;
@@ -140,9 +138,14 @@
         .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; }
 
         .main-target-box { text-align: center; margin: 15px 0; }
-        /* Ajuste de fuente para acomodar más decimales */
         .target-price { font-family: 'JetBrains Mono'; font-size: 38px; font-weight: 700; color: var(--long); line-height: 1.1; letter-spacing: -1px; }
-        .strategy-pill { display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(59, 130, 246, 0.1); color: var(--brand); font-family: 'Orbitron'; font-size: 10px; font-weight: 800; margin-top: 5px; cursor: pointer; border: 1px solid rgba(59, 130, 246, 0.2); }
+        /* Strategy Pill ahora es solo informativa */
+        .strategy-pill { 
+            display: inline-block; padding: 6px 16px; border-radius: 20px; 
+            background: rgba(59, 130, 246, 0.05); color: var(--text-secondary); 
+            font-family: 'Orbitron'; font-size: 10px; font-weight: 800; 
+            margin-top: 5px; border: 1px solid var(--border); cursor: default;
+        }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); }
         .stat-box { text-align: center; }
@@ -175,13 +178,24 @@
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        /* --- VISTA AJUSTES --- */
-        #section-settings { padding: 20px; }
+        /* --- VISTA AJUSTES (RENOVADA) --- */
+        #section-settings { padding: 20px; padding-bottom: 80px; }
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
+        .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 5px; }
+        .config-input { 
+            width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; 
+            border-radius: 10px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px;
+        }
+        .config-input:focus { border-color: var(--brand); }
+
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .setting-info h4 { font-size: 14px; margin-bottom: 4px; }
         .setting-info p { font-size: 11px; color: var(--text-secondary); }
         .btn-reset { background: var(--danger); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; width: 100%; margin-top: 10px; }
+        .btn-save-config { width: 100%; background: var(--long); color: #fff; border: none; padding: 14px; border-radius: 10px; font-weight: 800; font-family: 'Orbitron'; margin-top: 15px; cursor: pointer; }
 
         /* --- MENÚ MODAL (Navigation) --- */
         #navModal { 
@@ -264,9 +278,18 @@
             <div id="tv_chart" class="chart-wrapper"></div>
             
             <div class="controls-grid">
-                <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
-                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any"></div>
-                <div class="input-group"><div class="locked-overlay" onclick="requestControlAccess('capitalInput')"></div><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
+                <div class="input-group">
+                    <label class="input-label">Moneda</label>
+                    <input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Base</label>
+                    <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any">
+                </div>
+                <div class="input-group readonly">
+                    <label class="input-label">Capital (Info)</label>
+                    <input type="number" id="capitalInput" class="input-field" readonly>
+                </div>
             </div>
 
             <div class="dashboard-card" id="dashMain">
@@ -277,7 +300,7 @@
                 </div>
                 <div class="main-target-box">
                     <div class="target-price" id="resTarget">0.00000000</div>
-                    <div class="strategy-pill" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
+                    <div class="strategy-pill" id="btnStratToggle">BASE: 7%</div>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div>
@@ -303,6 +326,26 @@
         </div>
 
         <div id="section-settings" class="app-section">
+            
+            <div class="settings-card">
+                <div class="setting-header">PARÁMETROS DE TRADING (SLOT ACTUAL)</div>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>CAPITAL DEL SLOT ($)</label>
+                        <input type="number" id="setCapital" class="config-input">
+                    </div>
+                    <div class="config-item">
+                        <label>INCREMENTO BASE (% NORMAL)</label>
+                        <input type="number" id="setInc" class="config-input">
+                    </div>
+                    <div class="config-item">
+                        <label>DESCUENTO AGRESIVO (%)</label>
+                        <input type="number" id="setDesc" class="config-input">
+                    </div>
+                </div>
+                <button class="btn-save-config" onclick="applySettings()">GUARDAR CAMBIOS</button>
+            </div>
+
             <div class="settings-card">
                 <div class="setting-row">
                     <div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div>
@@ -314,12 +357,11 @@
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.6 PRECISION</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.7 CONFIG SHIFT</div>
             </div>
         </div>
     </div>
 
-    <div id="configModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; color:var(--brand); font-size:12px;">CONFIGURAR %</div><input type="number" id="configInputVal" class="modal-inp" step="any"><button class="btn-modal btn-confirm" onclick="saveConfigValue()">ACEPTAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
     <div id="securityModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4"><button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
 
     <input type="hidden" id="incInput" value="7">
@@ -361,12 +403,47 @@
             const tfBar = document.getElementById('tfBarContainer');
             if(viewName === 'operate') {
                 tfBar.style.display = 'flex';
-                // Si cambiamos de vista, recargamos el chart con la moneda del slot actual o la última seteada
                 if(chartSymbol) loadChart(chartSymbol); 
             } else {
                 tfBar.style.display = 'none';
             }
+
+            // CARGAR VALORES SI VAMOS A AJUSTES
+            if(viewName === 'settings') {
+                loadSettingsValues();
+            }
+
             toggleMenu(); 
+        }
+
+        // --- LÓGICA DE SETTINGS (NUEVA) ---
+        function loadSettingsValues() {
+            // Cargar valores del slot actual y variables globales en los inputs de ajustes
+            const s = slots[activeIdx];
+            document.getElementById('setCapital').value = s.capital;
+            document.getElementById('setInc').value = document.getElementById('incInput').value;
+            document.getElementById('setDesc').value = document.getElementById('descInput').value;
+        }
+
+        function applySettings() {
+            const newCap = parseFloat(document.getElementById('setCapital').value);
+            const newInc = document.getElementById('setInc').value;
+            const newDesc = document.getElementById('setDesc').value;
+
+            if(isNaN(newCap) || !newInc || !newDesc) return showToast("⚠️ Valores Inválidos");
+
+            // Aplicar cambios
+            slots[activeIdx].capital = newCap;
+            document.getElementById('incInput').value = newInc;
+            document.getElementById('descInput').value = newDesc;
+
+            save();
+            calculate();
+            updateDashUI();
+            
+            showToast("✅ Configuración Guardada");
+            // Opcional: Volver a operar automáticamente? 
+            // switchView('operate'); 
         }
 
         async function fetchTicker() { 
@@ -382,22 +459,11 @@
             } catch(e) {} 
         }
 
-        // --- TICKER FIX: STOP PROPAGATION ---
         function viewTickerChart(e) { 
-            // Esto evita que el click llegue al header o al menú
             if(e) e.stopPropagation(); 
-            
-            // Cargar moneda del ticker
             chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase();
             loadChart(chartSymbol); 
-            
-            // Asegurar que estamos en vista operar
-            if(currentSection !== 'operate') {
-                currentSection = 'operate';
-                document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
-                document.getElementById('section-operate').classList.add('active');
-                document.getElementById('tfBarContainer').style.display = 'flex';
-            }
+            if(currentSection !== 'operate') switchView('operate');
         }
 
         function updateTF(tf, btn) { 
@@ -409,27 +475,51 @@
         }
 
         function loadChart(coin) { 
-            // Guardamos el símbolo actual para que al cambiar TF se mantenga
             chartSymbol = (coin || 'BTC3L').toUpperCase(); 
             new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); 
         }
 
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function selectSlot(i) { 
+            activeIdx = i; localStorage.setItem('c5x_last_slot', i); 
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            // Capital es solo lectura en main, se llena aquí para visualización
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); loadChart(s.name); updateDashUI(); 
+        }
+
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
         function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
+        
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
-            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
+            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
+            elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
+            elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
+            
+            // Pill solo informativa
             const val = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value;
             document.getElementById('btnStratToggle').textContent = (isNormal ? "BASE: " : "DESC: ") + val + "%";
             document.getElementById('lockBtn').textContent = s.locked ? '🔒' : '🔓';
+            
+            // Asegurar que el input de capital muestre el valor real
+            document.getElementById('capitalInput').value = s.capital;
+
             calculate();
         }
 
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; s.capital = parseFloat(document.getElementById('capitalInput').value) || 5; save(); renderLevels(); }
+        function calculate() { 
+            const s = slots[activeIdx]; 
+            s.price = parseFloat(document.getElementById('baseInput').value) || 0; 
+            // Ya no leemos capital del input principal porque es readonly, usamos s.capital o el valor seteado
+            // s.capital ya debería estar actualizado por applySettings o selectSlot
+            save(); renderLevels(); 
+        }
+
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
@@ -446,14 +536,12 @@
                 const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
                 
-                // PRECISION UPDATE: 8 DECIMALS
                 html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(8)}</div></div><div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div></div>`;
                 lastPrice = pLevel;
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            // PRECISION UPDATE
             document.getElementById('resAvg').textContent = avg.toFixed(8);
             document.getElementById('resTarget').textContent = (avg * 2).toFixed(8);
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
@@ -472,9 +560,6 @@
 
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
-        function requestControlAccess(id) { openSecurity(() => { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; showToast("🔓 Edición Habilitada"); }); }
-        function handleStratEdit() { openSecurity(() => { const s = slots[activeIdx], isNormal = s.strat === "normal"; document.getElementById('configInputVal').value = isNormal ? document.getElementById('incInput').value : document.getElementById('descInput').value; document.getElementById('configModal').style.display = 'flex'; }); }
-        function saveConfigValue() { const newVal = document.getElementById('configInputVal').value; if(!newVal) return; if(slots[activeIdx].strat === "normal") document.getElementById('incInput').value = newVal; else document.getElementById('descInput').value = newVal; closeModals(); updateDashUI(); }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
