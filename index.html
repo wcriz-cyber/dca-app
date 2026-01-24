@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.5 Stable</title>
+    <title>C5X - V22.6 Precision</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -72,23 +72,19 @@
         /* LOGO C5X (MENÚ TRIGGER) */
         .brand-btn { 
             display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; 
-            z-index: 50; /* Z-index alto para asegurar su click */
-            position: relative;
+            z-index: 50; position: relative;
         }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 22px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 10px; color: var(--text-secondary); transition: transform 0.3s; }
         
-        /* TICKER CENTRADO ABSOLUTO (NO INTERFIERE CON MENÚ) */
+        /* TICKER CENTRADO ABSOLUTO */
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            z-index: 60; /* Más alto que el brand para evitar solapamientos en pantallas muy pequeñas */
-            pointer-events: none; /* El contenedor es transparente a clicks */
-            display: flex; justify-content: center; width: auto;
+            z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto;
         }
 
         .ticker-pill { 
-            pointer-events: auto; /* El botón SÍ recibe clicks */
-            display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
+            pointer-events: auto; display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.05); 
             border: 1px solid var(--border); padding: 6px 16px; border-radius: 20px; cursor: pointer;
             transition: 0.2s;
         }
@@ -97,7 +93,7 @@
         .ticker-sym { font-family: 'Orbitron'; font-weight: 700; font-size: 13px; }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 13px; }
 
-        /* BOTÓN TEMA A LA DERECHA */
+        /* BOTÓN TEMA */
         .theme-btn {
             width: 36px; height: 36px; border-radius: 50%; background: transparent; 
             border: 1px solid var(--border); color: var(--text-primary); display: flex; 
@@ -144,13 +140,14 @@
         .icon-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-primary); cursor: pointer; }
 
         .main-target-box { text-align: center; margin: 15px 0; }
-        .target-price { font-family: 'JetBrains Mono'; font-size: 44px; font-weight: 700; color: var(--long); line-height: 1.1; }
+        /* Ajuste de fuente para acomodar más decimales */
+        .target-price { font-family: 'JetBrains Mono'; font-size: 38px; font-weight: 700; color: var(--long); line-height: 1.1; letter-spacing: -1px; }
         .strategy-pill { display: inline-block; padding: 6px 16px; border-radius: 20px; background: rgba(59, 130, 246, 0.1); color: var(--brand); font-family: 'Orbitron'; font-size: 10px; font-weight: 800; margin-top: 5px; cursor: pointer; border: 1px solid rgba(59, 130, 246, 0.2); }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border); }
         .stat-box { text-align: center; }
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; }
-        .stat-value { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--text-primary); }
+        .stat-value { font-family: 'JetBrains Mono'; font-size: 14px; font-weight: 700; color: var(--text-primary); }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px; }
         
@@ -162,7 +159,7 @@
         .level-index { width: 36px; height: 36px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 700; color: var(--text-secondary); margin-right: 14px; }
         .level-info { flex: 1; }
         .level-tag { font-size: 9px; font-weight: 800; color: var(--short); text-transform: uppercase; display: block; }
-        .level-price { font-family: 'JetBrains Mono'; font-size: 18px; font-weight: 700; color: var(--text-primary); }
+        .level-price { font-family: 'JetBrains Mono'; font-size: 17px; font-weight: 700; color: var(--text-primary); }
         .level-invest { text-align: right; }
         .level-invest span { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; color: var(--long); }
 
@@ -279,11 +276,11 @@
                     <div class="icon-btn" id="lockBtn" onclick="toggleLock()">🔓</div>
                 </div>
                 <div class="main-target-box">
-                    <div class="target-price" id="resTarget">0.000000</div>
+                    <div class="target-price" id="resTarget">0.00000000</div>
                     <div class="strategy-pill" id="btnStratToggle" onclick="handleStratEdit()">BASE: 7%</div>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.0000</div></div>
+                    <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div>
                     <div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div>
                     <div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div>
                 </div>
@@ -317,7 +314,7 @@
                         <button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button>
                     </div>
                 </div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.5 STABLE</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V22.6 PRECISION</div>
             </div>
         </div>
     </div>
@@ -448,14 +445,17 @@
                 }
                 const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
-                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(5)}</div></div><div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div></div>`;
+                
+                // PRECISION UPDATE: 8 DECIMALS
+                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-info"><span class="level-tag">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</span><div class="level-price">${pLevel.toFixed(8)}</div></div><div class="level-invest"><span>$${mUSD.toFixed(1)}</span></div></div>`;
                 lastPrice = pLevel;
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(5);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(5);
+            // PRECISION UPDATE
+            document.getElementById('resAvg').textContent = avg.toFixed(8);
+            document.getElementById('resTarget').textContent = (avg * 2).toFixed(8);
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
