@@ -51,18 +51,19 @@
         .control-box input { background: transparent; border: none; color: var(--text); font-size: 14px; font-weight: 700; width: 100%; text-align: center; outline: none; }
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
+        /* DASHBOARD MEJORADO */
         .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 12px; position: relative; }
-        .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .strat-indicator { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; letter-spacing: 1px; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .dash-top { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; margin-bottom: 12px; }
+        .strat-indicator { font-family: 'Orbitron'; font-size: 12px; font-weight: 900; letter-spacing: 1.5px; text-align: center; }
+        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
         .tool-btn.locked { border-color: var(--warning); color: var(--warning); background: rgba(241, 196, 15, 0.1); }
 
-        .dash-data { text-align: center; }
-        .main-target { font-family: 'Roboto Mono'; font-size: 38px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 5px 0; letter-spacing: -1px; }
-        .sub-info { display: flex; justify-content: center; gap: 15px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-        .info-item label { font-size: 8px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; }
-        .info-item span { font-family: 'Roboto Mono'; font-size: 14px; font-weight: 900; }
+        .dash-data { text-align: center; padding: 5px 0; }
+        .main-target { font-family: 'Roboto Mono'; font-size: 42px; font-weight: 900; color: var(--long-green); line-height: 1; margin: 8px 0; letter-spacing: -1px; text-shadow: 0 0 10px rgba(14, 203, 129, 0.2); }
+        .sub-info { display: flex; justify-content: space-around; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+        .info-item label { font-size: 9px; color: #848e9c; display: block; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; }
+        .info-item span { font-family: 'Roboto Mono'; font-size: 16px; font-weight: 900; color: var(--text); }
 
         .levels-container { padding: 0 8px; display: flex; flex-direction: column; gap: 8px; }
         .level-card { background: var(--surface); border-radius: 15px; padding: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border); }
@@ -142,14 +143,12 @@
         <div class="dash-container">
             <div class="dash-main" id="dashMain">
                 <div class="dash-top">
+                    <button class="tool-btn" onclick="rotateDash()">🔄</button>
                     <div class="strat-indicator" id="stratName">PREDETERMINADA</div>
-                    <div style="display:flex; gap:6px;">
-                        <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
-                        <button class="tool-btn" onclick="rotateDash()">🔄</button>
-                    </div>
+                    <button class="tool-btn" id="lockBtn" onclick="toggleLock()">🔓</button>
                 </div>
                 <div class="dash-data">
-                    <span style="font-size:9px; color:var(--dir-color); font-weight:900; opacity:0.8;">TARGET PRICE (100%)</span>
+                    <span style="font-size:10px; color:var(--dir-color); font-weight:900; text-transform:uppercase;">Target Price (100%)</span>
                     <div class="main-target" id="resTarget">0.000000</div>
                     <div class="sub-info">
                         <div class="info-item"><label>Average</label><span id="resAvg">0.000000</span></div>
@@ -234,21 +233,20 @@
             if(!s.price) { grid.innerHTML = ''; return; }
             
             let totalSpent = 0, totalQty = 0;
-            let lastLevelPrice = s.price;
+            let lastPrice = s.price;
             let drop7 = 10; 
             let html = '';
 
             for(let i=0; i<12; i++){
                 let pLevel;
-                if(i === 0){
+                if(i === 0) {
                     pLevel = s.price;
                 } else {
                     if(currentStrat === "normal") {
                         drop7 += 7;
                         pLevel = s.price * (1 - (drop7/100));
                     } else {
-                        // Agresiva: 66% de caída del nivel anterior
-                        pLevel = lastLevelPrice * (1 - (descPct/100));
+                        pLevel = lastPrice * (1 - (descPct/100));
                     }
                 }
                 
@@ -263,7 +261,7 @@
                     <div><span style="font-size:9px; font-weight:900; color:var(--dir-color)">NV ${i+1}</span><div class="price-display">${pLevel.toFixed(6)}</div></div>
                     <div style="text-align:right"><span style="font-size:8px; color:#848e9c">MONTO</span><div style="font-weight:900">$${mUSD.toFixed(1)}</div></div>
                 </div>`;
-                lastLevelPrice = pLevel;
+                lastPrice = pLevel;
             }
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
@@ -277,11 +275,11 @@
             if(s.buys.length === 0) return;
             openPrompt((pass) => {
                 if(pass === "2524") {
-                    // RESET DASHBOARD AL CERRAR
-                    currentStrat = "normal";
+                    currentStrat = "normal"; 
                     isDashLocked = false;
-                    document.getElementById('lockBtn').textContent = '🔓';
-                    document.getElementById('lockBtn').classList.remove('locked');
+                    const lckBtn = document.getElementById('lockBtn');
+                    lckBtn.textContent = '🔓';
+                    lckBtn.classList.remove('locked');
                     
                     slots[activeIdx] = { name:'', price:0, capital:5, buys:[] };
                     const filled = slots.filter(sl => sl.name !== '');
