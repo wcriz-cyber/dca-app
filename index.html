@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.5 Dual Master</title>
+    <title>C5X - V19.8 Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#050708">
@@ -33,15 +33,14 @@
         #t-dot { width: 8px; height: 8px; border-radius: 50%; background: grey; }
         .theme-toggle { background: transparent; border: none; color: var(--text); width: 40px; height: 40px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        /* ESPACIO REDUCIDO ENTRE TF Y SLOTS */
         .tf-bar { display: flex; justify-content: space-around; background: rgba(0,0,0,0.1); padding: 2px; border-bottom: 1px solid var(--border); }
         .tf-btn { flex: 1; padding: 10px 2px; border: none; background: transparent; color: #848e9c; font-size: 11px; font-weight: 900; }
         .tf-btn.active { background: var(--dir-color); color: #fff; border-radius: 6px; }
 
-        .content-spacer { margin-top: 108px; } /* Ajustado para el nuevo header compacto */
+        .content-spacer { margin-top: 108px; }
         
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; padding: 4px 8px; }
-        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; }
+        .slot-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 900; background: var(--surface); border: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .slot-btn.active { border-color: var(--dir-color); color: var(--dir-color); border-width: 2px; }
         
         .chart-container { width: 100%; height: 260px; background: #000; margin-top: 2px; }
@@ -53,7 +52,7 @@
         .secure-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
 
         .dash-container { margin: 10px 8px; }
-        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 12px; position: relative; transition: 0.3s; }
+        .dash-main { background: var(--surface); border-radius: 20px; border: 3px solid var(--dir-color); padding: 12px; position: relative; }
         .dash-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .strat-indicator { font-family: 'Orbitron'; font-size: 11px; font-weight: 900; letter-spacing: 1px; }
         .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text); width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
@@ -76,7 +75,7 @@
         .modal-content { background: var(--surface); padding: 30px 20px; border-radius: 25px; border: 1px solid var(--border); width: 80%; max-width: 300px; text-align: center; }
         .modal-input { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text); padding: 12px; text-align: center; font-size: 22px; border-radius: 12px; margin-bottom: 25px; outline: none; letter-spacing: 6px; }
 
-        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; font-size: 12px; }
+        #toast { visibility: hidden; min-width: 150px; background-color: var(--dir-color); color: #fff; text-align: center; border-radius: 30px; padding: 10px; position: fixed; z-index: 2000; left: 50%; bottom: 80px; transform: translateX(-50%); font-weight: 900; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 80px; opacity: 1;} }
     </style>
@@ -91,7 +90,7 @@
             <input type="password" id="modalInput" inputmode="numeric" maxlength="4" placeholder="••••">
             <div style="display:flex; flex-direction:column; gap:8px;">
                 <button style="background:var(--long-green); color:#fff; padding:12px; border:none; border-radius:12px; font-weight:900; font-family:'Orbitron';" onclick="closeMyModal(true)">CONFIRMAR</button>
-                <button style="background:transparent; color:var(--text); opacity:0.5; border:none; font-size:10px;" onclick="closeMyModal(false)">CANCELAR</button>
+                <button style="background:transparent; color:var(--text); opacity:0.5; border:none;" onclick="closeMyModal(false)">CANCELAR</button>
             </div>
         </div>
     </div>
@@ -120,7 +119,10 @@
         <div id="tv_chart" class="chart-container"></div>
 
         <div class="controls">
-            <div class="control-box"><label>MONEDA</label><input type="text" id="coinInput" onblur="updateCoin()"></div>
+            <div class="control-box">
+                <label>MONEDA</label>
+                <input type="text" id="coinInput" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()">
+            </div>
             <div class="control-box"><label>P. BASE</label><input type="number" id="baseInput" oninput="calculate()" step="any"></div>
             <div class="control-box"><div class="secure-overlay" onclick="requestControlAccess('capitalInput')"></div><label>CAP $</label><input type="number" id="capitalInput" readonly></div>
             <div class="control-box"><div class="secure-overlay" onclick="requestControlAccess('descInput')"></div><label>% DESC</label><input type="number" id="descInput" value="66" readonly></div>
@@ -157,8 +159,8 @@
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let currentStrat = "normal", isDashLocked = false;
+        let chartSymbol = ''; 
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[] }));
-        let history = JSON.parse(localStorage.getItem('dca_history_v2')) || [];
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC", modalCallback = null;
 
@@ -271,14 +273,14 @@
             localStorage.setItem('c5x_last_tf', tf); 
             document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); 
             btn.classList.add('active'); 
-            loadChart(slots[activeIdx].name || currentTickerSymbol); 
+            loadChart(chartSymbol); 
         }
 
         function loadChart(coin) { 
-            const sym = (coin || 'BTC3L').toUpperCase();
+            chartSymbol = (coin || 'BTC3L').toUpperCase();
             new TradingView.widget({ 
                 "autosize": true, 
-                "symbol": `GATEIO:${sym.replace('USDT','') }USDT`, 
+                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
                 "interval": activeTF, 
                 "theme": "dark", 
                 "container_id": "tv_chart", 
@@ -287,18 +289,40 @@
             }); 
         }
 
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function selectSlot(i) { 
+            activeIdx = i; 
+            localStorage.setItem('c5x_last_slot', i); 
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); 
+            loadChart(s.name); 
+            updateDashUI(); 
+        }
+
+        function viewTickerChart() { 
+            loadChart(currentTickerSymbol); 
+        }
+
+        function updateCoin() { 
+            const val = document.getElementById('coinInput').value.toUpperCase();
+            slots[activeIdx].name = val; 
+            save(); 
+            renderNav(); 
+            loadChart(val); 
+            calculate(); 
+        }
+
         function openPrompt(cb) { modalCallback = cb; document.getElementById('customModal').style.display = 'flex'; document.getElementById('modalInput').value = ''; document.getElementById('modalInput').focus(); }
         function closeMyModal(confirm) { const val = document.getElementById('modalInput').value; document.getElementById('customModal').style.display = 'none'; if(confirm) modalCallback(val); }
         function requestControlAccess(id) { openPrompt((p) => { if(p==="2524") { const el = document.getElementById(id); el.readOnly = false; el.focus(); el.onblur = () => el.readOnly = true; } }); }
-        function updateCoin() { slots[activeIdx].name = document.getElementById('coinInput').value.toUpperCase(); save(); renderNav(); loadChart(slots[activeIdx].name); calculate(); }
         function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function toggleLvl(i) { const b = slots[activeIdx].buys; slots[activeIdx].buys = b.includes(i) ? b.filter(x => x !== i) : [...b, i]; calculate(); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { document.body.classList.remove('mode-long', 'mode-short'); if(n.endsWith('L')) document.body.classList.add('mode-long'); if(n.endsWith('S')) document.body.classList.add('mode-short'); }
-        function viewTickerChart() { loadChart(currentTickerSymbol); }
     </script>
 </body>
 </html>
