@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.9 Custom Ticker</title>
+    <title>C5X - V25.0 Ultra Ticker</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -67,7 +67,7 @@
         
         .ticker-container {
             position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto;
+            z-index: 60; display: flex; align-items: center; gap: 8px; justify-content: center; width: auto; pointer-events: none;
         }
 
         .ticker-pill { 
@@ -79,6 +79,17 @@
         .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
         .ticker-sym { font-family: 'Orbitron'; font-weight: 800; font-size: 14px; color: var(--text-secondary); }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 20px; color: var(--text-primary); }
+
+        /* Estilo Botón Pin */
+        .pin-btn {
+            pointer-events: auto; width: 28px; height: 28px; border-radius: 50%; 
+            background: transparent; border: 1px solid transparent; 
+            display: flex; align-items: center; justify-content: center; 
+            color: var(--text-secondary); cursor: pointer; transition: 0.2s;
+        }
+        .pin-btn:active { transform: scale(0.9); }
+        .pin-btn.pinned { color: var(--brand); background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2); }
+        .pin-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         .theme-btn {
             width: 44px; height: 44px; border-radius: 50%; background: transparent; 
@@ -270,6 +281,9 @@
                     <span class="ticker-sym" id="t-sym">BTC</span>
                     <span class="ticker-price" id="t-price">--.--</span>
                 </div>
+                <button class="pin-btn" id="tickerPinBtn" onclick="toggleTickerPin()">
+                    <svg viewBox="0 0 24 24"><path d="M16 9V4l1 0c0.55 0 1-0.45 1-1s-0.45-1-1-1H7C6.45 2 6 2.45 6 3s0.45 1 1 1l1 0v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1l1-1v-7H19v-2C17.34 12 16 10.66 16 9z"/></svg>
+                </button>
             </div>
             <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
@@ -287,7 +301,7 @@
             <nav id="slotNav" class="slot-nav"></nav>
             <div id="tv_chart" class="chart-wrapper"></div>
             <div class="controls-grid">
-                <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
+                <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div>
                 <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
@@ -365,7 +379,7 @@
                         <label>MONEDAS TICKER (Separa con comas)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">#</span>
-                            <input type="text" id="setTickerCoins" placeholder="BTC,ETH,SOL">
+                            <input type="text" id="setTickerCoins" placeholder="BTC,ETH,SOL" oninput="forceCaps(this)">
                         </div>
                     </div>
                     <div class="config-item">
@@ -405,7 +419,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V24.9 CUSTOM TICKER
+                C5X V25.0 ULTRA TICKER
             </div>
         </div>
     </div>
@@ -442,10 +456,10 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- NEW TICKER LOGIC ---
-        // Load custom assets or default
+        // --- TICKER & PIN LOGIC ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
+        let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; // New State
         let tickerIntervalId = null;
         let assetIdx = 0, currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
@@ -460,11 +474,41 @@
             }
             renderNav(); selectSlot(activeIdx); renderHistory();
             
-            // Start Ticker Loop
+            // Start Ticker
+            updatePinUI();
             fetchTicker();
             tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
 
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+        }
+
+        // --- NEW: Helper for Uppercase Input without losing cursor ---
+        function forceCaps(el) {
+            const start = el.selectionStart;
+            const end = el.selectionEnd;
+            el.value = el.value.toUpperCase();
+            el.setSelectionRange(start, end);
+        }
+
+        // --- NEW: Ticker Pin Logic ---
+        function toggleTickerPin() {
+            isTickerPinned = !isTickerPinned;
+            localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
+            updatePinUI();
+            if(!isTickerPinned) {
+                // If unpinned, resume rotation immediately
+                assetIdx = (assetIdx + 1) % tickerAssets.length;
+                fetchTicker();
+                showToast("▶️ Rotación Reanudada");
+            } else {
+                showToast("⚓ Moneda Fijada");
+            }
+        }
+
+        function updatePinUI() {
+            const btn = document.getElementById('tickerPinBtn');
+            if(isTickerPinned) btn.classList.add('pinned');
+            else btn.classList.remove('pinned');
         }
 
         function toggleMenu() {
@@ -493,7 +537,7 @@
 
             if(viewName === 'settings') {
                 loadSettingsValues();
-                loadTickerSettings(); // Load ticker inputs
+                loadTickerSettings(); 
             }
             if(toggle) toggleMenu(); 
             window.scrollTo(0,0);
@@ -506,22 +550,18 @@
             document.getElementById('setDesc').value = document.getElementById('descInput').value;
         }
         
-        // --- NEW: Load Ticker Settings UI ---
         function loadTickerSettings() {
-            // Convert ["BTCUSDT", "ETHUSDT"] -> "BTC, ETH" for display
             const displayCoins = tickerAssets.map(a => a.replace('USDT','')).join(', ');
             document.getElementById('setTickerCoins').value = displayCoins;
             document.getElementById('setTickerInterval').value = tickerIntervalTime;
         }
 
-        // --- NEW: Save Ticker Settings ---
         function saveTickerConfig() {
             const rawCoins = document.getElementById('setTickerCoins').value;
             const secs = parseInt(document.getElementById('setTickerInterval').value);
 
             if(!rawCoins || isNaN(secs) || secs < 2) return showToast("⚠️ Datos inválidos (min 2s)");
 
-            // Parse coins string to array
             const newAssets = rawCoins.split(',').map(c => {
                 let clean = c.trim().toUpperCase();
                 if(!clean) return null;
@@ -530,17 +570,20 @@
 
             if(newAssets.length === 0) return showToast("⚠️ Añade al menos 1 moneda");
 
-            // Save and Apply
             tickerAssets = newAssets;
             tickerIntervalTime = secs;
             localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
             localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
+            
+            // Unpin if config changes to avoid stuck on deleted coin
+            isTickerPinned = false; 
+            localStorage.setItem('c5x_ticker_pinned', false);
+            updatePinUI();
 
-            // Restart Interval
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
             assetIdx = 0;
-            fetchTicker(); // Immediate update
+            fetchTicker(); 
 
             showToast("✅ Ticker Actualizado");
         }
@@ -575,11 +618,14 @@
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
                 const isUp = parseFloat(data.priceChangePercent) >= 0;
                 document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
-                assetIdx = (assetIdx + 1) % tickerAssets.length; 
+                
+                // ONLY rotate if NOT pinned
+                if(!isTickerPinned) {
+                    assetIdx = (assetIdx + 1) % tickerAssets.length; 
+                }
             } catch(e) {
                 console.log("Ticker update skipped or symbol invalid");
-                // Skip to next asset on error to avoid getting stuck on a bad symbol
-                assetIdx = (assetIdx + 1) % tickerAssets.length;
+                if(!isTickerPinned) assetIdx = (assetIdx + 1) % tickerAssets.length;
             } 
         }
 
