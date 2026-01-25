@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.1 Refined UX</title>
+    <title>C5X - V24.2 Smart Spacing</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -88,8 +88,13 @@
         }
         .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
-        /* ESPACIADOR GLOBAL */
-        .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
+        /* ESPACIADOR GLOBAL DINÁMICO */
+        .content-spacer { 
+            margin-top: 115px; /* Default para Operar */
+            max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; 
+            transition: margin-top 0.3s ease; /* Transición suave al cambiar vista */
+        }
+        
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -158,9 +163,9 @@
         }
         .liquidate-card:active { transform: scale(0.98); }
 
-        /* --- VISTA BITÁCORA (AJUSTE ESPACIO) --- */
+        /* --- VISTA BITÁCORA (ESPACIO 0) --- */
         #section-log { 
-            padding-top: 5px; /* REDUCIDO DE 20PX A 5PX */
+            padding-top: 0px; /* ELIMINADO TOTALMENTE */
         }
         .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
         .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
@@ -206,10 +211,10 @@
         .btn-confirm { background: var(--brand); color: #fff; }
         .btn-cancel { background: transparent; color: var(--text-secondary); }
         
-        /* INPUT DE SEGURIDAD NUMÉRICO */
+        /* INPUT SEGURIDAD (FIXED FOR NUMERIC KEYPAD) */
         .modal-inp { 
             width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; 
-            border-radius: 10px; color: var(--text-primary); font-size: 20px; text-align: center; margin: 20px 0; 
+            border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; 
         }
 
     </style>
@@ -314,7 +319,7 @@
             <div class="settings-card">
                 <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
                 <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V24.1 REFINED UX</div>
+                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V24.2 SMART SPACING</div>
             </div>
         </div>
     </div>
@@ -367,14 +372,28 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // --- SMART SPACING (AJUSTE DINÁMICO) ---
         function switchView(viewName, toggle = true) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
             document.getElementById('nav-' + viewName).classList.add('selected');
+
             const tfBar = document.getElementById('tfBarContainer');
-            if(viewName === 'operate') { tfBar.style.display = 'flex'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; }
+            const spacer = document.querySelector('.content-spacer');
+
+            if(viewName === 'operate') {
+                tfBar.style.display = 'flex';
+                // Margen original para cabecera + barra de tiempo
+                spacer.style.marginTop = '115px'; 
+                if(chartSymbol) loadChart(chartSymbol); 
+            } else {
+                tfBar.style.display = 'none';
+                // Margen reducido para solo la cabecera
+                spacer.style.marginTop = '75px'; 
+            }
+
             if(viewName === 'settings') loadSettingsValues();
             if(toggle) toggleMenu(); 
         }
