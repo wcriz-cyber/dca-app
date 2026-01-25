@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.8 GOLD MASTER</title>
+    <title>C5X - V25.9 Smart Validator</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -401,7 +401,7 @@
                                 <span class="input-icon">+</span>
                                 <input type="text" id="newTickerCoin" placeholder="AÑADIR (ej: PEPE)" oninput="forceCaps(this)" onkeypress="handleEnter(event)">
                             </div>
-                            <button class="btn-data" style="width:auto; padding:0 15px; margin:0;" onclick="addTickerCoin()">AÑADIR</button>
+                            <button id="addCoinBtn" class="btn-data" style="width:auto; padding:0 15px; margin:0;" onclick="verifyAndAddCoin()">AÑADIR</button>
                         </div>
                     </div>
                     <div class="config-item">
@@ -413,7 +413,7 @@
                     </div>
                 </div>
                 <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
-                    Multi-Exchange Engine: Binance > OKX > Bybit > Gate > MEXC > KuCoin
+                    Multi-Exchange Smart Validator
                 </div>
             </div>
 
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.8 PRECISION FIX
+                C5X V25.9 SMART VALIDATOR
             </div>
         </div>
     </div>
@@ -478,14 +478,12 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- ULTIMATE TICKER & PIN LOGIC ---
+        // --- ULTIMATE TICKER ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 7;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
-        
-        // FIX: Variable global para seguimiento preciso
         let currentTickerSymbol = "BTC";
         
         let proxyIdx = 0;
@@ -518,10 +516,10 @@
         }
 
         function handleEnter(e) {
-            if(e.key === 'Enter') addTickerCoin();
+            if(e.key === 'Enter') verifyAndAddCoin();
         }
 
-        // --- CHIP SYSTEM FUNCTIONS ---
+        // --- SMART VALIDATOR ---
         function renderTickerSettings() {
             const container = document.getElementById('tickerChipsContainer');
             container.innerHTML = tickerAssets.map((asset, index) => `
@@ -533,16 +531,62 @@
             document.getElementById('setTickerInterval').value = tickerIntervalTime;
         }
 
-        function addTickerCoin() {
+        async function verifyAndAddCoin() {
             const input = document.getElementById('newTickerCoin');
+            const btn = document.getElementById('addCoinBtn');
             let val = input.value.trim().toUpperCase();
+            
             if(!val) return;
             if(!val.includes('USDT')) val += 'USDT';
-            if(tickerAssets.includes(val)) { showToast("⚠️ Moneda ya existe"); input.value = ''; return; }
-            tickerAssets.push(val);
-            saveTickerData();
-            input.value = '';
-            showToast("✅ Añadido: " + val.replace('USDT',''));
+            
+            if(tickerAssets.includes(val)) { 
+                showToast("⚠️ Moneda ya existe"); 
+                input.value = ''; 
+                return; 
+            }
+
+            // UI LOADING
+            const originalBtnText = btn.textContent;
+            btn.textContent = "🔍 ...";
+            btn.disabled = true;
+
+            try {
+                let exists = false;
+
+                // CHECK 1: BINANCE DIRECT
+                try {
+                    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${val}`);
+                    if(res.ok) exists = true;
+                } catch(e) {}
+
+                // CHECK 2: GATE.IO VIA PROXY (If Binance fails)
+                if(!exists) {
+                    try {
+                        let gateSym = val.replace('USDT', '_USDT');
+                        const proxy = proxies[0]; 
+                        const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`));
+                        if(res.ok) {
+                            const data = await res.json();
+                            if(data && data.length > 0) exists = true;
+                        }
+                    } catch(e) {}
+                }
+
+                if(exists) {
+                    tickerAssets.push(val);
+                    saveTickerData();
+                    input.value = '';
+                    showToast("✅ Agregada");
+                } else {
+                    showToast("⛔ Moneda no encontrada");
+                }
+
+            } catch(e) {
+                showToast("❌ Error de red");
+            } finally {
+                btn.textContent = originalBtnText;
+                btn.disabled = false;
+            }
         }
 
         function removeTickerCoin(index) {
@@ -574,7 +618,6 @@
             updatePinUI();
             
             if(isTickerPinned) {
-                // LOCK CURRENT SYMBOL EXACTLY
                 const currentSymFull = currentTickerSymbol + "USDT";
                 const foundIdx = tickerAssets.indexOf(currentSymFull);
                 if(foundIdx !== -1) {
@@ -586,7 +629,6 @@
                 }
             } else {
                 showToast("▶️ Rotación Reanudada");
-                // Immediately move to next to confirm action
                 assetIdx = (assetIdx + 1) % tickerAssets.length;
                 fetchTicker();
             }
@@ -653,7 +695,7 @@
             });
         }
 
-        // --- MULTI-SOURCE PRICE FINDER (WATERFALL) ---
+        // --- MULTI-SOURCE ENGINE ---
         async function fetchTicker() { 
             try { 
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
@@ -662,7 +704,7 @@
                 let sym = tickerAssets[assetIdx];
                 let currentSymDisplay = sym.replace("USDT","");
                 
-                // 1. BINANCE (Fastest, Direct)
+                // 1. BINANCE
                 try {
                     const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
                     if (res.ok) {
@@ -676,7 +718,7 @@
                 const proxy = proxies[proxyIdx];
                 const cacheBuster = '&_t=' + new Date().getTime();
 
-                // 2. OKX (Proxy)
+                // 2. OKX
                 try {
                     const okxSym = currentSymDisplay + "-USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://www.okx.com/api/v5/market/ticker?instId=${okxSym}`) + cacheBuster);
@@ -689,7 +731,7 @@
                     }
                 } catch(e) {}
 
-                // 3. BYBIT (Proxy)
+                // 3. BYBIT
                 try {
                     const res = await fetch(proxy + encodeURIComponent(`https://api.bybit.com/v5/market/tickers?category=spot&symbol=${sym}`) + cacheBuster);
                     if(res.ok) {
@@ -701,7 +743,7 @@
                     }
                 } catch(e) {}
 
-                // 4. GATE.IO (Proxy - MEME KING)
+                // 4. GATE.IO
                 try {
                     const gateSym = currentSymDisplay + "_USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`) + cacheBuster);
@@ -714,7 +756,7 @@
                     }
                 } catch(e) {}
 
-                // 5. MEXC (Proxy - GEM KING)
+                // 5. MEXC
                 try {
                     const res = await fetch(proxy + encodeURIComponent(`https://api.mexc.com/api/v3/ticker/price?symbol=${sym}`) + cacheBuster);
                     if(res.ok) {
@@ -724,7 +766,7 @@
                     }
                 } catch(e) {}
 
-                // 6. KUCOIN (Proxy - LEGACY)
+                // 6. KUCOIN
                 try {
                     const kuSym = currentSymDisplay + "-USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${kuSym}`) + cacheBuster);
@@ -737,11 +779,10 @@
                     }
                 } catch(e) {}
 
-                // IF ALL FAIL:
-                proxyIdx = (proxyIdx + 1) % proxies.length; // Rotate proxy for next time
+                proxyIdx = (proxyIdx + 1) % proxies.length; 
                 console.log("All exchanges failed for " + sym);
-                document.getElementById('t-dot').style.background = 'var(--warning)'; // Signal warning
-                nextTick(); // Move on
+                document.getElementById('t-dot').style.background = 'var(--warning)'; 
+                nextTick(); 
 
             } catch(e) {
                 console.log("Critical Ticker Error");
@@ -750,9 +791,7 @@
         }
 
         function updateTickerUI(sym, price, isUp) {
-            // FIX: Update global variable so clicks work
             currentTickerSymbol = sym; 
-            
             document.getElementById('t-sym').textContent = sym;
             let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString();
             document.getElementById('t-price').textContent = displayPrice;
@@ -767,7 +806,6 @@
 
         function viewTickerChart(e) { 
             if(e) e.stopPropagation(); 
-            // FIX: Use the updated global variable
             chartSymbol = currentTickerSymbol.toUpperCase();
             loadChart(chartSymbol); 
             if(currentSection !== 'operate') switchView('operate', false);
