@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.1 Smart ETF Sorter</title>
+    <title>C5X - V27.2 ETF Card UI</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -141,42 +141,37 @@
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES --- */
+        /* --- LISTA DE NIVELES (Estilo Base) --- */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
         .level-card { 
             background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-            padding: 20px 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
+            padding: 16px 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
         }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
+        .level-card:active { transform: scale(0.98); }
         
-        .level-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; }
+        .level-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; flex-shrink: 0; }
         .level-card.active .level-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
 
-        .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .level-price { font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; cursor: copy; transition: 0.2s; }
-        .level-price:active { opacity: 0.7; transform: scale(0.98); }
+        .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .level-price { font-family: 'JetBrains Mono'; font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; white-space: nowrap; text-overflow: ellipsis; }
+        
+        /* Subtítulo dentro de la tarjeta (para precio o detalles) */
+        .card-sub { font-size: 11px; font-weight: 700; color: var(--text-tertiary); font-family: 'Orbitron'; margin-top: 2px; }
 
-        .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+        .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; flex-shrink: 0; }
         .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
         .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
 
         .liquidate-card {
             background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none;
+            box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px;
         }
-        .liquidate-card:active { transform: scale(0.98); }
 
-        /* --- VISTA BITÁCORA --- */
-        #section-log { padding-top: 0px; }
-        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
-        .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
-        .log-actions { display: flex; gap: 8px; }
-        .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
-
-        /* --- VISTA ETF MONITOR --- */
-        #section-etf { padding: 15px; }
-        .etf-search-box { position: relative; margin-bottom: 20px; }
+        /* --- VISTA ETF MONITOR (ESTILO DE LISTA) --- */
+        #section-etf { padding: 0; } /* Padding controlado por contenedor hijo */
+        .etf-search-box { position: relative; margin: 15px 16px 20px 16px; }
         .etf-search-input { 
             width: 100%; background: var(--surface); border: 1px solid var(--border); 
             padding: 16px 16px 16px 45px; border-radius: 16px; color: var(--text-primary); 
@@ -184,21 +179,19 @@
         }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
         
-        .etf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .etf-card { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: 16px; 
-            padding: 15px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
+        /* Reutilizamos .levels-container para la lista de ETFs */
+        .etf-change-badge { 
+            padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono';
         }
-        .etf-card:active { transform: scale(0.98); }
-        
-        .etf-card.long { border-left: 4px solid var(--long); }
-        .etf-card.short { border-left: 4px solid var(--short); }
-        
-        .etf-symbol { font-family: 'Orbitron'; font-weight: 900; font-size: 14px; color: var(--text-primary); margin-bottom: 5px; }
-        .etf-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 16px; color: var(--text-secondary); }
-        .etf-change { font-size: 11px; font-weight: 800; margin-top: 8px; display: inline-block; padding: 4px 8px; border-radius: 6px; }
-        .change-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
-        .change-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
+        .etf-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
+        .etf-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
+
+        /* --- VISTA BITÁCORA --- */
+        #section-log { padding-top: 0px; }
+        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
+        .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
+        .log-actions { display: flex; gap: 8px; }
+        .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
         /* --- VISTA AJUSTES --- */
         #section-settings { padding: 20px; padding-bottom: 80px; }
@@ -383,8 +376,8 @@
                 <span class="etf-search-icon">🔍</span>
                 <input type="text" class="etf-search-input" placeholder="BUSCAR TOKEN (Ej: BTC, SUI)" oninput="filterETFs(this.value)">
             </div>
-            <div id="etfGrid" class="etf-grid">
-                <div style="grid-column: span 2; text-align:center; padding:20px; color:var(--text-tertiary);">
+            <div id="etfGrid" class="levels-container">
+                <div style="text-align:center; padding:20px; color:var(--text-tertiary);">
                     Cargando Radar de ETFs...
                 </div>
             </div>
@@ -500,7 +493,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.1 ETF RADAR SORTED
+                C5X V27.2 ETF CARD UI
             </div>
         </div>
     </div>
@@ -665,7 +658,7 @@
 
                 filterETFs(""); // Render initial list
             } catch(e) {
-                grid.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.</div>';
+                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.</div>';
             }
         }
 
@@ -673,7 +666,7 @@
             const grid = document.getElementById('etfGrid');
             const term = query.toUpperCase().trim();
             
-            // If empty show top 20 by volume or sorted list, else filter
+            // If empty show top 50 biggest losers, else filter
             let filtered = allGateETFs;
             if(term) {
                 filtered = allGateETFs.filter(t => t.currency_pair.includes(term));
@@ -682,11 +675,11 @@
             }
 
             if(filtered.length === 0) {
-                grid.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>';
+                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>';
                 return;
             }
 
-            grid.innerHTML = filtered.map(t => {
+            grid.innerHTML = filtered.map((t, index) => {
                 const isLong = t.currency_pair.includes('L_');
                 const price = parseFloat(t.last);
                 const change = parseFloat(t.change_percentage);
@@ -694,31 +687,43 @@
                 const pairName = t.currency_pair.replace('_', '');
 
                 return `
-                <div class="etf-card ${isLong ? 'long' : 'short'}" onclick="selectETF('${pairName}', ${price})">
-                    <div class="etf-symbol">${pairName}</div>
-                    <div class="etf-price">$${displayPrice}</div>
-                    <div class="etf-change ${change >= 0 ? 'change-up' : 'change-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                <div class="level-card" onclick="smartSelectETF('${pairName}', ${price})">
+                    <div class="level-index">${index+1}</div>
+                    <div class="level-center">
+                        <div class="level-price">${pairName}</div>
+                        <div class="card-sub">$${displayPrice}</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                    </div>
                 </div>`;
             }).join('');
         }
 
-        function selectETF(symbol, price) {
+        function smartSelectETF(symbol, price) {
             triggerHaptic();
-            // Go to operate
-            switchView('operate', false);
-            // Set values
-            const s = slots[activeIdx];
-            s.name = symbol;
-            s.price = price;
+            
+            // FIND EMPTY SLOT
+            const emptySlotIdx = slots.findIndex(s => !s.name || s.name === '');
+            
+            if(emptySlotIdx === -1) {
+                showToast("⚠️ No hay slots disponibles");
+                return;
+            }
+
+            // Fill Slot
+            slots[emptySlotIdx].name = symbol;
+            slots[emptySlotIdx].price = price;
+            // Reset state
+            slots[emptySlotIdx].buys = [];
+            slots[emptySlotIdx].locked = false;
+            
             save();
             
-            // Update UI
-            document.getElementById('coinInput').value = symbol;
-            document.getElementById('baseInput').value = price;
-            
-            loadChart(symbol);
-            calculate();
-            showToast("🎯 " + symbol + " Seleccionado");
+            // Activate & Switch
+            selectSlot(emptySlotIdx);
+            switchView('operate', false);
+            showToast("✅ Agregado al Slot " + (emptySlotIdx + 1));
         }
 
         // --- CHIP SYSTEM FUNCTIONS ---
