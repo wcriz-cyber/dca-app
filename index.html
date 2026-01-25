@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.1 Ticker Fix</title>
+    <title>C5X - V25.2 Smart Ticker</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -174,7 +174,7 @@
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        /* --- VISTA AJUSTES (LIMPIA) --- */
+        /* --- VISTA AJUSTES --- */
         #section-settings { padding: 20px; padding-bottom: 80px; }
         
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -200,6 +200,25 @@
         }
         .input-wrapper input:focus { border-color: var(--brand); outline: none; }
         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
+
+        /* ESTILOS NUEVOS PARA CHIPS DEL TICKER */
+        .chip-container {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
+        }
+        .chip {
+            background: rgba(59, 130, 246, 0.1); border: 1px solid var(--border); 
+            border-radius: 20px; padding: 6px 12px; font-size: 11px; font-weight: 700; 
+            display: flex; align-items: center; gap: 8px; color: var(--text-primary);
+            font-family: 'JetBrains Mono';
+        }
+        .chip-del { 
+            cursor: pointer; width: 16px; height: 16px; border-radius: 50%; 
+            background: rgba(255,255,255,0.1); display: flex; align-items: center; 
+            justify-content: center; font-size: 10px; color: var(--text-secondary);
+        }
+        .chip-del:hover { background: var(--danger); color: #fff; }
+        
+        .add-coin-row { display: flex; gap: 10px; align-items: center; }
 
         .btn-save-config { 
             width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; 
@@ -375,23 +394,27 @@
                 </div>
                 <div class="config-grid">
                     <div class="config-item">
-                        <label>MONEDAS TICKER (Separa con comas)</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">#</span>
-                            <input type="text" id="setTickerCoins" placeholder="BTC,ETH,SOL" oninput="forceCaps(this)">
+                        <label>MONEDAS DEL TICKER</label>
+                        <div id="tickerChipsContainer" class="chip-container"></div>
+                        <div class="add-coin-row">
+                            <div class="input-wrapper" style="flex:1">
+                                <span class="input-icon">+</span>
+                                <input type="text" id="newTickerCoin" placeholder="AÑADIR (ej: PEPE)" oninput="forceCaps(this)" onkeypress="handleEnter(event)">
+                            </div>
+                            <button class="btn-data" style="width:auto; padding:0 15px; margin:0;" onclick="addTickerCoin()">AÑADIR</button>
                         </div>
                     </div>
                     <div class="config-item">
                         <label>INTERVALO (Segundos)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">⏱</span>
-                            <input type="number" id="setTickerInterval" placeholder="8">
+                            <input type="number" id="setTickerInterval" placeholder="8" onchange="updateTickerInterval()">
                         </div>
                     </div>
                 </div>
-                <button class="btn-save-config" style="background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); box-shadow:none; margin-top:15px;" onclick="saveTickerConfig()">
-                    ACTUALIZAR TICKER
-                </button>
+                <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
+                    Los cambios se guardan automáticamente.
+                </div>
             </div>
 
             <div class="settings-card">
@@ -418,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.1 TICKER FIX
+                C5X V25.2 SMART TICKER
             </div>
         </div>
     </div>
@@ -460,7 +483,6 @@
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
-        // FIX: Load saved index to prevent reset on reload
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
@@ -490,6 +512,79 @@
             el.setSelectionRange(start, end);
         }
 
+        function handleEnter(e) {
+            if(e.key === 'Enter') addTickerCoin();
+        }
+
+        // --- CHIP SYSTEM FUNCTIONS ---
+        function renderTickerSettings() {
+            // Render chips
+            const container = document.getElementById('tickerChipsContainer');
+            container.innerHTML = tickerAssets.map((asset, index) => `
+                <div class="chip">
+                    ${asset.replace('USDT','')}
+                    <div class="chip-del" onclick="removeTickerCoin(${index})">✕</div>
+                </div>
+            `).join('');
+
+            // Set Interval Value
+            document.getElementById('setTickerInterval').value = tickerIntervalTime;
+        }
+
+        function addTickerCoin() {
+            const input = document.getElementById('newTickerCoin');
+            let val = input.value.trim().toUpperCase();
+            if(!val) return;
+
+            if(!val.includes('USDT')) val += 'USDT';
+
+            if(tickerAssets.includes(val)) {
+                showToast("⚠️ Moneda ya existe");
+                input.value = '';
+                return;
+            }
+
+            tickerAssets.push(val);
+            saveTickerData();
+            input.value = '';
+            showToast("✅ Añadido: " + val.replace('USDT',''));
+        }
+
+        function removeTickerCoin(index) {
+            if(tickerAssets.length <= 1) return showToast("⚠️ Mínimo 1 moneda");
+            tickerAssets.splice(index, 1);
+            saveTickerData();
+        }
+
+        function updateTickerInterval() {
+            const val = parseInt(document.getElementById('setTickerInterval').value);
+            if(isNaN(val) || val < 2) return showToast("⚠️ Mínimo 2 seg");
+            tickerIntervalTime = val;
+            saveTickerData();
+        }
+
+        function saveTickerData() {
+            localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+            localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
+            
+            // Render UI
+            renderTickerSettings();
+
+            // Restart Ticker
+            if(tickerIntervalId) clearInterval(tickerIntervalId);
+            tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
+            
+            // If user removed current pinned coin, unpin
+            if(assetIdx >= tickerAssets.length) {
+                assetIdx = 0;
+                localStorage.setItem('c5x_ticker_index', 0);
+            }
+
+            // Immediate update
+            fetchTicker(); 
+        }
+
+        // --- Ticker Main Logic ---
         function toggleTickerPin() {
             isTickerPinned = !isTickerPinned;
             localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
@@ -535,7 +630,7 @@
 
             if(viewName === 'settings') {
                 loadSettingsValues();
-                loadTickerSettings(); 
+                renderTickerSettings(); // Load Chips
             }
             if(toggle) toggleMenu(); 
             window.scrollTo(0,0);
@@ -548,48 +643,6 @@
             document.getElementById('setDesc').value = document.getElementById('descInput').value;
         }
         
-        function loadTickerSettings() {
-            const displayCoins = tickerAssets.map(a => a.replace('USDT','')).join(', ');
-            document.getElementById('setTickerCoins').value = displayCoins;
-            document.getElementById('setTickerInterval').value = tickerIntervalTime;
-        }
-
-        function saveTickerConfig() {
-            const rawCoins = document.getElementById('setTickerCoins').value;
-            const secs = parseInt(document.getElementById('setTickerInterval').value);
-
-            if(!rawCoins || isNaN(secs) || secs < 2) return showToast("⚠️ Datos inválidos (min 2s)");
-
-            const newAssets = rawCoins.split(',').map(c => {
-                let clean = c.trim().toUpperCase();
-                if(!clean) return null;
-                return clean.includes('USDT') ? clean : clean + 'USDT';
-            }).filter(c => c !== null);
-
-            if(newAssets.length === 0) return showToast("⚠️ Añade al menos 1 moneda");
-
-            tickerAssets = newAssets;
-            tickerIntervalTime = secs;
-            localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
-            localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
-            
-            // Unpin if config changes
-            isTickerPinned = false; 
-            localStorage.setItem('c5x_ticker_pinned', false);
-            
-            // FIX: Reset index if config changed to avoid out of bounds
-            assetIdx = 0; 
-            localStorage.setItem('c5x_ticker_index', 0);
-
-            updatePinUI();
-
-            if(tickerIntervalId) clearInterval(tickerIntervalId);
-            tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
-            fetchTicker(); 
-
-            showToast("✅ Ticker Actualizado");
-        }
-
         function applySettings() {
             const newCap = parseFloat(document.getElementById('setCapital').value);
             const newInc = document.getElementById('setInc').value;
@@ -608,11 +661,8 @@
 
         async function fetchTicker() { 
             try { 
-                // Safety check for index
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
-                
-                // FIX: Save current index constantly
-                localStorage.setItem('c5x_ticker_index', assetIdx);
+                localStorage.setItem('c5x_ticker_index', assetIdx); // Save Index
 
                 const sym = tickerAssets[assetIdx];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`); 
