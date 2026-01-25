@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V30.0 OPPORTUNITY HUNTER</title>
+    <title>C5X - V30.1 STABLE HUNTER</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -128,14 +128,16 @@
             font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative;
         }
-        .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
+        .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); }
+        /* Heatmap Styles */
         .slot-card.has-profit { border-bottom: 3px solid var(--long); }
         .slot-card.has-loss { border-bottom: 3px solid var(--short); }
         .slot-card.is-occupied { border-bottom: 3px solid var(--text-tertiary); }
 
         .chart-wrapper { 
-            height: 280px; background: var(--chart-bg); margin: 0 10px; border-radius: var(--radius-m); 
-            border: 1px solid var(--border); overflow: hidden; position: relative; transition: all 0.3s ease; 
+            height: 280px; 
+            background: var(--chart-bg); 
+            margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; position: relative; transition: all 0.3s ease; 
         }
         .chart-wrapper.fullscreen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 5000; 
@@ -148,10 +150,10 @@
             color: var(--text-primary); cursor: pointer; backdrop-filter: blur(4px);
         }
 
-        /* --- MINI TICKER (REEMPLAZA NOTAS) --- */
+        /* --- MINI TICKER / OPPORTUNITY HUNTER --- */
         .mini-ticker-container {
             margin: 8px 10px 10px;
-            background: rgba(246, 70, 93, 0.1); /* Tinte rojizo suave */
+            background: rgba(246, 70, 93, 0.1);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 10px 15px;
@@ -536,7 +538,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V30.0 OPPORTUNITY HUNTER
+                C5X V30.1 STABLE HUNTER
             </div>
         </div>
     </div>
@@ -594,12 +596,13 @@
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         
-        // Removed 'note', added 'alerted'
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, alerted: false }));
-        // Compat
+        // Compat: Ensure properties exist
         slots.forEach(s => { 
             if(typeof s.roi === 'undefined') s.roi = 100; 
             if(typeof s.alerted === 'undefined') s.alerted = false;
+            // Clean up old 'note' field if present to avoid confusion
+            if(typeof s.note !== 'undefined') delete s.note;
         });
 
         let currentSection = 'operate';
@@ -944,13 +947,12 @@
             } catch(e) { if(!silent) grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>'; } 
         }
         function processTopLosers() {
-            // Sort by biggest drop (ascending percentage)
             topLosers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, 6);
             updateMiniTickerUI();
         }
         function toggleEtfFavorite(symbol, e) { e.stopPropagation(); if(etfFavorites.includes(symbol)) { etfFavorites = etfFavorites.filter(s => s !== symbol); } else { etfFavorites.push(symbol); } localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); filterETFs(document.querySelector('.etf-search-input').value); }
         function filterETFs(query) { const grid = document.getElementById('etfGrid'); const term = query.toUpperCase().trim(); let sorted = [...allGateETFs].sort((a, b) => { const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); }); let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 50); if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } const fragment = document.createDocumentFragment(); filtered.forEach((t, index) => { const price = parseFloat(t.last); const change = parseFloat(t.change_percentage); const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); const pairName = t.currency_pair.replace('_', ''); const isFav = etfFavorites.includes(pairName); const div = document.createElement('div'); div.className = 'level-card'; div.onclick = () => smartSelectETF(pairName, price); div.innerHTML = ` <div class="level-index">${index+1}</div> <div class="level-center"> <div class="level-price">${pairName}</div> <div class="card-sub">$${displayPrice}</div> </div> <div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)">★</div> <div class="level-right"> <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div> </div> `; fragment.appendChild(div); }); grid.innerHTML = ''; grid.appendChild(fragment); }
-        function smartSelectETF(symbol, price) { triggerHaptic(); const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = symbol; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; slots[emptySlotIdx].alerted = false; save(); updateBodyMode(symbol); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
+        function smartSelectETF(symbol, price) { triggerHaptic(); const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = symbol; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].alerted = false; save(); updateBodyMode(symbol); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
 
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
