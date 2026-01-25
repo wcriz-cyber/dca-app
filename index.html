@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.3 ETF Card UI</title>
+    <title>C5X - V27.4 ETF ENGINE</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -493,7 +493,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.3 ETF CARD UI
+                C5X V27.4 ETF ENGINE
             </div>
         </div>
     </div>
@@ -545,11 +545,14 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
         let isLight = localStorage.getItem('theme') === 'light';
-        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')) || 0; 
+        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
+        // FIX: Ensure activeIdx is a number
+        if(isNaN(activeIdx)) activeIdx = 0;
+
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        // Se añade propiedad ROI a los slots si no existe
+        
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 }));
         
         // Backward compatibility fix for ROI
@@ -568,7 +571,8 @@
         let currentTickerSymbol = "BTC";
         
         let proxyIdx = 0;
-        const proxies = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
+        // OPTIMIZED: Faster proxy first
+        const proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
 
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
@@ -637,11 +641,20 @@
             document.getElementById('portfolioModal').style.display = 'flex';
         }
 
-        // --- ETF RADAR LOGIC ---
+        // --- ETF RADAR LOGIC (CACHED & OPTIMIZED) ---
         async function loadGateETFs() {
             const grid = document.getElementById('etfGrid');
+            
+            // 1. CHECK CACHE FIRST
+            const cachedData = sessionStorage.getItem('c5x_etf_cache');
+            if(cachedData) {
+                allGateETFs = JSON.parse(cachedData);
+                filterETFs("");
+                return;
+            }
+
             try {
-                // Fetch Gate.io Tickers via Proxy
+                // Fetch Gate.io Tickers via Faster Proxy
                 const proxy = proxies[0];
                 const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
                 if(!res.ok) throw new Error("Network");
@@ -653,12 +666,16 @@
                     return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
                 });
 
-                // SORTING LOGIC: Biggest Drop First (Ascending Change Percentage)
+                // SORTING LOGIC: Biggest Drop First
                 allGateETFs.sort((a, b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage));
+
+                // 2. SAVE TO CACHE
+                sessionStorage.setItem('c5x_etf_cache', JSON.stringify(allGateETFs));
 
                 filterETFs(""); // Render initial list
             } catch(e) {
-                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.</div>';
+                console.error(e);
+                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>';
             }
         }
 
@@ -666,12 +683,11 @@
             const grid = document.getElementById('etfGrid');
             const term = query.toUpperCase().trim();
             
-            // If empty show top 50 biggest losers, else filter
             let filtered = allGateETFs;
             if(term) {
                 filtered = allGateETFs.filter(t => t.currency_pair.includes(term));
             } else {
-                filtered = allGateETFs.slice(0, 50); // Show first 50 biggest losers if empty
+                filtered = allGateETFs.slice(0, 50); // Show top 50
             }
 
             if(filtered.length === 0) {
@@ -679,31 +695,43 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map((t, index) => {
+            // Use DocumentFragment for faster rendering
+            const fragment = document.createDocumentFragment();
+            
+            filtered.forEach((t, index) => {
                 const isLong = t.currency_pair.includes('L_');
                 const price = parseFloat(t.last);
                 const change = parseFloat(t.change_percentage);
                 const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4);
                 const pairName = t.currency_pair.replace('_', '');
+                
+                // Determine badge class
+                const badgeClass = change >= 0 ? 'etf-up' : 'etf-down';
+                const sign = change >= 0 ? '+' : '';
 
-                return `
-                <div class="level-card" onclick="smartSelectETF('${pairName}', ${price})">
+                const div = document.createElement('div');
+                div.className = 'level-card';
+                div.onclick = () => smartSelectETF(pairName, price);
+                div.innerHTML = `
                     <div class="level-index">${index+1}</div>
                     <div class="level-center">
                         <div class="level-price">${pairName}</div>
                         <div class="card-sub">$${displayPrice}</div>
                     </div>
                     <div class="level-right">
-                        <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                        <div class="etf-change-badge ${badgeClass}">${sign}${change.toFixed(2)}%</div>
                     </div>
-                </div>`;
-            }).join('');
+                `;
+                fragment.appendChild(div);
+            });
+            
+            grid.innerHTML = '';
+            grid.appendChild(fragment);
         }
 
         function smartSelectETF(symbol, price) {
             triggerHaptic();
             
-            // FIND EMPTY SLOT
             const emptySlotIdx = slots.findIndex(s => !s.name || s.name === '');
             
             if(emptySlotIdx === -1) {
@@ -711,19 +739,14 @@
                 return;
             }
 
-            // Fill Slot
             slots[emptySlotIdx].name = symbol;
             slots[emptySlotIdx].price = price;
-            // Reset state
             slots[emptySlotIdx].buys = [];
             slots[emptySlotIdx].locked = false;
             
             save();
-
-            // FORCE COLOR UPDATE BEFORE SWITCH
             updateBodyMode(symbol);
             
-            // Activate & Switch
             selectSlot(emptySlotIdx);
             switchView('operate', false);
             showToast("✅ Agregado al Slot " + (emptySlotIdx + 1));
@@ -875,8 +898,8 @@
             }
 
             if(viewName === 'etf') {
-                // Load ETF data if not loaded
-                if(allGateETFs.length === 0) loadGateETFs();
+                // Load ETF data if not loaded or use cache logic inside loadGateETFs
+                loadGateETFs();
             }
 
             if(viewName === 'settings') {
@@ -1158,52 +1181,69 @@
         function openLiquidateConfirm() {
             triggerHaptic();
             const s = slots[activeIdx];
-            if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
+            // FIX: Allow liquidation even if buys is empty, as long as there is a price (manual close)
+            if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío");
             document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function executeRelease() {
             triggerHaptic();
-            closeModals();
-            const s = slots[activeIdx];
+            closeModals(); // Close first to prevent UI lock
             
-            const totalInvStr = document.getElementById('resInv').textContent.replace('$','');
-            const totalInv = parseFloat(totalInvStr) || 0;
-            const avgPriceStr = document.getElementById('resAvg').textContent;
-            const avgPrice = parseFloat(avgPriceStr) || 0;
-            
-            // Exit price logic based on ROI setting
-            const targetROI = s.roi || 100;
-            const exitPrice = avgPrice * (1 + (targetROI / 100));
+            try {
+                const s = slots[activeIdx];
+                
+                const totalInvStr = document.getElementById('resInv').textContent.replace('$','');
+                const totalInv = parseFloat(totalInvStr) || 0;
+                const avgPriceStr = document.getElementById('resAvg').textContent;
+                const avgPrice = parseFloat(avgPriceStr) || 0;
+                
+                const targetROI = s.roi || 100;
+                const exitPrice = avgPrice > 0 ? avgPrice * (1 + (targetROI / 100)) : 0;
 
-            const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0;
-            const estimatedProfit = (totalInv * (targetROI / 100));
+                const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0;
+                const estimatedProfit = (totalInv * (targetROI / 100));
 
-            const logEntry = { 
-                date: new Date().toLocaleDateString(), 
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                coin: s.name || 'S/N', 
-                strategy: s.strat.toUpperCase(),
-                basePrice: fmtPrice(s.price),
-                avgPrice: fmtPrice(avgPrice),
-                exitPrice: fmtPrice(exitPrice),
-                qty: qty.toFixed(8),
-                totalInv: totalInv.toFixed(2),
-                profit: estimatedProfit.toFixed(2),
-                roi: targetROI + '%',
-                levelsUsed: s.buys.length
-            };
+                const logEntry = { 
+                    date: new Date().toLocaleDateString(), 
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    coin: s.name || 'S/N', 
+                    strategy: s.strat.toUpperCase(),
+                    basePrice: fmtPrice(s.price),
+                    avgPrice: fmtPrice(avgPrice),
+                    exitPrice: fmtPrice(exitPrice),
+                    qty: qty.toFixed(8),
+                    totalInv: totalInv.toFixed(2),
+                    profit: estimatedProfit.toFixed(2),
+                    roi: targetROI + '%',
+                    levelsUsed: s.buys ? s.buys.length : 0
+                };
 
-            history.push(logEntry);
-            localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
-            
-            slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 };
-            const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-            slots = [...filled, ...empty]; 
-            save(); 
-            selectSlot(0); 
-            showToast("✅ Operación Cerrada"); 
-            switchView('log', false); 
+                // FIX: Safe history push
+                if(!history) history = [];
+                history.push(logEntry);
+                localStorage.setItem('c5x_history', JSON.stringify(history)); 
+                renderHistory();
+                
+                // FIX: Reset current slot securely
+                slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 };
+                
+                // Reorder logic
+                const filled = slots.filter(sl => sl.name !== '');
+                const empty = slots.filter(sl => sl.name === '');
+                slots = [...filled, ...empty]; 
+                
+                save(); 
+                // Always return to first slot after reorder to avoid index confusion
+                selectSlot(0); 
+                
+                showToast("✅ Operación Cerrada"); 
+                switchView('log', false); 
+
+            } catch(e) {
+                console.error(e);
+                showToast("❌ Error al liquidar");
+            }
         }
 
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
@@ -1226,8 +1266,6 @@
         function updateBodyMode(n) { 
             const r = document.querySelector(':root'); 
             if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
-            
-            // Lógica robusta para detectar ETFs Short/Long incluso con 'USDT' al final
             if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) {
                 r.style.setProperty('--brand', 'var(--short)'); 
             } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { 
