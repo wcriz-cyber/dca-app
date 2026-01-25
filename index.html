@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.0 Ultra Ticker</title>
+    <title>C5X - V25.1 Ticker Fix</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -80,7 +80,6 @@
         .ticker-sym { font-family: 'Orbitron'; font-weight: 800; font-size: 14px; color: var(--text-secondary); }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 20px; color: var(--text-primary); }
 
-        /* Estilo Botón Pin */
         .pin-btn {
             pointer-events: auto; width: 28px; height: 28px; border-radius: 50%; 
             background: transparent; border: 1px solid transparent; 
@@ -128,7 +127,7 @@
         .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
         .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
         .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
-        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn.active { transform: scale(0.9); }
         .icon-btn.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
         .icon-btn.locked { color: var(--danger); border-color: var(--danger); }
 
@@ -419,7 +418,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.0 ULTRA TICKER
+                C5X V25.1 TICKER FIX
             </div>
         </div>
     </div>
@@ -459,9 +458,11 @@
         // --- TICKER & PIN LOGIC ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
-        let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; // New State
+        let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
-        let assetIdx = 0, currentTickerSymbol = "BTC";
+        // FIX: Load saved index to prevent reset on reload
+        let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
+        let currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
@@ -482,7 +483,6 @@
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
         }
 
-        // --- NEW: Helper for Uppercase Input without losing cursor ---
         function forceCaps(el) {
             const start = el.selectionStart;
             const end = el.selectionEnd;
@@ -490,13 +490,11 @@
             el.setSelectionRange(start, end);
         }
 
-        // --- NEW: Ticker Pin Logic ---
         function toggleTickerPin() {
             isTickerPinned = !isTickerPinned;
             localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
             updatePinUI();
             if(!isTickerPinned) {
-                // If unpinned, resume rotation immediately
                 assetIdx = (assetIdx + 1) % tickerAssets.length;
                 fetchTicker();
                 showToast("▶️ Rotación Reanudada");
@@ -575,14 +573,18 @@
             localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
             localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
             
-            // Unpin if config changes to avoid stuck on deleted coin
+            // Unpin if config changes
             isTickerPinned = false; 
             localStorage.setItem('c5x_ticker_pinned', false);
+            
+            // FIX: Reset index if config changed to avoid out of bounds
+            assetIdx = 0; 
+            localStorage.setItem('c5x_ticker_index', 0);
+
             updatePinUI();
 
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
-            assetIdx = 0;
             fetchTicker(); 
 
             showToast("✅ Ticker Actualizado");
@@ -606,10 +608,13 @@
 
         async function fetchTicker() { 
             try { 
-                // Uses dynamic tickerAssets array
+                // Safety check for index
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
-                const sym = tickerAssets[assetIdx];
+                
+                // FIX: Save current index constantly
+                localStorage.setItem('c5x_ticker_index', assetIdx);
 
+                const sym = tickerAssets[assetIdx];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`); 
                 if(!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json(); 
@@ -619,7 +624,6 @@
                 const isUp = parseFloat(data.priceChangePercent) >= 0;
                 document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
                 
-                // ONLY rotate if NOT pinned
                 if(!isTickerPinned) {
                     assetIdx = (assetIdx + 1) % tickerAssets.length; 
                 }
