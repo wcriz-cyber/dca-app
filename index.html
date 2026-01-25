@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V26.0 Titanium</title>
+    <title>C5X - V26.1 Manual Base</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -120,16 +120,6 @@
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* MAGIC BUTTON STYLE */
-        .magic-wrapper { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; }
-        .magic-btn {
-            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-            width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.15);
-            border: none; color: var(--brand); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 12px; transition: 0.2s;
-        }
-        .magic-btn:active { transform: translateY(-50%) scale(0.9); background: var(--brand); color: #fff; }
-
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
@@ -338,10 +328,7 @@
                 <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div>
                 <div class="input-group">
                     <label class="input-label">Base</label>
-                    <div class="magic-wrapper">
-                        <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00">
-                        <button class="magic-btn" onclick="capturePrice()">📍</button>
-                    </div>
+                    <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00">
                 </div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
@@ -471,7 +458,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V26.0 TITANIUM
+                C5X V26.1 MANUAL BASE
             </div>
         </div>
     </div>
@@ -581,21 +568,6 @@
 
         function handleEnter(e) {
             if(e.key === 'Enter') verifyAndAddCoin();
-        }
-
-        // --- MAGIC BUTTON ---
-        function capturePrice() {
-            triggerHaptic();
-            const priceText = document.getElementById('t-price').textContent;
-            if(priceText && priceText !== "--.--" && priceText !== "ERR") {
-                // Remove commas for calculation
-                const cleanPrice = parseFloat(priceText.replace(/,/g, ''));
-                if(!isNaN(cleanPrice)) {
-                    document.getElementById('baseInput').value = cleanPrice;
-                    calculate();
-                    showToast("📍 Precio Capturado");
-                }
-            }
         }
 
         // --- GLOBAL PORTFOLIO ---
@@ -1070,12 +1042,6 @@
             const exitPrice = avgPrice * (1 + (targetROI / 100));
 
             const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0;
-            // Profit displayed is simplistic in UI, normally calculate (exit - avg) * qty
-            // Keeping consistent with existing logic which showed invested as profit placeholder?
-            // Actually, "Profit" label in dashboard currently shows Total Spent?
-            // Let's assume standard log logic: Profit is realized amount - invested amount.
-            // But since this is a simulation tool, usually user inputs the real exit price.
-            // For auto-log, we assume target hit:
             const estimatedProfit = (totalInv * (targetROI / 100));
 
             const logEntry = { 
