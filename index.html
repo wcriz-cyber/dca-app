@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V28.1 STABLE</title>
+    <title>C5X - V28.2 FIXED UI</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -15,8 +15,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
+        /* --- VARIABLES BASE (MODO OSCURO POR DEFECTO) --- */
         :root {
             --bg: #0b0e11; 
             --surface: #151a21;
@@ -31,21 +33,29 @@
             --danger: #cf304a;     
             --border: #2b3139;
             --radius-m: 16px;
+            --chart-bg: #000000;
         }
 
+        /* --- MODO CLARO (FORZADO) --- */
         body.light-mode {
-            --bg: #f5f7fa; 
-            --surface: #ffffff;
-            --surface-glass: rgba(255, 255, 255, 0.95);
-            --text-primary: #1e2329;
-            --text-secondary: #707a8a;
-            --border: #e6e8ea;
+            --bg: #f5f7fa !important; 
+            --surface: #ffffff !important;
+            --surface-glass: rgba(255, 255, 255, 0.95) !important;
+            --text-primary: #1e2329 !important;
+            --text-secondary: #707a8a !important;
+            --border: #e6e8ea !important;
+            --chart-bg: #ffffff !important;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
         body { 
-            font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); 
-            padding-bottom: 20px; overflow-x: hidden; transition: background 0.3s, color 0.3s;
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--text-primary); 
+            padding-bottom: 20px; 
+            overflow-x: hidden; 
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         /* --- HEADER --- */
@@ -115,16 +125,20 @@
         .slot-card { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
 
-        .chart-wrapper { height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; position: relative; transition: all 0.3s ease; }
+        .chart-wrapper { 
+            height: 280px; 
+            background: var(--chart-bg); 
+            margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; position: relative; transition: all 0.3s ease; 
+        }
         .chart-wrapper.fullscreen { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 5000; 
             margin: 0; border-radius: 0; border: none; 
         }
         .chart-fs-btn {
             position: absolute; bottom: 10px; right: 10px; z-index: 20;
-            width: 30px; height: 30px; background: rgba(255,255,255,0.1); 
+            width: 30px; height: 30px; background: rgba(128,128,128,0.2); 
             border-radius: 6px; display: flex; align-items: center; justify-content: center;
-            color: #fff; cursor: pointer; backdrop-filter: blur(4px);
+            color: var(--text-primary); cursor: pointer; backdrop-filter: blur(4px);
         }
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 10px; }
@@ -196,7 +210,6 @@
         }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
         
-        /* Reutilizamos .levels-container para la lista de ETFs */
         .etf-change-badge { 
             padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono';
         }
@@ -534,7 +547,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V28.1 STABLE
+                C5X V28.2 FIXED UI
             </div>
         </div>
     </div>
@@ -583,8 +596,8 @@
     <input type="hidden" id="incInput" value="7">
     <input type="hidden" id="descInput" value="66">
 
-    <script src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // --- JS ENGINE OPTIMIZED ---
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
         if(isNaN(activeIdx)) activeIdx = 0;
@@ -593,7 +606,6 @@
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         
-        // Slot structure updated with 'note'
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '' }));
         // Backward compatibility
         slots.forEach(s => { 
@@ -614,27 +626,24 @@
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
-        let currentWs = null; // WebSocket connection
-        let wsReconnectInterval = null;
-
+        let currentWs = null; 
         let allGateETFs = [];
 
-        // Proxies (Optimized order + Custom)
         let proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
         if(customProxy) proxies.unshift(customProxy);
 
         function init() { 
             try {
+                // APPLY THEME FIRST
                 if(isLight) { 
                     document.body.classList.add('light-mode'); 
                     updateThemeIcon(); 
                 }
-                // SAFETY: Ensure slots valid
+
                 if(!Array.isArray(slots) || slots.length < 6) {
                    slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '' }));
                 }
                 
-                // Init Multipliers Input
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 
                 const multInput = document.getElementById('setMultipliers');
@@ -651,11 +660,26 @@
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             } catch(e) {
                 console.error("Init Error", e);
-                // Fail safe
-                alert("Error de inicialización. Se restablecerán ajustes visuales.");
-                localStorage.removeItem('theme');
+                localStorage.removeItem('theme'); // Reset theme if stuck
             }
         }
+
+        // --- THEME LOGIC FIX ---
+        function toggleTheme() { 
+            isLight = !isLight; 
+            if(isLight) {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+            updateThemeIcon(); 
+            localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
+            
+            // RELOAD CHART WITH NEW THEME
+            if(chartSymbol) loadChart(chartSymbol);
+        }
+
+        function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
 
         // --- UTILS ---
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(10); }
@@ -671,10 +695,8 @@
                 customMultipliers = arr;
                 localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers));
                 showToast("✅ Multiplicadores Guardados");
-                calculate(); // Recalculate current slot
-            } catch(e) {
-                showToast("❌ Error de formato");
-            }
+                calculate(); 
+            } catch(e) { showToast("❌ Error de formato"); }
         }
 
         function saveProxy() {
@@ -686,16 +708,16 @@
             showToast("✅ Proxy Actualizado");
         }
 
-        // --- TICKER SYSTEM (WEBSOCKETS + POLLING FALLBACK) ---
+        // --- TICKER SYSTEM ---
         function startTickerSystem() {
-            updateTicker(); // Initial fetch
+            updateTicker(); 
             setInterval(() => {
                 if(!isTickerPinned) {
                     assetIdx = (assetIdx + 1) % tickerAssets.length;
                     localStorage.setItem('c5x_ticker_index', assetIdx);
                     updateTicker();
                 }
-            }, 7000); // Rotates every 7s
+            }, 7000); 
         }
 
         async function updateTicker() {
@@ -703,49 +725,34 @@
             let displaySym = sym.replace("USDT","");
             document.getElementById('t-sym').textContent = displaySym;
             
-            // Close existing WS if symbol changes
             if(currentWs) {
-                // If it's the same symbol, do nothing
                 if(currentWs.url && currentWs.url.includes(sym.toLowerCase())) return;
                 currentWs.close();
                 currentWs = null;
             }
 
-            // Try Binance WS
             try {
-                // If it's a standard pair, use Binance WS
                 const wsUrl = `wss://stream.binance.com:9443/ws/${sym.toLowerCase()}@trade`;
                 currentWs = new WebSocket(wsUrl);
-                
                 currentWs.onmessage = (event) => {
                     const data = JSON.parse(event.data);
                     const price = parseFloat(data.p);
-                    updateTickerUI(displaySym, price, true); // Realtime update
+                    updateTickerUI(displaySym, price, true); 
                     document.getElementById('t-dot').classList.add('pulse');
                 };
-                
-                currentWs.onerror = () => {
-                    // Fallback to REST API if WS fails (e.g. non-binance coin)
-                    fetchTickerRest(sym, displaySym);
-                    document.getElementById('t-dot').classList.remove('pulse');
-                };
-
-            } catch(e) {
-                fetchTickerRest(sym, displaySym);
-            }
+                currentWs.onerror = () => { fetchTickerRest(sym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); };
+            } catch(e) { fetchTickerRest(sym, displaySym); }
         }
 
         async function fetchTickerRest(sym, displaySym) {
             try {
                 let price = 0;
-                // REST FALLBACK COMPLETO
                 try {
                      const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
                      if(res.ok) { const d = await res.json(); price = parseFloat(d.price); }
                 } catch(e){}
 
                 if(price === 0) {
-                     // Try Gate (via proxy)
                      const gateSym = displaySym + "_USDT";
                      const proxy = proxies[0];
                      const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`));
@@ -754,7 +761,6 @@
                          if(data && data.length > 0) price = parseFloat(data[0].last);
                      }
                 }
-                
                 if(price > 0) updateTickerUI(displaySym, price, true);
             } catch(e) {}
         }
@@ -767,10 +773,8 @@
         }
 
         function toggleTickerPin() {
-            triggerHaptic();
-            isTickerPinned = !isTickerPinned;
-            localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
-            updatePinUI();
+            triggerHaptic(); isTickerPinned = !isTickerPinned;
+            localStorage.setItem('c5x_ticker_pinned', isTickerPinned); updatePinUI();
             if(isTickerPinned) showToast("⚓ Fijado: " + currentTickerSymbol);
             else { showToast("▶️ Rotando"); updateTicker(); }
         }
@@ -785,19 +789,15 @@
             e.stopPropagation();
             const wrapper = document.getElementById('tv_chart');
             wrapper.classList.toggle('fullscreen');
-            // Trigger resize for TradingView
             if(wrapper.classList.contains('fullscreen')) {
                  if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
-            } else {
-                loadChart(chartSymbol); // Reload normal size
-            }
+            } else { loadChart(chartSymbol); }
         }
 
         // --- GLOBAL PORTFOLIO ---
         function showPortfolio() {
             triggerHaptic();
-            let totalCap = 0;
-            let totalInvested = 0;
+            let totalCap = 0; let totalInvested = 0;
             slots.forEach(s => {
                 totalCap += s.capital;
                 if(s.buys && s.buys.length > 0) {
@@ -817,7 +817,7 @@
             document.getElementById('portfolioModal').style.display = 'flex';
         }
 
-        // --- ETF RADAR LOGIC (With Favorites) ---
+        // --- ETF RADAR LOGIC ---
         async function loadGateETFs() {
             const grid = document.getElementById('etfGrid');
             const cachedData = sessionStorage.getItem('c5x_etf_cache');
@@ -854,7 +854,6 @@
             const grid = document.getElementById('etfGrid');
             const term = query.toUpperCase().trim();
             
-            // Sort: Favorites first, then by change percentage (losers first)
             let sorted = [...allGateETFs].sort((a, b) => {
                 const aFav = etfFavorites.includes(a.currency_pair.replace('_', ''));
                 const bFav = etfFavorites.includes(b.currency_pair.replace('_', ''));
@@ -908,7 +907,21 @@
         // --- CORE FUNCTIONS ---
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" }); }
+        
+        function loadChart(coin) { 
+            chartSymbol = (coin || 'BTC3L').toUpperCase(); 
+            // Ensures widget theme matches isLight variable
+            new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": isLight ? "light" : "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": isLight ? "#ffffff" : "#0b0e11", 
+                "locale": "es" 
+            }); 
+        }
         
         function selectSlot(i) { 
             triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; 
@@ -949,7 +962,6 @@
             if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
             
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
-            // Use custom multipliers length safely
             const maxLevels = customMultipliers ? customMultipliers.length : 12;
 
             for(let i=0; i < maxLevels; i++){
@@ -999,7 +1011,6 @@
             } catch(e) { showToast("❌ Error al liquidar"); }
         }
 
-        // --- VISUAL EXTRAS ---
         function updateBodyMode(n) { 
             const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
             if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } 
@@ -1007,19 +1018,15 @@
             else { r.style.setProperty('--brand', '#3b82f6'); } 
         }
 
-        // --- HISTORY & CHART ---
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
             const chart = document.getElementById('perfChart');
             
-            // Render Chart Safe
             if(history && history.length > 0) {
                 const profits = history.map(h => parseFloat(h.profit) || 0);
                 const maxProfit = Math.max(...profits);
-                
                 chart.innerHTML = history.slice(-15).map(h => {
                     const p = parseFloat(h.profit) || 0;
-                    // Protect against division by zero
                     const hPct = (maxProfit > 0) ? (p / maxProfit) * 100 : 10;
                     return `<div class="perf-bar" style="height:${Math.max(hPct, 10)}%" title="$${p}"></div>`;
                 }).join('');
@@ -1040,7 +1047,7 @@
                 </div>`).reverse().join(''); 
         }
 
-        // --- MENU & MODALS & EXPORT ---
+        // --- EXPORT/IMPORT ---
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         function switchView(viewName, toggle = true) {
             triggerHaptic(); currentSection = viewName;
