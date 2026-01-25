@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.6 Hybrid Engine</title>
+    <title>C5X - V25.7 Ultimate Market</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -408,12 +408,12 @@
                         <label>INTERVALO (Segundos)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">⏱</span>
-                            <input type="number" id="setTickerInterval" placeholder="8" onchange="updateTickerInterval()">
+                            <input type="number" id="setTickerInterval" placeholder="7" onchange="updateTickerInterval()">
                         </div>
                     </div>
                 </div>
                 <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
-                    Hybrid Engine: Binance (Rápido) + Gate.io Backup
+                    Multi-Exchange Engine: Binance > OKX > Bybit > Gate > MEXC > KuCoin
                 </div>
             </div>
 
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.6 HYBRID ENGINE
+                C5X V25.7 ULTIMATE ENGINE
             </div>
         </div>
     </div>
@@ -478,9 +478,9 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- TICKER & PIN LOGIC (Hybrid Engine) ---
+        // --- ULTIMATE TICKER & PIN LOGIC ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
-        let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
+        let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 7;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -570,12 +570,22 @@
             isTickerPinned = !isTickerPinned;
             localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
             updatePinUI();
-            if(!isTickerPinned) {
+            
+            if(isTickerPinned) {
+                // LOCK CURRENT SYMBOL
+                // Find current symbol index in array to prevent jump
+                const currentSymFull = currentTickerSymbol + "USDT";
+                const foundIdx = tickerAssets.indexOf(currentSymFull);
+                if(foundIdx !== -1) {
+                    assetIdx = foundIdx;
+                    localStorage.setItem('c5x_ticker_index', assetIdx);
+                }
+                showToast("⚓ Moneda Fijada");
+            } else {
+                showToast("▶️ Rotación Reanudada");
+                // Immediately move to next to confirm action
                 assetIdx = (assetIdx + 1) % tickerAssets.length;
                 fetchTicker();
-                showToast("▶️ Rotación Reanudada");
-            } else {
-                showToast("⚓ Moneda Fijada");
             }
         }
 
@@ -640,7 +650,7 @@
             });
         }
 
-        // --- HYBRID ENGINE: BINANCE FIRST, GATE.IO FALLBACK ---
+        // --- MULTI-SOURCE PRICE FINDER (WATERFALL) ---
         async function fetchTicker() { 
             try { 
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
@@ -649,44 +659,90 @@
                 let sym = tickerAssets[assetIdx];
                 let currentSymDisplay = sym.replace("USDT","");
                 
-                // 1. Try Binance (Fastest, No Proxy Needed)
+                // 1. BINANCE (Fastest, Direct)
                 try {
-                    const resBinance = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
-                    if (resBinance.ok) {
-                        const dataB = await resBinance.json();
-                        updateTickerUI(currentSymDisplay, parseFloat(dataB.price), true); // Success
-                        nextTick();
-                        return;
+                    const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        updateTickerUI(currentSymDisplay, parseFloat(data.price), true);
+                        nextTick(); return;
                     }
-                } catch(errBinance) {
-                    // Ignore, try fallback
-                }
+                } catch(e) {}
 
-                // 2. Fallback to Gate.io via Proxy
-                let gateSym = sym.replace('USDT', '_USDT');
+                // PROXY URL BUILDER
                 const proxy = proxies[proxyIdx];
-                const target = `https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`;
                 const cacheBuster = '&_t=' + new Date().getTime();
 
-                const resGate = await fetch(proxy + encodeURIComponent(target) + cacheBuster);
-                
-                if (!resGate.ok) {
-                    proxyIdx = (proxyIdx + 1) % proxies.length; // Rotate Proxy
-                    throw new Error("Proxy Error");
-                }
+                // 2. OKX (Proxy)
+                try {
+                    // OKX format: BTC-USDT
+                    const okxSym = currentSymDisplay + "-USDT";
+                    const res = await fetch(proxy + encodeURIComponent(`https://www.okx.com/api/v5/market/ticker?instId=${okxSym}`) + cacheBuster);
+                    if(res.ok) {
+                        const data = await res.json();
+                        if(data.data && data.data.length > 0) {
+                            updateTickerUI(currentSymDisplay, parseFloat(data.data[0].last), true);
+                            nextTick(); return;
+                        }
+                    }
+                } catch(e) {}
 
-                const dataG = await resGate.json();
-                if (dataG && dataG.length > 0) {
-                    updateTickerUI(currentSymDisplay, parseFloat(dataG[0].last), parseFloat(dataG[0].change_percentage) >= 0);
-                    nextTick();
-                } else {
-                    throw new Error("No Data");
-                }
+                // 3. BYBIT (Proxy)
+                try {
+                    const res = await fetch(proxy + encodeURIComponent(`https://api.bybit.com/v5/market/tickers?category=spot&symbol=${sym}`) + cacheBuster);
+                    if(res.ok) {
+                        const data = await res.json();
+                        if(data.result && data.result.list && data.result.list.length > 0) {
+                            updateTickerUI(currentSymDisplay, parseFloat(data.result.list[0].lastPrice), true);
+                            nextTick(); return;
+                        }
+                    }
+                } catch(e) {}
+
+                // 4. GATE.IO (Proxy - MEME KING)
+                try {
+                    const gateSym = currentSymDisplay + "_USDT";
+                    const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`) + cacheBuster);
+                    if(res.ok) {
+                        const data = await res.json();
+                        if(data && data.length > 0) {
+                            updateTickerUI(currentSymDisplay, parseFloat(data[0].last), parseFloat(data[0].change_percentage) >= 0);
+                            nextTick(); return;
+                        }
+                    }
+                } catch(e) {}
+
+                // 5. MEXC (Proxy - GEM KING)
+                try {
+                    const res = await fetch(proxy + encodeURIComponent(`https://api.mexc.com/api/v3/ticker/price?symbol=${sym}`) + cacheBuster);
+                    if(res.ok) {
+                        const data = await res.json();
+                        updateTickerUI(currentSymDisplay, parseFloat(data.price), true);
+                        nextTick(); return;
+                    }
+                } catch(e) {}
+
+                // 6. KUCOIN (Proxy - LEGACY)
+                try {
+                    const kuSym = currentSymDisplay + "-USDT";
+                    const res = await fetch(proxy + encodeURIComponent(`https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${kuSym}`) + cacheBuster);
+                    if(res.ok) {
+                        const data = await res.json();
+                        if(data.data && data.data.price) {
+                            updateTickerUI(currentSymDisplay, parseFloat(data.data.price), true);
+                            nextTick(); return;
+                        }
+                    }
+                } catch(e) {}
+
+                // IF ALL FAIL:
+                proxyIdx = (proxyIdx + 1) % proxies.length; // Rotate proxy for next time
+                console.log("All exchanges failed for " + sym);
+                document.getElementById('t-dot').style.background = 'var(--warning)'; // Signal warning
+                nextTick(); // Move on
 
             } catch(e) {
-                console.log("Ticker skip, keeping old value.");
-                // Show orange dot to indicate stall/retry, but keep price
-                document.getElementById('t-dot').style.background = 'var(--warning)';
+                console.log("Critical Ticker Error");
                 nextTick();
             } 
         }
