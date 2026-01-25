@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.2 Smart Spacing</title>
+    <title>C5X - V24.3 Settings Pro</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -88,13 +88,7 @@
         }
         .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
-        /* ESPACIADOR GLOBAL DINÁMICO */
-        .content-spacer { 
-            margin-top: 115px; /* Default para Operar */
-            max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; 
-            transition: margin-top 0.3s ease; /* Transición suave al cambiar vista */
-        }
-        
+        .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; }
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -163,28 +157,51 @@
         }
         .liquidate-card:active { transform: scale(0.98); }
 
-        /* --- VISTA BITÁCORA (ESPACIO 0) --- */
-        #section-log { 
-            padding-top: 0px; /* ELIMINADO TOTALMENTE */
-        }
+        /* --- VISTA BITÁCORA --- */
+        #section-log { padding-top: 0px; }
         .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
         .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        /* --- VISTA AJUSTES --- */
-        #section-settings { padding: 20px; padding-bottom: 80px; }
-        .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
-        .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; }
+        /* --- VISTA AJUSTES (RENOVADA V24.3) --- */
+        #section-settings { padding: 20px; padding-bottom: 100px; }
+        .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;}
+        
+        /* ESTILO PARA INPUTS CON ICONO DE MONEDA */
         .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .config-item { position: relative; }
         .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
-        .config-input { width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px; border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; text-align: right; }
-        .config-input:focus { border-color: var(--brand); outline: none; }
+        
+        .input-wrapper { position: relative; }
+        .input-wrapper input { 
+            width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; /* Padding izq para icono */
+            border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; 
+        }
+        .input-wrapper input:focus { border-color: var(--brand); outline: none; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
+
         .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .setting-info h4 { font-size: 14px; margin-bottom: 4px; }
+        .setting-info h4 { font-size: 14px; margin-bottom: 4px; color: var(--text-primary); font-weight: 700; }
         .setting-info p { font-size: 11px; color: var(--text-secondary); }
-        .btn-reset { background: var(--danger); color: #fff; border: none; padding: 12px 20px; border-radius: 10px; font-weight: 700; width: 100%; margin-top: 10px; }
-        .btn-save-config { width: 100%; background: var(--long); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(14, 203, 129, 0.2); }
+        
+        /* SWITCH TOGGLE MODERNO */
+        .toggle-switch { position: relative; width: 50px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--brand); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* BOTONES DE ACCIÓN SETTINGS */
+        .btn-save-config { width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); }
+        
+        .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .btn-backup { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-backup:active { background: rgba(255,255,255,0.05); }
+
+        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron'; cursor: pointer; }
 
         /* --- MENÚ MODAL --- */
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; }
@@ -210,12 +227,7 @@
         .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
         .btn-confirm { background: var(--brand); color: #fff; }
         .btn-cancel { background: transparent; color: var(--text-secondary); }
-        
-        /* INPUT SEGURIDAD (FIXED FOR NUMERIC KEYPAD) */
-        .modal-inp { 
-            width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; 
-            border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; 
-        }
+        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; }
 
     </style>
 </head>
@@ -307,19 +319,74 @@
         </div>
 
         <div id="section-settings" class="app-section">
+            
             <div class="settings-card">
-                <div class="setting-header">PARÁMETROS DE TRADING (SLOT ACTUAL)</div>
+                <div class="setting-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
+                    CONFIGURACIÓN DE ESTRATEGIA (SLOT)
+                </div>
                 <div class="config-grid">
-                    <div class="config-item"><label>CAPITAL DEL SLOT ($)</label><input type="number" id="setCapital" class="config-input"></div>
-                    <div class="config-item"><label>INCREMENTO BASE (% NORMAL)</label><input type="number" id="setInc" class="config-input"></div>
-                    <div class="config-item"><label>DESCUENTO AGRESIVO (%)</label><input type="number" id="setDesc" class="config-input"></div>
+                    <div class="config-item">
+                        <label>CAPITAL ($)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">$</span>
+                            <input type="number" id="setCapital">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>INC. BASE (NORMAL)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">%</span>
+                            <input type="number" id="setInc">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>DESC. AGRESIVO</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">%</span>
+                            <input type="number" id="setDesc">
+                        </div>
+                    </div>
                 </div>
                 <button class="btn-save-config" onclick="applySettings()">GUARDAR CAMBIOS</button>
             </div>
+
             <div class="settings-card">
-                <div class="setting-row"><div class="setting-info"><h4>Tema de la App</h4><p>Alternar entre Claro y Oscuro</p></div><button class="action-btn" onclick="toggleTheme()">CAMBIAR</button></div>
-                <div class="setting-row" style="border-top:1px solid var(--border); padding-top:15px;"><div class="setting-info"><h4 style="color:var(--danger)">Zona de Peligro</h4><p>Borrar todos los datos</p><button class="btn-reset" onclick="resetApp()">RESTABLECER FÁBRICA</button></div></div>
-                <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px;">C5X V24.2 SMART SPACING</div>
+                <div class="setting-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M20 12c0-4.42-3.58-8-8-8s-8 3.58-8 8 3.58 8 8 8 8-3.58 8-8zM6 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6z"/></svg>
+                    SISTEMA
+                </div>
+                
+                <div class="setting-row">
+                    <div class="setting-info"><h4>Modo Oscuro</h4><p>Cambiar apariencia de la app</p></div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row" style="margin-top:20px; align-items:flex-start;">
+                    <div class="setting-info"><h4>Copia de Seguridad</h4><p>Guardar o restaurar datos</p></div>
+                </div>
+                <div class="backup-grid">
+                    <button class="btn-backup" onclick="exportData()">⬇️ EXPORTAR</button>
+                    <button class="btn-backup" onclick="document.getElementById('importFile').click()">⬆️ IMPORTAR</button>
+                    <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+                </div>
+            </div>
+
+            <div class="settings-card" style="border-color:rgba(207, 48, 74, 0.3);">
+                <div class="setting-header" style="color:var(--danger); border-color:rgba(207, 48, 74, 0.3);">
+                    ⚠️ ZONA DE PELIGRO
+                </div>
+                <div class="setting-info" style="text-align:center; margin-bottom:10px;">
+                    <p>Esta acción borrará todas las configuraciones y el historial de operaciones.</p>
+                </div>
+                <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
+            </div>
+
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
+                C5X V24.3 PRO SETTINGS
             </div>
         </div>
     </div>
@@ -361,7 +428,13 @@
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+            if(isLight) { 
+                document.body.classList.add('light-mode'); 
+                document.getElementById('themeToggle').checked = false; // Checkbox logic inverted for UI
+                updateThemeIcon(); 
+            } else {
+                document.getElementById('themeToggle').checked = true;
+            }
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             setInterval(fetchTicker, 8000); 
@@ -372,7 +445,6 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        // --- SMART SPACING (AJUSTE DINÁMICO) ---
         function switchView(viewName, toggle = true) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
@@ -385,12 +457,10 @@
 
             if(viewName === 'operate') {
                 tfBar.style.display = 'flex';
-                // Margen original para cabecera + barra de tiempo
                 spacer.style.marginTop = '115px'; 
                 if(chartSymbol) loadChart(chartSymbol); 
             } else {
                 tfBar.style.display = 'none';
-                // Margen reducido para solo la cabecera
                 spacer.style.marginTop = '75px'; 
             }
 
@@ -574,8 +644,16 @@
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); }
+        
+        function toggleTheme() { 
+            const checkbox = document.getElementById('themeToggle');
+            isLight = !checkbox.checked; // Toggle state based on checkbox
+            document.body.classList.toggle('light-mode', isLight); 
+            updateThemeIcon(); 
+            localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
+        }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
+        
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
@@ -616,6 +694,35 @@
             const totalProfit = history.reduce((acc, curr) => acc + (parseFloat(curr.profit)||0), 0);
             doc.autoTable({ head: [['Fecha', 'Moneda', 'Estrat.', 'P. Prom', 'Cant.', 'Inversión', 'Profit', 'ROI']], body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [59, 130, 246] }, foot: [['', '', '', '', 'TOTALES:', '$' + totalInv.toFixed(2), '$' + totalProfit.toFixed(2), '']], footStyles: { fillColor: [20, 20, 25], textColor: [255, 255, 255], fontStyle: 'bold' } });
             doc.save("C5X_Reporte_Ejecutivo.pdf"); 
+        }
+
+        // --- BACKUP SYSTEM ---
+        function exportData() {
+            const dataStr = JSON.stringify({ slots: slots, history: history });
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = "C5X_Backup_" + new Date().toLocaleDateString().replace(/\//g,'-') + ".json";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            showToast("📦 Backup Descargado");
+        }
+
+        function importData(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.slots && data.history) {
+                        slots = data.slots;
+                        history = data.history;
+                        save();
+                        localStorage.setItem('c5x_history', JSON.stringify(history));
+                        location.reload();
+                    } else { showToast("⚠️ Archivo Inválido"); }
+                } catch(err) { showToast("❌ Error al leer archivo"); }
+            };
+            reader.readAsText(file);
         }
 
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
