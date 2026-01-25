@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V28.0 ULTIMATE</title>
+    <title>C5X - V28.1 STABLE</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -534,7 +534,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V28.0 ULTIMATE
+                C5X V28.1 STABLE
             </div>
         </div>
     </div>
@@ -624,24 +624,37 @@
         if(customProxy) proxies.unshift(customProxy);
 
         function init() { 
-            if(isLight) { 
-                document.body.classList.add('light-mode'); 
-                updateThemeIcon(); 
-            }
-            if(!Array.isArray(slots) || slots.length < 6) {
-               slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '' }));
-            }
-            
-            // Init Multipliers Input
-            document.getElementById('setMultipliers').value = customMultipliers.join(', ');
-            document.getElementById('setProxy').value = customProxy;
+            try {
+                if(isLight) { 
+                    document.body.classList.add('light-mode'); 
+                    updateThemeIcon(); 
+                }
+                // SAFETY: Ensure slots valid
+                if(!Array.isArray(slots) || slots.length < 6) {
+                   slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '' }));
+                }
+                
+                // Init Multipliers Input
+                if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
+                
+                const multInput = document.getElementById('setMultipliers');
+                if(multInput) multInput.value = customMultipliers.join(', ');
+                
+                const proxInput = document.getElementById('setProxy');
+                if(proxInput) proxInput.value = customProxy;
 
-            renderNav(); selectSlot(activeIdx); renderHistory();
-            
-            updatePinUI();
-            startTickerSystem(); // Replaces simple fetchTicker
+                renderNav(); selectSlot(activeIdx); renderHistory();
+                
+                updatePinUI();
+                startTickerSystem(); 
 
-            document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+                document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+            } catch(e) {
+                console.error("Init Error", e);
+                // Fail safe
+                alert("Error de inicialización. Se restablecerán ajustes visuales.");
+                localStorage.removeItem('theme');
+            }
         }
 
         // --- UTILS ---
@@ -682,7 +695,7 @@
                     localStorage.setItem('c5x_ticker_index', assetIdx);
                     updateTicker();
                 }
-            }, 7000); // Rotates every 7s, but connection persists
+            }, 7000); // Rotates every 7s
         }
 
         async function updateTicker() {
@@ -692,10 +705,8 @@
             
             // Close existing WS if symbol changes
             if(currentWs) {
-                if(currentWs.url.includes(sym.toLowerCase())) {
-                     // Same symbol, keep open
-                     return;
-                }
+                // If it's the same symbol, do nothing
+                if(currentWs.url && currentWs.url.includes(sym.toLowerCase())) return;
                 currentWs.close();
                 currentWs = null;
             }
@@ -725,18 +736,25 @@
         }
 
         async function fetchTickerRest(sym, displaySym) {
-             // ... [Existing Logic from V27.4 for REST Fallback] ...
-             // Simplified for brevity, using the fastest proxy logic from V27.4
             try {
                 let price = 0;
-                // Try Gate (via proxy)
-                const gateSym = displaySym + "_USDT";
-                const proxy = proxies[0];
-                const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`));
-                if(res.ok) {
-                    const data = await res.json();
-                    if(data && data.length > 0) price = parseFloat(data[0].last);
+                // REST FALLBACK COMPLETO
+                try {
+                     const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
+                     if(res.ok) { const d = await res.json(); price = parseFloat(d.price); }
+                } catch(e){}
+
+                if(price === 0) {
+                     // Try Gate (via proxy)
+                     const gateSym = displaySym + "_USDT";
+                     const proxy = proxies[0];
+                     const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`));
+                     if(res.ok) {
+                         const data = await res.json();
+                         if(data && data.length > 0) price = parseFloat(data[0].last);
+                     }
                 }
+                
                 if(price > 0) updateTickerUI(displaySym, price, true);
             } catch(e) {}
         }
@@ -769,7 +787,7 @@
             wrapper.classList.toggle('fullscreen');
             // Trigger resize for TradingView
             if(wrapper.classList.contains('fullscreen')) {
-                 new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
+                 if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
             } else {
                 loadChart(chartSymbol); // Reload normal size
             }
@@ -931,14 +949,16 @@
             if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
             
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
-            // Use custom multipliers length
-            for(let i=0; i < customMultipliers.length; i++){
+            // Use custom multipliers length safely
+            const maxLevels = customMultipliers ? customMultipliers.length : 12;
+
+            for(let i=0; i < maxLevels; i++){
                 let pLevel;
                 if(i === 0) { pLevel = s.price; currentStepDrop = 0; } else { 
                     if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; }
                     pLevel = lastPrice * (1 - (currentStepDrop / 100));
                 }
-                const mUSD = customMultipliers[i] * s.capital, on = s.buys.includes(i);
+                const mUSD = (customMultipliers[i] || 1) * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
                 const displayPrice = (pLevel < 1) ? pLevel.toFixed(8) : pLevel.toFixed(4);
 
@@ -992,17 +1012,20 @@
             const grid = document.getElementById('logGrid'); 
             const chart = document.getElementById('perfChart');
             
-            // Render Chart
-            if(history.length > 0) {
-                const maxProfit = Math.max(...history.map(h => parseFloat(h.profit)));
+            // Render Chart Safe
+            if(history && history.length > 0) {
+                const profits = history.map(h => parseFloat(h.profit) || 0);
+                const maxProfit = Math.max(...profits);
+                
                 chart.innerHTML = history.slice(-15).map(h => {
-                    const p = parseFloat(h.profit);
-                    const hPct = maxProfit > 0 ? (p / maxProfit) * 100 : 0;
+                    const p = parseFloat(h.profit) || 0;
+                    // Protect against division by zero
+                    const hPct = (maxProfit > 0) ? (p / maxProfit) * 100 : 10;
                     return `<div class="perf-bar" style="height:${Math.max(hPct, 10)}%" title="$${p}"></div>`;
                 }).join('');
             } else { chart.innerHTML = ''; }
 
-            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
+            if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
             grid.innerHTML = history.map(h => `
                 <div class="level-card">
                     <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
@@ -1045,7 +1068,7 @@
             });
         }
         
-        function verifyAndAddCoin() { /* ... Same as V27.4 but cleaner ... */ 
+        function verifyAndAddCoin() { 
              const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase(); if(!val) return;
              if(!val.includes('USDT')) val += 'USDT'; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
              input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)");
@@ -1062,12 +1085,12 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
-        function exportExcel() { /* Standard Export Logic */ 
+        function exportExcel() { 
              if(history.length === 0) return showToast("⚠️ Sin Datos"); 
              const data = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT ($)": parseFloat(h.profit)||0 }));
              const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "C5X"); XLSX.writeFile(wb, "C5X_Log.xlsx");
         }
-        function exportPDF() { /* Standard PDF Logic */ 
+        function exportPDF() { 
              if(history.length === 0) return showToast("⚠️ Sin Datos");
              const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.text("C5X LOG", 14, 20);
              const body = history.map(h => [h.date, h.coin, '$' + h.profit]); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: body, startY: 30 }); doc.save("C5X.pdf");
