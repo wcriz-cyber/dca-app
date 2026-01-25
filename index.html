@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.2 ETF Card UI</title>
+    <title>C5X - V27.3 ETF Card UI</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -493,7 +493,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.2 ETF CARD UI
+                C5X V27.3 ETF CARD UI
             </div>
         </div>
     </div>
@@ -719,6 +719,9 @@
             slots[emptySlotIdx].locked = false;
             
             save();
+
+            // FORCE COLOR UPDATE BEFORE SWITCH
+            updateBodyMode(symbol);
             
             // Activate & Switch
             selectSlot(emptySlotIdx);
@@ -1219,7 +1222,20 @@
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
+        
+        function updateBodyMode(n) { 
+            const r = document.querySelector(':root'); 
+            if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
+            
+            // Lógica robusta para detectar ETFs Short/Long incluso con 'USDT' al final
+            if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) {
+                r.style.setProperty('--brand', 'var(--short)'); 
+            } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { 
+                r.style.setProperty('--brand', 'var(--long)'); 
+            } else { 
+                r.style.setProperty('--brand', '#3b82f6'); 
+            } 
+        }
         
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
