@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.7 Ultimate Market</title>
+    <title>C5X - V25.8 Precision Fix</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.7 ULTIMATE ENGINE
+                C5X V25.8 PRECISION FIX
             </div>
         </div>
     </div>
@@ -484,6 +484,8 @@
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
+        
+        // FIX: Variable global para seguimiento preciso
         let currentTickerSymbol = "BTC";
         
         let proxyIdx = 0;
@@ -572,15 +574,16 @@
             updatePinUI();
             
             if(isTickerPinned) {
-                // LOCK CURRENT SYMBOL
-                // Find current symbol index in array to prevent jump
+                // LOCK CURRENT SYMBOL EXACTLY
                 const currentSymFull = currentTickerSymbol + "USDT";
                 const foundIdx = tickerAssets.indexOf(currentSymFull);
                 if(foundIdx !== -1) {
                     assetIdx = foundIdx;
                     localStorage.setItem('c5x_ticker_index', assetIdx);
+                    showToast("⚓ Fijado: " + currentTickerSymbol);
+                } else {
+                    showToast("⚠️ Error al fijar");
                 }
-                showToast("⚓ Moneda Fijada");
             } else {
                 showToast("▶️ Rotación Reanudada");
                 // Immediately move to next to confirm action
@@ -675,7 +678,6 @@
 
                 // 2. OKX (Proxy)
                 try {
-                    // OKX format: BTC-USDT
                     const okxSym = currentSymDisplay + "-USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://www.okx.com/api/v5/market/ticker?instId=${okxSym}`) + cacheBuster);
                     if(res.ok) {
@@ -748,6 +750,9 @@
         }
 
         function updateTickerUI(sym, price, isUp) {
+            // FIX: Update global variable so clicks work
+            currentTickerSymbol = sym; 
+            
             document.getElementById('t-sym').textContent = sym;
             let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString();
             document.getElementById('t-price').textContent = displayPrice;
@@ -762,7 +767,8 @@
 
         function viewTickerChart(e) { 
             if(e) e.stopPropagation(); 
-            chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase();
+            // FIX: Use the updated global variable
+            chartSymbol = currentTickerSymbol.toUpperCase();
             loadChart(chartSymbol); 
             if(currentSection !== 'operate') switchView('operate', false);
         }
