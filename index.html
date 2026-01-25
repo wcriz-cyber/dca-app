@@ -842,4 +842,94 @@
             triggerHaptic(); currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + viewName).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
+            document.getElementById('nav-' + viewName).classList.add('selected');
+            const tfBar = document.getElementById('tfBarContainer'); const spacer = document.querySelector('.content-spacer');
+            if(viewName === 'operate') { tfBar.style.display = 'flex'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
+            if(viewName === 'etf') { loadGateETFs(); }
+            if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
+            if(toggle) toggleMenu(); window.scrollTo(0,0);
+        }
+
+        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; }
+        
+        function applySettings() {
+            triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value); const newInc = document.getElementById('setInc').value; const newDesc = document.getElementById('setDesc').value; const newRoi = parseFloat(document.getElementById('setRoi').value);
+            if(isNaN(newCap) || !newInc || !newDesc || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
+            openSecurity(() => { slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); });
+        }
+
+        async function fetchTicker() { 
+            try { 
+                if (assetIdx >= tickerAssets.length) assetIdx = 0; localStorage.setItem('c5x_ticker_index', assetIdx);
+                let sym = tickerAssets[assetIdx]; let currentSymDisplay = sym.replace("USDT","");
+                try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`); if (res.ok) { const data = await res.json(); updateTickerUI(currentSymDisplay, parseFloat(data.price), true); nextTick(); return; } } catch(e) {}
+                const proxy = proxies[proxyIdx]; const cacheBuster = '&_t=' + new Date().getTime();
+                
+                try { const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${sym.replace('USDT','_USDT')}`) + cacheBuster); if(res.ok) { const data = await res.json(); if(data && data.length > 0) { updateTickerUI(currentSymDisplay, parseFloat(data[0].last), parseFloat(data[0].change_percentage) >= 0); nextTick(); return; } } } catch(e) {}
+                
+                proxyIdx = (proxyIdx + 1) % proxies.length; document.getElementById('t-dot').style.background = 'var(--warning)'; nextTick(); 
+            } catch(e) { nextTick(); } 
+        }
+
+        function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; document.getElementById('t-sym').textContent = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
+        function nextTick() { if(!isTickerPinned) assetIdx = (assetIdx + 1) % tickerAssets.length; }
+
+        function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
+        function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
+        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); const themeMode = isLight ? "light" : "dark"; const bgColor = isLight ? "#ffffff" : "#0b0e11"; new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": themeMode, "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": bgColor, "locale": "es" }); }
+
+        function selectSlot(i) { triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
+        function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
+
+        function updateBodyMode(n) { 
+            const r = document.querySelector(':root'); 
+            if (!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
+            if (n.includes('3L') || n.includes('5L')) { r.style.setProperty('--brand', 'var(--long)'); } 
+            else if (n.includes('3S') || n.includes('5S')) { r.style.setProperty('--brand', 'var(--short)'); } 
+            else { r.style.setProperty('--brand', '#3b82f6'); } 
+        }
+
+        function updateDashUI() {
+            const s = slots[activeIdx], isNormal = s.strat === "normal";
+            const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
+            const elTarget = document.getElementById('resTarget');
+            const btnRotate = document.getElementById('btnRotate');
+            const btnLock = document.getElementById('lockBtn');
+            updateBodyMode(s.name);
+            
+            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
+            elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
+            elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
+            elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
+            elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
+            if(s.strat === "agresiva") btnRotate.classList.add('active'); else btnRotate.classList.remove('active');
+            if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>'; } else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>'; }
+            document.getElementById('capitalInput').value = s.capital;
+            calculate();
+        }
+
+        function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
+        function toggleLvl(idx) { triggerHaptic(); const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
+        function renderLevels() { const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; updateBodyMode(s.name); if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; for(let i=0; i<12; i++){ let pLevel; if(i === 0) { pLevel = s.price; currentStepDrop = 0; } else { if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } pLevel = lastPrice * (1 - (currentStepDrop / 100)); } const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i); if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } const displayPrice = (pLevel < 1) ? pLevel.toFixed(8) : pLevel.toFixed(4); html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-center" onclick="event.stopPropagation(); copyText('${displayPrice}')"><div class="level-price">${displayPrice}</div></div><div class="level-right"><div class="invest-val">$${mUSD.toFixed(1)}</div><div class="drop-val">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</div></div></div>`; lastPrice = pLevel; } html += `<div class="level-card liquidate-card" onclick="openLiquidateConfirm()">LIQUIDAR POSICIÓN</div>`; grid.innerHTML = html; const avg = totalQty > 0 ? totalSpent/totalQty : 0; const targetROI = s.roi || 100; const targetPrice = avg * (1 + (targetROI / 100)); document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; document.getElementById('resAvg').textContent = (avg<1?avg.toFixed(8):avg.toFixed(4)); document.getElementById('resTarget').textContent = (targetPrice<1?targetPrice.toFixed(8):targetPrice.toFixed(4)); document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`; }
+        function copyText(txt) { triggerHaptic(); navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt)); }
+        function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(s.buys.length === 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
+        function executeRelease() { triggerHaptic(); closeModals(); const s = slots[activeIdx]; const totalInv = parseFloat(document.getElementById('resInv').textContent.replace('$','')) || 0; const avgPrice = parseFloat(document.getElementById('resAvg').textContent) || 0; const targetROI = s.roi || 100; const exitPrice = avgPrice * (1 + (targetROI / 100)); const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0; const estimatedProfit = (totalInv * (targetROI / 100)); const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: exitPrice, qty: qty.toFixed(8), totalInv: totalInv.toFixed(2), profit: estimatedProfit.toFixed(2), roi: targetROI + '%', levelsUsed: s.buys.length }; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 }; const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === ''); slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); }
+        function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
+        function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
+        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
+        function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
+        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
+        function renderHistory() { const grid = document.getElementById('logGrid'); if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-center"><div class="level-price" style="font-size:16px">${h.coin}</div><div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div></div><div class="level-right"><div class="invest-val" style="color:var(--long)">+$${h.profit}</div><div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div></div></div>`).reverse().join(''); }
+        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
+        function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const data = history.map(h => ({ "FECHA": h.date, "HORA": h.time || '-', "MONEDA": h.coin, "ESTRATEGIA": h.strategy, "P. BASE": h.basePrice, "P. PROMEDIO": h.avgPrice, "P. SALIDA": h.exitPrice, "NIVELES": h.levelsUsed, "CANTIDAD": h.qty, "INVERSIÓN ($)": h.totalInv, "PROFIT ($)": h.profit, "RENDIMIENTO": h.roi })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Contabilidad_C5X"); XLSX.writeFile(wb, "C5X_Reporte_Financiero.xlsx"); }
+        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.setFontSize(18); doc.setTextColor(59, 130, 246); doc.text("REPORTE FINANCIERO C5X", 14, 20); doc.setFontSize(10); doc.setTextColor(100); doc.text("Generado el: " + new Date().toLocaleString(), 14, 28); const body = history.map(h => [h.date, h.coin, h.strategy, h.avgPrice, h.qty, '$' + h.totalInv, '$' + h.profit, h.roi]); const totalInv = history.reduce((acc, curr) => acc + (parseFloat(curr.totalInv)||0), 0); const totalProfit = history.reduce((acc, curr) => acc + (parseFloat(curr.profit)||0), 0); doc.autoTable({ head: [['Fecha', 'Moneda', 'Estrat.', 'P. Prom', 'Cant.', 'Inversión', 'Profit', 'ROI']], body: body, startY: 35, theme: 'striped', headStyles: { fillColor: [59, 130, 246] }, foot: [['', '', '', '', 'TOTALES:', '$' + totalInv.toFixed(2), '$' + totalProfit.toFixed(2), '']], footStyles: { fillColor: [20, 20, 25], textColor: [255, 255, 255], fontStyle: 'bold' } }); doc.save("C5X_Reporte_Ejecutivo.pdf"); }
+        function exportData() { const dataStr = JSON.stringify({ slots: slots, history: history, tickerAssets: tickerAssets, tickerInterval: tickerIntervalTime }); const blob = new Blob([dataStr], {type: "application/json"}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "C5X_Backup_" + new Date().toLocaleDateString().replace(/\//g,'-') + ".json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); showToast("📦 Backup Descargado"); }
+        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots && data.history) { slots = data.slots; history = data.history; if(data.tickerAssets) { tickerAssets = data.tickerAssets; localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); } if(data.tickerInterval) { tickerIntervalTime = data.tickerInterval; localStorage.setItem('c5x_ticker_interval', tickerIntervalTime); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } else { showToast("⚠️ Archivo Inválido"); } } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
+        function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
+    </script>
+</body>
+</html>
