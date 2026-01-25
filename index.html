@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.0 ETF Radar</title>
+    <title>C5X - V27.1 Smart ETF Sorter</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -167,6 +167,13 @@
         }
         .liquidate-card:active { transform: scale(0.98); }
 
+        /* --- VISTA BITÁCORA --- */
+        #section-log { padding-top: 0px; }
+        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
+        .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
+        .log-actions { display: flex; gap: 8px; }
+        .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
+
         /* --- VISTA ETF MONITOR --- */
         #section-etf { padding: 15px; }
         .etf-search-box { position: relative; margin-bottom: 20px; }
@@ -192,13 +199,6 @@
         .etf-change { font-size: 11px; font-weight: 800; margin-top: 8px; display: inline-block; padding: 4px 8px; border-radius: 6px; }
         .change-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
         .change-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
-
-        /* --- VISTA BITÁCORA --- */
-        #section-log { padding-top: 0px; }
-        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
-        .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
-        .log-actions { display: flex; gap: 8px; }
-        .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
         /* --- VISTA AJUSTES --- */
         #section-settings { padding: 20px; padding-bottom: 80px; }
@@ -500,7 +500,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.0 ETF RADAR
+                C5X V27.1 ETF RADAR SORTED
             </div>
         </div>
     </div>
@@ -660,6 +660,9 @@
                     return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
                 });
 
+                // SORTING LOGIC: Biggest Drop First (Ascending Change Percentage)
+                allGateETFs.sort((a, b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage));
+
                 filterETFs(""); // Render initial list
             } catch(e) {
                 grid.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.</div>';
@@ -670,12 +673,12 @@
             const grid = document.getElementById('etfGrid');
             const term = query.toUpperCase().trim();
             
-            // If empty show top 20 by volume or random, else filter
+            // If empty show top 20 by volume or sorted list, else filter
             let filtered = allGateETFs;
             if(term) {
                 filtered = allGateETFs.filter(t => t.currency_pair.includes(term));
             } else {
-                filtered = allGateETFs.slice(0, 20); // Show first 20 if empty
+                filtered = allGateETFs.slice(0, 50); // Show first 50 biggest losers if empty
             }
 
             if(filtered.length === 0) {
