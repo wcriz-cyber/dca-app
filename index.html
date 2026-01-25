@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X God Mode</title>
-    
-    <link rel="icon" type="image/png" href="icon.png"> 
-    <link rel="apple-touch-icon" href="icon.png"> 
-    <meta name="theme-color" content="#0b0e11">
+    <title>C5X - V24.8 Optimized</title>
     <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="theme-color" content="#0b0e11">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -17,7 +15,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
@@ -51,19 +48,44 @@
             padding-bottom: 20px; overflow-x: hidden; transition: background 0.3s, color 0.3s;
         }
 
-        /* HEADER */
-        .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
+        /* --- HEADER --- */
+        .fixed-header { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .app-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            height: 70px; padding: 0 16px; max-width: 800px; margin: 0 auto;
+            position: relative;
+        }
+
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px 10px 10px 0; z-index: 50; position: relative; }
         .brand-text { font-family: 'Orbitron'; font-weight: 900; font-size: 24px; color: var(--brand); letter-spacing: -0.5px; }
         .brand-caret { font-size: 12px; color: var(--text-secondary); transition: transform 0.3s; }
-        .ticker-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto; }
-        .ticker-pill { pointer-events: auto; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: 0.2s; }
+        
+        .ticker-container {
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            z-index: 60; pointer-events: none; display: flex; justify-content: center; width: auto;
+        }
+
+        .ticker-pill { 
+            pointer-events: auto; display: flex; align-items: center; gap: 10px; 
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
+            padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: 0.2s;
+        }
         .ticker-pill:active { transform: scale(0.95); background: rgba(59, 130, 246, 0.1); }
         .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
         .ticker-sym { font-family: 'Orbitron'; font-weight: 800; font-size: 14px; color: var(--text-secondary); }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 20px; color: var(--text-primary); }
-        .theme-btn { width: 44px; height: 44px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 50; transition: 0.2s; }
+
+        .theme-btn {
+            width: 44px; height: 44px; border-radius: 50%; background: transparent; 
+            border: 1px solid var(--border); color: var(--text-primary); display: flex; 
+            align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 50;
+            transition: 0.2s;
+        }
         .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
         .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; }
@@ -71,21 +93,26 @@
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* VISTA OPERAR */
+        /* --- VISTA OPERAR --- */
         .tf-bar { display: flex; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--border); justify-content: center; }
         .tf-btn { flex: 1; max-width: 60px; padding: 6px 0; border: none; background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 700; border-radius: 6px; }
         .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
+
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
-        .slot-card { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .slot-card { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
+
         .chart-wrapper { height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; }
+
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 10px; }
         .input-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; position: relative; }
         .input-group.readonly { background: rgba(0,0,0,0.2); border-color: transparent; }
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
+        
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
+
         .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
         .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
@@ -93,68 +120,91 @@
         .icon-btn:active { transform: scale(0.9); }
         .icon-btn.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
         .icon-btn.locked { color: var(--danger); border-color: var(--danger); }
+
         .main-target-box { text-align: center; margin-bottom: 25px; }
         .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
         .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; }
+        
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 5px; text-align: center; }
         body.light-mode .stat-box { background: #f0f2f5; border-color: #e6e8ea; }
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
+
+        /* --- LISTA DE NIVELES --- */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
-        .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        
+        .level-card { 
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 20px 16px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
+        }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
+        
         .level-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; }
         .level-card.active .level-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
+
         .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .level-price { font-family: 'JetBrains Mono'; font-size: 22px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; cursor: copy; transition: 0.2s; }
         .level-price:active { opacity: 0.7; transform: scale(0.98); }
+
         .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
         .invest-val { font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 800; color: var(--long); }
         .drop-val { font-size: 11px; font-weight: 800; color: var(--short); font-family: 'Orbitron'; }
-        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; }
+
+        .liquidate-card {
+            background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none;
+        }
         .liquidate-card:active { transform: scale(0.98); }
 
-        /* VISTA BITÁCORA */
+        /* --- VISTA BITÁCORA --- */
         #section-log { padding-top: 0px; }
-        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 15px 16px; align-items: center; }
+        .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
         .log-title { font-family: 'Orbitron'; font-size: 18px; color: var(--brand); font-weight: 900; }
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
-        
-        /* GRÁFICO (GOD MODE) */
-        .chart-container-box {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 16px; margin: 0 10px 20px 10px; padding: 15px;
-            height: 220px; position: relative;
-        }
-        .stats-summary { display: flex; justify-content: space-around; margin-bottom: 20px; padding: 0 10px; }
-        .summary-item { text-align: center; }
-        .summary-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
-        .summary-val { font-family: 'JetBrains Mono'; font-size: 16px; font-weight: 800; color: var(--text-primary); }
 
-        /* VISTA AJUSTES */
+        /* --- VISTA AJUSTES (LIMPIA) --- */
         #section-settings { padding: 20px; padding-bottom: 80px; }
+        
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .setting-header { font-family: 'Orbitron'; color: var(--text-secondary); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;}
+        
+        .setting-header { 
+            font-family: 'Orbitron'; color: var(--text-secondary); font-size: 12px; 
+            margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; 
+            font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;
+        }
         .settings-card.primary .setting-header { color: var(--brand); border-bottom-color: var(--brand); }
         .settings-card.danger .setting-header { color: var(--danger); border-bottom-color: rgba(207, 48, 74, 0.3); }
         .settings-card.primary { border: 1px solid rgba(59, 130, 246, 0.3); }
         .settings-card.danger { border: 1px solid rgba(207, 48, 74, 0.3); }
+
         .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .config-item { position: relative; }
         .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
+        
         .input-wrapper { position: relative; }
-        .input-wrapper input { width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; }
+        .input-wrapper input { 
+            width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; 
+            border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; 
+        }
         .input-wrapper input:focus { border-color: var(--brand); outline: none; }
         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
-        .btn-save-config { width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; }
+
+        .btn-save-config { 
+            width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; 
+            border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; 
+            cursor: pointer; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        
         .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-data { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-data:active { background: rgba(255,255,255,0.05); }
-        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; font-family: 'Orbitron'; cursor: pointer; }
 
-        /* MODALES */
+        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron'; cursor: pointer; }
+
+        /* --- MENÚ MODAL --- */
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; }
         .nav-content { background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; padding: 35px 25px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 15px; }
         .nav-title { font-family: 'Orbitron'; font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
@@ -167,9 +217,12 @@
         .nav-text { font-family: 'Orbitron'; font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
         .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: 'Orbitron'; font-weight: 900; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-close-menu:active { background: rgba(207, 48, 74, 0.1); }
+
+        /* Toast & Modales */
         #toast { visibility: hidden; min-width: 120px; background-color: var(--brand); color: #fff; text-align: center; border-radius: 30px; padding: 12px 24px; position: fixed; z-index: 4000; left: 50%; bottom: 40px; transform: translateX(-50%); font-weight: 700; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2s; }
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
         .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
@@ -235,7 +288,7 @@
             <div id="tv_chart" class="chart-wrapper"></div>
             <div class="controls-grid">
                 <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="this.value = this.value.toUpperCase()" onblur="updateCoin()"></div>
-                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any"></div>
+                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
             <div class="dashboard-card" id="dashMain">
@@ -263,29 +316,45 @@
                     <button class="action-btn" style="color:var(--danger); border-color:var(--danger)" onclick="clearLogs()">BORRAR</button>
                 </div>
             </div>
-            <div class="stats-summary">
-                <div class="summary-item"><div class="summary-label">Ganancia Total</div><div class="summary-val" id="totalGainDisplay" style="color:var(--long)">$0.00</div></div>
-                <div class="summary-item"><div class="summary-label">Operaciones</div><div class="summary-val" id="totalOpsDisplay">0</div></div>
-            </div>
-            <div class="chart-container-box">
-                <canvas id="profitChart"></canvas>
-            </div>
             <div id="logGrid" class="levels-container"></div>
         </div>
 
         <div id="section-settings" class="app-section">
+            
             <div class="settings-card primary">
                 <div class="setting-header">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
                     ESTRATEGIA (SLOT ACTUAL)
                 </div>
                 <div class="config-grid">
-                    <div class="config-item"><label>CAPITAL ($)</label><div class="input-wrapper"><span class="input-icon">$</span><input type="number" id="setCapital"></div></div>
-                    <div class="config-item"><label>INC. BASE (NORMAL)</label><div class="input-wrapper"><span class="input-icon">%</span><input type="number" id="setInc"></div></div>
-                    <div class="config-item"><label>DESC. AGRESIVO</label><div class="input-wrapper"><span class="input-icon">%</span><input type="number" id="setDesc"></div></div>
+                    <div class="config-item">
+                        <label>CAPITAL DEL SLOT ($)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">$</span>
+                            <input type="number" id="setCapital">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>INC. BASE (NORMAL)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">%</span>
+                            <input type="number" id="setInc">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>DESC. AGRESIVO</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">%</span>
+                            <input type="number" id="setDesc">
+                        </div>
+                    </div>
                 </div>
-                <button class="btn-save-config" onclick="applySettings()"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>GUARDAR CAMBIOS</button>
+                <button class="btn-save-config" onclick="applySettings()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>
+                    GUARDAR CAMBIOS
+                </button>
             </div>
+
             <div class="settings-card">
                 <div class="setting-header">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
@@ -298,17 +367,40 @@
                 </div>
                 <button class="btn-reset" style="margin-top:15px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearLogs()">BORRAR HISTORIAL</button>
             </div>
+
             <div class="settings-card danger">
-                <div class="setting-header" style="color:var(--danger); border-bottom-color:rgba(207, 48, 74, 0.3);">⚠️ ZONA CRÍTICA</div>
-                <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
+                <div class="setting-header" style="color:var(--danger); border-bottom-color:rgba(207, 48, 74, 0.3);">
+                    ⚠️ ZONA CRÍTICA
+                </div>
+                <div class="setting-info" style="text-align:center; margin-bottom:10px;">
+                    <p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p>
+                </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V25.1 GOD MODE</div>
+
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
+                C5X V24.8 OPTIMIZED
+            </div>
         </div>
     </div>
 
-    <div id="confirmModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div><p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p><button class="btn-modal btn-confirm" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
-    <div id="securityModal" class="generic-modal"><div class="modal-box"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*"><button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button></div></div>
+    <div id="confirmModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div>
+            <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p>
+            <button class="btn-modal btn-confirm" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button>
+            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="securityModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div>
+            <input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*">
+            <button class="btn-modal btn-confirm" onclick="validateSecurity()">VALIDAR</button>
+            <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
+        </div>
+    </div>
 
     <input type="hidden" id="incInput" value="7">
     <input type="hidden" id="descInput" value="66">
@@ -320,23 +412,33 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
+        // Default init corrected to ensure slots structure integrity
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
         let currentSection = 'operate';
         let modalCallback = null;
-        let profitChartInstance = null; 
 
         const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let assetIdx = 0, currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+            if(isLight) { 
+                document.body.classList.add('light-mode'); 
+                updateThemeIcon(); 
+            }
+            // Ensure data integrity on load
+            if(!Array.isArray(slots) || slots.length < 6) {
+               slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+            }
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             setInterval(fetchTicker, 8000); 
         }
 
-        function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
+        function toggleMenu() {
+            const m = document.getElementById('navModal');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
 
         function switchView(viewName, toggle = true) {
             currentSection = viewName;
@@ -344,13 +446,24 @@
             document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected'));
             document.getElementById('nav-' + viewName).classList.add('selected');
+
             const tfBar = document.getElementById('tfBarContainer');
             const spacer = document.querySelector('.content-spacer');
-            if(viewName === 'operate') { tfBar.style.display = 'flex'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } 
-            else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
-            if(viewName === 'log') { renderHistory(); updateProfitChart(); } 
+
+            if(viewName === 'operate') {
+                tfBar.style.display = 'flex';
+                spacer.style.marginTop = '115px'; 
+                if(chartSymbol) loadChart(chartSymbol); 
+            } else {
+                tfBar.style.display = 'none';
+                spacer.style.marginTop = '75px'; 
+            }
+
             if(viewName === 'settings') loadSettingsValues();
             if(toggle) toggleMenu(); 
+            
+            // Auto scroll to top on switch
+            window.scrollTo(0,0);
         }
 
         function loadSettingsValues() {
@@ -364,7 +477,9 @@
             const newCap = parseFloat(document.getElementById('setCapital').value);
             const newInc = document.getElementById('setInc').value;
             const newDesc = document.getElementById('setDesc').value;
+
             if(isNaN(newCap) || !newInc || !newDesc) return showToast("⚠️ Valores Inválidos");
+
             openSecurity(() => {
                 slots[activeIdx].capital = newCap;
                 document.getElementById('incInput').value = newInc;
@@ -377,6 +492,7 @@
         async function fetchTicker() { 
             try { 
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
+                if(!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json(); 
                 currentTickerSymbol = assets[assetIdx].replace("USDT",""); 
                 document.getElementById('t-sym').textContent = currentTickerSymbol; 
@@ -384,41 +500,106 @@
                 const isUp = parseFloat(data.priceChangePercent) >= 0;
                 document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
                 assetIdx = (assetIdx + 1) % assets.length; 
-            } catch(e) {} 
+            } catch(e) {
+                // Silent fail or retry logic could go here
+                console.log("Ticker update skipped");
+            } 
         }
 
-        function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
-        function updateTF(tf, btn) { activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": "#0b0e11", "locale": "es" }); }
-        
-        function selectSlot(i) { activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
+        function viewTickerChart(e) { 
+            if(e) e.stopPropagation(); 
+            chartSymbol = (currentTickerSymbol || 'BTC').toUpperCase();
+            loadChart(chartSymbol); 
+            if(currentSection !== 'operate') switchView('operate', false);
+        }
+
+        function updateTF(tf, btn) { 
+            activeTF = tf; localStorage.setItem('c5x_last_tf', tf); 
+            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); 
+            loadChart(chartSymbol); 
+        }
+
+        function loadChart(coin) { 
+            chartSymbol = (coin || 'BTC3L').toUpperCase(); 
+            // Theme aware chart loading
+            const themeMode = isLight ? "light" : "dark";
+            const bgColor = isLight ? "#ffffff" : "#0b0e11";
+            
+            new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": themeMode, 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": bgColor, 
+                "locale": "es" 
+            }); 
+        }
+
+        function selectSlot(i) { 
+            activeIdx = i; localStorage.setItem('c5x_last_slot', i); 
+            const s = slots[i]; 
+            document.getElementById('coinInput').value = s.name; 
+            document.getElementById('baseInput').value = s.price || ''; 
+            document.getElementById('capitalInput').value = s.capital; 
+            renderNav(); loadChart(s.name); updateDashUI(); 
+        }
+
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
+        
         function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
-            const elTarget = document.getElementById('resTarget'), btnRotate = document.getElementById('btnRotate'), btnLock = document.getElementById('lockBtn');
+            const elTarget = document.getElementById('resTarget');
+            const btnRotate = document.getElementById('btnRotate');
+            const btnLock = document.getElementById('lockBtn');
+            
             elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
             elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
             elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
             elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
             elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
+
             if(s.strat === "agresiva") btnRotate.classList.add('active'); else btnRotate.classList.remove('active');
-            if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>'; } 
-            else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>'; }
+            
+            if(s.locked) {
+                btnLock.classList.add('locked');
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>';
+            } else {
+                btnLock.classList.remove('locked');
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>';
+            }
             document.getElementById('capitalInput').value = s.capital;
             calculate();
         }
 
-        function calculate() { const s = slots[activeIdx]; s.price = parseFloat(document.getElementById('baseInput').value) || 0; save(); renderLevels(); }
+        // Smart Formatter for Crypto Prices
+        function fmtPrice(p) {
+            if(!p) return "0.00";
+            if(p < 1) return p.toFixed(8);
+            if(p < 10) return p.toFixed(4);
+            return p.toFixed(2);
+        }
+
+        function calculate() { 
+            const s = slots[activeIdx]; 
+            const inputVal = parseFloat(document.getElementById('baseInput').value);
+            s.price = isNaN(inputVal) ? 0 : inputVal; 
+            save(); 
+            renderLevels(); 
+        }
+
         function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
             updateBodyMode(s.name);
-            if(!s.price) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
+            if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
+            
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
             for(let i=0; i<12; i++){
                 let pLevel;
@@ -428,24 +609,43 @@
                 }
                 const mUSD = MULTIPLIERS[i] * s.capital, on = s.buys.includes(i);
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); }
-                html += `<div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="level-index">${i+1}</div><div class="level-center" onclick="event.stopPropagation(); copyText('${pLevel.toFixed(8)}')"><div class="level-price">${pLevel.toFixed(8)}</div></div><div class="level-right"><div class="invest-val">$${mUSD.toFixed(1)}</div><div class="drop-val">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</div></div></div>`;
+                
+                const displayPrice = fmtPrice(pLevel);
+
+                html += `
+                <div class="level-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
+                    <div class="level-index">${i+1}</div>
+                    <div class="level-center" onclick="event.stopPropagation(); copyText('${displayPrice}')">
+                        <div class="level-price">${displayPrice}</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="invest-val">$${mUSD.toFixed(1)}</div>
+                        <div class="drop-val">${i===0 ? 'ENTRADA' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
+                    </div>
+                </div>`;
                 lastPrice = pLevel;
             }
             html += `<div class="level-card liquidate-card" onclick="openLiquidateConfirm()">LIQUIDAR POSICIÓN</div>`;
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
-            document.getElementById('resAvg').textContent = avg.toFixed(8);
-            document.getElementById('resTarget').textContent = (avg * 2).toFixed(8);
+            document.getElementById('resAvg').textContent = fmtPrice(avg);
+            document.getElementById('resTarget').textContent = fmtPrice(avg * 2);
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
         function copyText(txt) { navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt)); }
-        function openLiquidateConfirm() { const s = slots[activeIdx]; if(s.buys.length === 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
+
+        function openLiquidateConfirm() {
+            const s = slots[activeIdx];
+            if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
 
         function executeRelease() {
             closeModals();
             const s = slots[activeIdx];
+            
             const totalInvStr = document.getElementById('resInv').textContent.replace('$','');
             const totalInv = parseFloat(totalInvStr) || 0;
             const avgPriceStr = document.getElementById('resAvg').textContent;
@@ -456,20 +656,48 @@
             const profit = parseFloat(profitStr);
             const roi = totalInv > 0 ? ((profit / totalInv) * 100) : 0;
 
-            const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price.toFixed(8), avgPrice: avgPrice.toFixed(8), exitPrice: exitPrice.toFixed(8), qty: qty.toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: roi.toFixed(2) + '%', levelsUsed: s.buys.length };
+            const logEntry = { 
+                date: new Date().toLocaleDateString(), 
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                coin: s.name || 'S/N', 
+                strategy: s.strat.toUpperCase(),
+                basePrice: fmtPrice(s.price),
+                avgPrice: fmtPrice(avgPrice),
+                exitPrice: fmtPrice(exitPrice),
+                qty: qty.toFixed(8),
+                totalInv: totalInv.toFixed(2),
+                profit: profit.toFixed(2),
+                roi: roi.toFixed(2) + '%',
+                levelsUsed: s.buys.length
+            };
+
             history.push(logEntry);
             localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
             
+            // Reset Slot but ensure structure is clean
             slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
             const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-            slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); 
+            slots = [...filled, ...empty]; 
+            save(); 
+            selectSlot(0); 
+            showToast("✅ Operación Cerrada"); 
+            switchView('log', false); 
         }
 
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
-        function toggleTheme() { isLight = !isLight; document.body.classList.toggle('light-mode', isLight); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); if(profitChartInstance) profitChartInstance.options.scales.y.grid.color = isLight ? '#e6e8ea' : '#2b3139'; if(profitChartInstance) profitChartInstance.update(); }
+        
+        function toggleTheme() { 
+            isLight = !isLight; 
+            document.body.classList.toggle('light-mode', isLight); 
+            updateThemeIcon(); 
+            localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
+            // Reload Chart to match theme
+            if(chartSymbol) loadChart(chartSymbol);
+        }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
+        
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
@@ -477,64 +705,22 @@
         
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
-            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; document.getElementById('totalGainDisplay').textContent = "$0.00"; document.getElementById('totalOpsDisplay').textContent = "0"; return; } 
-            
-            let totalG = 0;
-            const html = history.map(h => {
-                totalG += parseFloat(h.profit) || 0;
-                return `<div class="level-card"><div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div><div class="level-center"><div class="level-price" style="font-size:16px">${h.coin}</div><div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div></div><div class="level-right"><div class="invest-val" style="color:var(--long)">+$${h.profit}</div><div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div></div></div>`;
-            }).reverse().join('');
-            grid.innerHTML = html;
-            document.getElementById('totalGainDisplay').textContent = "$" + totalG.toFixed(2);
-            document.getElementById('totalOpsDisplay').textContent = history.length;
+            if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
+            grid.innerHTML = history.map(h => `
+                <div class="level-card">
+                    <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
+                    <div class="level-center">
+                        <div class="level-price" style="font-size:16px">${h.coin}</div>
+                        <div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="invest-val" style="color:var(--long)">+$${h.profit}</div>
+                        <div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div>
+                    </div>
+                </div>`).reverse().join(''); 
         }
 
-        function updateProfitChart() {
-            const ctx = document.getElementById('profitChart').getContext('2d');
-            let cumulative = 0;
-            const labels = [];
-            const dataPoints = [];
-            
-            history.forEach((h, index) => {
-                cumulative += parseFloat(h.profit) || 0;
-                labels.push(index + 1);
-                dataPoints.push(cumulative);
-            });
-
-            if(profitChartInstance) profitChartInstance.destroy();
-
-            profitChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Ganancia Acumulada ($)',
-                        data: dataPoints,
-                        borderColor: '#0ecb81',
-                        backgroundColor: 'rgba(14, 203, 129, 0.1)',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointBackgroundColor: '#0ecb81',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { display: false },
-                        y: { 
-                            grid: { color: isLight ? '#e6e8ea' : '#2b3139' },
-                            ticks: { color: '#848e9c', font: { family: 'JetBrains Mono' } }
-                        }
-                    }
-                }
-            });
-        }
-
-        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); updateProfitChart(); showToast("🗑️ Historial Borrado"); }); }
+        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
         
         function exportExcel() { 
             if(history.length === 0) return showToast("⚠️ Sin Datos"); 
@@ -554,6 +740,7 @@
             doc.save("C5X_Reporte_Ejecutivo.pdf"); 
         }
 
+        // --- BACKUP SYSTEM ---
         function exportData() {
             const dataStr = JSON.stringify({ slots: slots, history: history });
             const blob = new Blob([dataStr], {type: "application/json"});
