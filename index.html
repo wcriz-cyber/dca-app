@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.2 ETF Card UI</title>
+    <title>C5X - V27.3 Color Sync</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -141,7 +141,7 @@
         .stat-label { font-size: 9px; color: var(--text-tertiary); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
         .stat-value { font-family: 'JetBrains Mono'; font-size: 13px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES (Estilo Base) --- */
+        /* --- LISTA DE NIVELES --- */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
         .level-card { 
@@ -157,7 +157,6 @@
         .level-center { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .level-price { font-family: 'JetBrains Mono'; font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; white-space: nowrap; text-overflow: ellipsis; }
         
-        /* Subtítulo dentro de la tarjeta (para precio o detalles) */
         .card-sub { font-size: 11px; font-weight: 700; color: var(--text-tertiary); font-family: 'Orbitron'; margin-top: 2px; }
 
         .level-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; flex-shrink: 0; }
@@ -170,7 +169,7 @@
         }
 
         /* --- VISTA ETF MONITOR (ESTILO DE LISTA) --- */
-        #section-etf { padding: 0; } /* Padding controlado por contenedor hijo */
+        #section-etf { padding: 0; } 
         .etf-search-box { position: relative; margin: 15px 16px 20px 16px; }
         .etf-search-input { 
             width: 100%; background: var(--surface); border: 1px solid var(--border); 
@@ -179,7 +178,6 @@
         }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
         
-        /* Reutilizamos .levels-container para la lista de ETFs */
         .etf-change-badge { 
             padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono';
         }
@@ -493,7 +491,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.2 ETF CARD UI
+                C5X V27.3 COLOR SYNC
             </div>
         </div>
     </div>
@@ -1060,6 +1058,18 @@
         function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         
+        function updateBodyMode(n) {
+            const r = document.querySelector(':root');
+            // Check specifically for leveraged tokens structure
+            if (n && (n.includes('3L') || n.includes('5L'))) {
+                r.style.setProperty('--brand', 'var(--long)');
+            } else if (n && (n.includes('3S') || n.includes('5S'))) {
+                r.style.setProperty('--brand', 'var(--short)');
+            } else {
+                r.style.setProperty('--brand', '#3b82f6'); // Default Blue
+            }
+        }
+
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain');
