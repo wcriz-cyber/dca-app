@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V27.4 Fixed</title>
+    <title>C5X - V27.5 Restored</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -168,7 +168,7 @@
             box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px;
         }
 
-        /* --- VISTA ETF MONITOR (ESTILO DE LISTA) --- */
+        /* --- VISTA ETF MONITOR (MEJORADA - ALTA VISIBILIDAD) --- */
         #section-etf { padding: 0; } 
         .etf-search-box { position: relative; margin: 15px 16px 20px 16px; display:flex; gap:10px; }
         .etf-search-input { 
@@ -518,7 +518,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V27.4 FIXED
+                C5X V27.5 RESTORED
             </div>
         </div>
     </div>
@@ -746,7 +746,7 @@
             }
 
             grid.innerHTML = filtered.map((t, index) => {
-                const isLong = t.name.includes('L'); // A simple check since we filtered for 3L/5L
+                const isLong = t.name.includes('L'); 
                 const displayPrice = (t.price < 1) ? t.price.toFixed(6) : t.price.toFixed(4);
                 
                 // High Viz Colors
@@ -884,6 +884,7 @@
         function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
 
+        // --- FIXED: SAFETY CHECK FOR NULL NAME ---
         function updateBodyMode(n) { 
             const r = document.querySelector(':root'); 
             if (!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
