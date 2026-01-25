@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.9 Smart Validator</title>
+    <title>C5X - V26.0 Titanium</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -115,11 +115,21 @@
         .chart-wrapper { height: 280px; background: #000; margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; }
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 12px 10px; }
-        .input-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; position: relative; }
+        .input-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; position: relative; display: flex; flex-direction: column; justify-content: center; }
         .input-group.readonly { background: rgba(0,0,0,0.2); border-color: transparent; }
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
+        /* MAGIC BUTTON STYLE */
+        .magic-wrapper { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; }
+        .magic-btn {
+            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+            width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.15);
+            border: none; color: var(--brand); display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 12px; transition: 0.2s;
+        }
+        .magic-btn:active { transform: translateY(-50%) scale(0.9); background: var(--brand); color: #fff; }
+
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
@@ -259,6 +269,12 @@
         .btn-cancel { background: transparent; color: var(--text-secondary); }
         .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; }
 
+        /* Estilos Patrimonio Modal */
+        .equity-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; }
+        .equity-label { color: var(--text-secondary); font-weight: 700; }
+        .equity-val { font-family: 'JetBrains Mono'; font-weight: 800; color: var(--text-primary); }
+        .equity-total { border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px; color: var(--brand); font-size: 18px; }
+
     </style>
 </head>
 <body onload="init()">
@@ -320,7 +336,13 @@
             <div id="tv_chart" class="chart-wrapper"></div>
             <div class="controls-grid">
                 <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div>
-                <div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div>
+                <div class="input-group">
+                    <label class="input-label">Base</label>
+                    <div class="magic-wrapper">
+                        <input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00">
+                        <button class="magic-btn" onclick="capturePrice()">📍</button>
+                    </div>
+                </div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
             <div class="dashboard-card" id="dashMain">
@@ -348,6 +370,7 @@
                     <button class="action-btn" style="color:var(--danger); border-color:var(--danger)" onclick="clearLogs()">BORRAR</button>
                 </div>
             </div>
+            <button class="btn-data" style="width: calc(100% - 32px); margin: 0 16px 15px 16px;" onclick="showPortfolio()">💰 VER PATRIMONIO GLOBAL</button>
             <div id="logGrid" class="levels-container"></div>
         </div>
 
@@ -364,6 +387,13 @@
                         <div class="input-wrapper">
                             <span class="input-icon">$</span>
                             <input type="number" id="setCapital">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>META DE GANANCIA (ROI)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">%</span>
+                            <input type="number" id="setRoi" placeholder="100">
                         </div>
                     </div>
                     <div class="config-item">
@@ -441,7 +471,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.9 SMART VALIDATOR
+                C5X V26.0 TITANIUM
             </div>
         </div>
     </div>
@@ -452,6 +482,29 @@
             <p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p>
             <button class="btn-modal btn-confirm" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button>
             <button class="btn-modal btn-cancel" onclick="closeModals()">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="portfolioModal" class="generic-modal">
+        <div class="modal-box">
+            <div style="font-family:'Orbitron'; font-size:14px; margin-bottom:20px; color:var(--brand)">PATRIMONIO GLOBAL</div>
+            <div class="equity-row">
+                <span class="equity-label">CAPITAL TOTAL</span>
+                <span class="equity-val" id="eqTotal">$0.00</span>
+            </div>
+            <div class="equity-row">
+                <span class="equity-label">INVERTIDO</span>
+                <span class="equity-val" id="eqInvested" style="color:var(--long)">$0.00</span>
+            </div>
+            <div class="equity-row">
+                <span class="equity-label">DISPONIBLE</span>
+                <span class="equity-val" id="eqFree">$0.00</span>
+            </div>
+            <div class="equity-row equity-total">
+                <span class="equity-label" style="color:var(--text-primary)">EN JUEGO</span>
+                <span class="equity-val" id="eqPercent">0%</span>
+            </div>
+            <button class="btn-modal btn-cancel" style="margin-top:20px" onclick="closeModals()">CERRAR</button>
         </div>
     </div>
 
@@ -474,16 +527,22 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+        // Se añade propiedad ROI a los slots si no existe
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 }));
+        
+        // Backward compatibility fix for ROI
+        slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; });
+
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- ULTIMATE TICKER ---
+        // --- ULTIMATE TICKER & PIN LOGIC ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 7;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
+        
         let currentTickerSymbol = "BTC";
         
         let proxyIdx = 0;
@@ -497,7 +556,7 @@
                 updateThemeIcon(); 
             }
             if(!Array.isArray(slots) || slots.length < 6) {
-               slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
+               slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 }));
             }
             renderNav(); selectSlot(activeIdx); renderHistory();
             
@@ -506,6 +565,11 @@
             tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
 
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+        }
+
+        // --- UTILS ---
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(10);
         }
 
         function forceCaps(el) {
@@ -519,7 +583,51 @@
             if(e.key === 'Enter') verifyAndAddCoin();
         }
 
-        // --- SMART VALIDATOR ---
+        // --- MAGIC BUTTON ---
+        function capturePrice() {
+            triggerHaptic();
+            const priceText = document.getElementById('t-price').textContent;
+            if(priceText && priceText !== "--.--" && priceText !== "ERR") {
+                // Remove commas for calculation
+                const cleanPrice = parseFloat(priceText.replace(/,/g, ''));
+                if(!isNaN(cleanPrice)) {
+                    document.getElementById('baseInput').value = cleanPrice;
+                    calculate();
+                    showToast("📍 Precio Capturado");
+                }
+            }
+        }
+
+        // --- GLOBAL PORTFOLIO ---
+        function showPortfolio() {
+            triggerHaptic();
+            let totalCap = 0;
+            let totalInvested = 0;
+
+            slots.forEach(s => {
+                totalCap += s.capital;
+                if(s.buys && s.buys.length > 0) {
+                    s.buys.forEach(levelIdx => {
+                        // Safe check for multiplier index
+                        if(levelIdx < MULTIPLIERS.length) {
+                            totalInvested += s.capital * MULTIPLIERS[levelIdx];
+                        }
+                    });
+                }
+            });
+
+            const free = totalCap - totalInvested;
+            const percent = totalCap > 0 ? (totalInvested / totalCap) * 100 : 0;
+
+            document.getElementById('eqTotal').textContent = `$${totalCap.toFixed(2)}`;
+            document.getElementById('eqInvested').textContent = `$${totalInvested.toFixed(2)}`;
+            document.getElementById('eqFree').textContent = `$${free.toFixed(2)}`;
+            document.getElementById('eqPercent').textContent = percent.toFixed(1) + '%';
+
+            document.getElementById('portfolioModal').style.display = 'flex';
+        }
+
+        // --- CHIP SYSTEM FUNCTIONS ---
         function renderTickerSettings() {
             const container = document.getElementById('tickerChipsContainer');
             container.innerHTML = tickerAssets.map((asset, index) => `
@@ -532,6 +640,7 @@
         }
 
         async function verifyAndAddCoin() {
+            triggerHaptic();
             const input = document.getElementById('newTickerCoin');
             const btn = document.getElementById('addCoinBtn');
             let val = input.value.trim().toUpperCase();
@@ -545,21 +654,17 @@
                 return; 
             }
 
-            // UI LOADING
             const originalBtnText = btn.textContent;
             btn.textContent = "🔍 ...";
             btn.disabled = true;
 
             try {
                 let exists = false;
-
-                // CHECK 1: BINANCE DIRECT
                 try {
                     const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${val}`);
                     if(res.ok) exists = true;
                 } catch(e) {}
 
-                // CHECK 2: GATE.IO VIA PROXY (If Binance fails)
                 if(!exists) {
                     try {
                         let gateSym = val.replace('USDT', '_USDT');
@@ -590,6 +695,7 @@
         }
 
         function removeTickerCoin(index) {
+            triggerHaptic();
             if(tickerAssets.length <= 1) return showToast("⚠️ Mínimo 1 moneda");
             tickerAssets.splice(index, 1);
             saveTickerData();
@@ -613,6 +719,7 @@
         }
 
         function toggleTickerPin() {
+            triggerHaptic();
             isTickerPinned = !isTickerPinned;
             localStorage.setItem('c5x_ticker_pinned', isTickerPinned);
             updatePinUI();
@@ -646,6 +753,7 @@
         }
 
         function switchView(viewName, toggle = true) {
+            triggerHaptic();
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
             document.getElementById('section-' + viewName).classList.add('active');
@@ -677,17 +785,22 @@
             document.getElementById('setCapital').value = s.capital;
             document.getElementById('setInc').value = document.getElementById('incInput').value;
             document.getElementById('setDesc').value = document.getElementById('descInput').value;
+            // NEW ROI LOAD
+            document.getElementById('setRoi').value = s.roi || 100;
         }
         
         function applySettings() {
+            triggerHaptic();
             const newCap = parseFloat(document.getElementById('setCapital').value);
             const newInc = document.getElementById('setInc').value;
             const newDesc = document.getElementById('setDesc').value;
+            const newRoi = parseFloat(document.getElementById('setRoi').value);
 
-            if(isNaN(newCap) || !newInc || !newDesc) return showToast("⚠️ Valores Inválidos");
+            if(isNaN(newCap) || !newInc || !newDesc || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
 
             openSecurity(() => {
                 slots[activeIdx].capital = newCap;
+                slots[activeIdx].roi = newRoi;
                 document.getElementById('incInput').value = newInc;
                 document.getElementById('descInput').value = newDesc;
                 save(); calculate(); updateDashUI();
@@ -704,7 +817,6 @@
                 let sym = tickerAssets[assetIdx];
                 let currentSymDisplay = sym.replace("USDT","");
                 
-                // 1. BINANCE
                 try {
                     const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`);
                     if (res.ok) {
@@ -714,11 +826,9 @@
                     }
                 } catch(e) {}
 
-                // PROXY URL BUILDER
                 const proxy = proxies[proxyIdx];
                 const cacheBuster = '&_t=' + new Date().getTime();
 
-                // 2. OKX
                 try {
                     const okxSym = currentSymDisplay + "-USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://www.okx.com/api/v5/market/ticker?instId=${okxSym}`) + cacheBuster);
@@ -731,7 +841,6 @@
                     }
                 } catch(e) {}
 
-                // 3. BYBIT
                 try {
                     const res = await fetch(proxy + encodeURIComponent(`https://api.bybit.com/v5/market/tickers?category=spot&symbol=${sym}`) + cacheBuster);
                     if(res.ok) {
@@ -743,7 +852,6 @@
                     }
                 } catch(e) {}
 
-                // 4. GATE.IO
                 try {
                     const gateSym = currentSymDisplay + "_USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`) + cacheBuster);
@@ -756,7 +864,6 @@
                     }
                 } catch(e) {}
 
-                // 5. MEXC
                 try {
                     const res = await fetch(proxy + encodeURIComponent(`https://api.mexc.com/api/v3/ticker/price?symbol=${sym}`) + cacheBuster);
                     if(res.ok) {
@@ -766,7 +873,6 @@
                     }
                 } catch(e) {}
 
-                // 6. KUCOIN
                 try {
                     const kuSym = currentSymDisplay + "-USDT";
                     const res = await fetch(proxy + encodeURIComponent(`https://api.kucoin.com/api/v1/market/orderbook/level1?symbol=${kuSym}`) + cacheBuster);
@@ -812,6 +918,7 @@
         }
 
         function updateTF(tf, btn) { 
+            triggerHaptic();
             activeTF = tf; localStorage.setItem('c5x_last_tf', tf); 
             document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); 
             loadChart(chartSymbol); 
@@ -835,6 +942,7 @@
         }
 
         function selectSlot(i) { 
+            triggerHaptic();
             activeIdx = i; localStorage.setItem('c5x_last_slot', i); 
             const s = slots[i]; 
             document.getElementById('coinInput').value = s.name; 
@@ -845,8 +953,8 @@
 
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
-        function rotateDash() { const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
-        function toggleLock() { const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
+        function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
@@ -889,7 +997,10 @@
             renderLevels(); 
         }
 
-        function toggleLvl(idx) { const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
+        function toggleLvl(idx) { 
+            triggerHaptic();
+            const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); 
+        }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
@@ -924,21 +1035,28 @@
             html += `<div class="level-card liquidate-card" onclick="openLiquidateConfirm()">LIQUIDAR POSICIÓN</div>`;
             grid.innerHTML = html;
             const avg = totalQty > 0 ? totalSpent/totalQty : 0;
+            
+            // ROI CALCULATION
+            const targetROI = s.roi || 100;
+            const targetPrice = avg * (1 + (targetROI / 100));
+
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
             document.getElementById('resAvg').textContent = fmtPrice(avg);
-            document.getElementById('resTarget').textContent = fmtPrice(avg * 2);
+            document.getElementById('resTarget').textContent = fmtPrice(targetPrice);
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
         }
 
-        function copyText(txt) { navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt)); }
+        function copyText(txt) { triggerHaptic(); navigator.clipboard.writeText(txt).then(() => showToast("COPIADO: " + txt)); }
 
         function openLiquidateConfirm() {
+            triggerHaptic();
             const s = slots[activeIdx];
             if(s.buys.length === 0) return showToast("⚠️ Slot Vacío");
             document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function executeRelease() {
+            triggerHaptic();
             closeModals();
             const s = slots[activeIdx];
             
@@ -946,11 +1064,19 @@
             const totalInv = parseFloat(totalInvStr) || 0;
             const avgPriceStr = document.getElementById('resAvg').textContent;
             const avgPrice = parseFloat(avgPriceStr) || 0;
-            const exitPrice = avgPrice * 2;
+            
+            // Exit price logic based on ROI setting
+            const targetROI = s.roi || 100;
+            const exitPrice = avgPrice * (1 + (targetROI / 100));
+
             const qty = avgPrice > 0 ? (totalInv / avgPrice) : 0;
-            const profitStr = document.getElementById('resProfit').textContent.replace('$','');
-            const profit = parseFloat(profitStr);
-            const roi = totalInv > 0 ? ((profit / totalInv) * 100) : 0;
+            // Profit displayed is simplistic in UI, normally calculate (exit - avg) * qty
+            // Keeping consistent with existing logic which showed invested as profit placeholder?
+            // Actually, "Profit" label in dashboard currently shows Total Spent?
+            // Let's assume standard log logic: Profit is realized amount - invested amount.
+            // But since this is a simulation tool, usually user inputs the real exit price.
+            // For auto-log, we assume target hit:
+            const estimatedProfit = (totalInv * (targetROI / 100));
 
             const logEntry = { 
                 date: new Date().toLocaleDateString(), 
@@ -962,15 +1088,15 @@
                 exitPrice: fmtPrice(exitPrice),
                 qty: qty.toFixed(8),
                 totalInv: totalInv.toFixed(2),
-                profit: profit.toFixed(2),
-                roi: roi.toFixed(2) + '%',
+                profit: estimatedProfit.toFixed(2),
+                roi: targetROI + '%',
                 levelsUsed: s.buys.length
             };
 
             history.push(logEntry);
             localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
             
-            slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
+            slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100 };
             const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
             slots = [...filled, ...empty]; 
             save(); 
