@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.6 Streamlined</title>
+    <title>C5X - V24.7 Stable Fix</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -207,7 +207,7 @@
         .btn-data { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-data:active { background: rgba(255,255,255,0.05); }
 
-        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; font-family: 'Orbitron'; cursor: pointer; }
+        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron'; cursor: pointer; }
 
         /* --- MENÚ MODAL --- */
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; }
@@ -384,7 +384,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V24.6 STREAMLINED
+                C5X V24.7 STABLE FIX
             </div>
         </div>
     </div>
@@ -426,7 +426,10 @@
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
-            if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+            if(isLight) { 
+                document.body.classList.add('light-mode'); 
+                updateThemeIcon(); 
+            }
             renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             setInterval(fetchTicker, 8000); 
@@ -437,6 +440,7 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // --- SMART SPACING (AJUSTE DINÁMICO) ---
         function switchView(viewName, toggle = true) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
@@ -709,3 +713,19 @@
             reader.onload = function(e) {
                 try {
                     const data = JSON.parse(e.target.result);
+                    if(data.slots && data.history) {
+                        slots = data.slots;
+                        history = data.history;
+                        save();
+                        localStorage.setItem('c5x_history', JSON.stringify(history));
+                        location.reload();
+                    } else { showToast("⚠️ Archivo Inválido"); }
+                } catch(err) { showToast("❌ Error al leer archivo"); }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
+    </script>
+</body>
+</html>
