@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.2 Smart Ticker</title>
+    <title>C5X - V25.3 Gate.io Native</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -201,7 +201,7 @@
         .input-wrapper input:focus { border-color: var(--brand); outline: none; }
         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
 
-        /* ESTILOS NUEVOS PARA CHIPS DEL TICKER */
+        /* ESTILOS PARA CHIPS DEL TICKER */
         .chip-container {
             display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;
         }
@@ -413,7 +413,7 @@
                     </div>
                 </div>
                 <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
-                    Los cambios se guardan automáticamente.
+                    Datos extraídos de Gate.io
                 </div>
             </div>
 
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.2 SMART TICKER
+                C5X V25.3 GATE.IO NATIVE
             </div>
         </div>
     </div>
@@ -478,7 +478,7 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- TICKER & PIN LOGIC ---
+        // --- TICKER & PIN LOGIC (Gate.io) ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
@@ -567,20 +567,16 @@
             localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
             localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
             
-            // Render UI
             renderTickerSettings();
 
-            // Restart Ticker
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
             
-            // If user removed current pinned coin, unpin
             if(assetIdx >= tickerAssets.length) {
                 assetIdx = 0;
                 localStorage.setItem('c5x_ticker_index', 0);
             }
 
-            // Immediate update
             fetchTicker(); 
         }
 
@@ -659,26 +655,37 @@
             });
         }
 
+        // --- UPDATED: GATE.IO API FETCH ---
         async function fetchTicker() { 
             try { 
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
-                localStorage.setItem('c5x_ticker_index', assetIdx); // Save Index
+                localStorage.setItem('c5x_ticker_index', assetIdx);
 
-                const sym = tickerAssets[assetIdx];
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`); 
+                let sym = tickerAssets[assetIdx];
+                // Convert internal BTCUSDT to Gate.io BTC_USDT format
+                let gateSym = sym.replace('USDT', '_USDT');
+
+                const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`); 
                 if(!res.ok) throw new Error('Network response was not ok');
-                const data = await res.json(); 
-                currentTickerSymbol = sym.replace("USDT",""); 
-                document.getElementById('t-sym').textContent = currentTickerSymbol; 
-                document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
-                const isUp = parseFloat(data.priceChangePercent) >= 0;
-                document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
                 
+                const data = await res.json(); 
+                // Gate.io returns array: [{currency_pair: "BTC_USDT", last: "...", ...}]
+                if (data && data.length > 0) {
+                    const ticker = data[0];
+                    currentTickerSymbol = sym.replace("USDT",""); 
+                    document.getElementById('t-sym').textContent = currentTickerSymbol; 
+                    document.getElementById('t-price').textContent = parseFloat(ticker.last).toLocaleString(); 
+                    
+                    const isUp = parseFloat(ticker.change_percentage) >= 0;
+                    document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
+                }
+
                 if(!isTickerPinned) {
                     assetIdx = (assetIdx + 1) % tickerAssets.length; 
                 }
             } catch(e) {
-                console.log("Ticker update skipped or symbol invalid");
+                console.log("Ticker update skipped or symbol invalid: " + e);
+                // Skip to next if invalid
                 if(!isTickerPinned) assetIdx = (assetIdx + 1) % tickerAssets.length;
             } 
         }
