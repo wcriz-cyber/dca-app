@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.8 Optimized</title>
+    <title>C5X - V24.9 Custom Ticker</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -357,6 +357,32 @@
 
             <div class="settings-card">
                 <div class="setting-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                    AJUSTES DE MERCADO (TICKER)
+                </div>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>MONEDAS TICKER (Separa con comas)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">#</span>
+                            <input type="text" id="setTickerCoins" placeholder="BTC,ETH,SOL">
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>INTERVALO (Segundos)</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">⏱</span>
+                            <input type="number" id="setTickerInterval" placeholder="8">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-save-config" style="background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); box-shadow:none; margin-top:15px;" onclick="saveTickerConfig()">
+                    ACTUALIZAR TICKER
+                </button>
+            </div>
+
+            <div class="settings-card">
+                <div class="setting-header">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                     GESTIÓN DE DATOS
                 </div>
@@ -379,7 +405,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V24.8 OPTIMIZED
+                C5X V24.9 CUSTOM TICKER
             </div>
         </div>
     </div>
@@ -412,12 +438,15 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        // Default init corrected to ensure slots structure integrity
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
         let currentSection = 'operate';
         let modalCallback = null;
 
-        const assets = ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
+        // --- NEW TICKER LOGIC ---
+        // Load custom assets or default
+        let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
+        let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
+        let tickerIntervalId = null;
         let assetIdx = 0, currentTickerSymbol = "BTC";
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
@@ -426,13 +455,16 @@
                 document.body.classList.add('light-mode'); 
                 updateThemeIcon(); 
             }
-            // Ensure data integrity on load
             if(!Array.isArray(slots) || slots.length < 6) {
                slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false }));
             }
-            renderNav(); selectSlot(activeIdx); fetchTicker(); renderHistory();
+            renderNav(); selectSlot(activeIdx); renderHistory();
+            
+            // Start Ticker Loop
+            fetchTicker();
+            tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
+
             document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            setInterval(fetchTicker, 8000); 
         }
 
         function toggleMenu() {
@@ -459,10 +491,11 @@
                 spacer.style.marginTop = '75px'; 
             }
 
-            if(viewName === 'settings') loadSettingsValues();
+            if(viewName === 'settings') {
+                loadSettingsValues();
+                loadTickerSettings(); // Load ticker inputs
+            }
             if(toggle) toggleMenu(); 
-            
-            // Auto scroll to top on switch
             window.scrollTo(0,0);
         }
 
@@ -471,6 +504,45 @@
             document.getElementById('setCapital').value = s.capital;
             document.getElementById('setInc').value = document.getElementById('incInput').value;
             document.getElementById('setDesc').value = document.getElementById('descInput').value;
+        }
+        
+        // --- NEW: Load Ticker Settings UI ---
+        function loadTickerSettings() {
+            // Convert ["BTCUSDT", "ETHUSDT"] -> "BTC, ETH" for display
+            const displayCoins = tickerAssets.map(a => a.replace('USDT','')).join(', ');
+            document.getElementById('setTickerCoins').value = displayCoins;
+            document.getElementById('setTickerInterval').value = tickerIntervalTime;
+        }
+
+        // --- NEW: Save Ticker Settings ---
+        function saveTickerConfig() {
+            const rawCoins = document.getElementById('setTickerCoins').value;
+            const secs = parseInt(document.getElementById('setTickerInterval').value);
+
+            if(!rawCoins || isNaN(secs) || secs < 2) return showToast("⚠️ Datos inválidos (min 2s)");
+
+            // Parse coins string to array
+            const newAssets = rawCoins.split(',').map(c => {
+                let clean = c.trim().toUpperCase();
+                if(!clean) return null;
+                return clean.includes('USDT') ? clean : clean + 'USDT';
+            }).filter(c => c !== null);
+
+            if(newAssets.length === 0) return showToast("⚠️ Añade al menos 1 moneda");
+
+            // Save and Apply
+            tickerAssets = newAssets;
+            tickerIntervalTime = secs;
+            localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+            localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
+
+            // Restart Interval
+            if(tickerIntervalId) clearInterval(tickerIntervalId);
+            tickerIntervalId = setInterval(fetchTicker, tickerIntervalTime * 1000);
+            assetIdx = 0;
+            fetchTicker(); // Immediate update
+
+            showToast("✅ Ticker Actualizado");
         }
 
         function applySettings() {
@@ -491,18 +563,23 @@
 
         async function fetchTicker() { 
             try { 
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${assets[assetIdx]}`); 
+                // Uses dynamic tickerAssets array
+                if (assetIdx >= tickerAssets.length) assetIdx = 0;
+                const sym = tickerAssets[assetIdx];
+
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`); 
                 if(!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json(); 
-                currentTickerSymbol = assets[assetIdx].replace("USDT",""); 
+                currentTickerSymbol = sym.replace("USDT",""); 
                 document.getElementById('t-sym').textContent = currentTickerSymbol; 
                 document.getElementById('t-price').textContent = parseFloat(data.lastPrice).toLocaleString(); 
                 const isUp = parseFloat(data.priceChangePercent) >= 0;
                 document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
-                assetIdx = (assetIdx + 1) % assets.length; 
+                assetIdx = (assetIdx + 1) % tickerAssets.length; 
             } catch(e) {
-                // Silent fail or retry logic could go here
-                console.log("Ticker update skipped");
+                console.log("Ticker update skipped or symbol invalid");
+                // Skip to next asset on error to avoid getting stuck on a bad symbol
+                assetIdx = (assetIdx + 1) % tickerAssets.length;
             } 
         }
 
@@ -521,7 +598,6 @@
 
         function loadChart(coin) { 
             chartSymbol = (coin || 'BTC3L').toUpperCase(); 
-            // Theme aware chart loading
             const themeMode = isLight ? "light" : "dark";
             const bgColor = isLight ? "#ffffff" : "#0b0e11";
             
@@ -577,7 +653,6 @@
             calculate();
         }
 
-        // Smart Formatter for Crypto Prices
         function fmtPrice(p) {
             if(!p) return "0.00";
             if(p < 1) return p.toFixed(8);
@@ -674,7 +749,6 @@
             history.push(logEntry);
             localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
             
-            // Reset Slot but ensure structure is clean
             slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false };
             const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
             slots = [...filled, ...empty]; 
@@ -693,7 +767,6 @@
             document.body.classList.toggle('light-mode', isLight); 
             updateThemeIcon(); 
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
-            // Reload Chart to match theme
             if(chartSymbol) loadChart(chartSymbol);
         }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
@@ -742,7 +815,7 @@
 
         // --- BACKUP SYSTEM ---
         function exportData() {
-            const dataStr = JSON.stringify({ slots: slots, history: history });
+            const dataStr = JSON.stringify({ slots: slots, history: history, tickerAssets: tickerAssets, tickerInterval: tickerIntervalTime });
             const blob = new Blob([dataStr], {type: "application/json"});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = "C5X_Backup_" + new Date().toLocaleDateString().replace(/\//g,'-') + ".json";
@@ -760,6 +833,14 @@
                     if(data.slots && data.history) {
                         slots = data.slots;
                         history = data.history;
+                        if(data.tickerAssets) {
+                            tickerAssets = data.tickerAssets;
+                            localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+                        }
+                        if(data.tickerInterval) {
+                            tickerIntervalTime = data.tickerInterval;
+                            localStorage.setItem('c5x_ticker_interval', tickerIntervalTime);
+                        }
                         save();
                         localStorage.setItem('c5x_history', JSON.stringify(history));
                         location.reload();
