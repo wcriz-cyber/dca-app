@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.3 Settings Pro</title>
+    <title>C5X - V24.4 Security Plus</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -164,21 +164,17 @@
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        /* --- VISTA AJUSTES (RENOVADA V24.3) --- */
-        #section-settings { padding: 20px; padding-bottom: 100px; }
+        /* --- VISTA AJUSTES --- */
+        #section-settings { padding: 20px; padding-bottom: 80px; }
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;}
         
-        /* ESTILO PARA INPUTS CON ICONO DE MONEDA */
         .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .config-item { position: relative; }
         .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
         
         .input-wrapper { position: relative; }
-        .input-wrapper input { 
-            width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; /* Padding izq para icono */
-            border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; 
-        }
+        .input-wrapper input { width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; }
         .input-wrapper input:focus { border-color: var(--brand); outline: none; }
         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
 
@@ -186,7 +182,6 @@
         .setting-info h4 { font-size: 14px; margin-bottom: 4px; color: var(--text-primary); font-weight: 700; }
         .setting-info p { font-size: 11px; color: var(--text-secondary); }
         
-        /* SWITCH TOGGLE MODERNO */
         .toggle-switch { position: relative; width: 50px; height: 28px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
@@ -194,8 +189,13 @@
         input:checked + .slider { background-color: var(--brand); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* BOTONES DE ACCIÓN SETTINGS */
-        .btn-save-config { width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); }
+        /* BOTÓN GUARDAR (PROTEGIDO) */
+        .btn-save-config { 
+            width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; 
+            border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; 
+            cursor: pointer; box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2); 
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
         
         .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         .btn-backup { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -327,7 +327,7 @@
                 </div>
                 <div class="config-grid">
                     <div class="config-item">
-                        <label>CAPITAL ($)</label>
+                        <label>CAPITAL DEL SLOT ($)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">$</span>
                             <input type="number" id="setCapital">
@@ -348,7 +348,10 @@
                         </div>
                     </div>
                 </div>
-                <button class="btn-save-config" onclick="applySettings()">GUARDAR CAMBIOS</button>
+                <button class="btn-save-config" onclick="applySettings()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>
+                    GUARDAR CAMBIOS
+                </button>
             </div>
 
             <div class="settings-card">
@@ -386,7 +389,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V24.3 PRO SETTINGS
+                C5X V24.4 SECURITY PLUS
             </div>
         </div>
     </div>
@@ -430,7 +433,7 @@
         function init() { 
             if(isLight) { 
                 document.body.classList.add('light-mode'); 
-                document.getElementById('themeToggle').checked = false; // Checkbox logic inverted for UI
+                document.getElementById('themeToggle').checked = false; 
                 updateThemeIcon(); 
             } else {
                 document.getElementById('themeToggle').checked = true;
@@ -479,12 +482,17 @@
             const newCap = parseFloat(document.getElementById('setCapital').value);
             const newInc = document.getElementById('setInc').value;
             const newDesc = document.getElementById('setDesc').value;
+
             if(isNaN(newCap) || !newInc || !newDesc) return showToast("⚠️ Valores Inválidos");
-            slots[activeIdx].capital = newCap;
-            document.getElementById('incInput').value = newInc;
-            document.getElementById('descInput').value = newDesc;
-            save(); calculate(); updateDashUI();
-            showToast("✅ Configuración Guardada");
+
+            // SECURITY CHECK: Solicitar contraseña antes de guardar
+            openSecurity(() => {
+                slots[activeIdx].capital = newCap;
+                document.getElementById('incInput').value = newInc;
+                document.getElementById('descInput').value = newDesc;
+                save(); calculate(); updateDashUI();
+                showToast("✅ Configuración Guardada");
+            });
         }
 
         async function fetchTicker() { 
@@ -647,7 +655,7 @@
         
         function toggleTheme() { 
             const checkbox = document.getElementById('themeToggle');
-            isLight = !checkbox.checked; // Toggle state based on checkbox
+            isLight = !checkbox.checked; 
             document.body.classList.toggle('light-mode', isLight); 
             updateThemeIcon(); 
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
@@ -707,25 +715,3 @@
         }
 
         function importData(input) {
-            const file = input.files[0];
-            if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if(data.slots && data.history) {
-                        slots = data.slots;
-                        history = data.history;
-                        save();
-                        localStorage.setItem('c5x_history', JSON.stringify(history));
-                        location.reload();
-                    } else { showToast("⚠️ Archivo Inválido"); }
-                } catch(err) { showToast("❌ Error al leer archivo"); }
-            };
-            reader.readAsText(file);
-        }
-
-        function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
-    </script>
-</body>
-</html>
