@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.0 BEAST</title>
+    <title>C5X - V29.1 STABLE BEAST</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -55,7 +55,7 @@
             padding-bottom: 20px; 
             overflow-x: hidden; 
             transition: background 0.3s ease, color 0.3s ease;
-            user-select: none; /* Mejor experiencia swipe */
+            user-select: none; /* Para mejorar gestos swipe */
         }
 
         /* --- HEADER --- */
@@ -122,9 +122,15 @@
         .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
 
         .slot-nav { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 10px; }
-        .slot-card { background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); padding: 12px 0; text-align: center; border-radius: var(--radius-m); font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; }
-        .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); }
-        /* Heatmap Styles */
+        .slot-card { 
+            background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); 
+            padding: 12px 0; text-align: center; border-radius: var(--radius-m); 
+            font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative;
+        }
+        .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
+        
+        /* HEATMAP CLASSES */
         .slot-card.has-profit { border-bottom: 3px solid var(--long); }
         .slot-card.has-loss { border-bottom: 3px solid var(--short); }
         .slot-card.is-occupied { border-bottom: 3px solid var(--text-tertiary); }
@@ -170,7 +176,7 @@
         .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
         .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; }
         
-        /* Break Even Button */
+        /* BE BUTTON */
         .be-btn { 
             position: absolute; right: 0; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.05); border: 1px solid var(--border);
@@ -361,7 +367,7 @@
                 <div class="nav-text">BITÁCORA</div>
             </div>
             <div class="nav-item" id="nav-settings" onclick="switchView('settings')">
-                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div>
                 <div class="nav-text">AJUSTES</div>
             </div>
             <button class="btn-close-menu" onclick="toggleMenu()">
@@ -566,7 +572,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V29.0 BEAST
+                C5X V29.1 STABLE BEAST
             </div>
         </div>
     </div>
@@ -625,9 +631,8 @@
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
         
-        // Slot Schema with 'note' and 'alerted'
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }));
-        // Compatibilidad
+        // Backward compatibility
         slots.forEach(s => { 
             if(typeof s.roi === 'undefined') s.roi = 100; 
             if(typeof s.note === 'undefined') s.note = '';
@@ -637,10 +642,12 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
+        // --- NEW FEATURES VARIABLES ---
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         
+        // --- TICKER & WS ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -657,31 +664,44 @@
 
         function init() { 
             try {
-                if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+                if(isLight) { 
+                    document.body.classList.add('light-mode'); 
+                    updateThemeIcon(); 
+                }
+
                 if(!Array.isArray(slots) || slots.length < 6) {
                    slots = Array(6).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }));
                 }
                 
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-                const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
-                const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
+                
+                const multInput = document.getElementById('setMultipliers');
+                if(multInput) multInput.value = customMultipliers.join(', ');
+                
+                const proxInput = document.getElementById('setProxy');
+                if(proxInput) proxInput.value = customProxy;
 
                 renderNav(); selectSlot(activeIdx); renderHistory();
-                updatePinUI(); startTickerSystem(); 
-                setupSwipe(); // Iniciar gestos
+                
+                updatePinUI();
+                startTickerSystem(); 
+                setupSwipe(); // Enable Swipe
 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
-            } catch(e) { console.error("Init Error", e); localStorage.removeItem('theme'); }
+            } catch(e) {
+                console.error("Init Error", e);
+                localStorage.removeItem('theme'); // Reset theme if stuck
+            }
         }
 
         // --- SWIPE GESTURES ---
         function setupSwipe() {
             const el = document.getElementById('section-operate');
-            el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, false);
+            el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
             el.addEventListener('touchend', e => {
                 touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, false);
+                if(currentSection === 'operate') handleSwipe();
+            }, {passive: true});
         }
 
         function handleSwipe() {
@@ -700,93 +720,97 @@
             }
         }
 
-        // --- BREAK EVEN LOGIC ---
+        // --- BREAK EVEN LOGIC (Protected) ---
         function setBreakEven() {
             const s = slots[activeIdx];
             if(!s.name || s.buys.length === 0) return showToast("⚠️ Slot sin actividad");
             
-            // Calc Avg Price
-            let totalSpent = 0, totalQty = 0, lastPrice = s.price;
-            const descPct = parseFloat(document.getElementById('descInput').value) || 66;
-            const incPct = parseFloat(document.getElementById('incInput').value) || 7;
+            try {
+                let totalSpent = 0, totalQty = 0, lastPrice = s.price;
+                const descPct = parseFloat(document.getElementById('descInput').value) || 66;
+                const incPct = parseFloat(document.getElementById('incInput').value) || 7;
 
-            for(let i=0; i<customMultipliers.length; i++){
-                let pLevel;
-                if(i===0) pLevel = s.price;
-                else {
-                    let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
-                    pLevel = lastPrice * (1 - (step/100));
+                for(let i=0; i<customMultipliers.length; i++){
+                    let pLevel;
+                    if(i===0) pLevel = s.price;
+                    else {
+                        let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
+                        pLevel = lastPrice * (1 - (step/100));
+                    }
+                    if(s.buys.includes(i)) {
+                        const mUSD = customMultipliers[i] * s.capital;
+                        totalSpent += mUSD;
+                        totalQty += (mUSD/pLevel);
+                    }
+                    lastPrice = pLevel;
                 }
-                if(s.buys.includes(i)) {
-                    const mUSD = customMultipliers[i] * s.capital;
-                    totalSpent += mUSD;
-                    totalQty += (mUSD/pLevel);
-                }
-                lastPrice = pLevel;
-            }
 
-            const avgPrice = totalQty > 0 ? totalSpent/totalQty : 0;
-            if(avgPrice <= 0) return;
+                const avgPrice = totalQty > 0 ? totalSpent/totalQty : 0;
+                if(avgPrice <= 0) return;
 
-            // Target = Avg + 0.2% fee margin
-            const targetBE = avgPrice * 1.002;
-            
-            // Reverse calc ROI
-            // Exit = Avg * (1 + roi/100) => roi = ((Exit/Avg)-1)*100
-            const newRoi = ((targetBE / avgPrice) - 1) * 100;
-            
-            s.roi = parseFloat(newRoi.toFixed(2));
-            document.getElementById('setRoi').value = s.roi;
-            save();
-            calculate();
-            showToast("🛡️ Modo Break-Even Activado");
+                // Target = Avg + 0.2% fee margin
+                const targetBE = avgPrice * 1.002;
+                
+                // Reverse calc ROI
+                const newRoi = ((targetBE / avgPrice) - 1) * 100;
+                
+                s.roi = parseFloat(newRoi.toFixed(2));
+                document.getElementById('setRoi').value = s.roi;
+                save();
+                calculate();
+                showToast("🛡️ Modo Break-Even Activado");
+            } catch(e) { showToast("❌ Error cálculo"); }
         }
 
-        // --- HEATMAP & ALERTS LOGIC (In Ticker Loop) ---
+        // --- HEATMAP & ALERTS LOGIC (Protected) ---
         function updateSlotStatus(symbol, currentPrice) {
-            // Check if any slot matches this symbol
-            slots.forEach((s, idx) => {
-                if(s.name === symbol && s.buys.length > 0) {
-                    // Update Slot Status UI
-                    const el = document.querySelectorAll('.slot-card')[idx];
-                    
-                    // Calc Avg for this slot (simplified)
-                    // Note: Ideally we store avg in slot, but let's recalculate quickly
-                    let avg = calculateAvgPriceForSlot(s);
-                    
-                    if(avg > 0) {
-                        if(currentPrice > avg) {
-                            el.classList.remove('has-loss'); el.classList.add('has-profit');
-                            // CHECK ALERT
-                            const target = avg * (1 + (s.roi/100));
-                            if(currentPrice >= target && !s.alerted) {
-                                triggerAlert(s.name);
-                                s.alerted = true; 
-                                save();
+            try {
+                slots.forEach((s, idx) => {
+                    if(s.name === symbol && s.buys.length > 0) {
+                        const el = document.getElementById('nav-s'+idx);
+                        if(!el) return;
+
+                        let avg = calculateAvgPriceForSlot(s);
+                        
+                        if(avg > 0) {
+                            if(currentPrice > avg) {
+                                el.classList.remove('has-loss'); el.classList.add('has-profit');
+                                // Check Alert
+                                const target = avg * (1 + (s.roi/100));
+                                if(currentPrice >= target && !s.alerted) {
+                                    triggerAlert(s.name);
+                                    s.alerted = true; 
+                                    save();
+                                }
+                            } else {
+                                el.classList.remove('has-profit'); el.classList.add('has-loss');
+                                s.alerted = false; 
                             }
-                        } else {
-                            el.classList.remove('has-profit'); el.classList.add('has-loss');
-                            s.alerted = false; // Reset alert if drops back
                         }
                     }
-                }
-            });
+                });
+            } catch(e) { console.warn("Heatmap Error", e); }
         }
 
         function calculateAvgPriceForSlot(s) {
-            // Quick calculation logic reused
+            if(!s.price) return 0;
             let totalSpent = 0, totalQty = 0, lastPrice = s.price;
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             const incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            for(let i=0; i<customMultipliers.length; i++){
+            // Use custom multipliers or default 12 if loading failed
+            const limit = customMultipliers ? customMultipliers.length : 12;
+            
+            for(let i=0; i<limit; i++){
                 let pLevel;
                 if(i===0) pLevel = s.price;
                 else {
                     let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
                     pLevel = lastPrice * (1 - (step/100));
                 }
+                // Check bounds
                 if(s.buys.includes(i)) {
-                    const mUSD = customMultipliers[i] * s.capital;
+                    const m = customMultipliers ? (customMultipliers[i] || 1) : 1;
+                    const mUSD = m * s.capital;
                     totalSpent += mUSD;
                     totalQty += (mUSD/pLevel);
                 }
@@ -797,20 +821,55 @@
 
         function triggerAlert(coin) {
             const audio = document.getElementById('alertSound');
-            if(audio) audio.play().catch(e=>console.log(e));
+            if(audio) {
+                audio.play().catch(e => console.log("Audio autoplay blocked by browser"));
+            }
             if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
             showToast("🎯 OBJETIVO ALCANZADO: " + coin);
         }
 
-        // --- THEME LOGIC FIX ---
+        // --- THEME LOGIC ---
         function toggleTheme() { 
             isLight = !isLight; 
-            if(isLight) { document.body.classList.add('light-mode'); } else { document.body.classList.remove('light-mode'); }
+            if(isLight) {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
             updateThemeIcon(); 
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
+            
             if(chartSymbol) loadChart(chartSymbol);
         }
+
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
+
+        // --- UTILS ---
+        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(10); }
+        function forceCaps(el) { const start = el.selectionStart; const end = el.selectionEnd; el.value = el.value.toUpperCase(); el.setSelectionRange(start, end); }
+        function handleEnter(e) { if(e.key === 'Enter') verifyAndAddCoin(); }
+
+        // --- CUSTOM MULTIPLIERS ---
+        function saveMultipliers() {
+            const raw = document.getElementById('setMultipliers').value;
+            try {
+                const arr = raw.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+                if(arr.length < 5) return showToast("⚠️ Mínimo 5 niveles");
+                customMultipliers = arr;
+                localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers));
+                showToast("✅ Multiplicadores Guardados");
+                calculate(); 
+            } catch(e) { showToast("❌ Error de formato"); }
+        }
+
+        function saveProxy() {
+            const val = document.getElementById('setProxy').value.trim();
+            customProxy = val;
+            localStorage.setItem('c5x_custom_proxy', customProxy);
+            proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
+            if(customProxy) proxies.unshift(customProxy);
+            showToast("✅ Proxy Actualizado");
+        }
 
         // --- TICKER SYSTEM ---
         function startTickerSystem() {
@@ -829,7 +888,11 @@
             let displaySym = sym.replace("USDT","");
             document.getElementById('t-sym').textContent = displaySym;
             
-            if(currentWs) { if(currentWs.url && currentWs.url.includes(sym.toLowerCase())) return; currentWs.close(); currentWs = null; }
+            if(currentWs) {
+                if(currentWs.url && currentWs.url.includes(sym.toLowerCase())) return;
+                currentWs.close();
+                currentWs = null;
+            }
 
             try {
                 const wsUrl = `wss://stream.binance.com:9443/ws/${sym.toLowerCase()}@trade`;
@@ -838,7 +901,7 @@
                     const data = JSON.parse(event.data);
                     const price = parseFloat(data.p);
                     updateTickerUI(displaySym, price, true); 
-                    updateSlotStatus(displaySym, price); // HEATMAP & ALERTS TRIGGER
+                    updateSlotStatus(displaySym, price); // HEATMAP TRIGGER
                     document.getElementById('t-dot').classList.add('pulse');
                 };
                 currentWs.onerror = () => { fetchTickerRest(sym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); };
@@ -864,7 +927,7 @@
                 }
                 if(price > 0) {
                     updateTickerUI(displaySym, price, true);
-                    updateSlotStatus(displaySym, price); // HEATMAP UPDATE
+                    updateSlotStatus(displaySym, price);
                 }
             } catch(e) {}
         }
@@ -883,11 +946,149 @@
             else { showToast("▶️ Rotando"); updateTicker(); }
         }
 
-        function updatePinUI() { const btn = document.getElementById('tickerPinBtn'); if(isTickerPinned) btn.classList.add('pinned'); else btn.classList.remove('pinned'); }
-        function toggleFullscreenChart(e) { e.stopPropagation(); const wrapper = document.getElementById('tv_chart'); wrapper.classList.toggle('fullscreen'); if(wrapper.classList.contains('fullscreen')) { if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" }); } else { loadChart(chartSymbol); } }
+        function updatePinUI() {
+            const btn = document.getElementById('tickerPinBtn');
+            if(isTickerPinned) btn.classList.add('pinned'); else btn.classList.remove('pinned');
+        }
+
+        // --- CHART FULLSCREEN ---
+        function toggleFullscreenChart(e) {
+            e.stopPropagation();
+            const wrapper = document.getElementById('tv_chart');
+            wrapper.classList.toggle('fullscreen');
+            if(wrapper.classList.contains('fullscreen')) {
+                 if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
+            } else { loadChart(chartSymbol); }
+        }
+
+        // --- GLOBAL PORTFOLIO ---
+        function showPortfolio() {
+            triggerHaptic();
+            let totalCap = 0; let totalInvested = 0;
+            slots.forEach(s => {
+                totalCap += s.capital;
+                if(s.buys && s.buys.length > 0) {
+                    s.buys.forEach(levelIdx => {
+                        if(levelIdx < customMultipliers.length) {
+                            totalInvested += s.capital * customMultipliers[levelIdx];
+                        }
+                    });
+                }
+            });
+            const free = totalCap - totalInvested;
+            const percent = totalCap > 0 ? (totalInvested / totalCap) * 100 : 0;
+            document.getElementById('eqTotal').textContent = `$${totalCap.toFixed(2)}`;
+            document.getElementById('eqInvested').textContent = `$${totalInvested.toFixed(2)}`;
+            document.getElementById('eqFree').textContent = `$${free.toFixed(2)}`;
+            document.getElementById('eqPercent').textContent = percent.toFixed(1) + '%';
+            document.getElementById('portfolioModal').style.display = 'flex';
+        }
+
+        // --- ETF RADAR LOGIC ---
+        async function loadGateETFs() {
+            const grid = document.getElementById('etfGrid');
+            const cachedData = sessionStorage.getItem('c5x_etf_cache');
+            if(cachedData) { allGateETFs = JSON.parse(cachedData); filterETFs(""); return; }
+
+            try {
+                const proxy = proxies[0];
+                const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
+                if(!res.ok) throw new Error("Network");
+                const data = await res.json();
+                allGateETFs = data.filter(t => {
+                    const pair = t.currency_pair;
+                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
+                });
+                sessionStorage.setItem('c5x_etf_cache', JSON.stringify(allGateETFs));
+                filterETFs("");
+            } catch(e) {
+                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>';
+            }
+        }
+
+        function toggleEtfFavorite(symbol, e) {
+            e.stopPropagation();
+            if(etfFavorites.includes(symbol)) {
+                etfFavorites = etfFavorites.filter(s => s !== symbol);
+            } else {
+                etfFavorites.push(symbol);
+            }
+            localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites));
+            filterETFs(document.querySelector('.etf-search-input').value);
+        }
+
+        function filterETFs(query) {
+            const grid = document.getElementById('etfGrid');
+            const term = query.toUpperCase().trim();
+            
+            let sorted = [...allGateETFs].sort((a, b) => {
+                const aFav = etfFavorites.includes(a.currency_pair.replace('_', ''));
+                const bFav = etfFavorites.includes(b.currency_pair.replace('_', ''));
+                if(aFav && !bFav) return -1;
+                if(!aFav && bFav) return 1;
+                return parseFloat(a.change_percentage) - parseFloat(b.change_percentage);
+            });
+
+            let filtered = sorted;
+            if(term) filtered = sorted.filter(t => t.currency_pair.includes(term));
+            else filtered = sorted.slice(0, 50);
+
+            if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; }
+
+            const fragment = document.createDocumentFragment();
+            filtered.forEach((t, index) => {
+                const price = parseFloat(t.last);
+                const change = parseFloat(t.change_percentage);
+                const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4);
+                const pairName = t.currency_pair.replace('_', '');
+                const isFav = etfFavorites.includes(pairName);
+                
+                const div = document.createElement('div');
+                div.className = 'level-card';
+                div.onclick = () => smartSelectETF(pairName, price);
+                div.innerHTML = `
+                    <div class="level-index">${index+1}</div>
+                    <div class="level-center">
+                        <div class="level-price">${pairName}</div>
+                        <div class="card-sub">$${displayPrice}</div>
+                    </div>
+                    <div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)">★</div>
+                    <div class="level-right">
+                        <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                    </div>
+                `;
+                fragment.appendChild(div);
+            });
+            grid.innerHTML = '';
+            grid.appendChild(fragment);
+        }
+
+        function smartSelectETF(symbol, price) {
+            triggerHaptic();
+            const emptySlotIdx = slots.findIndex(s => !s.name || s.name === '');
+            if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; }
+            slots[emptySlotIdx].name = symbol; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = '';
+            save(); updateBodyMode(symbol); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1));
+        }
+
+        // --- CORE FUNCTIONS ---
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" }); }
+        
+        function loadChart(coin) { 
+            chartSymbol = (coin || 'BTC3L').toUpperCase(); 
+            // Ensures widget theme matches isLight variable
+            new TradingView.widget({ 
+                "autosize": true, 
+                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
+                "interval": activeTF, 
+                "theme": isLight ? "light" : "dark", 
+                "container_id": "tv_chart", 
+                "hide_top_toolbar": true, 
+                "backgroundColor": isLight ? "#ffffff" : "#0b0e11", 
+                "locale": "es" 
+            }); 
+        }
         
         function selectSlot(i) { 
             triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; 
@@ -915,13 +1116,18 @@
             document.getElementById('capitalInput').value = s.capital; calculate();
         }
 
-        function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
+        function calculate() { 
+            const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value);
+            s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); 
+        }
+
         function toggleLvl(idx) { triggerHaptic(); const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7;
             updateBodyMode(s.name);
             if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; }
+            
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = '';
             const maxLevels = customMultipliers ? customMultipliers.length : 12;
 
@@ -949,6 +1155,7 @@
         }
 
         function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
+
         function executeRelease() {
             triggerHaptic(); closeModals();
             try {
@@ -957,7 +1164,13 @@
                 const avgPrice = parseFloat(document.getElementById('resAvg').textContent) || 0;
                 const exitPrice = avgPrice > 0 ? avgPrice * (1 + (s.roi / 100)) : 0;
                 const profit = (totalInv * (s.roi / 100));
-                const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: exitPrice, qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0 };
+
+                const logEntry = { 
+                    date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                    coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: exitPrice,
+                    qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0
+                };
+
                 if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
@@ -965,53 +1178,126 @@
             } catch(e) { showToast("❌ Error al liquidar"); }
         }
 
-        function updateBodyMode(n) { const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } else { r.style.setProperty('--brand', '#3b82f6'); } }
-        function renderHistory() { const grid = document.getElementById('logGrid'); const chart = document.getElementById('perfChart'); if(history && history.length > 0) { const profits = history.map(h => parseFloat(h.profit) || 0); const maxProfit = Math.max(...profits); chart.innerHTML = history.slice(-15).map(h => { const p = parseFloat(h.profit) || 0; const hPct = (maxProfit > 0) ? (p / maxProfit) * 100 : 10; return `<div class="perf-bar" style="height:${Math.max(hPct, 10)}%" title="$${p}"></div>`; }).join(''); } else { chart.innerHTML = ''; } if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => ` <div class="level-card"> <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div> <div class="level-center"> <div class="level-price" style="font-size:16px">${h.coin}</div> <div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div> </div> <div class="level-right"> <div class="invest-val" style="color:var(--long)">+$${h.profit}</div> <div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div> </div> </div>`).reverse().join(''); }
+        function updateBodyMode(n) { 
+            const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; }
+            if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } 
+            else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } 
+            else { r.style.setProperty('--brand', '#3b82f6'); } 
+        }
 
+        function renderHistory() { 
+            const grid = document.getElementById('logGrid'); 
+            const chart = document.getElementById('perfChart');
+            
+            if(history && history.length > 0) {
+                const profits = history.map(h => parseFloat(h.profit) || 0);
+                const maxProfit = Math.max(...profits);
+                chart.innerHTML = history.slice(-15).map(h => {
+                    const p = parseFloat(h.profit) || 0;
+                    const hPct = (maxProfit > 0) ? (p / maxProfit) * 100 : 10;
+                    return `<div class="perf-bar" style="height:${Math.max(hPct, 10)}%" title="$${p}"></div>`;
+                }).join('');
+            } else { chart.innerHTML = ''; }
+
+            if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
+            grid.innerHTML = history.map(h => `
+                <div class="level-card">
+                    <div class="level-index" style="color:var(--brand); border-color:var(--brand); font-size:10px;">${h.coin.substring(0,3)}</div>
+                    <div class="level-center">
+                        <div class="level-price" style="font-size:16px">${h.coin}</div>
+                        <div class="copy-hint" style="margin-top:0">${h.date} - ${h.time || ''}</div>
+                    </div>
+                    <div class="level-right">
+                        <div class="invest-val" style="color:var(--long)">+$${h.profit}</div>
+                        <div class="drop-val" style="color:var(--text-tertiary)">ROI ${h.roi || '0%'}</div>
+                    </div>
+                </div>`).reverse().join(''); 
+        }
+
+        // --- EXPORT/IMPORT & MODALS ---
+        function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
+        function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
+        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
+        
+        function renderNav() { 
+            document.getElementById('slotNav').innerHTML = slots.map((s, i) => {
+                // Determine class based on last known state
+                let statusClass = '';
+                if(s.name) statusClass = 'is-occupied';
+                return `<div class="slot-card ${i === activeIdx ? 'active' : ''} ${statusClass}" id="nav-s${i}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`;
+            }).join(''); 
+        }
+
+        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
+        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
+        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
+        
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         function switchView(viewName, toggle = true) {
             triggerHaptic(); currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
             const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer');
-            if(viewName === 'operate') { tfBar.style.display = 'flex'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
+            if(viewName === 'operate') { tfBar.style.display = 'flex'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } 
+            else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
             if(viewName === 'etf') loadGateETFs();
             if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
             if(toggle) toggleMenu(); window.scrollTo(0,0);
         }
-        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; }
-        function applySettings() { triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value), newRoi = parseFloat(document.getElementById('setRoi').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); openSecurity(() => { slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); }); }
-        
-        function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase(); if(!val) return; if(!val.includes('USDT')) val += 'USDT'; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)"); }
-        function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a.replace('USDT','')}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
-        function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
-        
-        function showPortfolio() { triggerHaptic(); let totalCap = 0; let totalInvested = 0; slots.forEach(s => { totalCap += s.capital; if(s.buys && s.buys.length > 0) { s.buys.forEach(levelIdx => { if(levelIdx < customMultipliers.length) { totalInvested += s.capital * customMultipliers[levelIdx]; } }); } }); const free = totalCap - totalInvested; const percent = totalCap > 0 ? (totalInvested / totalCap) * 100 : 0; document.getElementById('eqTotal').textContent = `$${totalCap.toFixed(2)}`; document.getElementById('eqInvested').textContent = `$${totalInvested.toFixed(2)}`; document.getElementById('eqFree').textContent = `$${free.toFixed(2)}`; document.getElementById('eqPercent').textContent = percent.toFixed(1) + '%'; document.getElementById('portfolioModal').style.display = 'flex'; }
-        
-        async function loadGateETFs() { const grid = document.getElementById('etfGrid'); const cachedData = sessionStorage.getItem('c5x_etf_cache'); if(cachedData) { allGateETFs = JSON.parse(cachedData); filterETFs(""); return; } try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); const data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); sessionStorage.setItem('c5x_etf_cache', JSON.stringify(allGateETFs)); filterETFs(""); } catch(e) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>'; } }
-        function toggleEtfFavorite(symbol, e) { e.stopPropagation(); if(etfFavorites.includes(symbol)) { etfFavorites = etfFavorites.filter(s => s !== symbol); } else { etfFavorites.push(symbol); } localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); filterETFs(document.querySelector('.etf-search-input').value); }
-        function filterETFs(query) { const grid = document.getElementById('etfGrid'); const term = query.toUpperCase().trim(); let sorted = [...allGateETFs].sort((a, b) => { const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); }); let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 50); if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } const fragment = document.createDocumentFragment(); filtered.forEach((t, index) => { const price = parseFloat(t.last); const change = parseFloat(t.change_percentage); const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); const pairName = t.currency_pair.replace('_', ''); const isFav = etfFavorites.includes(pairName); const div = document.createElement('div'); div.className = 'level-card'; div.onclick = () => smartSelectETF(pairName, price); div.innerHTML = ` <div class="level-index">${index+1}</div> <div class="level-center"> <div class="level-price">${pairName}</div> <div class="card-sub">$${displayPrice}</div> </div> <div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)">★</div> <div class="level-right"> <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div> </div> `; fragment.appendChild(div); }); grid.innerHTML = ''; grid.appendChild(fragment); }
-        function smartSelectETF(symbol, price) { triggerHaptic(); const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = symbol; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(symbol); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
-
-        function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
-        function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
-        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
-        function renderNav() { 
-            document.getElementById('slotNav').innerHTML = slots.map((s, i) => {
-                // Determine class based on last known state
-                let statusClass = '';
-                if(s.name) statusClass = 'is-occupied';
-                // Note: We can only determine profit/loss if we have the current price in memory or DOM
-                return `<div class="slot-card ${i === activeIdx ? 'active' : ''} ${statusClass}" id="nav-s${i}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`;
-            }).join(''); 
+        function loadSettingsValues() {
+            const s = slots[activeIdx];
+            document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value;
+            document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100;
         }
-        function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
-        function exportExcel() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const data = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT ($)": parseFloat(h.profit)||0 })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "C5X"); XLSX.writeFile(wb, "C5X_Log.xlsx"); }
-        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.text("C5X LOG", 14, 20); const body = history.map(h => [h.date, h.coin, '$' + h.profit]); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: body, startY: 30 }); doc.save("C5X.pdf"); }
-        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.json"; document.body.appendChild(a); a.click(); }
-        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
+        function applySettings() {
+            triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value), newRoi = parseFloat(document.getElementById('setRoi').value);
+            if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
+            openSecurity(() => {
+                slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi;
+                document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value;
+                save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada");
+            });
+        }
+        
+        function verifyAndAddCoin() { 
+             const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase(); if(!val) return;
+             if(!val.includes('USDT')) val += 'USDT'; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+             input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)");
+        }
+        function renderTickerSettings() {
+            document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a.replace('USDT','')}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join('');
+        }
+        function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
+
+        function exportExcel() { 
+             if(history.length === 0) return showToast("⚠️ Sin Datos"); 
+             const data = history.map(h => ({ "FECHA": h.date, "MONEDA": h.coin, "PROFIT ($)": parseFloat(h.profit)||0 }));
+             const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "C5X"); XLSX.writeFile(wb, "C5X_Log.xlsx");
+        }
+        function exportPDF() { 
+             if(history.length === 0) return showToast("⚠️ Sin Datos");
+             const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.text("C5X LOG", 14, 20);
+             const body = history.map(h => [h.date, h.coin, '$' + h.profit]); doc.autoTable({ head: [['Fecha', 'Moneda', 'Profit']], body: body, startY: 30 }); doc.save("C5X.pdf");
+        }
+        function exportData() {
+            const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy });
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.json"; document.body.appendChild(a); a.click();
+        }
+        function importData(input) {
+            const file = input.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.slots) slots = data.slots; if(data.history) history = data.history;
+                    if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); }
+                    if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); }
+                    if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); }
+                    save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload();
+                } catch(err) { showToast("❌ Error al leer archivo"); }
+            }; reader.readAsText(file);
+        }
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
