@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.4 Security Plus</title>
+    <title>C5X - V24.5 Settings Master</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -164,17 +164,31 @@
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: 'Orbitron'; }
 
-        /* --- VISTA AJUSTES --- */
+        /* --- VISTA AJUSTES (REORGANIZADA V24.5) --- */
         #section-settings { padding: 20px; padding-bottom: 80px; }
-        .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .setting-header { font-family: 'Orbitron'; color: var(--brand); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;}
         
+        .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 25px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        /* ESTILO PARA LOS MÓDULOS DE AJUSTES */
+        .setting-header { 
+            font-family: 'Orbitron'; color: var(--text-secondary); font-size: 12px; 
+            margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; 
+            font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px;
+        }
+        .settings-card.primary .setting-header { color: var(--brand); border-bottom-color: var(--brand); }
+        .settings-card.danger .setting-header { color: var(--danger); border-bottom-color: rgba(207, 48, 74, 0.3); }
+        .settings-card.primary { border: 1px solid rgba(59, 130, 246, 0.3); }
+        .settings-card.danger { border: 1px solid rgba(207, 48, 74, 0.3); }
+
         .config-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
         .config-item { position: relative; }
         .config-item label { display: block; font-size: 10px; color: var(--text-secondary); font-weight: 700; margin-bottom: 8px; }
         
         .input-wrapper { position: relative; }
-        .input-wrapper input { width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; }
+        .input-wrapper input { 
+            width: 100%; background: rgba(0,0,0,0.15); border: 1px solid var(--border); padding: 14px 14px 14px 40px; 
+            border-radius: 12px; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 16px; 
+        }
         .input-wrapper input:focus { border-color: var(--brand); outline: none; }
         .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: 'Orbitron'; font-weight: 900; color: var(--text-tertiary); font-size: 14px; }
 
@@ -189,7 +203,6 @@
         input:checked + .slider { background-color: var(--brand); }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* BOTÓN GUARDAR (PROTEGIDO) */
         .btn-save-config { 
             width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; 
             border-radius: 12px; font-weight: 900; font-family: 'Orbitron'; margin-top: 20px; 
@@ -197,11 +210,11 @@
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         
-        .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .btn-backup { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-backup:active { background: rgba(255,255,255,0.05); }
+        .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-data { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-data:active { background: rgba(255,255,255,0.05); }
 
-        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron'; cursor: pointer; }
+        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; font-family: 'Orbitron'; cursor: pointer; }
 
         /* --- MENÚ MODAL --- */
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; }
@@ -320,10 +333,10 @@
 
         <div id="section-settings" class="app-section">
             
-            <div class="settings-card">
+            <div class="settings-card primary">
                 <div class="setting-header">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/></svg>
-                    CONFIGURACIÓN DE ESTRATEGIA (SLOT)
+                    ESTRATEGIA (SLOT ACTUAL)
                 </div>
                 <div class="config-grid">
                     <div class="config-item">
@@ -357,9 +370,8 @@
             <div class="settings-card">
                 <div class="setting-header">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M20 12c0-4.42-3.58-8-8-8s-8 3.58-8 8 3.58 8 8 8 8-3.58 8-8zM6 12c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6z"/></svg>
-                    SISTEMA
+                    INTERFAZ
                 </div>
-                
                 <div class="setting-row">
                     <div class="setting-info"><h4>Modo Oscuro</h4><p>Cambiar apariencia de la app</p></div>
                     <label class="toggle-switch">
@@ -367,29 +379,33 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-
-                <div class="setting-row" style="margin-top:20px; align-items:flex-start;">
-                    <div class="setting-info"><h4>Copia de Seguridad</h4><p>Guardar o restaurar datos</p></div>
-                </div>
-                <div class="backup-grid">
-                    <button class="btn-backup" onclick="exportData()">⬇️ EXPORTAR</button>
-                    <button class="btn-backup" onclick="document.getElementById('importFile').click()">⬆️ IMPORTAR</button>
-                    <input type="file" id="importFile" style="display:none" onchange="importData(this)">
-                </div>
             </div>
 
-            <div class="settings-card" style="border-color:rgba(207, 48, 74, 0.3);">
-                <div class="setting-header" style="color:var(--danger); border-color:rgba(207, 48, 74, 0.3);">
-                    ⚠️ ZONA DE PELIGRO
+            <div class="settings-card">
+                <div class="setting-header">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right:5px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    GESTIÓN DE DATOS
+                </div>
+                <div class="data-actions">
+                    <button class="btn-data" onclick="exportData()">⬇️ EXPORTAR BACKUP</button>
+                    <button class="btn-data" onclick="document.getElementById('importFile').click()">⬆️ IMPORTAR BACKUP</button>
+                    <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+                </div>
+                <button class="btn-reset" style="margin-top:15px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearLogs()">BORRAR HISTORIAL</button>
+            </div>
+
+            <div class="settings-card danger">
+                <div class="setting-header" style="color:var(--danger); border-bottom-color:rgba(207, 48, 74, 0.3);">
+                    ⚠️ ZONA CRÍTICA
                 </div>
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;">
-                    <p>Esta acción borrará todas las configuraciones y el historial de operaciones.</p>
+                    <p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p>
                 </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V24.4 SECURITY PLUS
+                C5X V24.5 SETTINGS MASTER
             </div>
         </div>
     </div>
@@ -448,6 +464,7 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // --- SMART SPACING (AJUSTE DINÁMICO) ---
         function switchView(viewName, toggle = true) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active'));
@@ -652,7 +669,6 @@
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === "2524") { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
-        
         function toggleTheme() { 
             const checkbox = document.getElementById('themeToggle');
             isLight = !checkbox.checked; 
@@ -661,12 +677,10 @@
             localStorage.setItem('theme', isLight ? 'light' : 'dark'); 
         }
         function updateThemeIcon() { document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙'; }
-        
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => `<div class=\"slot-card ${i === activeIdx ? 'active' : ''}\" onclick=\"selectSlot(${i})\">${s.name || 'S'+(i+1)}</div>`).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(n && n.endsWith('S')) r.style.setProperty('--brand', 'var(--short)'); else if (n && n.endsWith('L')) r.style.setProperty('--brand', 'var(--long)'); else r.style.setProperty('--brand', '#3b82f6'); }
-        
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
             if(history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
@@ -683,7 +697,6 @@
                     </div>
                 </div>`).reverse().join(''); 
         }
-
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
         
         function exportExcel() { 
@@ -715,3 +728,25 @@
         }
 
         function importData(input) {
+            const file = input.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.slots && data.history) {
+                        slots = data.slots;
+                        history = data.history;
+                        save();
+                        localStorage.setItem('c5x_history', JSON.stringify(history));
+                        location.reload();
+                    } else { showToast("⚠️ Archivo Inválido"); }
+                } catch(err) { showToast("❌ Error al leer archivo"); }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
+    </script>
+</body>
+</html>
