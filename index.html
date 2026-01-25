@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V26.1 Manual Base</title>
+    <title>C5X - V27.0 ETF Radar</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -167,6 +167,32 @@
         }
         .liquidate-card:active { transform: scale(0.98); }
 
+        /* --- VISTA ETF MONITOR --- */
+        #section-etf { padding: 15px; }
+        .etf-search-box { position: relative; margin-bottom: 20px; }
+        .etf-search-input { 
+            width: 100%; background: var(--surface); border: 1px solid var(--border); 
+            padding: 16px 16px 16px 45px; border-radius: 16px; color: var(--text-primary); 
+            font-family: 'Orbitron'; font-weight: 700; font-size: 14px;
+        }
+        .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
+        
+        .etf-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .etf-card { 
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 15px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden;
+        }
+        .etf-card:active { transform: scale(0.98); }
+        
+        .etf-card.long { border-left: 4px solid var(--long); }
+        .etf-card.short { border-left: 4px solid var(--short); }
+        
+        .etf-symbol { font-family: 'Orbitron'; font-weight: 900; font-size: 14px; color: var(--text-primary); margin-bottom: 5px; }
+        .etf-price { font-family: 'JetBrains Mono'; font-weight: 700; font-size: 16px; color: var(--text-secondary); }
+        .etf-change { font-size: 11px; font-weight: 800; margin-top: 8px; display: inline-block; padding: 4px 8px; border-radius: 6px; }
+        .change-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
+        .change-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
+
         /* --- VISTA BITÁCORA --- */
         #section-log { padding-top: 0px; }
         .log-header-bar { display: flex; justify-content: space-between; padding: 0 16px 20px 16px; align-items: center; }
@@ -278,6 +304,10 @@
                 <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
                 <div class="nav-text">OPERAR</div>
             </div>
+            <div class="nav-item" id="nav-etf" onclick="switchView('etf')">
+                <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div>
+                <div class="nav-text">MONITOR ETF</div>
+            </div>
             <div class="nav-item" id="nav-log" onclick="switchView('log')">
                 <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
                 <div class="nav-text">BITÁCORA</div>
@@ -346,6 +376,18 @@
                 </div>
             </div>
             <main id="levelsGrid" class="levels-container"></main>
+        </div>
+
+        <div id="section-etf" class="app-section">
+            <div class="etf-search-box">
+                <span class="etf-search-icon">🔍</span>
+                <input type="text" class="etf-search-input" placeholder="BUSCAR TOKEN (Ej: BTC, SUI)" oninput="filterETFs(this.value)">
+            </div>
+            <div id="etfGrid" class="etf-grid">
+                <div style="grid-column: span 2; text-align:center; padding:20px; color:var(--text-tertiary);">
+                    Cargando Radar de ETFs...
+                </div>
+            </div>
         </div>
 
         <div id="section-log" class="app-section">
@@ -458,7 +500,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V26.1 MANUAL BASE
+                C5X V27.0 ETF RADAR
             </div>
         </div>
     </div>
@@ -537,6 +579,9 @@
 
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
+        // --- ETF RADAR VARIABLES ---
+        let allGateETFs = [];
+
         function init() { 
             if(isLight) { 
                 document.body.classList.add('light-mode'); 
@@ -597,6 +642,80 @@
             document.getElementById('eqPercent').textContent = percent.toFixed(1) + '%';
 
             document.getElementById('portfolioModal').style.display = 'flex';
+        }
+
+        // --- ETF RADAR LOGIC ---
+        async function loadGateETFs() {
+            const grid = document.getElementById('etfGrid');
+            try {
+                // Fetch Gate.io Tickers via Proxy
+                const proxy = proxies[0];
+                const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
+                if(!res.ok) throw new Error("Network");
+                const data = await res.json();
+                
+                // Filter only 3L, 3S, 5L, 5S
+                allGateETFs = data.filter(t => {
+                    const pair = t.currency_pair;
+                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
+                });
+
+                filterETFs(""); // Render initial list
+            } catch(e) {
+                grid.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.</div>';
+            }
+        }
+
+        function filterETFs(query) {
+            const grid = document.getElementById('etfGrid');
+            const term = query.toUpperCase().trim();
+            
+            // If empty show top 20 by volume or random, else filter
+            let filtered = allGateETFs;
+            if(term) {
+                filtered = allGateETFs.filter(t => t.currency_pair.includes(term));
+            } else {
+                filtered = allGateETFs.slice(0, 20); // Show first 20 if empty
+            }
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '<div style="grid-column:span 2; text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(t => {
+                const isLong = t.currency_pair.includes('L_');
+                const price = parseFloat(t.last);
+                const change = parseFloat(t.change_percentage);
+                const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4);
+                const pairName = t.currency_pair.replace('_', '');
+
+                return `
+                <div class="etf-card ${isLong ? 'long' : 'short'}" onclick="selectETF('${pairName}', ${price})">
+                    <div class="etf-symbol">${pairName}</div>
+                    <div class="etf-price">$${displayPrice}</div>
+                    <div class="etf-change ${change >= 0 ? 'change-up' : 'change-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                </div>`;
+            }).join('');
+        }
+
+        function selectETF(symbol, price) {
+            triggerHaptic();
+            // Go to operate
+            switchView('operate', false);
+            // Set values
+            const s = slots[activeIdx];
+            s.name = symbol;
+            s.price = price;
+            save();
+            
+            // Update UI
+            document.getElementById('coinInput').value = symbol;
+            document.getElementById('baseInput').value = price;
+            
+            loadChart(symbol);
+            calculate();
+            showToast("🎯 " + symbol + " Seleccionado");
         }
 
         // --- CHIP SYSTEM FUNCTIONS ---
@@ -742,6 +861,11 @@
             } else {
                 tfBar.style.display = 'none';
                 spacer.style.marginTop = '75px'; 
+            }
+
+            if(viewName === 'etf') {
+                // Load ETF data if not loaded
+                if(allGateETFs.length === 0) loadGateETFs();
             }
 
             if(viewName === 'settings') {
