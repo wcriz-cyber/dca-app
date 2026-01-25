@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.1 STABLE BEAST</title>
+    <title>C5X - V29.2 RADAR EDITION</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -55,7 +55,7 @@
             padding-bottom: 20px; 
             overflow-x: hidden; 
             transition: background 0.3s ease, color 0.3s ease;
-            user-select: none; /* Para mejorar gestos swipe */
+            user-select: none;
         }
 
         /* --- HEADER --- */
@@ -129,8 +129,6 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative;
         }
         .slot-card.active { border-color: var(--brand); color: var(--brand); background: var(--surface-glass); }
-        
-        /* HEATMAP CLASSES */
         .slot-card.has-profit { border-bottom: 3px solid var(--long); }
         .slot-card.has-loss { border-bottom: 3px solid var(--short); }
         .slot-card.is-occupied { border-bottom: 3px solid var(--text-tertiary); }
@@ -161,26 +159,39 @@
         .note-input { width: 100%; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-tertiary); font-family: 'Inter'; font-size: 11px; text-align: center; }
         .note-input:focus { border-color: var(--brand); outline: none; color: var(--text-primary); }
 
-        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 15px 20px 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .dash-title { font-family: 'Orbitron'; font-size: 12px; color: var(--text-tertiary); font-weight: 900; letter-spacing: 2px; }
+        .dash-header { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; position: relative; height: 36px; }
+        
+        /* NEW RADAR TICKER STYLES */
+        .radar-ticker { display: flex; align-items: center; gap: 8px; cursor: pointer; animation: fadeIn 1s ease; }
+        .radar-label { font-size: 10px; font-weight: 800; color: var(--text-tertiary); letter-spacing: 1px; }
+        .radar-val { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 12px; color: var(--short); background: rgba(246, 70, 93, 0.1); padding: 4px 8px; border-radius: 6px; }
+
         .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
         .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
         .icon-btn.active { transform: scale(0.9); }
-        .icon-btn.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
-        .icon-btn.locked { color: var(--danger); border-color: var(--danger); }
+        .icon-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
 
         .main-target-box { text-align: center; margin-bottom: 25px; position: relative; }
         .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-        .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; }
+        .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; margin-bottom: 15px; }
+        
+        .control-row { display: flex; justify-content: center; align-items: center; gap: 10px; }
+        
+        /* STRATEGY BADGE */
+        .strat-badge { 
+            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; 
+            border: 1px solid var(--border); color: var(--text-secondary); background: rgba(255,255,255,0.03);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .strat-badge.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
         
         /* BE BUTTON */
         .be-btn { 
-            position: absolute; right: 0; top: 50%; transform: translateY(-50%);
             background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-            padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 800;
+            padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 800;
             color: var(--text-secondary); cursor: pointer; font-family: 'Orbitron';
         }
         .be-btn:active { background: var(--brand); color: #fff; }
@@ -423,23 +434,36 @@
                 </div>
                 <div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div>
             </div>
+            
             <div class="dashboard-card" id="dashMain">
                 <div class="dash-header">
-                    <div class="icon-btn" onclick="rotateDash()" id="btnRotate"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></div>
-                    <div class="dash-title" id="stratName">NORMAL</div>
-                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg></div>
+                    <div id="radarTickerContainer" class="radar-ticker" onclick="switchView('etf')">
+                        <span class="radar-label">🔥 OPORTUNIDAD:</span>
+                        <div id="radarValue" class="radar-val">BUSCANDO...</div>
+                    </div>
+                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()" style="position:absolute; right:0; top:0;"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg></div>
                 </div>
+
                 <div class="main-target-box">
                     <div class="target-label">OBJETIVO SALIDA</div>
                     <div class="target-price" id="resTarget">0.00000000</div>
-                    <button class="be-btn" onclick="setBreakEven()">B.E.</button>
+                    
+                    <div class="control-row">
+                        <div class="strat-badge" id="stratBadge" onclick="rotateDash()">
+                            <span id="stratName">NORMAL</span>
+                            <span style="font-size:8px">▼</span>
+                        </div>
+                        <button class="be-btn" onclick="setBreakEven()">B.E.</button>
+                    </div>
                 </div>
+                
                 <div class="stats-grid">
                     <div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div>
                     <div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div>
                     <div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div>
                 </div>
             </div>
+
             <main id="levelsGrid" class="levels-container"></main>
         </div>
 
@@ -572,7 +596,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V29.1 STABLE BEAST
+                C5X V29.2 RADAR EDITION
             </div>
         </div>
     </div>
@@ -653,7 +677,11 @@
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
         let currentWs = null; 
+        
+        // --- NEW RADAR VARIABLES ---
         let allGateETFs = [];
+        let topDroppers = [];
+        let dropperIdx = 0;
 
         // SWIPE VARIABLES
         let touchStartX = 0;
@@ -685,12 +713,13 @@
                 
                 updatePinUI();
                 startTickerSystem(); 
-                setupSwipe(); // Enable Swipe
+                fetchAndCalcTopDroppers(); // INICIAR EL RADAR
+                setupSwipe(); 
 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
             } catch(e) {
                 console.error("Init Error", e);
-                localStorage.removeItem('theme'); // Reset theme if stuck
+                localStorage.removeItem('theme'); 
             }
         }
 
@@ -707,17 +736,60 @@
         function handleSwipe() {
             const threshold = 60; 
             if (touchEndX < touchStartX - threshold) {
-                // Swipe Left -> Next Slot
                 let next = activeIdx + 1;
                 if(next >= 6) next = 0;
                 selectSlot(next);
             }
             if (touchEndX > touchStartX + threshold) {
-                // Swipe Right -> Prev Slot
                 let prev = activeIdx - 1;
                 if(prev < 0) prev = 5;
                 selectSlot(prev);
             }
+        }
+
+        // --- RADAR DROPPER LOGIC ---
+        async function fetchAndCalcTopDroppers() {
+            try {
+                const proxy = proxies[0];
+                const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
+                if(!res.ok) throw new Error("Network");
+                const data = await res.json();
+                allGateETFs = data.filter(t => {
+                    const pair = t.currency_pair;
+                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
+                });
+                
+                // Sort by biggest loss (ascending change percentage)
+                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, 6);
+                
+                startRadarRotation();
+            } catch(e) {
+                console.log("Error loading radar");
+            }
+        }
+
+        function startRadarRotation() {
+            updateRadarUI();
+            setInterval(() => {
+                dropperIdx = (dropperIdx + 1) % topDroppers.length;
+                updateRadarUI();
+            }, 3500);
+        }
+
+        function updateRadarUI() {
+            if(topDroppers.length === 0) return;
+            const elVal = document.getElementById('radarValue');
+            const item = topDroppers[dropperIdx];
+            if(!item) return;
+
+            // Simple Fade Effect
+            elVal.style.opacity = 0;
+            setTimeout(() => {
+                const pairName = item.currency_pair.replace('_USDT', '');
+                const change = parseFloat(item.change_percentage).toFixed(2);
+                elVal.textContent = `${pairName} ${change}%`;
+                elVal.style.opacity = 1;
+            }, 200);
         }
 
         // --- BREAK EVEN LOGIC (Protected) ---
@@ -748,10 +820,7 @@
                 const avgPrice = totalQty > 0 ? totalSpent/totalQty : 0;
                 if(avgPrice <= 0) return;
 
-                // Target = Avg + 0.2% fee margin
                 const targetBE = avgPrice * 1.002;
-                
-                // Reverse calc ROI
                 const newRoi = ((targetBE / avgPrice) - 1) * 100;
                 
                 s.roi = parseFloat(newRoi.toFixed(2));
@@ -775,7 +844,6 @@
                         if(avg > 0) {
                             if(currentPrice > avg) {
                                 el.classList.remove('has-loss'); el.classList.add('has-profit');
-                                // Check Alert
                                 const target = avg * (1 + (s.roi/100));
                                 if(currentPrice >= target && !s.alerted) {
                                     triggerAlert(s.name);
@@ -797,7 +865,6 @@
             let totalSpent = 0, totalQty = 0, lastPrice = s.price;
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             const incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            // Use custom multipliers or default 12 if loading failed
             const limit = customMultipliers ? customMultipliers.length : 12;
             
             for(let i=0; i<limit; i++){
@@ -807,7 +874,6 @@
                     let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
                     pLevel = lastPrice * (1 - (step/100));
                 }
-                // Check bounds
                 if(s.buys.includes(i)) {
                     const m = customMultipliers ? (customMultipliers[i] || 1) : 1;
                     const mUSD = m * s.capital;
@@ -901,7 +967,7 @@
                     const data = JSON.parse(event.data);
                     const price = parseFloat(data.p);
                     updateTickerUI(displaySym, price, true); 
-                    updateSlotStatus(displaySym, price); // HEATMAP TRIGGER
+                    updateSlotStatus(displaySym, price); 
                     document.getElementById('t-dot').classList.add('pulse');
                 };
                 currentWs.onerror = () => { fetchTickerRest(sym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); };
@@ -987,19 +1053,16 @@
         // --- ETF RADAR LOGIC ---
         async function loadGateETFs() {
             const grid = document.getElementById('etfGrid');
-            const cachedData = sessionStorage.getItem('c5x_etf_cache');
-            if(cachedData) { allGateETFs = JSON.parse(cachedData); filterETFs(""); return; }
+            
+            // If we have data from the ticker, use it, otherwise fetch
+            if(allGateETFs.length > 0) {
+                filterETFs("");
+                return;
+            }
 
             try {
-                const proxy = proxies[0];
-                const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
-                if(!res.ok) throw new Error("Network");
-                const data = await res.json();
-                allGateETFs = data.filter(t => {
-                    const pair = t.currency_pair;
-                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S'));
-                });
-                sessionStorage.setItem('c5x_etf_cache', JSON.stringify(allGateETFs));
+                // Reuse existing fetch logic
+                await fetchAndCalcTopDroppers();
                 filterETFs("");
             } catch(e) {
                 grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>';
@@ -1103,16 +1166,29 @@
         
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
-            const elTitle = document.getElementById('stratName'), elCard = document.getElementById('dashMain'), elTarget = document.getElementById('resTarget');
-            const btnRotate = document.getElementById('btnRotate'), btnLock = document.getElementById('lockBtn');
-            elTitle.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
-            elTitle.style.color = isNormal ? "var(--text-tertiary)" : "var(--warning)"; 
-            elCard.style.borderColor = isNormal ? "var(--border)" : "var(--warning)";
-            elTarget.style.textShadow = isNormal ? "0 0 20px rgba(14, 203, 129, 0.15)" : "0 0 20px rgba(240, 185, 11, 0.15)";
-            elTarget.style.color = isNormal ? "var(--text-primary)" : "var(--warning)";
-            if(s.strat === "agresiva") btnRotate.classList.add('active'); else btnRotate.classList.remove('active');
+            const elBadge = document.getElementById('stratBadge');
+            const elStratName = document.getElementById('stratName');
+            const elCard = document.getElementById('dashMain');
+            const elTarget = document.getElementById('resTarget');
+            const btnLock = document.getElementById('lockBtn');
+            
+            elStratName.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
+            
+            if(isNormal) {
+                elBadge.classList.remove('active');
+                elTarget.style.color = "var(--text-primary)";
+                elTarget.style.textShadow = "0 0 20px rgba(14, 203, 129, 0.15)";
+                elCard.style.borderColor = "var(--border)";
+            } else {
+                elBadge.classList.add('active');
+                elTarget.style.color = "var(--warning)";
+                elTarget.style.textShadow = "0 0 20px rgba(240, 185, 11, 0.15)";
+                elCard.style.borderColor = "var(--warning)";
+            }
+
             if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>'; } 
             else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>'; }
+            
             document.getElementById('capitalInput').value = s.capital; calculate();
         }
 
@@ -1221,7 +1297,6 @@
         
         function renderNav() { 
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => {
-                // Determine class based on last known state
                 let statusClass = '';
                 if(s.name) statusClass = 'is-occupied';
                 return `<div class="slot-card ${i === activeIdx ? 'active' : ''} ${statusClass}" id="nav-s${i}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`;
@@ -1282,7 +1357,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.2.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
