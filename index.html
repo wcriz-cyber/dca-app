@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.3 Gate.io Native</title>
+    <title>C5X - V25.4 Ticker Fix</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -413,7 +413,7 @@
                     </div>
                 </div>
                 <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
-                    Datos extraídos de Gate.io
+                    Datos extraídos de Gate.io (CORS Proxy Activado)
                 </div>
             </div>
 
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.3 GATE.IO NATIVE
+                C5X V25.4 GATE.IO FIX
             </div>
         </div>
     </div>
@@ -655,37 +655,52 @@
             });
         }
 
-        // --- UPDATED: GATE.IO API FETCH ---
+        // --- UPDATED: GATE.IO API VIA PROXY (FIXED) ---
         async function fetchTicker() { 
             try { 
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
                 localStorage.setItem('c5x_ticker_index', assetIdx);
 
                 let sym = tickerAssets[assetIdx];
-                // Convert internal BTCUSDT to Gate.io BTC_USDT format
+                // Gate.io uses UNDERSCORE: BTC_USDT
                 let gateSym = sym.replace('USDT', '_USDT');
 
-                const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`); 
-                if(!res.ok) throw new Error('Network response was not ok');
+                // Using AllOrigins as a CORS Proxy to bypass browser blocking
+                const proxy = 'https://api.allorigins.win/raw?url=';
+                const target = `https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`;
+                const cacheBuster = '&_t=' + new Date().getTime(); // Prevent caching
+
+                const res = await fetch(proxy + encodeURIComponent(target) + cacheBuster); 
+                
+                if(!res.ok) throw new Error('Proxy error');
                 
                 const data = await res.json(); 
+                
                 // Gate.io returns array: [{currency_pair: "BTC_USDT", last: "...", ...}]
                 if (data && data.length > 0) {
                     const ticker = data[0];
                     currentTickerSymbol = sym.replace("USDT",""); 
                     document.getElementById('t-sym').textContent = currentTickerSymbol; 
-                    document.getElementById('t-price').textContent = parseFloat(ticker.last).toLocaleString(); 
+                    
+                    // Format price with enough decimals for memecoins
+                    let price = parseFloat(ticker.last);
+                    let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString();
+
+                    document.getElementById('t-price').textContent = displayPrice; 
                     
                     const isUp = parseFloat(ticker.change_percentage) >= 0;
                     document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
+                } else {
+                    document.getElementById('t-price').textContent = "ERR";
                 }
 
                 if(!isTickerPinned) {
                     assetIdx = (assetIdx + 1) % tickerAssets.length; 
                 }
             } catch(e) {
-                console.log("Ticker update skipped or symbol invalid: " + e);
-                // Skip to next if invalid
+                console.log("Ticker update skipped: " + e);
+                document.getElementById('t-price').textContent = "...";
+                // Skip to next if error
                 if(!isTickerPinned) assetIdx = (assetIdx + 1) % tickerAssets.length;
             } 
         }
