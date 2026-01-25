@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V25.4 Ticker Fix</title>
+    <title>C5X - V25.5 Stable Ticker</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -76,7 +76,7 @@
             padding: 8px 18px; border-radius: 24px; cursor: pointer; transition: 0.2s;
         }
         .ticker-pill:active { transform: scale(0.95); background: rgba(59, 130, 246, 0.1); }
-        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
+        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); transition: background 0.3s; }
         .ticker-sym { font-family: 'Orbitron'; font-weight: 800; font-size: 14px; color: var(--text-secondary); }
         .ticker-price { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 20px; color: var(--text-primary); }
 
@@ -413,7 +413,7 @@
                     </div>
                 </div>
                 <div style="font-size:10px; color:var(--text-tertiary); margin-top:10px; text-align:center;">
-                    Datos extraídos de Gate.io (CORS Proxy Activado)
+                    Datos extraídos de Gate.io (Smart Proxy Rotation)
                 </div>
             </div>
 
@@ -441,7 +441,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V25.4 GATE.IO FIX
+                C5X V25.5 STABLE TICKER
             </div>
         </div>
     </div>
@@ -478,13 +478,21 @@
         let currentSection = 'operate';
         let modalCallback = null;
 
-        // --- TICKER & PIN LOGIC (Gate.io) ---
+        // --- TICKER & PIN LOGIC (Gate.io + Smart Proxy) ---
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTCUSDT", "ETHUSDT", "SUIUSDT", "AVAXUSDT", "SOLUSDT", "BNBUSDT"];
         let tickerIntervalTime = parseInt(localStorage.getItem('c5x_ticker_interval')) || 8;
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let tickerIntervalId = null;
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
+        
+        // Proxy Rotation System
+        let proxyIdx = 0;
+        const proxies = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?'
+        ];
+
         const MULTIPLIERS = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
 
         function init() { 
@@ -655,34 +663,35 @@
             });
         }
 
-        // --- UPDATED: GATE.IO API VIA PROXY (FIXED) ---
+        // --- UPDATED: GATE.IO API VIA PROXY ROTATION & PERSISTENCE ---
         async function fetchTicker() { 
             try { 
                 if (assetIdx >= tickerAssets.length) assetIdx = 0;
                 localStorage.setItem('c5x_ticker_index', assetIdx);
 
                 let sym = tickerAssets[assetIdx];
-                // Gate.io uses UNDERSCORE: BTC_USDT
                 let gateSym = sym.replace('USDT', '_USDT');
 
-                // Using AllOrigins as a CORS Proxy to bypass browser blocking
-                const proxy = 'https://api.allorigins.win/raw?url=';
+                // Proxy Rotation Logic
+                const proxy = proxies[proxyIdx];
                 const target = `https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`;
-                const cacheBuster = '&_t=' + new Date().getTime(); // Prevent caching
+                const cacheBuster = '&_t=' + new Date().getTime();
 
                 const res = await fetch(proxy + encodeURIComponent(target) + cacheBuster); 
                 
-                if(!res.ok) throw new Error('Proxy error');
+                if(!res.ok) {
+                    // Switch proxy for next attempt
+                    proxyIdx = (proxyIdx + 1) % proxies.length;
+                    throw new Error('Proxy error');
+                }
                 
                 const data = await res.json(); 
                 
-                // Gate.io returns array: [{currency_pair: "BTC_USDT", last: "...", ...}]
                 if (data && data.length > 0) {
                     const ticker = data[0];
                     currentTickerSymbol = sym.replace("USDT",""); 
                     document.getElementById('t-sym').textContent = currentTickerSymbol; 
                     
-                    // Format price with enough decimals for memecoins
                     let price = parseFloat(ticker.last);
                     let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString();
 
@@ -690,17 +699,20 @@
                     
                     const isUp = parseFloat(ticker.change_percentage) >= 0;
                     document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)';
-                } else {
-                    document.getElementById('t-price').textContent = "ERR";
                 }
 
+                // Only rotate if successful and not pinned
                 if(!isTickerPinned) {
                     assetIdx = (assetIdx + 1) % tickerAssets.length; 
                 }
             } catch(e) {
-                console.log("Ticker update skipped: " + e);
-                document.getElementById('t-price').textContent = "...";
-                // Skip to next if error
+                // FAIL SILENTLY - KEEP OLD PRICE
+                console.log("Ticker skip, keeping old value.");
+                // Indicate stale data with orange dot (optional)
+                document.getElementById('t-dot').style.background = 'var(--warning)';
+                
+                // Do NOT advance index if failed, retry same coin next tick or advance?
+                // Better to advance to avoid getting stuck on a bad coin pair
                 if(!isTickerPinned) assetIdx = (assetIdx + 1) % tickerAssets.length;
             } 
         }
