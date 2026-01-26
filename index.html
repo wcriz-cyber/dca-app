@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.11 ADAPTIVE LAYOUT</title>
+    <title>C5X - V30.0 ULTIMATE CAPITAL</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -60,12 +60,11 @@
             transition: background 0.3s ease, color 0.3s ease; user-select: none; font-size: 16px; 
         }
 
-        /* --- HEADER CORREGIDO (ADAPTIVE) --- */
+        /* --- HEADER ADAPTATIVO --- */
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
-            /* ELIMINADO height: 112px; AHORA ES AUTOMÁTICO */
             transition: all 0.3s ease;
         }
         
@@ -91,11 +90,7 @@
         .theme-btn { width: 44px; height: 44px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 50; transition: 0.2s; }
         .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
-        .content-spacer { 
-            /* Se ajustará dinámicamente con JS */
-            margin-top: 115px; 
-            max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; 
-        }
+        .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; }
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -130,11 +125,22 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
-        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 15px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        /* RADAR & CAPITAL INFO */
+        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .radar-ticker-large:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.15); }
         .radar-title { font-family: var(--font-head); font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; }
         .radar-content { font-family: var(--font-num); font-weight: 800; font-size: 18px; color: var(--text-primary); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .radar-pct { color: var(--warning); } /* COLOR CORREGIDO PARA AMBOS TEMAS */
+        .radar-pct { color: var(--warning); } 
+
+        /* BARRA DE CAPITAL GLOBAL (NUEVO) */
+        .capital-status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 12px; padding: 8px 12px; margin-bottom: 15px;
+        }
+        .cap-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; font-family: var(--font-main); }
+        .cap-val { font-family: var(--font-num); font-weight: 800; font-size: 13px; color: var(--text-primary); }
+        .cap-pnl { font-family: var(--font-num); font-weight: 800; font-size: 13px; }
         
         .main-target-box { text-align: center; margin-bottom: 10px; position: relative; } 
         .target-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; font-family: var(--font-main); }
@@ -143,12 +149,17 @@
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .be-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-secondary); cursor: pointer; font-family: var(--font-head); }
         .be-btn:active { background: var(--brand); color: #fff; }
+        
         .strat-display { flex: 1; text-align: center; font-family: var(--font-head); font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; cursor: pointer; padding: 10px; border-radius: 12px; margin: 0 8px; transition: 0.3s; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         .strat-display:active { transform: scale(0.95); }
-        .lock-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
-        .lock-btn svg { width: 16px; height: 16px; fill: currentColor; }
-        .lock-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
+        
+        /* BOTONES DE CONTROL (LOCK / TRASH) */
+        .ctrl-group-right { display: flex; gap: 6px; }
+        .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
+        .icon-sq-btn svg { width: 16px; height: 16px; fill: currentColor; }
+        .icon-sq-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
+        .icon-sq-btn.trash:active { background: var(--danger); color: #fff; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 4px; text-align: center; }
@@ -156,13 +167,9 @@
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; font-family: var(--font-main); }
         .stat-value { font-family: var(--font-num); font-size: 12px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA DE NIVELES (COMPACTADA) --- */
+        /* --- LISTA COMPACTA --- */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
-        .level-card { 
-            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-            padding: 10px 12px; /* MÁS COMPACTO */
-            display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative;
-        }
+        .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 10px 12px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
         .level-card:active { transform: scale(0.98); }
         .level-index { width: 30px; height: 30px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-weight: 900; color: var(--text-secondary); margin-right: 12px; font-size: 12px; flex-shrink: 0; }
@@ -176,7 +183,6 @@
         .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: var(--font-head); font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; }
 
         #section-etf { padding: 0; } 
-        /* AJUSTE ESPACIADO MONITOR: ELIMINADO MARGEN SUPERIOR EXCESIVO */
         .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
         .etf-search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: 16px; color: var(--text-primary); font-family: var(--font-head); font-weight: 700; font-size: 14px; }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
@@ -187,7 +193,6 @@
         .etf-fav-icon.is-fav { color: var(--warning); }
 
         #section-log { padding-top: 0px; }
-        /* CABECERA DE LOG COMPACTADA */
         .log-header-bar { display: flex; justify-content: space-between; padding: 5px 16px 10px; align-items: center; }
         .log-title { font-family: var(--font-head); font-size: 18px; color: var(--brand); font-weight: 900; }
         .log-actions { display: flex; gap: 8px; }
@@ -196,7 +201,7 @@
         .perf-bar { background: var(--brand); opacity: 0.6; min-width: 4px; border-radius: 2px 2px 0 0; transition: height 0.5s ease; flex: 1; }
         .perf-bar:hover { opacity: 1; }
 
-        #section-settings { padding: 10px 20px 80px; } /* Menos padding top */
+        #section-settings { padding: 10px 20px 80px; }
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .setting-header { font-family: var(--font-head); color: var(--text-secondary); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; }
         .settings-card.primary .setting-header { color: var(--brand); border-bottom-color: var(--brand); }
@@ -332,6 +337,17 @@
                     <div id="radarValue" class="radar-content">ESCANANDO...</div>
                 </div>
 
+                <div class="capital-status-bar" id="capStatusBar">
+                    <div>
+                        <div class="cap-label">CAPITAL TOTAL</div>
+                        <div class="cap-val" id="displayCapTotal">$0.00</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div class="cap-label">PNL</div>
+                        <div class="cap-pnl" id="displayCapPnl">0.00%</div>
+                    </div>
+                </div>
+
                 <div class="main-target-box">
                     <div class="target-label">OBJETIVO SALIDA</div>
                     <div class="target-price" id="resTarget">0.00000000</div>
@@ -340,8 +356,13 @@
                 <div class="control-row-three">
                     <button class="be-btn" onclick="setBreakEven()" title="Break Even">B.E.</button>
                     <div class="strat-display" id="stratBadge" onclick="rotateDash()">NORMAL</div>
-                    <div class="lock-btn" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot">
-                        <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>
+                    <div class="ctrl-group-right">
+                        <div class="icon-sq-btn" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot">
+                            <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>
+                        </div>
+                        <div class="icon-sq-btn trash" onclick="cleanSlotOnly()" title="Limpiar Slot (Sin registrar)">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </div>
                     </div>
                 </div>
                 
@@ -390,10 +411,10 @@
                 </div>
                 <div class="config-grid">
                     <div class="config-item">
-                        <label>CAPITAL TOTAL ($)</label>
+                        <label>CAPITAL TOTAL BASE ($)</label>
                         <div class="input-wrapper">
                             <span class="input-icon">$</span>
-                            <input type="number" id="setGlobalCapital" placeholder="0.00">
+                            <input type="number" id="setGlobalCapital" placeholder="0.00" onblur="saveGlobalCapital()">
                         </div>
                     </div>
                     <div class="config-item">
@@ -503,7 +524,7 @@
                 </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V29.11 ADAPTIVE LAYOUT</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.0 ULTIMATE CAPITAL</div>
         </div>
     </div>
 
@@ -557,6 +578,7 @@
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
+        // CAPITAL GLOBAL SE LEE AL INICIO
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
@@ -590,7 +612,45 @@
                 renderNav(); selectSlot(activeIdx); renderHistory();
                 updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
+                
+                // INICIALIZAR CAPITAL EN UI
+                calculateGlobalStats(); 
             } catch(e) { console.error("Init Error", e); }
+        }
+
+        // --- NUEVA FUNCIÓN: CALCULAR CAPITAL Y MOSTRAR EN DASHBOARD ---
+        function calculateGlobalStats() {
+            let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0);
+            let currentEquity = globalCapital + totalRealizedProfit;
+            let pnl = currentEquity - globalCapital;
+            let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0;
+            
+            // Actualizar barra de estado en Dashboard
+            document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`;
+            const pnlEl = document.getElementById('displayCapPnl');
+            pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`;
+            pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)';
+        }
+
+        // --- NUEVA FUNCIÓN: LIMPIAR SLOT (SIN VENDER) ---
+        function cleanSlotOnly() {
+            triggerHaptic();
+            if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) {
+                slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
+                save();
+                selectSlot(activeIdx);
+                showToast("🗑️ Slot Limpiado");
+            }
+        }
+
+        // --- GUARDAR CAPITAL GLOBAL DESDE INPUT ---
+        function saveGlobalCapital() {
+            const val = parseFloat(document.getElementById('setGlobalCapital').value);
+            if(!isNaN(val)) {
+                globalCapital = val;
+                localStorage.setItem('c5x_global_capital', globalCapital);
+                calculateGlobalStats();
+            }
         }
 
         function setupSwipe() {
@@ -647,9 +707,7 @@
                 const change = parseFloat(item.change_percentage).toFixed(2);
                 const price = parseFloat(item.last);
                 const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2);
-                
                 elVal.innerHTML = `<span style="color:var(--text-primary)">${pairName}</span> <span style="color:var(--text-tertiary); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`;
-                
                 elVal.style.opacity = 1;
             }, 200);
         }
@@ -929,7 +987,6 @@
 
         function updateCoin() { 
             const el = document.getElementById('coinInput');
-            // CLEAN INPUT ON UPDATE
             let val = el.value.toUpperCase().replace('USDT','');
             el.value = val;
             slots[activeIdx].name = val; 
@@ -1009,7 +1066,8 @@
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
                 // Keep 5 slots
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); 
+                slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false);
+                calculateGlobalStats(); // UPDATE CAPITAL 
             } catch(e) { showToast("❌ Error al liquidar"); }
         }
 
@@ -1049,7 +1107,13 @@
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
-        function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
+        function clearLogs() { 
+            openSecurity(() => { 
+                history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); 
+                renderHistory(); calculateGlobalStats(); 
+                showToast("🗑️ Historial Borrado"); 
+            }); 
+        }
         
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
@@ -1057,21 +1121,9 @@
             triggerHaptic(); currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
-            
-            const tfBar = document.getElementById('tfBarContainer');
-            const spacer = document.querySelector('.content-spacer');
-            
-            // LOGICA ADAPTATIVA DEL HEADER
-            if(viewName === 'operate') { 
-                tfBar.style.display = 'grid'; 
-                spacer.style.marginTop = '120px'; // HEADER + TF
-                if(chartSymbol) loadChart(chartSymbol); 
-            } 
-            else { 
-                tfBar.style.display = 'none'; 
-                spacer.style.marginTop = '80px'; // SOLO HEADER
-            }
-            
+            const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer');
+            if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; if(chartSymbol) loadChart(chartSymbol); } 
+            else { tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; }
             if(viewName === 'etf') loadGateETFs();
             if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
             
@@ -1114,7 +1166,12 @@
             if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
             openSecurity(() => {
                 slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi;
-                if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); }
+                // SAVE GLOBAL CAPITAL
+                if(!isNaN(newGlob)) { 
+                    globalCapital = newGlob; 
+                    localStorage.setItem('c5x_global_capital', globalCapital); 
+                    calculateGlobalStats(); // Update Dash immediately
+                }
                 document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value;
                 save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada");
             });
@@ -1155,7 +1212,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.11.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
