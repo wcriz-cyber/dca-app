@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.2 RADAR EDITION</title>
+    <title>C5X - V29.3 COMMANDER</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -155,46 +155,60 @@
         .input-label { display: block; font-size: 9px; color: var(--text-secondary); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono'; font-size: 15px; font-weight: 700; text-align: center; }
         
-        .note-input-container { margin: 0 10px 10px; }
-        .note-input { width: 100%; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; color: var(--text-tertiary); font-family: 'Inter'; font-size: 11px; text-align: center; }
-        .note-input:focus { border-color: var(--brand); outline: none; color: var(--text-primary); }
-
-        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 5px 10px 15px; padding: 15px 20px 25px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        /* DASHBOARD RE-DESIGNED */
+        .dashboard-card { 
+            background: var(--surface); border: 1px solid var(--border); border-radius: 24px; 
+            margin: 5px 10px 15px; padding: 20px; /* More padding */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; 
+        }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
-        .dash-header { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 8px; position: relative; height: 36px; }
-        
-        /* NEW RADAR TICKER STYLES */
-        .radar-ticker { display: flex; align-items: center; gap: 8px; cursor: pointer; animation: fadeIn 1s ease; }
-        .radar-label { font-size: 10px; font-weight: 800; color: var(--text-tertiary); letter-spacing: 1px; }
-        .radar-val { font-family: 'JetBrains Mono'; font-weight: 800; font-size: 12px; color: var(--short); background: rgba(246, 70, 93, 0.1); padding: 4px 8px; border-radius: 6px; }
-
-        .icon-btn { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
-        .icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
-        .icon-btn.active { transform: scale(0.9); }
-        .icon-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
-
-        .main-target-box { text-align: center; margin-bottom: 25px; position: relative; }
-        .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
-        .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; margin-bottom: 15px; }
-        
-        .control-row { display: flex; justify-content: center; align-items: center; gap: 10px; }
-        
-        /* STRATEGY BADGE */
-        .strat-badge { 
-            padding: 6px 14px; border-radius: 20px; font-size: 10px; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; 
-            border: 1px solid var(--border); color: var(--text-secondary); background: rgba(255,255,255,0.03);
-            display: flex; align-items: center; gap: 6px;
+        /* NEW LARGE TICKER */
+        .radar-ticker-large {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px; text-align: center; margin-bottom: 20px; cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .strat-badge.active { color: var(--warning); border-color: var(--warning); background: rgba(240, 185, 11, 0.1); }
+        .radar-ticker-large:active { background: rgba(255,255,255,0.05); transform: scale(0.98); }
+        .radar-title { font-size: 9px; font-weight: 800; color: var(--text-tertiary); letter-spacing: 2px; margin-bottom: 4px; }
+        .radar-content { 
+            font-family: 'JetBrains Mono'; font-weight: 800; font-size: 15px; 
+            color: var(--short); display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
         
-        /* BE BUTTON */
+        .main-target-box { text-align: center; margin-bottom: 20px; position: relative; }
+        .target-label { font-size: 10px; color: var(--text-secondary); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 5px; }
+        .target-price { font-family: 'JetBrains Mono'; font-size: 42px; font-weight: 800; color: var(--text-primary); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(14, 203, 129, 0.1); transition: color 0.3s, text-shadow 0.3s; }
+        
+        /* NEW CONTROL ROW */
+        .control-row-three { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; padding: 0 5px;
+        }
+        
         .be-btn { 
             background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 20px; font-size: 10px; font-weight: 800;
-            color: var(--text-secondary); cursor: pointer; font-family: 'Orbitron';
+            width: 44px; height: 44px; border-radius: 12px; 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; color: var(--text-secondary); cursor: pointer; font-family: 'Orbitron';
         }
         .be-btn:active { background: var(--brand); color: #fff; }
+
+        .strat-display {
+            flex: 1; text-align: center; font-family: 'Orbitron'; font-weight: 900; font-size: 12px;
+            color: var(--text-secondary); letter-spacing: 1px; cursor: pointer; padding: 10px;
+            border-radius: 12px; margin: 0 10px; transition: 0.3s; border: 1px solid transparent;
+        }
+        .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
+        .strat-display:active { transform: scale(0.95); }
+
+        .lock-btn {
+            width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.03); 
+            border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; 
+            color: var(--text-secondary); cursor: pointer; transition: 0.3s;
+        }
+        .lock-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .lock-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
 
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 5px; text-align: center; }
@@ -423,9 +437,6 @@
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
                 </div>
             </div>
-            <div class="note-input-container">
-                <input type="text" id="slotNote" class="note-input" placeholder="Añadir nota al slot (opcional)..." onchange="saveNote()">
-            </div>
             <div class="controls-grid">
                 <div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div>
                 <div class="input-group">
@@ -436,24 +447,21 @@
             </div>
             
             <div class="dashboard-card" id="dashMain">
-                <div class="dash-header">
-                    <div id="radarTickerContainer" class="radar-ticker" onclick="switchView('etf')">
-                        <span class="radar-label">🔥 OPORTUNIDAD:</span>
-                        <div id="radarValue" class="radar-val">BUSCANDO...</div>
-                    </div>
-                    <div class="icon-btn" id="lockBtn" onclick="toggleLock()" style="position:absolute; right:0; top:0;"><svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg></div>
+                <div id="radarTickerContainer" class="radar-ticker-large" onclick="switchView('etf')">
+                    <div class="radar-title">⚡ RADAR DE OPORTUNIDADES</div>
+                    <div id="radarValue" class="radar-content">ESCANANDO...</div>
                 </div>
 
                 <div class="main-target-box">
                     <div class="target-label">OBJETIVO SALIDA</div>
                     <div class="target-price" id="resTarget">0.00000000</div>
-                    
-                    <div class="control-row">
-                        <div class="strat-badge" id="stratBadge" onclick="rotateDash()">
-                            <span id="stratName">NORMAL</span>
-                            <span style="font-size:8px">▼</span>
-                        </div>
-                        <button class="be-btn" onclick="setBreakEven()">B.E.</button>
+                </div>
+                
+                <div class="control-row-three">
+                    <button class="be-btn" onclick="setBreakEven()" title="Break Even">B.E.</button>
+                    <div class="strat-display" id="stratBadge" onclick="rotateDash()">NORMAL</div>
+                    <div class="lock-btn" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot">
+                        <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>
                     </div>
                 </div>
                 
@@ -596,7 +604,7 @@
             </div>
 
             <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">
-                C5X V29.2 RADAR EDITION
+                C5X V29.3 COMMANDER EDITION
             </div>
         </div>
     </div>
@@ -760,7 +768,7 @@
                 });
                 
                 // Sort by biggest loss (ascending change percentage)
-                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, 6);
+                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, 8);
                 
                 startRadarRotation();
             } catch(e) {
@@ -773,7 +781,7 @@
             setInterval(() => {
                 dropperIdx = (dropperIdx + 1) % topDroppers.length;
                 updateRadarUI();
-            }, 3500);
+            }, 5000); // 5 SEGUNDOS
         }
 
         function updateRadarUI() {
@@ -787,7 +795,9 @@
             setTimeout(() => {
                 const pairName = item.currency_pair.replace('_USDT', '');
                 const change = parseFloat(item.change_percentage).toFixed(2);
-                elVal.textContent = `${pairName} ${change}%`;
+                const price = parseFloat(item.last);
+                const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2);
+                elVal.textContent = `${pairName} | $${displayPrice} (${change}%)`;
                 elVal.style.opacity = 1;
             }, 200);
         }
@@ -1155,11 +1165,11 @@
         
         function selectSlot(i) { 
             triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; 
-            document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; document.getElementById('slotNote').value = s.note || '';
+            document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; 
             renderNav(); loadChart(s.name); updateDashUI(); 
         }
 
-        function saveNote() { slots[activeIdx].note = document.getElementById('slotNote').value; save(); }
+        // removed saveNote because input was removed
         function updateCoin() { const val = document.getElementById('coinInput').value.toUpperCase(); slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
         function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
@@ -1167,27 +1177,31 @@
         function updateDashUI() {
             const s = slots[activeIdx], isNormal = s.strat === "normal";
             const elBadge = document.getElementById('stratBadge');
-            const elStratName = document.getElementById('stratName');
             const elCard = document.getElementById('dashMain');
             const elTarget = document.getElementById('resTarget');
             const btnLock = document.getElementById('lockBtn');
             
-            elStratName.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
+            elBadge.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
             
             if(isNormal) {
-                elBadge.classList.remove('active');
+                elBadge.classList.remove('aggressive');
                 elTarget.style.color = "var(--text-primary)";
                 elTarget.style.textShadow = "0 0 20px rgba(14, 203, 129, 0.15)";
                 elCard.style.borderColor = "var(--border)";
             } else {
-                elBadge.classList.add('active');
+                elBadge.classList.add('aggressive');
                 elTarget.style.color = "var(--warning)";
                 elTarget.style.textShadow = "0 0 20px rgba(240, 185, 11, 0.15)";
                 elCard.style.borderColor = "var(--warning)";
             }
 
-            if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>'; } 
-            else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>'; }
+            if(s.locked) { 
+                btnLock.classList.add('locked'); 
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2z"/></svg>'; 
+            } else { 
+                btnLock.classList.remove('locked'); 
+                btnLock.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>'; 
+            }
             
             document.getElementById('capitalInput').value = s.capital; calculate();
         }
@@ -1357,7 +1371,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.2.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.3.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
