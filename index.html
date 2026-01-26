@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V31.1 WEB</title>
+    <title>C5X - V31.2 GESTURE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,7 +66,7 @@
             padding-top: var(--safe-top);
             padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; 
-            /* Evita que el navegador quiera ir "atrás" con el gesto nativo */
+            /* Evita gestos nativos del navegador que compitan */
             overscroll-behavior-x: none;
             transition: background 0.3s ease, color 0.3s ease; user-select: none; font-size: 16px; 
         }
@@ -382,7 +382,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.1 WEB EDITION</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.2 GESTURE EDITION</div>
         </div>
     </div>
 
@@ -488,9 +488,9 @@
         }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- NUEVA LÓGICA DE SWIPE GLOBAL ---
+        // --- GESTIÓN DE SWIPES (GESTOS) ---
         function setupSwipe() { 
-            // Escuchar en todo el documento, no solo en operate
+            // Escuchar en todo el documento
             document.addEventListener('touchstart', e => { 
                 touchStartX = e.changedTouches[0].screenX; 
                 touchStartY = e.changedTouches[0].screenY; 
@@ -504,29 +504,44 @@
         }
         
         function handleSwipe() {
-            const threshold = 70; // Sensibilidad
+            const threshold = 50; 
             const diffX = touchEndX - touchStartX; 
             const diffY = touchEndY - touchStartY; 
             
-            // Si el movimiento es más vertical que horizontal, ignorar
+            // Ignorar scroll vertical
             if (Math.abs(diffY) > Math.abs(diffX)) return;
-            // Si no supera el umbral, ignorar
-            if (Math.abs(diffX) < threshold) return;
 
+            // 1. LÓGICA PARA PESTAÑA OPERAR (Cambio de Slots)
             if (currentSection === 'operate') {
-                // En Operar: Swipe cambia de Slot
                 const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
                 if (occupiedIndices.length === 0) { 
-                    if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
-                    else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } 
+                    if (Math.abs(diffX) > threshold) {
+                        if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
+                        else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } 
+                    }
                     return; 
                 }
                 let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-                if (diffX < 0) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
-                else { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
-            } else {
-                // En otras vistas: Swipe derecha vuelve a Operar
-                if (diffX > 0) {
+                
+                if (diffX < -threshold) { 
+                    // Swipe Izquierda (Siguiente Slot)
+                    let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); 
+                } 
+                else if (diffX > threshold) { 
+                    // Swipe Derecha (Slot Anterior)
+                    let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); 
+                }
+            } 
+            // 2. LÓGICA PARA OTRAS PESTAÑAS (Gesto "Atrás" Nativo)
+            else {
+                // El gesto "Atrás" en Android es desde el borde DERECHO hacia el centro (diffX negativo)
+                // O desde el borde IZQUIERDO hacia el centro (diffX positivo)
+                
+                // Detectar si el toque empezó cerca del borde DERECHO
+                const isRightEdgeStart = touchStartX > (window.innerWidth - 40); // 40px de margen borde derecho
+                
+                if (isRightEdgeStart && diffX < -threshold) {
+                    // Deslizó desde la derecha hacia el centro -> ATRÁS
                     switchView('operate');
                 }
             }
