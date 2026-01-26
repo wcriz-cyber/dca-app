@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V30.6 PRECISION TOUCH</title>
+    <title>C5X - V30.7 CUSTOM RADAR</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -182,26 +182,12 @@
         .unified-card:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.05); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
-        .u-index { 
-            width: 36px; height: 36px; 
-            border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; 
-            font-family: var(--font-head); font-weight: 900; color: var(--text-secondary); 
-            margin-right: 15px; font-size: 14px; 
-            flex-shrink: 0; 
-        }
+        .u-index { width: 36px; height: 36px; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 14px; flex-shrink: 0; }
         .unified-card.active .u-index { color: var(--brand); border-color: var(--brand); background: var(--surface); }
         
         .u-center { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-        .u-title { 
-            font-family: var(--font-num); font-size: 18px; 
-            font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; 
-            white-space: nowrap; text-overflow: ellipsis; 
-        }
-        .u-sub { 
-            font-size: 13px; 
-            font-weight: 600; color: var(--text-tertiary); font-family: var(--font-main); margin-top: 4px; 
-        }
+        .u-title { font-family: var(--font-num); font-size: 18px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; white-space: nowrap; text-overflow: ellipsis; }
+        .u-sub { font-size: 13px; font-weight: 600; color: var(--text-tertiary); font-family: var(--font-main); margin-top: 4px; }
         
         .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; flex-shrink: 0; }
         .u-val-primary { font-family: var(--font-num); font-size: 16px; font-weight: 800; color: var(--long); }
@@ -359,6 +345,14 @@
 
             <div class="setting-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
+                <div class="setting-card-item">
+                    <label class="setting-label">ITEMS EN RADAR (CANTIDAD)</label>
+                    <input type="number" class="setting-input" id="setRadarLimit" placeholder="8">
+                </div>
+                <div class="setting-card-item">
+                    <label class="setting-label">VELOCIDAD ROTACIÓN (SEG)</label>
+                    <input type="number" class="setting-input" id="setRadarSpeed" placeholder="5">
+                </div>
                 <div class="setting-card-item"><label class="setting-label">CADENA MULTIPLICADORES</label><input type="text" class="setting-input" id="setMultipliers" placeholder="1, 1, 1.5, 2..." onblur="saveMultipliers()"></div>
                 <div class="setting-card-item"><label class="setting-label">PROXY PERSONALIZADO</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." onblur="saveProxy()"></div>
                 <div class="setting-card-item">
@@ -377,7 +371,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.6 PRECISION TOUCH</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.7 CUSTOM RADAR</div>
         </div>
     </div>
 
@@ -407,11 +401,14 @@
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
         let currentWs = null; 
-        let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         
-        // VARIABLES GESTOS
-        let touchStartX = 0; let touchStartY = 0; let touchEndX = 0; let touchEndY = 0;
+        // CONFIGURABLE RADAR VARS
+        let radarLimit = parseInt(localStorage.getItem('c5x_radar_limit')) || 8;
+        let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         
+        let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; let touchStartX = 0; let touchEndX = 0;
+        let radarIntervalId = null;
+
         let proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
         if(customProxy) proxies.unshift(customProxy);
 
@@ -422,7 +419,9 @@
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
                 const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
-                renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
+
+                renderNav(); selectSlot(activeIdx); renderHistory();
+                updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
             } catch(e) { console.error("Init Error", e); }
@@ -444,71 +443,29 @@
                 sortSlots(); selectSlot(0); showToast("🗑️ Slot Limpiado");
             }
         }
-        
         function quickAddFromTicker(symbol, price, e) {
             e.stopPropagation(); triggerHaptic();
-            const exists = slots.some(s => s.name === symbol);
-            if(exists) { showToast("⚠️ " + symbol + " ya existe"); return; }
-            const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); 
-            if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
-            let cleanName = symbol.replace('_USDT','').replace('USDT',''); 
-            slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; 
-            save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); 
+            const exists = slots.some(s => s.name === symbol); if(exists) { showToast("⚠️ " + symbol + " ya existe"); return; }
+            const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
+            let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); 
         }
-
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
-        
-        // --- SMART SWIPE SETUP & HANDLER ---
-        function setupSwipe() {
-            const el = document.getElementById('section-operate');
-            el.addEventListener('touchstart', e => { 
-                touchStartX = e.changedTouches[0].screenX; 
-                touchStartY = e.changedTouches[0].screenY;
-            }, {passive: true});
-            el.addEventListener('touchend', e => { 
-                touchEndX = e.changedTouches[0].screenX; 
-                touchEndY = e.changedTouches[0].screenY;
-                if(currentSection === 'operate') handleSwipe(); 
-            }, {passive: true});
-        }
-
+        function setupSwipe() { const el = document.getElementById('section-operate'); el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true}); el.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; if(currentSection === 'operate') handleSwipe(); }, {passive: true}); }
         function handleSwipe() {
-            const threshold = 75; // Increased threshold
-            const diffX = touchEndX - touchStartX;
-            const diffY = touchEndY - touchStartY;
-
-            // INTENTION DETECTION: Ignore horizontal swipe if vertical scroll is dominant
-            if (Math.abs(diffY) > Math.abs(diffX)) return;
-
-            const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
-            
-            if (occupiedIndices.length === 0) { 
-                if (Math.abs(diffX) > threshold) {
-                    if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
-                    else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } 
-                }
-                return; 
-            }
-
-            let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); 
-            if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-
-            if (diffX < -threshold) { 
-                // Swipe Left -> Next
-                let nextPos = currentPosInOccupied + 1; 
-                if (nextPos >= occupiedIndices.length) nextPos = 0; 
-                selectSlot(occupiedIndices[nextPos]); 
-            } 
-            else if (diffX > threshold) { 
-                // Swipe Right -> Prev
-                let prevPos = currentPosInOccupied - 1; 
-                if (prevPos < 0) prevPos = occupiedIndices.length - 1; 
-                selectSlot(occupiedIndices[prevPos]); 
-            }
+            const threshold = 60; const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
+            if (occupiedIndices.length === 0) { if (touchEndX < touchStartX - threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (touchEndX > touchStartX + threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } return; }
+            let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
+            if (touchEndX < touchStartX - threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
+            else if (touchEndX > touchStartX + threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
         }
-
-        async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); const data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, 8); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
-        function startRadarRotation() { updateRadarUI(); setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, 5000); }
+        async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); const data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
+        
+        function startRadarRotation() { 
+            if(radarIntervalId) clearInterval(radarIntervalId);
+            updateRadarUI(); 
+            radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); 
+        }
+        
         function updateRadarUI() {
             if(topDroppers.length === 0) return; const elVal = document.getElementById('radarValue'); const item = topDroppers[dropperIdx]; if(!item) return;
             elVal.style.opacity = 0; setTimeout(() => {
@@ -594,16 +551,143 @@
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); calculateGlobalStats(); showToast("🗑️ Historial Borrado"); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function switchView(viewName, toggle = true) { triggerHaptic(); currentSection = viewName; document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active'); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected'); const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; } if(viewName === 'etf') loadGateETFs(); if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } if(toggle) toggleMenu(); window.scrollTo(0,0); }
-        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; calcMonthlyPerformance(); }
-        function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
-        function applySettings() { triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value), newRoi = parseFloat(document.getElementById('setRoi').value); const newGlob = parseFloat(document.getElementById('setGlobalCapital').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); openSecurity(() => { slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); }); }
-        function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)"); }
+        
+        function switchView(viewName, toggle = true) {
+            triggerHaptic(); currentSection = viewName;
+            document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
+            
+            const tfBar = document.getElementById('tfBarContainer');
+            const spacer = document.querySelector('.content-spacer');
+            
+            if(viewName === 'operate') { 
+                tfBar.style.display = 'grid'; 
+                spacer.style.marginTop = '120px'; 
+                if(chartSymbol) loadChart(chartSymbol); 
+            } 
+            else { 
+                tfBar.style.display = 'none'; 
+                spacer.style.marginTop = '80px'; 
+            }
+            
+            if(viewName === 'etf') loadGateETFs();
+            if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
+            
+            if(toggle) toggleMenu(); 
+            window.scrollTo(0,0);
+        }
+        function loadSettingsValues() {
+            const s = slots[activeIdx];
+            document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value;
+            document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100;
+            document.getElementById('setGlobalCapital').value = globalCapital;
+            document.getElementById('setRadarLimit').value = radarLimit;
+            document.getElementById('setRadarSpeed').value = radarSpeed;
+            calcMonthlyPerformance();
+        }
+        
+        function calcMonthlyPerformance() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            let monthlyProfit = 0;
+            
+            history.forEach(h => {
+                const parts = h.date.split('/');
+                if(parts.length === 3) {
+                    const hDate = new Date(parts[2], parts[1]-1, parts[0]);
+                    if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) {
+                        monthlyProfit += parseFloat(h.profit) || 0;
+                    }
+                }
+            });
+            
+            let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0;
+            const el = document.getElementById('monthlyProfitDisplay');
+            el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`;
+        }
+
+        function applySettings() {
+            triggerHaptic(); 
+            const newCap = parseFloat(document.getElementById('setCapital').value);
+            const newRoi = parseFloat(document.getElementById('setRoi').value);
+            const newGlob = parseFloat(document.getElementById('setGlobalCapital').value);
+            
+            // RADAR SETTINGS
+            const newR_Limit = parseInt(document.getElementById('setRadarLimit').value);
+            const newR_Speed = parseInt(document.getElementById('setRadarSpeed').value);
+            
+            if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
+            
+            openSecurity(() => {
+                slots[activeIdx].capital = newCap; 
+                slots[activeIdx].roi = newRoi;
+                
+                if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); }
+                
+                // SAVE RADAR SETTINGS
+                if(!isNaN(newR_Limit) && newR_Limit > 0) { radarLimit = newR_Limit; localStorage.setItem('c5x_radar_limit', radarLimit); fetchAndCalcTopDroppers(); }
+                if(!isNaN(newR_Speed) && newR_Speed > 0) { radarSpeed = newR_Speed; localStorage.setItem('c5x_radar_speed', radarSpeed); startRadarRotation(); }
+                
+                document.getElementById('incInput').value = document.getElementById('setInc').value; 
+                document.getElementById('descInput').value = document.getElementById('setDesc').value;
+                
+                save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada");
+            });
+        }
+        
+        function verifyAndAddCoin() { 
+             const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return;
+             tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+             input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)");
+        }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
-        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); let totalProfit = 0; let totalInvested = 0; let wins = 0; const bodyData = history.map(h => { const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const exitVal = inv + prof; totalInvested += inv; totalProfit += prof; if(prof > 0) wins++; return [ h.date + ' ' + h.time, h.coin, '$' + inv.toFixed(2), '$' + exitVal.toFixed(2), '$' + prof.toFixed(2), h.roi || '0%' ]; }); const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0; const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(59, 130, 246); doc.text("REPORTE OPERACIONES C5X", 14, 15); doc.setFontSize(10); doc.setTextColor(100); doc.text("Generado: " + new Date().toLocaleString(), 14, 22); doc.setDrawColor(200); doc.setFillColor(245, 247, 250); doc.rect(14, 28, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); doc.text("CAPITAL MOVIDO", 20, 36); doc.text("BENEFICIO NETO", 100, 36); doc.text("TASA ACIERTO", 180, 36); doc.text("TOTAL OPS", 240, 36); doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 44); doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 100, 44); doc.setTextColor(0); doc.text(winRate + "%", 180, 44); doc.text(history.length.toString(), 240, 44); doc.autoTable({ head: [['FECHA/HORA', 'MONEDA', 'INVERTIDO', 'VENTA (SALIDA)', 'PROFIT', 'ROI']], body: bodyData, startY: 55, styles: { fontSize: 9, cellPadding: 3 }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 247, 250] } }); doc.save("C5X_Reporte_Mensual.pdf"); }
-        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.6.json"; document.body.appendChild(a); a.click(); }
-        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
+
+        function exportPDF() { 
+             if(history.length === 0) return showToast("⚠️ Sin Datos");
+             let totalProfit = 0; let totalInvested = 0; let wins = 0;
+             const bodyData = history.map(h => {
+                 const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const exitVal = inv + prof;
+                 totalInvested += inv; totalProfit += prof; if(prof > 0) wins++;
+                 return [ h.date + ' ' + h.time, h.coin, '$' + inv.toFixed(2), '$' + exitVal.toFixed(2), '$' + prof.toFixed(2), h.roi || '0%' ];
+             });
+             const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0;
+             const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4');
+             doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(59, 130, 246);
+             doc.text("REPORTE OPERACIONES C5X", 14, 15);
+             doc.setFontSize(10); doc.setTextColor(100); doc.text("Generado: " + new Date().toLocaleString(), 14, 22);
+             doc.setDrawColor(200); doc.setFillColor(245, 247, 250); doc.rect(14, 28, 270, 20, 'F');
+             doc.setFontSize(10); doc.setTextColor(80);
+             doc.text("CAPITAL MOVIDO", 20, 36); doc.text("BENEFICIO NETO", 100, 36); doc.text("TASA ACIERTO", 180, 36); doc.text("TOTAL OPS", 240, 36);
+             doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 44);
+             doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50);
+             doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 100, 44);
+             doc.setTextColor(0); doc.text(winRate + "%", 180, 44); doc.text(history.length.toString(), 240, 44);
+             doc.autoTable({ head: [['FECHA/HORA', 'MONEDA', 'INVERTIDO', 'VENTA (SALIDA)', 'PROFIT', 'ROI']], body: bodyData, startY: 55, styles: { fontSize: 9, cellPadding: 3 }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 247, 250] } });
+             doc.save("C5X_Reporte_Mensual.pdf");
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital });
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.7.json"; document.body.appendChild(a); a.click();
+        }
+        function importData(input) {
+            const file = input.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if(data.slots) slots = data.slots; if(data.history) history = data.history;
+                    if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); }
+                    if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); }
+                    if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); }
+                    if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); }
+                    save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload();
+                } catch(err) { showToast("❌ Error al leer archivo"); }
+            }; reader.readAsText(file);
+        }
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
