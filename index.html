@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.10 MASTER CONTROL</title>
+    <title>C5X - V29.11 ADAPTIVE LAYOUT</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -48,7 +48,7 @@
             --text-secondary: #707a8a !important;
             --border: #e6e8ea !important;
             --chart-bg: #ffffff !important;
-            --warning: #d97706 !important; /* AMBAR OSCURO PARA LECTURA */
+            --warning: #d97706 !important;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -60,11 +60,13 @@
             transition: background 0.3s ease, color 0.3s ease; user-select: none; font-size: 16px; 
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER CORREGIDO (ADAPTIVE) --- */
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
             background: var(--surface-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border); height: 112px; 
+            border-bottom: 1px solid var(--border);
+            /* ELIMINADO height: 112px; AHORA ES AUTOMÁTICO */
+            transition: all 0.3s ease;
         }
         
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 70px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
@@ -89,7 +91,11 @@
         .theme-btn { width: 44px; height: 44px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; z-index: 50; transition: 0.2s; }
         .theme-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
 
-        .content-spacer { margin-top: 115px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; }
+        .content-spacer { 
+            /* Se ajustará dinámicamente con JS */
+            margin-top: 115px; 
+            max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; transition: margin-top 0.3s ease; 
+        }
         .app-section { display: none; animation: fadeIn 0.3s ease; }
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -128,7 +134,7 @@
         .radar-ticker-large:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.15); }
         .radar-title { font-family: var(--font-head); font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; }
         .radar-content { font-family: var(--font-num); font-weight: 800; font-size: 18px; color: var(--text-primary); display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .radar-pct { color: var(--warning); } /* Variable controlada para ambos temas */
+        .radar-pct { color: var(--warning); } /* COLOR CORREGIDO PARA AMBOS TEMAS */
         
         .main-target-box { text-align: center; margin-bottom: 10px; position: relative; } 
         .target-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; font-family: var(--font-main); }
@@ -170,7 +176,8 @@
         .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: var(--font-head); font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; }
 
         #section-etf { padding: 0; } 
-        .etf-search-box { position: relative; margin: 10px 10px 10px 10px; } /* Compactado */
+        /* AJUSTE ESPACIADO MONITOR: ELIMINADO MARGEN SUPERIOR EXCESIVO */
+        .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
         .etf-search-input { width: 100%; background: var(--surface); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: 16px; color: var(--text-primary); font-family: var(--font-head); font-weight: 700; font-size: 14px; }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
         .etf-change-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: var(--font-num); }
@@ -181,7 +188,7 @@
 
         #section-log { padding-top: 0px; }
         /* CABECERA DE LOG COMPACTADA */
-        .log-header-bar { display: flex; justify-content: space-between; padding: 10px 16px; align-items: center; }
+        .log-header-bar { display: flex; justify-content: space-between; padding: 5px 16px 10px; align-items: center; }
         .log-title { font-family: var(--font-head); font-size: 18px; color: var(--brand); font-weight: 900; }
         .log-actions { display: flex; gap: 8px; }
         .action-btn { background: var(--surface); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; color: var(--text-primary); font-size: 10px; font-weight: 700; font-family: var(--font-head); }
@@ -189,7 +196,7 @@
         .perf-bar { background: var(--brand); opacity: 0.6; min-width: 4px; border-radius: 2px 2px 0 0; transition: height 0.5s ease; flex: 1; }
         .perf-bar:hover { opacity: 1; }
 
-        #section-settings { padding: 20px; padding-bottom: 80px; }
+        #section-settings { padding: 10px 20px 80px; } /* Menos padding top */
         .settings-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .setting-header { font-family: var(--font-head); color: var(--text-secondary); font-size: 12px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; }
         .settings-card.primary .setting-header { color: var(--brand); border-bottom-color: var(--brand); }
@@ -496,7 +503,7 @@
                 </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V29.10 MASTER CONTROL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V29.11 ADAPTIVE LAYOUT</div>
         </div>
     </div>
 
@@ -550,7 +557,7 @@
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
-        let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; // NUEVO
+        let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
@@ -922,6 +929,7 @@
 
         function updateCoin() { 
             const el = document.getElementById('coinInput');
+            // CLEAN INPUT ON UPDATE
             let val = el.value.toUpperCase().replace('USDT','');
             el.value = val;
             slots[activeIdx].name = val; 
@@ -999,6 +1007,7 @@
                 };
                 if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
+                // Keep 5 slots
                 const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
                 slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); 
             } catch(e) { showToast("❌ Error al liquidar"); }
@@ -1048,9 +1057,21 @@
             triggerHaptic(); currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
-            const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer');
-            if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } 
-            else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
+            
+            const tfBar = document.getElementById('tfBarContainer');
+            const spacer = document.querySelector('.content-spacer');
+            
+            // LOGICA ADAPTATIVA DEL HEADER
+            if(viewName === 'operate') { 
+                tfBar.style.display = 'grid'; 
+                spacer.style.marginTop = '120px'; // HEADER + TF
+                if(chartSymbol) loadChart(chartSymbol); 
+            } 
+            else { 
+                tfBar.style.display = 'none'; 
+                spacer.style.marginTop = '80px'; // SOLO HEADER
+            }
+            
             if(viewName === 'etf') loadGateETFs();
             if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
             
@@ -1072,7 +1093,6 @@
             let monthlyProfit = 0;
             
             history.forEach(h => {
-                // formato dd/mm/yyyy
                 const parts = h.date.split('/');
                 if(parts.length === 3) {
                     const hDate = new Date(parts[2], parts[1]-1, parts[0]);
@@ -1135,7 +1155,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.10.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.11.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
