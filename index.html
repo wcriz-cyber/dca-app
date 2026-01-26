@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V31.0 WEB</title>
+    <title>C5X - V31.1 WEB</title>
     <meta name="theme-color" content="#0b0e11">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -66,6 +66,8 @@
             padding-top: var(--safe-top);
             padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; 
+            /* Evita que el navegador quiera ir "atrás" con el gesto nativo */
+            overscroll-behavior-x: none;
             transition: background 0.3s ease, color 0.3s ease; user-select: none; font-size: 16px; 
         }
 
@@ -380,7 +382,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.0 WEB EDITION</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.1 WEB EDITION</div>
         </div>
     </div>
 
@@ -415,7 +417,7 @@
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let touchStartX = 0; let touchStartY = 0; let touchEndX = 0; let touchEndY = 0;
         let radarIntervalId = null;
-        let crashAlertedCoins = new Set();
+        let crashAlertedCoins = new Set(JSON.parse(localStorage.getItem('c5x_alerted_coins')) || []);
         let proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
         if(customProxy) proxies.unshift(customProxy);
 
@@ -485,15 +487,51 @@
             let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptyIdx); showToast("✅ " + symbol + " añadido"); 
         }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
-        function setupSwipe() { const el = document.getElementById('section-operate'); el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: true}); el.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; if(currentSection === 'operate') handleSwipe(); }, {passive: true}); }
-        function handleSwipe() {
-            const threshold = 75; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; if (Math.abs(diffY) > Math.abs(diffX)) return;
-            const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
-            if (occupiedIndices.length === 0) { if (Math.abs(diffX) > threshold) { if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } return; }
-            let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-            if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
-            else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
+        
+        // --- NUEVA LÓGICA DE SWIPE GLOBAL ---
+        function setupSwipe() { 
+            // Escuchar en todo el documento, no solo en operate
+            document.addEventListener('touchstart', e => { 
+                touchStartX = e.changedTouches[0].screenX; 
+                touchStartY = e.changedTouches[0].screenY; 
+            }, {passive: true}); 
+            
+            document.addEventListener('touchend', e => { 
+                touchEndX = e.changedTouches[0].screenX; 
+                touchEndY = e.changedTouches[0].screenY; 
+                handleSwipe(); 
+            }, {passive: true}); 
         }
+        
+        function handleSwipe() {
+            const threshold = 70; // Sensibilidad
+            const diffX = touchEndX - touchStartX; 
+            const diffY = touchEndY - touchStartY; 
+            
+            // Si el movimiento es más vertical que horizontal, ignorar
+            if (Math.abs(diffY) > Math.abs(diffX)) return;
+            // Si no supera el umbral, ignorar
+            if (Math.abs(diffX) < threshold) return;
+
+            if (currentSection === 'operate') {
+                // En Operar: Swipe cambia de Slot
+                const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
+                if (occupiedIndices.length === 0) { 
+                    if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
+                    else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } 
+                    return; 
+                }
+                let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
+                if (diffX < 0) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
+                else { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
+            } else {
+                // En otras vistas: Swipe derecha vuelve a Operar
+                if (diffX > 0) {
+                    switchView('operate');
+                }
+            }
+        }
+
         async function fetchAndCalcTopDroppers() { 
             try { 
                 // FALLBACK AL PROXY
@@ -507,9 +545,13 @@
                 topDroppers.forEach(t => {
                     const pct = parseFloat(t.change_percentage);
                     const pair = t.currency_pair.replace('_USDT', '');
+                    
+                    // --- CORRECCIÓN ALERTAS PERSISTENTES ---
                     if(pct <= -50.0 && !crashAlertedCoins.has(pair)) {
                          triggerCrashAlert(pair, pct);
                          crashAlertedCoins.add(pair);
+                         // Guardar en memoria permanente para que no moleste al recargar
+                         localStorage.setItem('c5x_alerted_coins', JSON.stringify([...crashAlertedCoins]));
                     }
                 });
                 startRadarRotation(); 
