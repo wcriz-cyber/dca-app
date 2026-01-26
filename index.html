@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V30.0 ULTIMATE CAPITAL</title>
+    <title>C5X - V30.1 AUTO-SORT</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -125,19 +125,13 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
-        /* RADAR & CAPITAL INFO */
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 15px; text-align: center; margin-bottom: 10px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .radar-ticker-large:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.15); }
         .radar-title { font-family: var(--font-head); font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 6px; text-transform: uppercase; }
         .radar-content { font-family: var(--font-num); font-weight: 800; font-size: 18px; color: var(--text-primary); display: flex; align-items: center; justify-content: center; gap: 8px; }
         .radar-pct { color: var(--warning); } 
 
-        /* BARRA DE CAPITAL GLOBAL (NUEVO) */
-        .capital-status-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 12px; padding: 8px 12px; margin-bottom: 15px;
-        }
+        .capital-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; margin-bottom: 15px; }
         .cap-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; font-family: var(--font-main); }
         .cap-val { font-family: var(--font-num); font-weight: 800; font-size: 13px; color: var(--text-primary); }
         .cap-pnl { font-family: var(--font-num); font-weight: 800; font-size: 13px; }
@@ -149,12 +143,10 @@
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .be-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-secondary); cursor: pointer; font-family: var(--font-head); }
         .be-btn:active { background: var(--brand); color: #fff; }
-        
         .strat-display { flex: 1; text-align: center; font-family: var(--font-head); font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; cursor: pointer; padding: 10px; border-radius: 12px; margin: 0 8px; transition: 0.3s; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         .strat-display:active { transform: scale(0.95); }
         
-        /* BOTONES DE CONTROL (LOCK / TRASH) */
         .ctrl-group-right { display: flex; gap: 6px; }
         .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; transition: 0.3s; }
         .icon-sq-btn svg { width: 16px; height: 16px; fill: currentColor; }
@@ -167,7 +159,7 @@
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 0.5px; font-family: var(--font-main); }
         .stat-value { font-family: var(--font-num); font-size: 12px; font-weight: 700; color: var(--text-primary); word-break: break-all; }
 
-        /* --- LISTA COMPACTA --- */
+        /* --- LISTA DE NIVELES --- */
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         .level-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 10px 12px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
         .level-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.05); }
@@ -524,7 +516,7 @@
                 </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.0 ULTIMATE CAPITAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.1 AUTO-SORT</div>
         </div>
     </div>
 
@@ -578,7 +570,6 @@
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
-        // CAPITAL GLOBAL SE LEE AL INICIO
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
@@ -613,37 +604,43 @@
                 updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 
-                // INICIALIZAR CAPITAL EN UI
                 calculateGlobalStats(); 
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- NUEVA FUNCIÓN: CALCULAR CAPITAL Y MOSTRAR EN DASHBOARD ---
+        // --- SORTING FUNCTION (AUTO-ORGANIZAR) ---
+        function sortSlots() {
+            // Separa llenos y vacíos
+            const filled = slots.filter(s => s.name && s.name !== '');
+            const empty = slots.filter(s => !s.name || s.name === '');
+            slots = [...filled, ...empty];
+            save();
+            renderNav();
+        }
+
         function calculateGlobalStats() {
             let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0);
             let currentEquity = globalCapital + totalRealizedProfit;
             let pnl = currentEquity - globalCapital;
             let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0;
             
-            // Actualizar barra de estado en Dashboard
             document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`;
             const pnlEl = document.getElementById('displayCapPnl');
             pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`;
             pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)';
         }
 
-        // --- NUEVA FUNCIÓN: LIMPIAR SLOT (SIN VENDER) ---
+        // --- LIMPIAR CON SORTING ---
         function cleanSlotOnly() {
             triggerHaptic();
             if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) {
                 slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
-                save();
-                selectSlot(activeIdx);
+                sortSlots(); // AUTO-ORGANIZAR
+                selectSlot(0); // IR AL PRIMERO (Siempre será activo o el primer vacío)
                 showToast("🗑️ Slot Limpiado");
             }
         }
 
-        // --- GUARDAR CAPITAL GLOBAL DESDE INPUT ---
         function saveGlobalCapital() {
             const val = parseFloat(document.getElementById('setGlobalCapital').value);
             if(!isNaN(val)) {
@@ -662,17 +659,39 @@
             }, {passive: true});
         }
 
+        // --- SMART SWIPE (SOLO ACTIVOS) ---
         function handleSwipe() {
-            const threshold = 60; 
-            if (touchEndX < touchStartX - threshold) {
-                let next = activeIdx + 1;
-                if(next >= 5) next = 0; 
-                selectSlot(next);
+            const threshold = 60;
+            // Obtener índices de slots ocupados
+            const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
+            
+            // Si no hay slots ocupados, permitir swipe normal (0-4) para navegar vacíos
+            if (occupiedIndices.length === 0) {
+                 if (touchEndX < touchStartX - threshold) {
+                    let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next);
+                } else if (touchEndX > touchStartX + threshold) {
+                    let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
+                }
+                return;
             }
-            if (touchEndX > touchStartX + threshold) {
-                let prev = activeIdx - 1;
-                if(prev < 0) prev = 4;
-                selectSlot(prev);
+
+            // Si hay ocupados, solo rotar entre ellos
+            let currentPosInOccupied = occupiedIndices.indexOf(activeIdx);
+            
+            // Si el slot actual no está ocupado (ej: acabo de tocar uno vacío), saltar al primer ocupado
+            if (currentPosInOccupied === -1) currentPosInOccupied = 0;
+
+            if (touchEndX < touchStartX - threshold) {
+                // NEXT
+                let nextPos = currentPosInOccupied + 1;
+                if (nextPos >= occupiedIndices.length) nextPos = 0; // Loop back to first active
+                selectSlot(occupiedIndices[nextPos]);
+            } 
+            else if (touchEndX > touchStartX + threshold) {
+                // PREV
+                let prevPos = currentPosInOccupied - 1;
+                if (prevPos < 0) prevPos = occupiedIndices.length - 1; // Loop to last active
+                selectSlot(occupiedIndices[prevPos]);
             }
         }
 
@@ -707,7 +726,9 @@
                 const change = parseFloat(item.change_percentage).toFixed(2);
                 const price = parseFloat(item.last);
                 const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2);
+                
                 elVal.innerHTML = `<span style="color:var(--text-primary)">${pairName}</span> <span style="color:var(--text-tertiary); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`;
+                
                 elVal.style.opacity = 1;
             }, 200);
         }
@@ -965,6 +986,11 @@
             let cleanName = symbol.replace('_USDT','').replace('USDT','');
             slots[emptySlotIdx].name = cleanName; 
             slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = '';
+            
+            // AUTO SORT ON ADD? Optional, user asked "al limpiar" specifically.
+            // But let's sort to keep consistency if user wants "active first".
+            // slots.sort(...) // Can add here if desired.
+            
             save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1));
         }
 
@@ -987,6 +1013,7 @@
 
         function updateCoin() { 
             const el = document.getElementById('coinInput');
+            // CLEAN INPUT ON UPDATE
             let val = el.value.toUpperCase().replace('USDT','');
             el.value = val;
             slots[activeIdx].name = val; 
@@ -1063,11 +1090,14 @@
                     qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0
                 };
                 if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory();
+                
                 slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false };
-                // Keep 5 slots
-                const filled = slots.filter(sl => sl.name !== ''), empty = slots.filter(sl => sl.name === '');
-                slots = [...filled, ...empty]; save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false);
-                calculateGlobalStats(); // UPDATE CAPITAL 
+                
+                // AUTO-SORT ON LIQUIDATE
+                sortSlots();
+                
+                save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false);
+                calculateGlobalStats(); 
             } catch(e) { showToast("❌ Error al liquidar"); }
         }
 
@@ -1166,11 +1196,10 @@
             if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
             openSecurity(() => {
                 slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi;
-                // SAVE GLOBAL CAPITAL
                 if(!isNaN(newGlob)) { 
                     globalCapital = newGlob; 
                     localStorage.setItem('c5x_global_capital', globalCapital); 
-                    calculateGlobalStats(); // Update Dash immediately
+                    calculateGlobalStats(); 
                 }
                 document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value;
                 save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada");
@@ -1212,7 +1241,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.1.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
