@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V29.6 PURE VISUAL</title>
+    <title>C5X - V29.7 ULTRA SYNC</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -117,12 +117,31 @@
         .app-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- VISTA OPERAR --- */
-        .tf-bar { display: flex; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--border); justify-content: center; }
-        .tf-btn { flex: 1; max-width: 60px; padding: 6px 0; border: none; background: transparent; color: var(--text-secondary); font-size: 11px; font-weight: 700; border-radius: 6px; }
-        .tf-btn.active { background: rgba(59, 130, 246, 0.15); color: var(--brand); }
+        /* --- VISTA OPERAR: BARRAS SINCRONIZADAS --- */
+        
+        /* 1. BARRA TEMPORALIDAD (Ahora idéntica en estructura a Slots) */
+        .tf-bar { 
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); /* 5 Columnas igual que slots */
+            gap: 8px; 
+            padding: 8px 12px; 
+            border-bottom: 1px solid var(--border); 
+            justify-content: center; 
+        }
+        
+        .tf-btn { 
+            background: transparent; border: none; 
+            color: var(--text-tertiary); 
+            padding: 10px 0; text-align: center; 
+            font-family: 'Orbitron'; /* Misma fuente técnica */
+            font-size: 11px; font-weight: 700; 
+            cursor: pointer; border-radius: 8px;
+            transition: 0.2s;
+        }
+        .tf-btn:active { background: rgba(255,255,255,0.03); }
+        .tf-btn.active { color: var(--brand); background: rgba(59, 130, 246, 0.1); font-weight: 900; }
 
-        /* --- STICKY NAV (FLAT STYLE) --- */
+        /* 2. BARRA SLOTS (Flat Style & Sticky) */
         .slot-nav { 
             display: grid; 
             grid-template-columns: repeat(5, 1fr); /* 5 SLOTS */
@@ -147,30 +166,19 @@
             border-radius: 8px;
         }
         .slot-card:active { background: rgba(255,255,255,0.03); }
-        .slot-card.active { 
-            color: var(--text-primary); 
-            background: rgba(255,255,255,0.02);
-            font-weight: 900;
-        }
+        .slot-card.active { color: var(--text-primary); background: rgba(255,255,255,0.02); font-weight: 900; }
         
-        /* Indicador Luz inferior */
+        /* Luz inferior Slot */
         .slot-card::after {
             content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px;
-            background: transparent; border-radius: 3px 3px 0 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            box-shadow: none;
+            background: transparent; border-radius: 3px 3px 0 0; transition: all 0.3s; opacity: 0;
         }
         .slot-card.active::after { opacity: 1; background: var(--brand); box-shadow: 0 -2px 8px var(--brand); }
         .slot-card.has-profit.active::after { background: var(--long); box-shadow: 0 -2px 8px var(--long); }
         .slot-card.has-loss.active::after { background: var(--short); box-shadow: 0 -2px 8px var(--short); }
 
-        /* Puntos pasivos */
-        .slot-card.has-profit:not(.active)::before {
-            content: '•'; position: absolute; bottom: 2px; left: 0; right: 0; color: var(--long); font-size: 14px; line-height: 0;
-        }
-        .slot-card.has-loss:not(.active)::before {
-            content: '•'; position: absolute; bottom: 2px; left: 0; right: 0; color: var(--short); font-size: 14px; line-height: 0;
-        }
+        .slot-card.has-profit:not(.active)::before { content: '•'; position: absolute; bottom: 2px; left: 0; right: 0; color: var(--long); font-size: 14px; line-height: 0; }
+        .slot-card.has-loss:not(.active)::before { content: '•'; position: absolute; bottom: 2px; left: 0; right: 0; color: var(--short); font-size: 14px; line-height: 0; }
 
         .chart-wrapper { 
             height: 280px; 
@@ -201,16 +209,37 @@
         }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
 
+        /* --- TICKER DE OPORTUNIDADES DESTACADO --- */
         .radar-ticker-large {
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 12px;
-            padding: 8px; text-align: center; margin-bottom: 10px; cursor: pointer; 
+            /* Nuevo estilo destacado */
+            background: rgba(59, 130, 246, 0.08); /* Fondo azul sutil */
+            border: 1px solid rgba(59, 130, 246, 0.3); /* Borde azul brillante */
+            border-radius: 16px;
+            padding: 15px; /* Más padding */
+            text-align: center; 
+            margin-bottom: 15px; 
+            cursor: pointer; 
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .radar-ticker-large:active { background: rgba(255,255,255,0.05); transform: scale(0.98); }
-        .radar-title { font-size: 8px; font-weight: 800; color: var(--text-tertiary); letter-spacing: 2px; margin-bottom: 2px; }
+        .radar-ticker-large:active { transform: scale(0.98); background: rgba(59, 130, 246, 0.15); }
+        
+        .radar-title { 
+            font-family: 'Orbitron'; 
+            font-size: 10px; 
+            font-weight: 900; 
+            color: var(--brand); /* Color de marca */
+            letter-spacing: 2px; 
+            margin-bottom: 6px; 
+            text-transform: uppercase;
+        }
+        
         .radar-content { 
-            font-family: 'JetBrains Mono'; font-weight: 800; font-size: 15px; 
-            color: var(--short); display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: 'JetBrains Mono'; 
+            font-weight: 800; 
+            font-size: 18px; /* Texto más grande */
+            color: var(--text-primary); 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
         
         .main-target-box { text-align: center; margin-bottom: 10px; position: relative; } 
@@ -420,7 +449,7 @@
             </div>
             
             <div class="dashboard-card" id="dashMain">
-                <div id="radarTickerContainer" class="radar-ticker-large" onclick="switchView('etf')">
+                <div id="radarTickerContainer" class="radar-ticker-large" onclick="switchView('etf', false)">
                     <div class="radar-title">⚡ RADAR DE OPORTUNIDADES</div>
                     <div id="radarValue" class="radar-content">ESCANANDO...</div>
                 </div>
@@ -574,7 +603,7 @@
                 </div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V29.6 PURE VISUAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V29.7 ULTRA SYNC</div>
         </div>
     </div>
 
@@ -630,7 +659,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         
-        let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; // Clean names now
+        let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
@@ -876,8 +905,6 @@
                 let price = 0;
                 try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){}
                 if(price === 0) {
-                     // GATE IO NEEDS '_USDT' usually, or construct properly from shortname
-                     // Shortname: AVAX5L -> AVAX5L_USDT
                      const gateSym = displaySym + "_USDT"; 
                      const proxy = proxies[0];
                      const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`));
@@ -910,7 +937,7 @@
             const wrapper = document.getElementById('tv_chart');
             wrapper.classList.toggle('fullscreen');
             if(wrapper.classList.contains('fullscreen')) {
-                 if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": false, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
+                 if(TradingView) new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" });
             } else { loadChart(chartSymbol); }
         }
 
@@ -1124,16 +1151,20 @@
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); showToast("🗑️ Historial Borrado"); }); }
         
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
+        
         function switchView(viewName, toggle = true) {
             triggerHaptic(); currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
             const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer');
-            if(viewName === 'operate') { tfBar.style.display = 'flex'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } 
+            if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '115px'; if(chartSymbol) loadChart(chartSymbol); } 
             else { tfBar.style.display = 'none'; spacer.style.marginTop = '75px'; }
             if(viewName === 'etf') loadGateETFs();
             if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
-            if(toggle) toggleMenu(); window.scrollTo(0,0);
+            
+            // Only toggle menu if explicitly requested (default)
+            if(toggle) toggleMenu(); 
+            window.scrollTo(0,0);
         }
         function loadSettingsValues() {
             const s = slots[activeIdx];
@@ -1172,7 +1203,7 @@
         function exportData() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy });
             const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.6.json"; document.body.appendChild(a); a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V29.7.json"; document.body.appendChild(a); a.click();
         }
         function importData(input) {
             const file = input.files[0]; if(!file) return;
