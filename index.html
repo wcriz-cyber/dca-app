@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V30.7 CUSTOM RADAR</title>
+    <title>C5X - V30.8 CRASH ALERT</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="theme-color" content="#0b0e11">
@@ -371,7 +371,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.7 CUSTOM RADAR</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V30.8 CRASH ALERT</div>
         </div>
     </div>
 
@@ -402,12 +402,14 @@
         let currentTickerSymbol = "BTC";
         let currentWs = null; 
         
-        // CONFIGURABLE RADAR VARS
         let radarLimit = parseInt(localStorage.getItem('c5x_radar_limit')) || 8;
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; let touchStartX = 0; let touchEndX = 0;
         let radarIntervalId = null;
+        
+        // --- NEW CRASH ALERT VARIABLES ---
+        let crashAlertedCoins = new Set(); // Stores coins that have already triggered alert in this session
 
         let proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
         if(customProxy) proxies.unshift(customProxy);
@@ -450,22 +452,50 @@
             let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); 
         }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
-        function setupSwipe() { const el = document.getElementById('section-operate'); el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true}); el.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; if(currentSection === 'operate') handleSwipe(); }, {passive: true}); }
+        function setupSwipe() { const el = document.getElementById('section-operate'); el.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: true}); el.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; touchEndY = e.changedTouches[0].screenY; if(currentSection === 'operate') handleSwipe(); }, {passive: true}); }
         function handleSwipe() {
-            const threshold = 60; const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
-            if (occupiedIndices.length === 0) { if (touchEndX < touchStartX - threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (touchEndX > touchStartX + threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } return; }
+            const threshold = 75; const diffX = touchEndX - touchStartX; const diffY = touchEndY - touchStartY; if (Math.abs(diffY) > Math.abs(diffX)) return;
+            const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
+            if (occupiedIndices.length === 0) { if (Math.abs(diffX) > threshold) { if (diffX < 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } return; }
             let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-            if (touchEndX < touchStartX - threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
-            else if (touchEndX > touchStartX + threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
+            if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } 
+            else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
         }
-        async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); const data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
-        
-        function startRadarRotation() { 
-            if(radarIntervalId) clearInterval(radarIntervalId);
-            updateRadarUI(); 
-            radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); 
+
+        async function fetchAndCalcTopDroppers() { 
+            try { 
+                const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); const data = await res.json(); 
+                allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); 
+                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
+                
+                // --- CRASH DETECTION LOGIC ---
+                topDroppers.forEach(t => {
+                    const pct = parseFloat(t.change_percentage);
+                    const pair = t.currency_pair.replace('_USDT', '');
+                    if(pct <= -50.0 && !crashAlertedCoins.has(pair)) {
+                         triggerCrashAlert(pair, pct);
+                         crashAlertedCoins.add(pair);
+                    }
+                });
+
+                startRadarRotation(); 
+            } catch(e) { console.log("Error loading radar"); } 
         }
-        
+
+        function triggerCrashAlert(coin, pct) {
+            // AUDIO
+            const audio = document.getElementById('alertSound');
+            if(audio) { 
+                audio.currentTime = 0; 
+                audio.play().catch(e => console.log("Audio autoplay blocked")); 
+            }
+            // VIBRATION
+            if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
+            // VISUAL
+            showToast("🚨 ALERTA: " + coin + " " + pct.toFixed(2) + "%");
+        }
+
+        function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
         function updateRadarUI() {
             if(topDroppers.length === 0) return; const elVal = document.getElementById('radarValue'); const item = topDroppers[dropperIdx]; if(!item) return;
             elVal.style.opacity = 0; setTimeout(() => {
@@ -512,12 +542,7 @@
             });
             grid.innerHTML = ''; grid.appendChild(fragment);
         }
-        function smartSelectETF(symbol, price) { 
-            triggerHaptic(); 
-            const exists = slots.some(s => s.name === symbol); if(exists) { showToast("⚠️ " + symbol + " ya existe"); return; }
-            const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
-            let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); 
-        }
+        function smartSelectETF(symbol, price) { triggerHaptic(); const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
         function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" }); }
@@ -551,143 +576,16 @@
         function showToast(txt) { const t = document.getElementById("toast"); t.textContent = txt; t.className = "show"; setTimeout(() => t.className = "", 2000); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); calculateGlobalStats(); showToast("🗑️ Historial Borrado"); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        
-        function switchView(viewName, toggle = true) {
-            triggerHaptic(); currentSection = viewName;
-            document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected');
-            
-            const tfBar = document.getElementById('tfBarContainer');
-            const spacer = document.querySelector('.content-spacer');
-            
-            if(viewName === 'operate') { 
-                tfBar.style.display = 'grid'; 
-                spacer.style.marginTop = '120px'; 
-                if(chartSymbol) loadChart(chartSymbol); 
-            } 
-            else { 
-                tfBar.style.display = 'none'; 
-                spacer.style.marginTop = '80px'; 
-            }
-            
-            if(viewName === 'etf') loadGateETFs();
-            if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); }
-            
-            if(toggle) toggleMenu(); 
-            window.scrollTo(0,0);
-        }
-        function loadSettingsValues() {
-            const s = slots[activeIdx];
-            document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value;
-            document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100;
-            document.getElementById('setGlobalCapital').value = globalCapital;
-            document.getElementById('setRadarLimit').value = radarLimit;
-            document.getElementById('setRadarSpeed').value = radarSpeed;
-            calcMonthlyPerformance();
-        }
-        
-        function calcMonthlyPerformance() {
-            const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            let monthlyProfit = 0;
-            
-            history.forEach(h => {
-                const parts = h.date.split('/');
-                if(parts.length === 3) {
-                    const hDate = new Date(parts[2], parts[1]-1, parts[0]);
-                    if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) {
-                        monthlyProfit += parseFloat(h.profit) || 0;
-                    }
-                }
-            });
-            
-            let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0;
-            const el = document.getElementById('monthlyProfitDisplay');
-            el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`;
-        }
-
-        function applySettings() {
-            triggerHaptic(); 
-            const newCap = parseFloat(document.getElementById('setCapital').value);
-            const newRoi = parseFloat(document.getElementById('setRoi').value);
-            const newGlob = parseFloat(document.getElementById('setGlobalCapital').value);
-            
-            // RADAR SETTINGS
-            const newR_Limit = parseInt(document.getElementById('setRadarLimit').value);
-            const newR_Speed = parseInt(document.getElementById('setRadarSpeed').value);
-            
-            if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
-            
-            openSecurity(() => {
-                slots[activeIdx].capital = newCap; 
-                slots[activeIdx].roi = newRoi;
-                
-                if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); }
-                
-                // SAVE RADAR SETTINGS
-                if(!isNaN(newR_Limit) && newR_Limit > 0) { radarLimit = newR_Limit; localStorage.setItem('c5x_radar_limit', radarLimit); fetchAndCalcTopDroppers(); }
-                if(!isNaN(newR_Speed) && newR_Speed > 0) { radarSpeed = newR_Speed; localStorage.setItem('c5x_radar_speed', radarSpeed); startRadarRotation(); }
-                
-                document.getElementById('incInput').value = document.getElementById('setInc').value; 
-                document.getElementById('descInput').value = document.getElementById('setDesc').value;
-                
-                save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada");
-            });
-        }
-        
-        function verifyAndAddCoin() { 
-             const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return;
-             tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
-             input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)");
-        }
+        function switchView(viewName, toggle = true) { triggerHaptic(); currentSection = viewName; document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active'); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected'); const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; } if(viewName === 'etf') loadGateETFs(); if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } if(toggle) toggleMenu(); window.scrollTo(0,0); }
+        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; calcMonthlyPerformance(); }
+        function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
+        function applySettings() { triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value), newRoi = parseFloat(document.getElementById('setRoi').value); const newGlob = parseFloat(document.getElementById('setGlobalCapital').value); const newR_Limit = parseInt(document.getElementById('setRadarLimit').value); const newR_Speed = parseInt(document.getElementById('setRadarSpeed').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); openSecurity(() => { slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } if(!isNaN(newR_Limit) && newR_Limit > 0) { radarLimit = newR_Limit; localStorage.setItem('c5x_radar_limit', radarLimit); fetchAndCalcTopDroppers(); } if(!isNaN(newR_Speed) && newR_Speed > 0) { radarSpeed = newR_Speed; localStorage.setItem('c5x_radar_speed', radarSpeed); startRadarRotation(); } document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); }); }
+        function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)"); }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
-
-        function exportPDF() { 
-             if(history.length === 0) return showToast("⚠️ Sin Datos");
-             let totalProfit = 0; let totalInvested = 0; let wins = 0;
-             const bodyData = history.map(h => {
-                 const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const exitVal = inv + prof;
-                 totalInvested += inv; totalProfit += prof; if(prof > 0) wins++;
-                 return [ h.date + ' ' + h.time, h.coin, '$' + inv.toFixed(2), '$' + exitVal.toFixed(2), '$' + prof.toFixed(2), h.roi || '0%' ];
-             });
-             const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0;
-             const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4');
-             doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(59, 130, 246);
-             doc.text("REPORTE OPERACIONES C5X", 14, 15);
-             doc.setFontSize(10); doc.setTextColor(100); doc.text("Generado: " + new Date().toLocaleString(), 14, 22);
-             doc.setDrawColor(200); doc.setFillColor(245, 247, 250); doc.rect(14, 28, 270, 20, 'F');
-             doc.setFontSize(10); doc.setTextColor(80);
-             doc.text("CAPITAL MOVIDO", 20, 36); doc.text("BENEFICIO NETO", 100, 36); doc.text("TASA ACIERTO", 180, 36); doc.text("TOTAL OPS", 240, 36);
-             doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 44);
-             doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50);
-             doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 100, 44);
-             doc.setTextColor(0); doc.text(winRate + "%", 180, 44); doc.text(history.length.toString(), 240, 44);
-             doc.autoTable({ head: [['FECHA/HORA', 'MONEDA', 'INVERTIDO', 'VENTA (SALIDA)', 'PROFIT', 'ROI']], body: bodyData, startY: 55, styles: { fontSize: 9, cellPadding: 3 }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 247, 250] } });
-             doc.save("C5X_Reporte_Mensual.pdf");
-        }
-
-        function exportData() {
-            const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital });
-            const blob = new Blob([dataStr], {type: "application/json"});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.7.json"; document.body.appendChild(a); a.click();
-        }
-        function importData(input) {
-            const file = input.files[0]; if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if(data.slots) slots = data.slots; if(data.history) history = data.history;
-                    if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); }
-                    if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); }
-                    if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); }
-                    if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); }
-                    save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload();
-                } catch(err) { showToast("❌ Error al leer archivo"); }
-            }; reader.readAsText(file);
-        }
+        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); let totalProfit = 0; let totalInvested = 0; let wins = 0; const bodyData = history.map(h => { const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const exitVal = inv + prof; totalInvested += inv; totalProfit += prof; if(prof > 0) wins++; return [ h.date + ' ' + h.time, h.coin, '$' + inv.toFixed(2), '$' + exitVal.toFixed(2), '$' + prof.toFixed(2), h.roi || '0%' ]; }); const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0; const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); doc.setFont("helvetica", "bold"); doc.setFontSize(18); doc.setTextColor(59, 130, 246); doc.text("REPORTE OPERACIONES C5X", 14, 15); doc.setFontSize(10); doc.setTextColor(100); doc.text("Generado: " + new Date().toLocaleString(), 14, 22); doc.setDrawColor(200); doc.setFillColor(245, 247, 250); doc.rect(14, 28, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); doc.text("CAPITAL MOVIDO", 20, 36); doc.text("BENEFICIO NETO", 100, 36); doc.text("TASA ACIERTO", 180, 36); doc.text("TOTAL OPS", 240, 36); doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 44); doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 100, 44); doc.setTextColor(0); doc.text(winRate + "%", 180, 44); doc.text(history.length.toString(), 240, 44); doc.autoTable({ head: [['FECHA/HORA', 'MONEDA', 'INVERTIDO', 'VENTA (SALIDA)', 'PROFIT', 'ROI']], body: bodyData, startY: 55, styles: { fontSize: 9, cellPadding: 3 }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [245, 247, 250] } }); doc.save("C5X_Reporte_Mensual.pdf"); }
+        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup_V30.8.json"; document.body.appendChild(a); a.click(); }
+        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
     </script>
 </body>
