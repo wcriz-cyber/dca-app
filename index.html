@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V31.3 UX</title>
+    <title>C5X - V31.4 ULTIMATE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,26 +38,27 @@
             font-family: 'Rajdhani', sans-serif; font-weight: 600;
             background: var(--bg); color: var(--text-primary); 
             padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
-            overflow-x: hidden; overscroll-behavior-x: none; user-select: none; font-size: 16px; 
+            overflow-x: hidden; user-select: none; font-size: 16px; 
         }
 
         /* --- TOAST / NOTIFICACIONES (ARRIBA) --- */
         #toast { 
-            visibility: hidden; min-width: 250px; max-width: 90%;
+            visibility: hidden; width: 90%; max-width: 400px;
             background-color: var(--surface); border: 1px solid var(--border);
             color: var(--text-primary); text-align: center; border-radius: 12px; 
             padding: 16px; position: fixed; z-index: 9999; 
-            left: 50%; top: -100px; /* Empieza escondido arriba */
+            left: 50%; top: -100px; /* Escondido arriba */
             transform: translateX(-50%); 
             font-weight: 700; font-size: 14px; font-family: 'Orbitron', sans-serif;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: top 0.4s ease, opacity 0.4s ease; opacity: 0;
+            transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease; opacity: 0;
         }
-        #toast.show { top: calc(20px + var(--safe-top)); visibility: visible; opacity: 1; }
+        #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { 
-            background-color: rgba(207, 48, 74, 0.95); color: #fff; 
-            border-color: var(--danger); 
-            font-size: 16px; letter-spacing: 1px;
+            background-color: rgba(207, 48, 74, 0.98); color: #fff; 
+            border: 1px solid #ff4d4d;
+            font-size: 15px; letter-spacing: 1px;
+            box-shadow: 0 10px 40px rgba(207, 48, 74, 0.4);
         }
 
         /* HEADER & LAYOUT */
@@ -296,7 +297,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.3 UX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.4 ULTIMATE</div>
         </div>
     </div>
 
@@ -331,7 +332,8 @@
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let touchStartX = 0; let touchStartY = 0; let touchEndX = 0; let touchEndY = 0;
         let radarIntervalId = null;
-        let crashAlertedCoins = new Set(JSON.parse(localStorage.getItem('c5x_alerted_coins')) || []);
+        // Ahora es un OBJETO para guardar niveles: { 'BTC5L': -50, 'ETH5L': -60 }
+        let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
         let proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
         if(customProxy) proxies.unshift(customProxy);
 
@@ -342,11 +344,22 @@
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
                 const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
+                
+                // INICIALIZAR HISTORIAL PARA EL BOTÓN ATRÁS
+                window.history.replaceState({page: 'operate'}, '', '');
+                window.onpopstate = function(event) {
+                    if(event.state && event.state.page === 'operate') {
+                        switchView('operate', false);
+                    } else if (!event.state) {
+                        // Fallback si no hay estado
+                        switchView('operate', false);
+                    }
+                };
+
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
 
-                // UNLOCK AUDIO Y WAKE LOCK
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
                 requestWakeLock();
@@ -371,13 +384,12 @@
             requestWakeLock();
         }
 
-        // --- NOTIFICACIÓN MEJORADA ---
+        // --- NOTIFICACIÓN 5 SEGUNDOS ---
         function triggerCrashAlert(coin, pct) {
             const audio = document.getElementById('alertSound');
             if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); }
             if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]);
             
-            // Mostrar Toast de Alerta por 5 segundos
             showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true);
         }
 
@@ -420,7 +432,7 @@
         }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- LOGICA DE SWIPE CORREGIDA (CENTRO A DERECHA) ---
+        // --- SWIPE CON HISTORIAL (Solución Real para Android) ---
         function setupSwipe() { 
             document.addEventListener('touchstart', e => { 
                 touchStartX = e.changedTouches[0].screenX; 
@@ -439,22 +451,19 @@
             const diffX = touchEndX - touchStartX; 
             const diffY = touchEndY - touchStartY; 
             
-            // Ignorar movimientos verticales
             if (Math.abs(diffY) > Math.abs(diffX)) return;
 
-            // 1. SI ESTAMOS EN OTRAS PESTAÑAS (NO OPERAR)
+            // 1. SI NO ESTAMOS EN OPERAR -> SWIPE DERECHA PARA VOLVER
             if (currentSection !== 'operate') {
-                // Si desliza hacia la derecha (->) desde cualquier parte
-                if (diffX > threshold) {
-                    switchView('operate');
+                if (diffX > threshold) { // Deslizar hacia la derecha (Back)
+                    window.history.back(); // Usar navegación nativa
                 }
             } 
-            // 2. SI ESTAMOS EN OPERAR
+            // 2. SI ESTAMOS EN OPERAR -> SWIPE PARA CAMBIAR SLOT
             else {
                 const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
                 
-                // Si desliza a la izquierda (<-) (Siguiente)
-                if (diffX < -threshold) { 
+                if (diffX < -threshold) { // Swipe Izquierda (Next)
                     if (occupiedIndices.length === 0) { 
                         let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); 
                     } else {
@@ -462,8 +471,7 @@
                         let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); 
                     }
                 } 
-                // Si desliza a la derecha (->) (Anterior)
-                else if (diffX > threshold) { 
+                else if (diffX > threshold) { // Swipe Derecha (Prev)
                     if (occupiedIndices.length === 0) {
                         let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
                     } else {
@@ -483,14 +491,35 @@
 
                 allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); 
                 topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
+                
+                // LÓGICA DE ALERTA ESCALONADA (-50, -60, -70...)
                 topDroppers.forEach(t => {
                     const pct = parseFloat(t.change_percentage);
                     const pair = t.currency_pair.replace('_USDT', '');
                     
-                    if(pct <= -50.0 && !crashAlertedCoins.has(pair)) {
-                         triggerCrashAlert(pair, pct);
-                         crashAlertedCoins.add(pair);
-                         localStorage.setItem('c5x_alerted_coins', JSON.stringify([...crashAlertedCoins]));
+                    if(pct <= -50.0) {
+                        // Determinar el nivel actual en pasos de 10 (-50, -60, -70...)
+                        // Math.floor(-53 / 10) = -6 -> * 10 = -60. 
+                        // Queremos que -50 a -59.9 sea nivel -50.
+                        // Usamos una lógica simple de ifs para ser precisos.
+                        let currentLevel = 0;
+                        if (pct <= -90) currentLevel = -90;
+                        else if (pct <= -80) currentLevel = -80;
+                        else if (pct <= -70) currentLevel = -70;
+                        else if (pct <= -60) currentLevel = -60;
+                        else if (pct <= -50) currentLevel = -50;
+
+                        // Obtener último nivel alertado (0 si nunca se alertó)
+                        let lastLevel = crashAlertedCoins[pair] || 0;
+
+                        // Si nunca se alertó (0) O el nivel actual es peor (menor) que el último alertado
+                        // Ejemplo: lastLevel -50, currentLevel -60 -> Alerta.
+                        if (lastLevel === 0 || currentLevel < lastLevel) {
+                             triggerCrashAlert(pair, pct);
+                             // Guardar nuevo nivel
+                             crashAlertedCoins[pair] = currentLevel;
+                             localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins));
+                        }
                     }
                 });
                 startRadarRotation(); 
@@ -532,8 +561,6 @@
             if(e) e.stopPropagation(); 
             const wrapper = document.getElementById('tv_chart'); 
             wrapper.classList.toggle('fullscreen'); 
-            
-            // Re-renderizar widget para ajustar tamaño
             setTimeout(() => loadChart(chartSymbol), 100);
         }
         function showPortfolio() { triggerHaptic(); let totalCap = 0; let totalInvested = 0; slots.forEach(s => { totalCap += s.capital; if(s.buys && s.buys.length > 0) { s.buys.forEach(levelIdx => { if(levelIdx < customMultipliers.length) { totalInvested += s.capital * customMultipliers[levelIdx]; } }); } }); const free = totalCap - totalInvested; const percent = totalCap > 0 ? (totalInvested / totalCap) * 100 : 0; document.getElementById('eqTotal').textContent = `$${totalCap.toFixed(2)}`; document.getElementById('eqInvested').textContent = `$${totalInvested.toFixed(2)}`; document.getElementById('eqFree').textContent = `$${free.toFixed(2)}`; document.getElementById('eqPercent').textContent = percent.toFixed(1) + '%'; document.getElementById('portfolioModal').style.display = 'flex'; }
@@ -588,7 +615,39 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); calculateGlobalStats(); showToast("🗑️ Historial Borrado"); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function switchView(viewName, toggle = true) { triggerHaptic(); currentSection = viewName; document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active'); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); document.getElementById('nav-' + viewName).classList.add('selected'); const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; } if(viewName === 'etf') loadGateETFs(); if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } if(toggle) toggleMenu(); window.scrollTo(0,0); }
+        
+        // --- FUNCIÓN DE CAMBIO DE VISTA CON HISTORY PUSH ---
+        function switchView(viewName, toggle = true) { 
+            triggerHaptic(); 
+            
+            // Si estamos entrando a una vista que no es 'operate', añadimos historia
+            if(viewName !== 'operate') {
+                window.history.pushState({page: viewName}, '', `#${viewName}`);
+            } else {
+                // Si volvemos a operate, intentamos no ensuciar el history
+                // (opcional: limpiar el hash si se desea, pero con back nativo basta)
+            }
+
+            currentSection = viewName; 
+            document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); 
+            document.getElementById('section-' + viewName).classList.add('active'); 
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); 
+            document.getElementById('nav-' + viewName).classList.add('selected'); 
+            
+            const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); 
+            if(viewName === 'operate') { 
+                tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; 
+                if(chartSymbol) loadChart(chartSymbol); 
+            } else { 
+                tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; 
+            } 
+            
+            if(viewName === 'etf') loadGateETFs(); 
+            if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } 
+            if(toggle) toggleMenu(); 
+            window.scrollTo(0,0); 
+        }
+
         function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; calcMonthlyPerformance(); }
         function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
         function applySettings() { triggerHaptic(); const newCap = parseFloat(document.getElementById('setCapital').value), newRoi = parseFloat(document.getElementById('setRoi').value); const newGlob = parseFloat(document.getElementById('setGlobalCapital').value); const newR_Limit = parseInt(document.getElementById('setRadarLimit').value); const newR_Speed = parseInt(document.getElementById('setRadarSpeed').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); openSecurity(() => { slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } if(!isNaN(newR_Limit) && newR_Limit > 0) { radarLimit = newR_Limit; localStorage.setItem('c5x_radar_limit', radarLimit); fetchAndCalcTopDroppers(); } if(!isNaN(newR_Speed) && newR_Speed > 0) { radarSpeed = newR_Speed; localStorage.setItem('c5x_radar_speed', radarSpeed); startRadarRotation(); } document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); }); }
