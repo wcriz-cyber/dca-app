@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V31.5 NAV-FLOW</title>
+    <title>C5X - V31.6 ANIMATED</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -44,13 +44,25 @@
             overscroll-behavior-y: none; 
         }
 
-        /* --- TOAST / NOTIFICACIONES (ARRIBA) --- */
+        /* --- MOTOR DE ANIMACIONES (ICONOS VIVOS) --- */
+        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        @keyframes shake-icon { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-15deg); } 75% { transform: rotate(15deg); } }
+        @keyframes float-y { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+        
+        /* Clases para aplicar animaciones */
+        .anim-gear { animation: spin-slow 8s linear infinite; transform-origin: center; }
+        .anim-radar { animation: float-y 2s ease-in-out infinite; }
+        .anim-trash:active { animation: shake-icon 0.4s ease-in-out; }
+        .anim-pulse-box { animation: pulse-ring 2s infinite; }
+
+        /* --- TOAST / NOTIFICACIONES --- */
         #toast { 
             visibility: hidden; width: 90%; max-width: 400px;
             background-color: var(--surface); border: 1px solid var(--border);
             color: var(--text-primary); text-align: center; border-radius: 12px; 
             padding: 16px; position: fixed; z-index: 9999; 
-            left: 50%; top: -100px; /* Escondido arriba */
+            left: 50%; top: -100px; 
             transform: translateX(-50%); 
             font-weight: 700; font-size: 14px; font-family: 'Orbitron', sans-serif;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -58,10 +70,8 @@
         }
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { 
-            background-color: rgba(207, 48, 74, 0.98); color: #fff; 
-            border: 1px solid #ff4d4d;
-            font-size: 15px; letter-spacing: 1px;
-            box-shadow: 0 10px 40px rgba(207, 48, 74, 0.4);
+            background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d;
+            font-size: 15px; letter-spacing: 1px; box-shadow: 0 10px 40px rgba(207, 48, 74, 0.4);
         }
 
         /* HEADER & LAYOUT */
@@ -71,7 +81,7 @@
         .brand-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 24px; color: var(--brand); }
         .ticker-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; }
         .ticker-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 6px 14px; border-radius: 24px; }
-        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
+        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); transition: background 0.3s; }
         .ticker-dot.pulse { animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         .ticker-sym { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 13px; color: var(--text-secondary); }
@@ -109,8 +119,12 @@
         
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
-        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 10px; }
-        .radar-title { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 4px; }
+        
+        /* RADAR ANIMADO */
+        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 10px; position: relative; overflow: hidden; }
+        .radar-ticker-large.scanning::after { content:''; position: absolute; top:0; left:-100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(59,130,246,0.1), transparent); animation: scan 2s infinite; }
+        @keyframes scan { 0% { left: -100%; } 100% { left: 200%; } }
+        .radar-title { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); }
         
         .capital-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; margin-bottom: 15px; }
@@ -124,7 +138,8 @@
         .be-btn:active { background: var(--brand); color: #fff; }
         .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; padding: 10px; border-radius: 12px; margin: 0 8px; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
-        .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
+        .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); transition: transform 0.1s; }
+        .icon-sq-btn:active { transform: scale(0.95); }
         .icon-sq-btn svg { width: 16px; height: 16px; fill: currentColor; }
         .icon-sq-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
         
@@ -202,9 +217,9 @@
         <div class="nav-content">
             <div class="nav-title">MENÚ C5X</div>
             <div class="nav-item selected" id="nav-operate" onclick="switchView('operate')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><div class="nav-text">OPERAR</div></div>
-            <div class="nav-item" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
+            <div class="nav-item" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-radar"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div><div class="nav-text">BITÁCORA</div></div>
-            <div class="nav-item" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            <div class="nav-item" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon"><svg class="anim-gear" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></div><div class="nav-text">AJUSTES</div></div>
             <button class="btn-close-menu" onclick="closeMenuViaButton()"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>CERRAR MENÚ</button>
         </div>
     </div>
@@ -227,10 +242,10 @@
             <div class="controls-grid"><div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div><div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div><div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div></div>
             
             <div class="dashboard-card" id="dashMain">
-                <div id="radarTickerContainer" class="radar-ticker-large" onclick="switchView('etf', false)"><div class="radar-title">⚡ RADAR DE OPORTUNIDADES</div><div id="radarValue" class="radar-content">ESCANANDO...</div></div>
+                <div id="radarTickerContainer" class="radar-ticker-large scanning" onclick="switchView('etf', false)"><div class="radar-title">⚡ RADAR DE OPORTUNIDADES</div><div id="radarValue" class="radar-content">ESCANANDO...</div></div>
                 <div class="capital-status-bar" id="capStatusBar"><div><div class="cap-label">CAPITAL TOTAL</div><div class="cap-val" id="displayCapTotal">$0.00</div></div><div style="text-align:right"><div class="cap-label">PNL</div><div class="cap-pnl" id="displayCapPnl">0.00%</div></div></div>
                 <div class="main-target-box"><div class="target-label">OBJETIVO SALIDA</div><div class="target-price" id="resTarget">0.00000000</div></div>
-                <div class="control-row-three"><button class="be-btn" onclick="setBreakEven()" title="Break Even">B.E.</button><div class="strat-display" id="stratBadge" onclick="rotateDash()">NORMAL</div><div class="ctrl-group-right"><div class="icon-sq-btn" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot"><svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg></div><div class="icon-sq-btn trash" onclick="cleanSlotOnly()" title="Limpiar Slot (Sin registrar)"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div></div></div>
+                <div class="control-row-three"><button class="be-btn" onclick="setBreakEven()" title="Break Even">B.E.</button><div class="strat-display" id="stratBadge" onclick="rotateDash()">NORMAL</div><div class="ctrl-group-right"><div class="icon-sq-btn" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot"><svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3 3.1-3s3.1 1.29 3.1 3v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg></div><div class="icon-sq-btn anim-trash" onclick="cleanSlotOnly()" title="Limpiar Slot"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></div></div></div>
                 <div class="stats-grid"><div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div><div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div><div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div></div>
             </div>
             
@@ -251,7 +266,7 @@
         </div>
 
         <div id="section-settings" class="app-section">
-            <div class="setting-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.15-1.46-3.27-3.4h1.96c.1 1.05 1.18 1.91 2.53 1.91 1.33 0 2.26-.87 2.26-2.02 0-1.07-.95-1.65-2.61-2.09-2.02-.53-3.04-1.18-3.04-2.8 0-1.31.84-2.58 2.17-3.06V4h2.67v1.93c1.38.3 2.48 1.22 2.72 2.79h-1.99c-.15-.77-1.11-1.24-1.98-1.24-1.1 0-1.8.69-1.8 1.6 0 .89.8 1.41 2.52 1.83 2.15.53 3.16 1.4 3.16 3.03.01 1.63-1.08 2.87-2.63 3.15z"/></svg> CAPITAL & RENDIMIENTO</div>
+            <div class="setting-section-title"><svg class="anim-gear" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L3.16 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.58 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg> CAPITAL & RENDIMIENTO</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
                     <label class="setting-label">CAPITAL TOTAL BASE ($)</label>
@@ -300,7 +315,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset" onclick="resetApp()">RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.5 NAV-FLOW</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V31.6 ANIMATED</div>
         </div>
     </div>
 
@@ -310,7 +325,6 @@
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
-        // CORRECCIÓN 2: Registro del Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -356,8 +370,6 @@
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
                 const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
-                // INICIALIZACIÓN DEL HISTORIAL DE NAVEGACIÓN
-                // Reemplazamos el estado inicial para saber que estamos en "Operar"
                 window.history.replaceState({page: 'operate'}, '', '');
 
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
@@ -373,42 +385,29 @@
 
         // --- MANEJO INTELIGENTE DEL HISTORIAL (Navegación Nativa) ---
         
-        // 1. Abrir Menú (Empuja 'menu' al historial)
         function openMenuViaButton() {
             document.getElementById('navModal').style.display = 'flex';
-            // Guardamos que estamos en el menú
             window.history.pushState({modal: 'menu'}, '', '#menu');
         }
 
-        // 2. Cerrar Menú con botón (Simula retroceder)
         function closeMenuViaButton() {
             window.history.back(); 
         }
 
-        // 3. Cambiar Vista (Empuja la nueva página)
         function switchView(viewName) {
             triggerHaptic();
-            
-            // Si estamos en el menú y vamos a una sección, ocultamos menú visualmente
             document.getElementById('navModal').style.display = 'none';
-
-            // Si no estamos volviendo a 'operate', agregamos historial
             if (viewName !== 'operate') {
                 window.history.pushState({page: viewName}, '', `#${viewName}`);
-            } else {
-                // Si vamos a operate, limpiamos hash visualmente (opcional) pero gestionamos la vista
             }
-
             updateViewVisuals(viewName);
         }
 
-        // 4. Actualizar lo que se ve en pantalla (Sin tocar historial)
         function updateViewVisuals(viewName) {
             currentSection = viewName;
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); 
             document.getElementById('section-' + viewName).classList.add('active'); 
             
-            // Actualizar items del menú
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); 
             const navItem = document.getElementById('nav-' + viewName);
             if(navItem) navItem.classList.add('selected'); 
@@ -427,33 +426,15 @@
             window.scrollTo(0,0);
         }
 
-        // 5. EVENTO MAESTRO: Cuando el usuario pulsa ATRÁS (o desliza)
         window.onpopstate = function(event) {
             const state = event.state;
-            
-            // Cerrar menú por defecto para limpiar
             document.getElementById('navModal').style.display = 'none';
-
-            if (!state) {
-                // Si no hay estado, asumimos raíz (Operate)
-                updateViewVisuals('operate');
-                return;
-            }
-
-            if (state.modal === 'menu') {
-                // Si volvimos al estado 'menu', mostramos el modal
-                document.getElementById('navModal').style.display = 'flex';
-                // La vista de fondo se mantiene (probablemente operate)
-            } else if (state.page) {
-                // Si volvimos a una página específica (ej: settings)
-                updateViewVisuals(state.page);
-            } else {
-                // Fallback a operate
-                updateViewVisuals('operate');
-            }
+            if (!state) { updateViewVisuals('operate'); return; }
+            if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } 
+            else if (state.page) { updateViewVisuals(state.page); } 
+            else { updateViewVisuals('operate'); }
         };
 
-        // --- GESTIÓN DE SWIPES (Modificado para usar History API) ---
         function setupSwipe() { 
             document.addEventListener('touchstart', e => { 
                 touchStartX = e.changedTouches[0].screenX; 
@@ -471,52 +452,29 @@
             const threshold = 60; 
             const diffX = touchEndX - touchStartX; 
             const diffY = touchEndY - touchStartY; 
-            
             if (Math.abs(diffY) > Math.abs(diffX)) return;
-
-            // 1. SI NO ESTAMOS EN OPERAR -> SWIPE DERECHA PARA VOLVER (History Back)
             if (currentSection !== 'operate') {
-                if (diffX > threshold) { 
-                    window.history.back(); // Esto activará onpopstate y volverá al menú o home
-                }
-            } 
-            // 2. SI ESTAMOS EN OPERAR -> SWIPE PARA CAMBIAR SLOT
-            else {
+                if (diffX > threshold) { window.history.back(); }
+            } else {
                 const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
-                
                 if (diffX < -threshold) { 
-                    if (occupiedIndices.length === 0) { 
-                        let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); 
-                    } else {
-                        let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-                        let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); 
-                    }
+                    if (occupiedIndices.length === 0) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
+                    else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0; let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); }
                 } 
                 else if (diffX > threshold) { 
-                    if (occupiedIndices.length === 0) {
-                        let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
-                    } else {
-                        let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0;
-                        let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); 
-                    }
+                    if (occupiedIndices.length === 0) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } 
+                    else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) currentPosInOccupied = 0; let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); }
                 }
             }
         }
 
         async function requestWakeLock() {
-            try {
-                if ('wakeLock' in navigator) {
-                    await navigator.wakeLock.request('screen');
-                    console.log('Pantalla mantenida encendida');
-                }
-            } catch (err) { console.log('Wake Lock no disponible'); }
+            try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {}
         }
 
         function unlockAudioAndWake() {
             const audio = document.getElementById('alertSound');
-            if(audio) {
-                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{});
-            }
+            if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); }
             requestWakeLock();
         }
 
@@ -572,18 +530,10 @@
                 topDroppers.forEach(t => {
                     const pct = parseFloat(t.change_percentage);
                     const pair = t.currency_pair.replace('_USDT', '');
-                    
                     if(pct <= -50.0) {
                         let currentLevel = 0;
-                        if (pct <= -90) currentLevel = -90;
-                        else if (pct <= -80) currentLevel = -80;
-                        else if (pct <= -70) currentLevel = -70;
-                        else if (pct <= -60) currentLevel = -60;
-                        else if (pct <= -50) currentLevel = -50;
-
+                        if (pct <= -90) currentLevel = -90; else if (pct <= -80) currentLevel = -80; else if (pct <= -70) currentLevel = -70; else if (pct <= -60) currentLevel = -60; else if (pct <= -50) currentLevel = -50;
                         let lastLevel = crashAlertedCoins[pair] || 0;
-
-                        // ALERTA ESCALONADA: Si es nuevo nivel más bajo, alertar
                         if (lastLevel === 0 || currentLevel < lastLevel) {
                              triggerCrashAlert(pair, pct);
                              crashAlertedCoins[pair] = currentLevel;
