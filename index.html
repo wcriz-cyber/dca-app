@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V35.5 UX MASTER</title>
+    <title>C5X - V35.6 UNIFIED</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -71,6 +71,7 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
 
+        /* HEADER */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
@@ -137,14 +138,18 @@
         .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text-primary); }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
-        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; }
+        
+        /* UNIFIED CARD DESIGN (USADO EN NIVELES, ETF Y BITÁCORA) */
+        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; height: 72px; /* Altura fija para uniformidad */ }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
-        .u-index { width: 36px; height: 36px; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 14px; flex-shrink: 0; }
+        .u-index { width: 36px; height: 36px; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; flex-shrink: 0; overflow: hidden; white-space: nowrap; }
         .u-center { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-        .u-title { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; color: var(--text-primary); }
-        .u-sub { font-size: 13px; font-weight: 600; color: var(--text-tertiary); margin-top: 4px; }
-        .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; flex-shrink: 0; }
+        .u-title { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
+        .u-sub { font-size: 12px; font-weight: 600; color: var(--text-tertiary); margin-top: 2px; }
+        .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 2px; flex-shrink: 0; }
         .u-val-primary { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--long); }
+        .u-val-secondary { font-size: 12px; color: var(--text-secondary); font-weight: 700; }
+        
         .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; }
 
         .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
@@ -170,7 +175,6 @@
         .chip { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
         .chip-del { cursor: pointer; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
 
-        /* GRID EDITOR PARA MULTIPLICADORES (FACILITAR EDICIÓN) */
         .multi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 5px; }
         .multi-item { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 5px; text-align: center; }
         .multi-lbl { font-size: 9px; color: var(--text-tertiary); display: block; font-weight: 700; }
@@ -199,7 +203,6 @@
 
         .action-btn { background: var(--surface); border: 1px solid var(--brand); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 5px; }
         
-        /* BITÁCORA - LISTA DESLIZABLE + CHART */
         .log-header-bar { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 5px 16px 10px 16px; }
         .log-title { margin-bottom: 5px; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; color:var(--brand); }
         .log-actions { display: flex; gap: 15px; width: 100%; justify-content: center; }
@@ -216,19 +219,23 @@
         .chart-bar:hover { opacity: 0.8; }
         .chart-bar.win { background: linear-gradient(to top, rgba(16,203,129,0.3), var(--long)); }
         .chart-bar.loss { background: linear-gradient(to top, rgba(246,70,93,0.3), var(--short)); }
-        
+        .chart-bar::after { content: attr(data-val); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: 'JetBrains Mono'; color: var(--text-primary); opacity: 0; transition: 0.2s; pointer-events: none; white-space: nowrap; }
+        .chart-bar:hover::after { opacity: 1; top: -20px; }
+
         .stats-summary { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .sum-label { color: var(--text-tertiary); font-weight: 700; margin-right: 5px; }
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
 
-        /* SCROLL LIMITADO PARA BITÁCORA */
         #logGrid {
-            max-height: 400px; /* Muestra aprox 5 tarjetas */
+            max-height: 380px; /* Altura para mostrar aprox 5 tarjetas */
             overflow-y: auto;
             overscroll-behavior: contain;
             border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
+            padding-right: 2px; /* Espacio para scrollbar si aparece */
         }
+        #logGrid::-webkit-scrollbar { width: 4px; }
+        #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
     </style>
 </head>
 <body onload="init()">
@@ -377,18 +384,21 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V35.5 UX MASTER</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V35.6 UNIFIED UX</div>
         </div>
     </div>
 
     <div id="confirmModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div><p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p><button class="btn-modal btn-confirm anim-click" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
+    <div id="portfolioModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:20px; color:var(--brand)">PATRIMONIO GLOBAL</div><div class="equity-row"><span class="equity-label">CAPITAL TOTAL</span><span class="equity-val" id="eqTotal">$0.00</span></div><div class="equity-row"><span class="equity-label">INVERTIDO</span><span class="equity-val" id="eqInvested" style="color:var(--long)">$0.00</span></div><div class="equity-row"><span class="equity-label">DISPONIBLE</span><span class="equity-val" id="eqFree">$0.00</span></div><div class="equity-row equity-total"><span class="equity-label" style="color:var(--text-primary)">EN JUEGO</span><span class="equity-val" id="eqPercent">0%</span></div><button class="btn-modal btn-cancel anim-click" style="margin-top:20px" onclick="closeModals()">CERRAR</button></div></div>
     <div id="securityModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*"><button class="btn-modal btn-confirm anim-click" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW', reg)).catch(err => console.log('SW Fail', err));
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registrado', reg))
+                    .catch(err => console.log('SW fallo', err));
             });
         }
 
@@ -587,7 +597,7 @@
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
-        // EDITOR DE MULTIPLICADORES TIPO GRID
+        // EDITOR GRID
         function loadSettingsValues() { 
             const s = slots[activeIdx]; 
             document.getElementById('setCapital').value = s.capital; 
@@ -600,7 +610,6 @@
             document.getElementById('setDD').value = appConfig.dd; 
             document.getElementById('setNewPass').value = ''; 
             
-            // GENERAR GRID DE MULTIPLICADORES
             const grid = document.getElementById('multiGrid');
             grid.innerHTML = customMultipliers.map((val, i) => `
                 <div class="multi-item">
@@ -622,7 +631,7 @@
                 const newDD = parseFloat(document.getElementById('setDD').value);
                 const newPass = document.getElementById('setNewPass').value;
 
-                // GUARDAR MULTIPLICADORES DEL GRID
+                // GUARDAR GRID
                 const inputs = document.querySelectorAll('.multi-inp');
                 let newMultipliers = [];
                 inputs.forEach(inp => {
