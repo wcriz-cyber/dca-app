@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V36.0 EXACT MATCH</title>
+    <title>C5X - V36.5 LOG FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -138,34 +138,35 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* --- TARJETA UNIFICADA (Niveles, ETF y Bitácora) --- */
+        /* UNIFIED CARD FIXED (BITÁCORA, NIVELES, ETF) */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
             border-radius: var(--radius-m); 
             padding: 0 12px; 
-            display: grid; /* Grid para estructura rígida */
-            grid-template-columns: 40px 1fr auto; 
+            display: grid; /* Grid rígido */
+            grid-template-columns: 50px 1fr auto; /* Columna izquierda ampliada a 50px */
             gap: 12px;
             align-items: center; 
             cursor: pointer; 
             transition: all 0.2s ease; 
             position: relative; 
             overflow: hidden; 
-            height: 72px; /* Altura Fija */
+            min-height: 72px; /* Altura flexible pero mínima */
         }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
         .u-index { 
-            width: 40px; height: 40px; 
-            border-radius: 10px; 
+            width: 50px; height: 50px; /* Tamaño del icono/indice */
+            border-radius: 12px; 
             background: rgba(0,0,0,0.2); 
             border: 1px solid var(--border); 
             display: flex; align-items: center; justify-content: center; 
             font-family: 'Orbitron', sans-serif; font-weight: 900; 
             color: var(--text-secondary); 
-            font-size: 12px; 
+            font-size: 11px; /* Letra ajustada para nombres largos */
             white-space: nowrap; overflow: hidden;
+            text-overflow: ellipsis;
         }
         .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .u-title { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
@@ -409,7 +410,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.0 EXACT MATCH</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.5 LOG FIX</div>
         </div>
     </div>
 
@@ -442,9 +443,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
-        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
-
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -558,28 +557,8 @@
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-        
-        function unlockAudioAndWake() { 
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { 
-                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); 
-            }
-            if("Notification" in window && Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-            requestWakeLock(); 
-        }
-
-        function triggerCrashAlert(coin, pct) { 
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
-            if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); 
-            showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true);
-            if("Notification" in window && Notification.permission === "granted") {
-                new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' });
-            }
-        }
-
+        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); }
+        function triggerCrashAlert(coin, pct) { const audio = document.getElementById('alertSound'); if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true); if("Notification" in window && Notification.permission === "granted") { new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' }); } }
         function showToast(txt, duration = 2500, isAlert = false) { const t = document.getElementById("toast"); t.textContent = txt; if(isAlert) { t.classList.add("alert-mode"); } else { t.classList.remove("alert-mode"); } t.classList.add("show"); setTimeout(() => { t.classList.remove("show"); }, duration); }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0); let currentEquity = globalCapital + totalRealizedProfit; let pnl = currentEquity - globalCapital; let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; const pnlEl = document.getElementById('displayCapPnl'); pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; }
@@ -645,7 +624,7 @@
                 const inv = parseFloat(h.totalInv) || 0; 
                 const prof = parseFloat(h.profit) || 0; 
                 const isWin = prof >= 0; 
-                // UNIFIED CARD DESIGN - SAME AS LEVELS
+                // UNIFIED CARD DESIGN - SAME STRUCTURE AS LEVELS
                 return `<div class="unified-card">
                             <div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div>
                             <div class="u-center">
