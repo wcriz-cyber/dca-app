@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V43.0 PROFESSIONAL</title>
+    <title>C5X - V43.1 PROFESSIONAL</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -141,7 +141,7 @@
         .target-price { font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 800; color: var(--warning); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(240, 185, 11, 0.15); }
         
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
-        .be-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-secondary); }
+        /* BE BUTTON REMOVED */
         .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; padding: 10px; border-radius: 12px; margin: 0 8px; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
@@ -264,9 +264,9 @@
         
         .chart-box { height: 160px; display: flex; align-items: flex-end; justify-content: space-between; gap: 4px; padding-bottom: 5px; border-bottom: 1px solid var(--border); margin-bottom: 10px; position: relative; }
         .chart-bar { flex: 1; min-width: 4px; border-radius: 2px 2px 0 0; position: relative; transition: height 0.5s ease; animation: grow-up 0.5s ease-out; }
-        .chart-bar:hover { opacity: 0.8; }
         .chart-bar.win { background: linear-gradient(to top, rgba(16,203,129,0.3), var(--long)); }
         .chart-bar.loss { background: linear-gradient(to top, rgba(246,70,93,0.3), var(--short)); }
+        .chart-bar:hover { opacity: 0.8; }
         .chart-bar::after { content: attr(data-val); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: 'JetBrains Mono'; color: var(--text-primary); opacity: 0; transition: 0.2s; pointer-events: none; white-space: nowrap; }
         .chart-bar:hover::after { opacity: 1; top: -20px; }
 
@@ -331,7 +331,7 @@
                 </div>
                 <div class="capital-status-bar" id="capStatusBar"><div><div class="cap-label">CAPITAL TOTAL</div><div class="cap-val" id="displayCapTotal">$0.00</div></div><div style="text-align:right"><div class="cap-label">PNL</div><div class="cap-pnl" id="displayCapPnl">0.00%</div></div></div>
                 <div class="main-target-box"><div class="target-label">OBJETIVO SALIDA</div><div class="target-price" id="resTarget">0.00000000</div></div>
-                <div class="control-row-three"><button class="be-btn anim-click" onclick="setBreakEven()" title="Break Even">B.E.</button><div class="strat-display anim-click" id="stratBadge" onclick="rotateDash()">NORMAL</div><div class="ctrl-group-right"><div class="icon-sq-btn anim-click" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot"><svg width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="icon-sq-btn anim-click" onclick="cleanSlotOnly()" title="Limpiar Slot"><svg width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div></div>
+                <div class="control-row-three"><div class="strat-display anim-click" id="stratBadge" onclick="rotateDash()">NORMAL</div><div class="ctrl-group-right"><div class="icon-sq-btn anim-click" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot"><svg width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="icon-sq-btn anim-click" onclick="cleanSlotOnly()" title="Limpiar Slot"><svg width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div></div>
                 <div class="stats-grid"><div class="stat-box"><div class="stat-label">Promedio</div><div class="stat-value" id="resAvg">0.00000000</div></div><div class="stat-box"><div class="stat-label">Ganancia</div><div class="stat-value" id="resProfit" style="color:var(--long)">$0.00</div></div><div class="stat-box"><div class="stat-label">Inversión</div><div class="stat-value" id="resInv">$0.00</div></div></div>
             </div>
             
@@ -463,7 +463,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.0 PROFESSIONAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.1 PROFESSIONAL</div>
         </div>
     </div>
 
@@ -788,7 +788,7 @@
         async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); topDroppers.forEach(t => { const pct = parseFloat(t.change_percentage); const pair = t.currency_pair.replace('_USDT', ''); if(pct <= -50.0) { let currentLevel = 0; if (pct <= -90) currentLevel = -90; else if (pct <= -80) currentLevel = -80; else if (pct <= -70) currentLevel = -70; else if (pct <= -60) currentLevel = -60; else if (pct <= -50) currentLevel = -50; let lastLevel = crashAlertedCoins[pair] || 0; if (lastLevel === 0 || currentLevel < lastLevel) { triggerCrashAlert(pair, pct); crashAlertedCoins[pair] = currentLevel; localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); } } }); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
         function updateRadarUI() { if(topDroppers.length === 0) return; const elVal = document.getElementById('radarValue'); const item = topDroppers[dropperIdx]; if(!item) return; elVal.style.opacity = 0; setTimeout(() => { const pairName = item.currency_pair.replace('_USDT', ''); const change = parseFloat(item.change_percentage).toFixed(2); const price = parseFloat(item.last); const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2); elVal.innerHTML = `<span onclick="quickAddFromTicker('${pairName}', ${price}, event)" style="color:var(--text-primary); text-decoration:underline dotted; text-underline-offset:4px; cursor:pointer">${pairName}</span> <span style="color:var(--text-tertiary); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`; elVal.style.opacity = 1; }, 200); }
-        function setBreakEven() { const s = slots[activeIdx]; if(!s.name || s.buys.length === 0) return showToast("⚠️ Slot sin actividad"); try { let totalSpent = 0, totalQty = 0, lastPrice = s.price; const descPct = parseFloat(document.getElementById('descInput').value) || 66; const incPct = parseFloat(document.getElementById('incInput').value) || 7; for(let i=0; i<customMultipliers.length; i++){ let pLevel; if(i===0) pLevel = s.price; else { let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; pLevel = lastPrice * (1 - (step/100)); } if(s.buys.includes(i)) { const mUSD = customMultipliers[i] * s.capital; totalSpent += mUSD; totalQty += (mUSD/pLevel); } lastPrice = pLevel; } const avgPrice = totalQty > 0 ? totalSpent/totalQty : 0; if(avgPrice <= 0) return; const targetBE = avgPrice * 1.002; const newRoi = ((targetBE / avgPrice) - 1) * 100; s.roi = parseFloat(newRoi.toFixed(2)); document.getElementById('setRoi').value = s.roi; save(); calculate(); showToast("🛡️ Modo Break-Even Activado"); } catch(e) { showToast("❌ Error cálculo"); } }
+        
         function updateSlotStatus(symbol, currentPrice) { try { slots.forEach((s, idx) => { if(s.name === symbol && s.buys.length > 0) { const el = document.getElementById('nav-s'+idx); if(!el) return; let avg = calculateAvgPriceForSlot(s); if(avg > 0) { if(currentPrice > avg) { el.classList.remove('has-loss'); el.classList.add('has-profit'); const target = avg * (1 + (s.roi/100)); if(currentPrice >= target && !s.alerted) { triggerAlert(s.name); s.alerted = true; save(); } } else { el.classList.remove('has-profit'); el.classList.add('has-loss'); s.alerted = false; } } } }); } catch(e) { console.warn("Heatmap Error", e); } }
         function calculateAvgPriceForSlot(s) { if(!s.price) return 0; let totalSpent = 0, totalQty = 0, lastPrice = s.price; const descPct = parseFloat(document.getElementById('descInput').value) || 66; const incPct = parseFloat(document.getElementById('incInput').value) || 7; const limit = customMultipliers ? customMultipliers.length : 12; for(let i=0; i<limit; i++){ let pLevel; if(i===0) pLevel = s.price; else { let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; pLevel = lastPrice * (1 - (step/100)); } if(s.buys.includes(i)) { const m = customMultipliers ? (customMultipliers[i] || 1) : 1; const mUSD = m * s.capital; totalSpent += mUSD; totalQty += (mUSD/pLevel); } lastPrice = pLevel; } return totalQty > 0 ? totalSpent/totalQty : 0; }
         function triggerAlert(coin) { const audio = document.getElementById('alertSound'); if(audio) audio.play().catch(e => console.log("Audio autoplay blocked by browser")); if(navigator.vibrate) navigator.vibrate([200, 100, 200]); showToast("🎯 OBJETIVO ALCANZADO: " + coin); }
