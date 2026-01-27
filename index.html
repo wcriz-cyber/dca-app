@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V42.1 SECURITY FIX</title>
+    <title>C5X - V43.0 PROFESSIONAL</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -28,12 +28,14 @@
             --drive: #34A853; 
             --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --skeleton: rgba(255,255,255,0.05);
         }
         body.light-mode {
             --bg: #f5f7fa !important; --surface: #ffffff !important;
             --surface-glass: rgba(255, 255, 255, 0.98) !important; --card-bg: #ffffff !important;
             --text-primary: #1e2329 !important; --text-secondary: #707a8a !important;
             --border: #e6e8ea !important; --chart-bg: #ffffff !important; --warning: #d97706 !important;
+            --skeleton: rgba(0,0,0,0.05) !important;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
@@ -48,13 +50,25 @@
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
         @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-        @keyframes slide-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
         .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
-        .section-enter { animation: slide-in 0.3s ease-out; }
+        .section-enter { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* SKELETON LOADER */
+        .skeleton-box {
+            background: var(--skeleton);
+            background: linear-gradient(90deg, var(--skeleton) 25%, var(--card-bg) 50%, var(--skeleton) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            color: transparent !important;
+        }
+        .skeleton-text { display: inline-block; min-width: 40px; min-height: 1em; border-radius: 4px; }
 
         /* ICONOS CLEAN */
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; pointer-events: none; /* CRITICO PARA BOTONES */ }
@@ -90,8 +104,8 @@
         .theme-btn { width: 36px; height: 36px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 16px; }
 
         .content-spacer { margin-top: 92px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
-        .app-section { display: none; }
-        .app-section.active { display: block; animation: slide-in 0.3s ease-out; }
+        .app-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
+        .app-section.active { display: block; opacity: 1; animation: slide-in 0.3s ease-out; }
 
         .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; }
         .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 4px 0; text-align: center; font-family: sans-serif; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
@@ -118,7 +132,7 @@
         
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 10px; }
         .radar-title { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); }
+        .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); min-height: 24px; display: flex; align-items: center; justify-content: center;}
         
         .capital-status-bar { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; margin-bottom: 15px; }
         .cap-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; }
@@ -151,11 +165,12 @@
             gap: 12px;
             align-items: center; 
             cursor: pointer; 
-            transition: all 0.2s ease; 
+            transition: transform 0.1s ease, background 0.2s ease;
             position: relative; 
             overflow: hidden; 
             min-height: 72px; height: 72px;
         }
+        .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
         .u-index { 
@@ -282,7 +297,7 @@
             <div class="nav-item selected anim-click" id="nav-operate" onclick="switchView('operate')"><div class="nav-icon"><svg width="24" height="24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="nav-text">OPERAR</div></div>
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
-            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -294,7 +309,7 @@
                 <svg width="20" height="20" style="color:var(--text-tertiary)"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </div>
             
-            <div class="ticker-container"><div class="ticker-pill anim-click" onclick="viewTickerChart(event)"><div class="ticker-dot" id="t-dot"></div><span class="ticker-sym" id="t-sym">BTC</span><span class="ticker-price" id="t-price">--.--</span></div><button class="pin-btn anim-click" id="tickerPinBtn" onclick="toggleTickerPin()"><svg width="14" height="14"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button></div>
+            <div class="ticker-container"><div class="ticker-pill anim-click" onclick="viewTickerChart(event)"><div class="ticker-dot" id="t-dot"></div><span class="ticker-sym" id="t-sym">BTC</span><span class="ticker-price" id="t-price"><span class="skeleton-text skeleton-box"></span></span></div><button class="pin-btn anim-click" id="tickerPinBtn" onclick="toggleTickerPin()"><svg width="14" height="14"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button></div>
             
             <button class="theme-btn anim-click" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
@@ -310,7 +325,10 @@
             <div class="controls-grid"><div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div><div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div><div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div></div>
             
             <div class="dashboard-card" id="dashMain">
-                <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)"><div class="radar-title"><svg width="12" height="12"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> RADAR DE OPORTUNIDADES</div><div id="radarValue" class="radar-content">ESCANANDO...</div></div>
+                <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)">
+                    <div class="radar-title"><svg width="12" height="12"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> RADAR DE OPORTUNIDADES</div>
+                    <div id="radarValue" class="radar-content"><span class="skeleton-text skeleton-box" style="width:120px; height:20px;"></span></div>
+                </div>
                 <div class="capital-status-bar" id="capStatusBar"><div><div class="cap-label">CAPITAL TOTAL</div><div class="cap-val" id="displayCapTotal">$0.00</div></div><div style="text-align:right"><div class="cap-label">PNL</div><div class="cap-pnl" id="displayCapPnl">0.00%</div></div></div>
                 <div class="main-target-box"><div class="target-label">OBJETIVO SALIDA</div><div class="target-price" id="resTarget">0.00000000</div></div>
                 <div class="control-row-three"><button class="be-btn anim-click" onclick="setBreakEven()" title="Break Even">B.E.</button><div class="strat-display anim-click" id="stratBadge" onclick="rotateDash()">NORMAL</div><div class="ctrl-group-right"><div class="icon-sq-btn anim-click" id="lockBtn" onclick="toggleLock()" title="Bloquear Slot"><svg width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="icon-sq-btn anim-click" onclick="cleanSlotOnly()" title="Limpiar Slot"><svg width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div></div></div>
@@ -347,7 +365,7 @@
                 </div>
                 <div class="chart-box" id="pnlChart"></div>
                 <div class="stats-summary">
-                    <div><span class="sum-label">NETO</span><span class="sum-val" id="chartNeto">$0.00</span></div>
+                    <div><span class="sum-label">NETO (FEES INC.)</span><span class="sum-val" id="chartNeto">$0.00</span></div>
                     <div><span class="sum-label">WIN RATE</span><span class="sum-val" id="chartWr">0%</span></div>
                 </div>
             </div>
@@ -359,10 +377,13 @@
             <div class="setting-section-title"><svg width="14" height="14"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> CAPITAL & RENDIMIENTO</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <label class="setting-label">CAPITAL TOTAL BASE ($)</label>
-                    <div class="input-row-save">
-                        <input type="number" class="setting-input" id="setGlobalCapital" placeholder="0.00">
+                    <div class="input-row-save" style="margin-bottom:10px;">
+                        <span class="setting-label" style="flex:1">CAPITAL TOTAL BASE ($)</span>
                         <button class="btn-save-mini anim-click" onclick="saveGlobalCapSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                        <input type="number" class="setting-input" id="setGlobalCapital" placeholder="0.00" style="border-bottom:1px solid var(--border)">
+                        <div><label class="setting-label">COMISIÓN EXCHANGE (%)</label><input type="number" class="setting-input" id="setFee" placeholder="0.1" step="0.01"></div>
                     </div>
                 </div>
                 <div class="setting-card-item">
@@ -442,12 +463,11 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V42.1 SECURITY FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.0 PROFESSIONAL</div>
         </div>
     </div>
 
     <div id="confirmModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div><p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p><button class="btn-modal btn-confirm anim-click" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
-    <div id="portfolioModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:20px; color:var(--brand)">PATRIMONIO GLOBAL</div><div class="equity-row"><span class="equity-label">CAPITAL TOTAL</span><span class="equity-val" id="eqTotal">$0.00</span></div><div class="equity-row"><span class="equity-label">INVERTIDO</span><span class="equity-val" id="eqInvested" style="color:var(--long)">$0.00</span></div><div class="equity-row"><span class="equity-label">DISPONIBLE</span><span class="equity-val" id="eqFree">$0.00</span></div><div class="equity-row equity-total"><span class="equity-label" style="color:var(--text-primary)">EN JUEGO</span><span class="equity-val" id="eqPercent">0%</span></div><button class="btn-modal btn-cancel anim-click" style="margin-top:20px" onclick="closeModals()">CERRAR</button></div></div>
     <div id="securityModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*"><button class="btn-modal btn-confirm anim-click" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
@@ -475,6 +495,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
+        let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
         
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
 
@@ -533,13 +554,12 @@
             const m = document.getElementById('securityModal');
             document.getElementById('secInput').value = '';
             m.style.display = 'flex';
-            // Force reflow
             void m.offsetWidth;
         }
 
         function validateSecurity() {
             const inp = document.getElementById('secInput').value;
-            closeModals(); // Cerrar modal siempre
+            closeModals(); 
             if(inp === appConfig.pin) {
                 if(secCallback) secCallback();
             } else {
@@ -550,12 +570,20 @@
         function saveGlobalCapSecure() {
             reqSec(() => {
                 const val = parseFloat(document.getElementById('setGlobalCapital').value);
+                const feeVal = parseFloat(document.getElementById('setFee').value);
+
                 if(!isNaN(val)) {
                     globalCapital = val;
                     localStorage.setItem('c5x_global_capital', globalCapital);
-                    calculateGlobalStats();
-                    showToast("✅ Capital Global Guardado");
                 }
+                
+                if(!isNaN(feeVal)) {
+                    exchangeFee = feeVal;
+                    localStorage.setItem('c5x_fee', exchangeFee);
+                }
+
+                calculateGlobalStats();
+                showToast("✅ Capital y Comisión Guardados");
             });
         }
 
@@ -573,9 +601,8 @@
                 slots[activeIdx].roi = newRoi;
                 if(!isNaN(newDD)) appConfig.dd = newDD;
                 localStorage.setItem('c5x_config', JSON.stringify(appConfig));
-                save(); // Guarda slots
+                save(); 
 
-                // Guardar Estrategia Persistente
                 if(!isNaN(newInc) && !isNaN(newDesc)) {
                     localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc }));
                     document.getElementById('incInput').value = newInc;
@@ -629,7 +656,7 @@
         }
 
         function savePassSecure() {
-            reqSec(() => { // Pide clave antigua primero
+            reqSec(() => { 
                 const newPass = document.getElementById('setNewPass').value;
                 if(newPass && newPass.length === 4) {
                     appConfig.pin = newPass;
@@ -641,7 +668,6 @@
             });
         }
 
-        // --- RESTO DE FUNCIONES ---
         function updateStats(tf) {
             triggerHaptic();
             document.querySelectorAll('.stat-btn').forEach(b => b.classList.remove('active'));
@@ -679,7 +705,10 @@
                     key = parts[1] + '/' + parts[2].substring(2);
                 }
                 if(!groups[key]) groups[key] = 0;
-                const p = parseFloat(h.profit) || 0;
+                
+                // USE NET PROFIT IF AVAILABLE, ELSE GROSS
+                const p = (h.netProfit !== undefined) ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0);
+                
                 groups[key] += p;
                 totalNet += p;
                 total++;
@@ -711,7 +740,25 @@
         function openMenuViaButton() { document.getElementById('navModal').style.display = 'flex'; window.history.pushState({modal: 'menu'}, '', '#menu'); }
         function closeMenuViaButton() { window.history.back(); }
         function switchView(viewName) { triggerHaptic(); document.getElementById('navModal').style.display = 'none'; if (viewName !== 'operate') { window.history.pushState({page: viewName}, '', `#${viewName}`); } updateViewVisuals(viewName); }
-        function updateViewVisuals(viewName) { currentSection = viewName; document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); document.getElementById('section-' + viewName).classList.add('active'); document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); const navItem = document.getElementById('nav-' + viewName); if(navItem) navItem.classList.add('selected'); const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '60px'; } if(viewName === 'etf') loadGateETFs(); if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } if(viewName === 'log') updateStats('D'); window.scrollTo(0,0); }
+        function updateViewVisuals(viewName) { 
+            currentSection = viewName; 
+            document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); 
+            document.getElementById('section-' + viewName).classList.add('active'); 
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); 
+            const navItem = document.getElementById('nav-' + viewName); 
+            if(navItem) navItem.classList.add('selected'); 
+            const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); 
+            if(viewName === 'operate') { 
+                tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; 
+                if(chartSymbol) loadChart(chartSymbol); 
+            } else { 
+                tfBar.style.display = 'none'; spacer.style.marginTop = '60px'; 
+            } 
+            if(viewName === 'etf') loadGateETFs(); 
+            if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } 
+            if(viewName === 'log') updateStats('D'); 
+            window.scrollTo(0,0); 
+        }
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
@@ -720,7 +767,21 @@
         function triggerCrashAlert(coin, pct) { const audio = document.getElementById('alertSound'); if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true); if("Notification" in window && Notification.permission === "granted") { new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' }); } }
         function showToast(txt, duration = 2500, isAlert = false) { const t = document.getElementById("toast"); t.textContent = txt; if(isAlert) { t.classList.add("alert-mode"); } else { t.classList.remove("alert-mode"); } t.classList.add("show"); setTimeout(() => { t.classList.remove("show"); }, duration); }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
-        function calculateGlobalStats() { let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0); let currentEquity = globalCapital + totalRealizedProfit; let pnl = currentEquity - globalCapital; let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; const pnlEl = document.getElementById('displayCapPnl'); pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; }
+        function calculateGlobalStats() { 
+            let totalRealizedProfit = history.reduce((sum, item) => {
+                // Use Net Profit if available, otherwise legacy gross
+                return sum + (item.netProfit !== undefined ? parseFloat(item.netProfit) : (parseFloat(item.profit) || 0));
+            }, 0); 
+            
+            let currentEquity = globalCapital + totalRealizedProfit; 
+            let pnl = currentEquity - globalCapital; 
+            let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; 
+            
+            document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; 
+            const pnlEl = document.getElementById('displayCapPnl'); 
+            pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; 
+            pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; 
+        }
         function cleanSlotOnly() { triggerHaptic(); if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) { slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; sortSlots(); selectSlot(0); showToast("🗑️ Slot Limpiado"); } }
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
@@ -750,7 +811,32 @@
         }
         function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
         function startTickerSystem() { updateTicker(); setInterval(() => { if(!isTickerPinned) { assetIdx = (assetIdx + 1) % tickerAssets.length; localStorage.setItem('c5x_ticker_index', assetIdx); updateTicker(); } }, 7000); }
-        async function updateTicker() { let sym = tickerAssets[assetIdx]; let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; let displaySym = sym.replace("USDT",""); document.getElementById('t-sym').textContent = displaySym; if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } try { const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; currentWs = new WebSocket(wsUrl); currentWs.onmessage = (event) => { const data = JSON.parse(event.data); const price = parseFloat(data.p); updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); document.getElementById('t-dot').classList.add('pulse'); }; currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; } catch(e) { fetchTickerRest(apiSym, displaySym); } }
+        async function updateTicker() { 
+            let sym = tickerAssets[assetIdx]; 
+            let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; 
+            let displaySym = sym.replace("USDT",""); 
+            document.getElementById('t-sym').textContent = displaySym; 
+            
+            // SKELETON RESET
+            document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>';
+            
+            if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
+            try { 
+                const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; 
+                currentWs = new WebSocket(wsUrl); 
+                currentWs.onmessage = (event) => { 
+                    const data = JSON.parse(event.data); 
+                    const price = parseFloat(data.p); 
+                    updateTickerUI(displaySym, price, true); 
+                    updateSlotStatus(displaySym, price); 
+                    document.getElementById('t-dot').classList.add('pulse'); 
+                }; 
+                currentWs.onerror = () => { 
+                    fetchTickerRest(apiSym, displaySym); 
+                    document.getElementById('t-dot').classList.remove('pulse'); 
+                }; 
+            } catch(e) { fetchTickerRest(apiSym, displaySym); } 
+        }
         async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
         function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
         function toggleTickerPin() { triggerHaptic(); isTickerPinned = !isTickerPinned; localStorage.setItem('c5x_ticker_pinned', isTickerPinned); updatePinUI(); if(isTickerPinned) showToast("⚓ Fijado: " + currentTickerSymbol); else { showToast("▶️ Rotando"); updateTicker(); } }
@@ -772,7 +858,58 @@
         function toggleLvl(idx) { triggerHaptic(); const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
         function renderLevels() { const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; updateBodyMode(s.name); if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; const maxLevels = customMultipliers ? customMultipliers.length : 12; for(let i=0; i < maxLevels; i++){ let pLevel; if(i === 0) { pLevel = s.price; currentStepDrop = 0; } else { if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } pLevel = lastPrice * (1 - (currentStepDrop / 100)); } const mUSD = (customMultipliers[i] || 1) * s.capital, on = s.buys.includes(i); if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } const displayPrice = (pLevel < 1) ? pLevel.toFixed(8) : pLevel.toFixed(4); html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})"><div class="u-index">${i+1}</div><div class="u-center"><div class="u-title">${displayPrice}</div><div class="u-sub">${i===0 ? 'ENTRADA' : 'NIVEL ' + (i+1)}</div></div><div class="u-right"><div class="u-val-primary">$${mUSD.toFixed(1)}</div><div class="u-val-secondary">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div></div></div>`; lastPrice = pLevel; } html += `<div class="liquidate-card anim-click" onclick="openLiquidateConfirm()"><svg width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg> LIQUIDAR POSICIÓN</div>`; grid.innerHTML = html; const avg = totalQty > 0 ? totalSpent/totalQty : 0; const targetPrice = avg * (1 + (s.roi / 100)); document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; document.getElementById('resAvg').textContent = (avg < 1) ? avg.toFixed(8) : avg.toFixed(4); document.getElementById('resTarget').textContent = (targetPrice < 1) ? targetPrice.toFixed(8) : targetPrice.toFixed(4); document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`; }
         function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
-        function executeRelease() { triggerHaptic(); closeModals(); try { const s = slots[activeIdx]; const totalInv = parseFloat(document.getElementById('resInv').textContent.replace('$','')) || 0; const avgPrice = parseFloat(document.getElementById('resAvg').textContent) || 0; const exitPrice = avgPrice > 0 ? avgPrice * (1 + (s.roi / 100)) : 0; const profit = (totalInv * (s.roi / 100)); const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: exitPrice, qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0 }; if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; sortSlots(); save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); calculateGlobalStats(); } catch(e) { showToast("❌ Error al liquidar"); } }
+        
+        function executeRelease() { 
+            triggerHaptic(); closeModals(); 
+            try { 
+                const s = slots[activeIdx]; 
+                const totalInv = parseFloat(document.getElementById('resInv').textContent.replace('$','')) || 0; 
+                const avgPrice = parseFloat(document.getElementById('resAvg').textContent) || 0; 
+                
+                // --- CALCULO PROFESIONAL CON FEES ---
+                // Si vendes, tu "Total Exit" es avgPrice + ROI. 
+                const targetPrice = avgPrice * (1 + (s.roi / 100)); 
+                const grossExitValue = totalInv * (1 + (s.roi / 100));
+                
+                const entryFee = totalInv * (exchangeFee / 100);
+                const exitFee = grossExitValue * (exchangeFee / 100);
+                const totalFees = entryFee + exitFee;
+                
+                const grossProfit = grossExitValue - totalInv;
+                const netProfit = grossProfit - totalFees;
+
+                const logEntry = { 
+                    date: new Date().toLocaleDateString(), 
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
+                    coin: s.name || 'S/N', 
+                    strategy: s.strat.toUpperCase(), 
+                    basePrice: s.price, 
+                    avgPrice: avgPrice, 
+                    exitPrice: targetPrice, 
+                    qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), 
+                    totalInv: totalInv.toFixed(2), 
+                    profit: grossProfit.toFixed(2), // Legacy field
+                    netProfit: netProfit.toFixed(2), // New Pro Field
+                    fees: totalFees.toFixed(2), // New Pro Field
+                    roi: s.roi + '%', 
+                    levelsUsed: s.buys ? s.buys.length : 0 
+                }; 
+                
+                if(!history) history = []; 
+                history.push(logEntry); 
+                localStorage.setItem('c5x_history', JSON.stringify(history)); 
+                
+                renderHistory(); 
+                slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; 
+                sortSlots(); 
+                save(); 
+                selectSlot(0); 
+                showToast(`✅ Cerrada. Neta: $${netProfit.toFixed(2)}`); 
+                switchView('log', false); 
+                calculateGlobalStats(); 
+            } catch(e) { showToast("❌ Error al liquidar"); } 
+        }
+
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } else { r.style.setProperty('--brand', '#3b82f6'); } }
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
@@ -780,9 +917,11 @@
                 grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; 
             } 
             grid.innerHTML = history.map(h => { 
-                const inv = parseFloat(h.totalInv) || 0; 
-                const prof = parseFloat(h.profit) || 0; 
-                const isWin = prof >= 0; 
+                // Display Net Profit if available, otherwise legacy profit
+                const hasNet = h.netProfit !== undefined;
+                const finalProfit = hasNet ? parseFloat(h.netProfit) : parseFloat(h.profit);
+                const isWin = finalProfit >= 0; 
+                
                 return `<div class="unified-card">
                             <div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div>
                             <div class="u-center">
@@ -790,8 +929,8 @@
                                 <div class="u-sub">${h.date} - ${h.time}</div>
                             </div>
                             <div class="u-right">
-                                <div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${prof}</div>
-                                <div class="u-val-secondary">ROI ${h.roi}</div>
+                                <div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${finalProfit.toFixed(2)}</div>
+                                <div class="u-val-secondary">${hasNet ? 'NETO' : 'BRUTO'} ${h.roi}</div>
                             </div>
                         </div>`; 
             }).reverse().join('');
@@ -833,6 +972,7 @@
             document.getElementById('setDesc').value = document.getElementById('descInput').value; 
             document.getElementById('setRoi').value = s.roi || 100; 
             document.getElementById('setGlobalCapital').value = globalCapital; 
+            document.getElementById('setFee').value = exchangeFee; // LOAD FEE
             document.getElementById('setRadarLimit').value = radarLimit; 
             document.getElementById('setRadarSpeed').value = radarSpeed; 
             document.getElementById('setDD').value = appConfig.dd; 
@@ -848,55 +988,61 @@
 
             calcMonthlyPerformance(); 
         }
-        function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
-        
-        function applySettings() { 
-            triggerHaptic(); 
-            openSecurity(() => { 
-                const newCap = parseFloat(document.getElementById('setCapital').value);
-                const newRoi = parseFloat(document.getElementById('setRoi').value);
-                const newGlob = parseFloat(document.getElementById('setGlobalCapital').value);
-                const newDD = parseFloat(document.getElementById('setDD').value);
-                const newPass = document.getElementById('setNewPass').value;
-
-                // GUARDAR GRID
-                const inputs = document.querySelectorAll('.multi-inp');
-                let newMultipliers = [];
-                inputs.forEach(inp => {
-                    let val = parseFloat(inp.value);
-                    if(!isNaN(val)) newMultipliers.push(val);
-                });
-                if(newMultipliers.length >= 5) {
-                    customMultipliers = newMultipliers;
-                    localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
-                }
-
-                if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); 
-                
-                slots[activeIdx].capital = newCap; 
-                slots[activeIdx].roi = newRoi; 
-                if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); }
-                if(!isNaN(newDD)) { appConfig.dd = newDD; }
-                if(newPass && newPass.length === 4) { appConfig.pin = newPass; }
-                localStorage.setItem('c5x_config', JSON.stringify(appConfig));
-
-                document.getElementById('incInput').value = document.getElementById('setInc').value; 
-                document.getElementById('descInput').value = document.getElementById('setDesc').value; 
-                
-                // SAVE INC/DESC
-                localStorage.setItem('c5x_inc_desc', JSON.stringify({
-                    inc: document.getElementById('setInc').value,
-                    desc: document.getElementById('setDesc').value
-                }));
-
-                save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); 
+        function calcMonthlyPerformance() { 
+            const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); 
+            let monthlyProfit = 0; 
+            history.forEach(h => { 
+                const parts = h.date.split('/'); 
+                if(parts.length === 3) { 
+                    const hDate = new Date(parts[2], parts[1]-1, parts[0]); 
+                    if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { 
+                        // Use netProfit if exists
+                        monthlyProfit += (h.netProfit !== undefined ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0)); 
+                    } 
+                } 
             }); 
+            let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; 
+            const el = document.getElementById('monthlyProfitDisplay'); 
+            el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; 
         }
-
+        
         function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; renderTickerSettings(); showToast("✅ Agregada"); }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
-        function exportPDF() { if(history.length === 0) return showToast("⚠️ Sin Datos"); const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); let totalProfit = 0; let totalInvested = 0; let wins = 0; history.forEach(h => { const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; totalInvested += inv; totalProfit += prof; if(prof > 0) wins++; }); const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0; doc.setFillColor(11, 14, 17); doc.rect(0, 0, 297, 25, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(59, 130, 246); doc.text("C5X", 14, 16); doc.setFontSize(14); doc.setTextColor(255, 255, 255); doc.text("REPORTE DETALLADO", 40, 16); doc.setFillColor(245, 247, 250); doc.rect(14, 30, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); doc.text("CAPITAL MOVIDO", 20, 38); doc.text("PROFIT NETO", 90, 38); doc.text("WIN RATE", 160, 38); doc.text("TOTAL OPS", 230, 38); doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 46); doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 90, 46); doc.setTextColor(0); doc.text(winRate + "%", 160, 46); doc.text(history.length.toString(), 230, 46); const bodyData = history.map(h => { const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const avg = parseFloat(h.avgPrice) || 0; const exit = parseFloat(h.exitPrice) || 0; return [ h.date + '\n' + h.time, h.coin, '$' + (avg < 1 ? avg.toFixed(6) : avg.toFixed(2)), '$' + (exit < 1 ? exit.toFixed(6) : exit.toFixed(2)), '$' + inv.toFixed(2), (prof>=0?'+':'') + '$' + prof.toFixed(2), h.roi ]; }); doc.autoTable({ head: [['FECHA / HORA', 'ACTIVO', 'PRECIO ENT.', 'PRECIO SALIDA', 'INVERSIÓN', 'GANANCIA', 'ROI']], body: bodyData, startY: 58, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle', halign: 'center' }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold', halign: 'center' }, didParseCell: function(data) { if (data.section === 'body' && data.column.index === 5) { const raw = data.cell.raw; if(raw.startsWith('+')) data.cell.styles.textColor = [14, 203, 129]; else data.cell.styles.textColor = [246, 70, 93]; } } }); doc.save("C5X_Reporte.pdf"); }
+        function exportPDF() { 
+            if(history.length === 0) return showToast("⚠️ Sin Datos"); 
+            const { jsPDF } = window.jspdf; 
+            const doc = new jsPDF('l', 'mm', 'a4'); 
+            let totalProfit = 0; let totalInvested = 0; let wins = 0; 
+            history.forEach(h => { 
+                const inv = parseFloat(h.totalInv) || 0; 
+                // Use Net
+                const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0; 
+                totalInvested += inv; 
+                totalProfit += prof; 
+                if(prof > 0) wins++; 
+            }); 
+            const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0; 
+            doc.setFillColor(11, 14, 17); doc.rect(0, 0, 297, 25, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(59, 130, 246); doc.text("C5X", 14, 16); doc.setFontSize(14); doc.setTextColor(255, 255, 255); doc.text("REPORTE PROFESIONAL", 40, 16); 
+            doc.setFillColor(245, 247, 250); doc.rect(14, 30, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); 
+            doc.text("CAPITAL MOVIDO", 20, 38); doc.text("NET PROFIT", 90, 38); doc.text("WIN RATE", 160, 38); doc.text("TOTAL OPS", 230, 38); 
+            doc.setFontSize(14); doc.setTextColor(0); 
+            doc.text("$" + totalInvested.toFixed(2), 20, 46); 
+            doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); 
+            doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 90, 46); 
+            doc.setTextColor(0); doc.text(winRate + "%", 160, 46); doc.text(history.length.toString(), 230, 46); 
+            
+            const bodyData = history.map(h => { 
+                const inv = parseFloat(h.totalInv) || 0; 
+                const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0;
+                const avg = parseFloat(h.avgPrice) || 0; 
+                const exit = parseFloat(h.exitPrice) || 0; 
+                return [ h.date + '\n' + h.time, h.coin, '$' + (avg < 1 ? avg.toFixed(6) : avg.toFixed(2)), '$' + (exit < 1 ? exit.toFixed(6) : exit.toFixed(2)), '$' + inv.toFixed(2), (prof>=0?'+':'') + '$' + prof.toFixed(2), h.roi ]; 
+            }); 
+            
+            doc.autoTable({ head: [['FECHA / HORA', 'ACTIVO', 'PRECIO ENT.', 'PRECIO SALIDA', 'INVERSIÓN', 'PNL NETO', 'ROI']], body: bodyData, startY: 58, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle', halign: 'center' }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold', halign: 'center' }, didParseCell: function(data) { if (data.section === 'body' && data.column.index === 5) { const raw = data.cell.raw; if(raw.startsWith('+')) data.cell.styles.textColor = [14, 203, 129]; else data.cell.styles.textColor = [246, 70, 93]; } } }); 
+            doc.save("C5X_Pro_Report.pdf"); 
+        }
         function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
         function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
     </script>
