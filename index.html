@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V36.5 LOG FIX</title>
+    <title>C5X - V36.6 EXACT-4</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -138,33 +138,34 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* UNIFIED CARD FIXED (BITÁCORA, NIVELES, ETF) */
+        /* UNIFIED CARD (GRID SYSTEM) - EXACT 4 CARDS VIEW */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
             border-radius: var(--radius-m); 
             padding: 0 12px; 
-            display: grid; /* Grid rígido */
-            grid-template-columns: 50px 1fr auto; /* Columna izquierda ampliada a 50px */
+            display: grid; 
+            grid-template-columns: 50px 1fr auto; 
             gap: 12px;
             align-items: center; 
             cursor: pointer; 
             transition: all 0.2s ease; 
             position: relative; 
             overflow: hidden; 
-            min-height: 72px; /* Altura flexible pero mínima */
+            min-height: 72px; /* Altura Fija */
+            height: 72px;
         }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
         .u-index { 
-            width: 50px; height: 50px; /* Tamaño del icono/indice */
+            width: 50px; height: 50px; 
             border-radius: 12px; 
             background: rgba(0,0,0,0.2); 
             border: 1px solid var(--border); 
             display: flex; align-items: center; justify-content: center; 
             font-family: 'Orbitron', sans-serif; font-weight: 900; 
             color: var(--text-secondary); 
-            font-size: 11px; /* Letra ajustada para nombres largos */
+            font-size: 11px; 
             white-space: nowrap; overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -252,8 +253,9 @@
         .sum-label { color: var(--text-tertiary); font-weight: 700; margin-right: 5px; }
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
 
+        /* SCROLL LIMITADO PARA BITÁCORA - EXACTAMENTE 4 TARJETAS + GAP */
         #logGrid {
-            max-height: 380px; 
+            max-height: 315px; /* Altura calculada para 4 tarjetas */
             overflow-y: auto;
             overscroll-behavior: contain;
             border-bottom: 1px solid var(--border);
@@ -410,7 +412,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.5 LOG FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.6 EXACT-4</div>
         </div>
     </div>
 
@@ -443,7 +445,9 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
+        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
+
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -624,7 +628,7 @@
                 const inv = parseFloat(h.totalInv) || 0; 
                 const prof = parseFloat(h.profit) || 0; 
                 const isWin = prof >= 0; 
-                // UNIFIED CARD DESIGN - SAME STRUCTURE AS LEVELS
+                // UNIFIED CARD - SAME AS LEVELS
                 return `<div class="unified-card">
                             <div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div>
                             <div class="u-center">
