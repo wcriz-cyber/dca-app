@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V41.5 INDIVIDUAL SEC</title>
+    <title>C5X - V42.0 SECURITY FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -56,7 +56,8 @@
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.3s ease-out; }
 
-        svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+        /* ICONOS CLEAN */
+        svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; pointer-events: none; /* CRITICO PARA BOTONES */ }
 
         /* --- COMPONENTES UI --- */
         #toast { 
@@ -139,6 +140,7 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
+        /* UNIFIED CARD */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
@@ -386,7 +388,7 @@
                 </div>
             </div>
 
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
+            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
                      <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
@@ -440,7 +442,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V41.5 INDIVIDUAL SEC</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V42.0 SECURITY FIX</div>
         </div>
     </div>
 
@@ -452,7 +454,9 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW', reg)).catch(err => console.log('SW Fail', err));
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registrado', reg))
+                    .catch(err => console.log('SW fallo', err));
             });
         }
 
@@ -471,7 +475,9 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
+        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
+
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -492,6 +498,7 @@
                 if(savedParams) {
                     document.getElementById('incInput').value = savedParams.inc;
                     document.getElementById('descInput').value = savedParams.desc;
+                    // También actualizar los inputs visibles en ajustes
                     document.getElementById('setInc').value = savedParams.inc;
                     document.getElementById('setDesc').value = savedParams.desc;
                 }
@@ -503,6 +510,7 @@
                 const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
+
                 if("Notification" in window) Notification.requestPermission();
 
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
@@ -513,21 +521,26 @@
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
                 requestWakeLock();
+
             } catch(e) { console.error("Init Error", e); }
         }
 
         // --- SISTEMA DE GUARDADO INDIVIDUAL SEGURO ---
+        let secCallback = null;
+
         function reqSec(cb) {
             secCallback = cb;
-            const m = document.getElementById('secModal');
-            document.getElementById('secPinInput').value = '';
+            const m = document.getElementById('securityModal');
+            document.getElementById('secInput').value = '';
             m.style.display = 'flex';
+            // Force reflow
+            void m.offsetWidth;
         }
 
-        function verifySec() {
-            const inp = document.getElementById('secPinInput').value;
+        function validateSecurity() {
+            const inp = document.getElementById('secInput').value;
             if(inp === appConfig.pin) {
-                closeModals();
+                document.getElementById('securityModal').style.display = 'none';
                 if(secCallback) secCallback();
             } else {
                 showToast("⛔ PIN INCORRECTO");
@@ -709,7 +722,7 @@
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0); let currentEquity = globalCapital + totalRealizedProfit; let pnl = currentEquity - globalCapital; let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; const pnlEl = document.getElementById('displayCapPnl'); pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; }
         function cleanSlotOnly() { triggerHaptic(); if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) { slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; sortSlots(); selectSlot(0); showToast("🗑️ Slot Limpiado"); } }
-        function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptyIdx); showToast("✅ " + symbol + " añadido"); }
+        function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); topDroppers.forEach(t => { const pct = parseFloat(t.change_percentage); const pair = t.currency_pair.replace('_USDT', ''); if(pct <= -50.0) { let currentLevel = 0; if (pct <= -90) currentLevel = -90; else if (pct <= -80) currentLevel = -80; else if (pct <= -70) currentLevel = -70; else if (pct <= -60) currentLevel = -60; else if (pct <= -50) currentLevel = -50; let lastLevel = crashAlertedCoins[pair] || 0; if (lastLevel === 0 || currentLevel < lastLevel) { triggerCrashAlert(pair, pct); crashAlertedCoins[pair] = currentLevel; localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); } } }); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
