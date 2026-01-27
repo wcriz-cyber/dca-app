@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V32.0 MASTER</title>
+    <title>C5X - V33.0 HYBRID</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -20,7 +20,6 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
-        /* --- VARIABLES DE DISEÑO (RESTORED) --- */
         :root {
             --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98);
             --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
@@ -44,7 +43,7 @@
             overscroll-behavior-y: none; 
         }
 
-        /* --- MOTOR DE ANIMACIONES (MEJORADO) --- */
+        /* --- ANIMACIONES E INTERACTIVIDAD --- */
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
         @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
@@ -55,10 +54,10 @@
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.3s ease-out; }
 
-        /* SVG ICONS (CLEAN STYLE) */
+        /* ESTILO DE ICONOS MINIMALISTA (STROKE) */
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 
-        /* --- UI COMPONENTS --- */
+        /* --- COMPONENTES UI --- */
         #toast { 
             visibility: hidden; width: 90%; max-width: 400px;
             background-color: var(--surface); border: 1px solid var(--border);
@@ -72,7 +71,6 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
 
-        /* HEADER */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 10px; }
@@ -148,12 +146,10 @@
         .u-sub { font-size: 13px; font-weight: 600; color: var(--text-tertiary); margin-top: 4px; }
         .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 4px; flex-shrink: 0; }
         .u-val-primary { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--long); }
-        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; }
 
-        /* Search & ETF */
         .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
         .etf-search-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: var(--radius-m); color: var(--text-primary); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; transition: border 0.3s; }
-        .etf-search-input:focus { border-color: var(--brand); }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
         .etf-change-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
         .etf-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
@@ -161,7 +157,6 @@
         .etf-fav-icon { margin-left: auto; margin-right: 10px; color: var(--text-border); cursor: pointer; transition: 0.2s; font-size: 18px; }
         .etf-fav-icon.is-fav { color: var(--warning); }
 
-        /* Settings */
         .setting-section-title { padding: 10px 5px; font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 10px;}
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; }
@@ -175,7 +170,6 @@
         .chip { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
         .chip-del { cursor: pointer; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
 
-        /* Menu Modal */
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; padding-top: var(--safe-top); }
         .nav-content { background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; padding: 35px 25px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 15px; }
         .nav-title { font-family: 'Orbitron', sans-serif; font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
@@ -187,7 +181,6 @@
         .nav-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
         .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
-        /* Modals */
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
         .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
@@ -288,6 +281,25 @@
                 <div class="setting-card-item"><label class="setting-label">DESC. AGRESIVO</label><div style="display:flex; align-items:center"><input type="number" class="setting-input" id="setDesc"><span style="font-size:12px; font-weight:900">%</span></div></div>
             </div>
 
+            <div class="setting-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg> AJUSTES AVANZADOS</div>
+            <div class="settings-grid">
+                <div class="setting-card-item">
+                    <label class="setting-label">ITEMS EN RADAR (CANTIDAD)</label>
+                    <input type="number" class="setting-input" id="setRadarLimit" placeholder="8">
+                </div>
+                <div class="setting-card-item">
+                    <label class="setting-label">VELOCIDAD ROTACIÓN (SEG)</label>
+                    <input type="number" class="setting-input" id="setRadarSpeed" placeholder="5">
+                </div>
+                <div class="setting-card-item"><label class="setting-label">CADENA MULTIPLICADORES (INTERVALOS)</label><input type="text" class="setting-input" id="setMultipliers" placeholder="1, 1, 1.5, 2..." onblur="saveMultipliers()"></div>
+                <div class="setting-card-item"><label class="setting-label">PROXY PERSONALIZADO</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." onblur="saveProxy()"></div>
+                <div class="setting-card-item">
+                    <label class="setting-label">MONEDAS DEL TICKER</label>
+                    <div id="tickerChipsContainer" class="chip-container"></div>
+                    <div class="add-coin-row"><div class="input-wrapper" style="flex:1"><input type="text" id="newTickerCoin" placeholder="AÑADIR (ej: PEPE)" oninput="forceCaps(this)" onkeypress="handleEnter(event)" style="border:none; background:transparent; color:var(--text-primary); font-family:var(--font-num); font-weight:700;"></div><button id="addCoinBtn" class="btn-data anim-click" style="width:auto; padding:5px 15px; margin:0;" onclick="verifyAndAddCoin()">AÑADIR</button></div>
+                </div>
+            </div>
+
             <div class="setting-section-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg> SEGURIDAD & SISTEMA</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
@@ -306,7 +318,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V32.0 MASTER</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V33.0 HYBRID</div>
         </div>
     </div>
 
@@ -339,10 +351,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
-        
-        // CONFIGURACIÓN DE SEGURIDAD
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
-
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -429,7 +438,6 @@
 
         function setupSwipe() { 
             document.addEventListener('touchstart', e => { 
-                // Variables globales para swipe
                 window.touchStartX = e.changedTouches[0].screenX; 
                 window.touchStartY = e.changedTouches[0].screenY; 
             }, {passive: true}); 
@@ -449,12 +457,35 @@
             if (currentSection !== 'operate') {
                 if (diffX > threshold) { window.history.back(); }
             } else {
+                // LOGICA INTELIGENTE: SALTAR SLOTS VACÍOS
                 const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1);
-                if (diffX < -threshold) { 
-                    let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); 
-                } 
-                else if (diffX > threshold) { 
-                    let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
+                
+                if (occupiedIndices.length === 0) {
+                    // Si todos están vacíos, comportamiento normal
+                    if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } 
+                    else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); }
+                } else {
+                    // Si hay slots ocupados, navegar solo entre ellos
+                    let currentPosInOccupied = occupiedIndices.indexOf(activeIdx);
+                    
+                    // Si estoy en un slot vacío, ir al primer ocupado
+                    if (currentPosInOccupied === -1) {
+                        selectSlot(occupiedIndices[0]);
+                        return;
+                    }
+
+                    if (diffX < -threshold) { 
+                        // Siguiente
+                        let nextPos = currentPosInOccupied + 1; 
+                        if (nextPos >= occupiedIndices.length) nextPos = 0; 
+                        selectSlot(occupiedIndices[nextPos]); 
+                    } 
+                    else if (diffX > threshold) { 
+                        // Anterior
+                        let prevPos = currentPosInOccupied - 1; 
+                        if (prevPos < 0) prevPos = occupiedIndices.length - 1; 
+                        selectSlot(occupiedIndices[prevPos]); 
+                    }
                 }
             }
         }
@@ -640,7 +671,24 @@
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
         
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; calcMonthlyPerformance(); }
+        function loadSettingsValues() { 
+            const s = slots[activeIdx]; 
+            document.getElementById('setCapital').value = s.capital; 
+            document.getElementById('setInc').value = document.getElementById('incInput').value; 
+            document.getElementById('setDesc').value = document.getElementById('descInput').value; 
+            document.getElementById('setRoi').value = s.roi || 100; 
+            document.getElementById('setGlobalCapital').value = globalCapital; 
+            document.getElementById('setRadarLimit').value = radarLimit; 
+            document.getElementById('setRadarSpeed').value = radarSpeed; 
+            document.getElementById('setDD').value = appConfig.dd; 
+            document.getElementById('setNewPass').value = ''; 
+            
+            // CARGAR MULTIPLICADORES
+            const multInput = document.getElementById('setMultipliers'); 
+            if(multInput) multInput.value = customMultipliers.join(', ');
+
+            calcMonthlyPerformance(); 
+        }
         function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
         
         function applySettings() { 
@@ -667,7 +715,7 @@
             }); 
         }
 
-        function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; showToast("✅ Agregada (Reinicia para ver cambios)"); }
+        function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; renderTickerSettings(); showToast("✅ Agregada"); }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
         
