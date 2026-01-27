@@ -6,10 +6,12 @@
     <title>C5X - V31.5 NAV-FLOW</title>
     <meta name="theme-color" content="#0b0e11">
     
+    <link rel="manifest" href="manifest.json">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg">
+    <link rel="icon" type="image/png" href="icon.png">
     
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     
@@ -39,7 +41,6 @@
             background: var(--bg); color: var(--text-primary); 
             padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; user-select: none; font-size: 16px; 
-            /* Importante: permite gestos nativos del navegador */
             overscroll-behavior-y: none; 
         }
 
@@ -309,6 +310,15 @@
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
+        // CORRECCIÓN 2: Registro del Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW registrado', reg))
+                    .catch(err => console.log('SW fallo', err));
+            });
+        }
+
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
         if(isNaN(activeIdx)) activeIdx = 0;
