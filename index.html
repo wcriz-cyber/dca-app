@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V35.6 UNIFIED</title>
+    <title>C5X - V36.0 FORCE-CORE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -46,15 +46,18 @@
         /* --- ANIMACIONES --- */
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
         @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(240, 185, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(240, 185, 11, 0); } }
         @keyframes slide-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
+        @keyframes alert-flash { 0%, 100% { background: var(--surface); } 50% { background: rgba(207, 48, 74, 0.2); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
         .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.3s ease-out; }
+        .alert-active { animation: alert-flash 1s infinite; border: 1px solid var(--danger) !important; }
 
+        /* ICONOS CLEAN */
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 
         /* --- COMPONENTES UI --- */
@@ -71,7 +74,6 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
 
-        /* HEADER */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
@@ -139,8 +141,7 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* UNIFIED CARD DESIGN (USADO EN NIVELES, ETF Y BITÁCORA) */
-        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; height: 72px; /* Altura fija para uniformidad */ }
+        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; align-items: center; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; height: 72px; }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         .u-index { width: 36px; height: 36px; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--text-secondary); margin-right: 15px; font-size: 13px; flex-shrink: 0; overflow: hidden; white-space: nowrap; }
         .u-center { flex: 1; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
@@ -227,12 +228,12 @@
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
 
         #logGrid {
-            max-height: 380px; /* Altura para mostrar aprox 5 tarjetas */
+            max-height: 380px; 
             overflow-y: auto;
             overscroll-behavior: contain;
             border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
-            padding-right: 2px; /* Espacio para scrollbar si aparece */
+            padding-right: 2px;
         }
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -384,7 +385,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V35.6 UNIFIED UX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.0 FORCE-CORE</div>
         </div>
     </div>
 
@@ -417,7 +418,9 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
+        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
+
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -441,11 +444,15 @@
                 
                 window.history.replaceState({page: 'operate'}, '', '');
 
+                // FORCE NOTIFICATIONS ON INIT
+                if("Notification" in window) Notification.requestPermission();
+
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
                 updateStats('D');
 
+                // FORCE AUDIO UNLOCK
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
                 requestWakeLock();
@@ -528,9 +535,41 @@
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
+        
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } requestWakeLock(); }
-        function triggerCrashAlert(coin, pct) { const audio = document.getElementById('alertSound'); if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true); }
+        
+        // --- FORCE AUDIO & NOTIFICATION ---
+        function unlockAudioAndWake() { 
+            const audio = document.getElementById('alertSound'); 
+            if(audio) { 
+                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); 
+            }
+            if("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+            requestWakeLock(); 
+        }
+
+        function triggerCrashAlert(coin, pct) { 
+            // 1. Audio
+            const audio = document.getElementById('alertSound'); 
+            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
+            
+            // 2. Vibración
+            if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); 
+            
+            // 3. Toast
+            showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true);
+            
+            // 4. Notificación de Sistema (Force)
+            if("Notification" in window && Notification.permission === "granted") {
+                new Notification(`ALERTA DE CRASH: ${coin}`, {
+                    body: `El precio cayó un ${pct.toFixed(2)}%`,
+                    icon: 'icon.png'
+                });
+            }
+        }
+
         function showToast(txt, duration = 2500, isAlert = false) { const t = document.getElementById("toast"); t.textContent = txt; if(isAlert) { t.classList.add("alert-mode"); } else { t.classList.remove("alert-mode"); } t.classList.add("show"); setTimeout(() => { t.classList.remove("show"); }, duration); }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0); let currentEquity = globalCapital + totalRealizedProfit; let pnl = currentEquity - globalCapital; let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; const pnlEl = document.getElementById('displayCapPnl'); pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; }
@@ -587,7 +626,18 @@
         function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
         function executeRelease() { triggerHaptic(); closeModals(); try { const s = slots[activeIdx]; const totalInv = parseFloat(document.getElementById('resInv').textContent.replace('$','')) || 0; const avgPrice = parseFloat(document.getElementById('resAvg').textContent) || 0; const exitPrice = avgPrice > 0 ? avgPrice * (1 + (s.roi / 100)) : 0; const profit = (totalInv * (s.roi / 100)); const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: exitPrice, qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: profit.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0 }; if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; sortSlots(); save(); selectSlot(0); showToast("✅ Operación Cerrada"); switchView('log', false); calculateGlobalStats(); } catch(e) { showToast("❌ Error al liquidar"); } }
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } else { r.style.setProperty('--brand', '#3b82f6'); } }
-        function renderHistory() { const grid = document.getElementById('logGrid'); if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } grid.innerHTML = history.map(h => { const inv = parseFloat(h.totalInv) || 0; const prof = parseFloat(h.profit) || 0; const isWin = prof >= 0; return `<div class="unified-card"><div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div><div class="u-center"><div class="u-title">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div><div class="u-right"><div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${prof}</div><div class="u-val-secondary">ROI ${h.roi}</div></div></div>`; }).reverse().join(''); }
+        function renderHistory() { 
+            const grid = document.getElementById('logGrid'); 
+            if(!history || history.length === 0) { 
+                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; 
+            } 
+            grid.innerHTML = history.map(h => { 
+                const inv = parseFloat(h.totalInv) || 0; 
+                const prof = parseFloat(h.profit) || 0; 
+                const isWin = prof >= 0; 
+                return `<div class="unified-card"><div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div><div class="u-center"><div class="u-title">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div><div class="u-right"><div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${prof}</div><div class="u-val-secondary">ROI ${h.roi}</div></div></div>`; 
+            }).reverse().join(''); 
+        }
         function openSecurity(cb) { modalCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function validateSecurity() { const pass = document.getElementById('secInput').value; closeModals(); if(pass === appConfig.pin) { if(modalCallback) modalCallback(); } else { showToast("⛔ Clave Incorrecta"); } }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
@@ -597,7 +647,6 @@
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
-        // EDITOR GRID
         function loadSettingsValues() { 
             const s = slots[activeIdx]; 
             document.getElementById('setCapital').value = s.capital; 
