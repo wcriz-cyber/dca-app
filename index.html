@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V34.0 ELITE</title>
+    <title>C5X - V33.5 REFINED</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="icon.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -42,22 +43,21 @@
             overscroll-behavior-y: none; 
         }
 
-        /* --- MOTOR DE ANIMACIONES (ELITE) --- */
-        @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.92); } 100% { transform: scale(1); } }
+        /* --- ANIMACIONES --- */
+        @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
         @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-soft { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(0.98); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        @keyframes slide-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .anim-click { transition: transform 0.1s ease; cursor: pointer; }
-        .anim-click:active { transform: scale(0.94); }
-        .anim-spin { animation: spin-slow 10s linear infinite; }
-        .anim-pulse { animation: pulse-soft 3s ease-in-out infinite; }
-        .section-enter { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .anim-click:active { animation: click-pop 0.2s ease-in-out; }
+        .anim-spin { animation: spin-slow 8s linear infinite; }
+        .anim-pulse { animation: pulse-ring 2s infinite; }
+        .section-enter { animation: slide-in 0.3s ease-out; }
 
-        /* ESTILO SVG (FINE LINE) */
+        /* ICONOS CLEAN */
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 
-        /* --- COMPONENTES --- */
+        /* --- COMPONENTES UI --- */
         #toast { 
             visibility: hidden; width: 90%; max-width: 400px;
             background-color: var(--surface); border: 1px solid var(--border);
@@ -71,39 +71,41 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
 
+        /* HEADER AJUSTADO (V33.5) */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; height: 60px; padding: 0 16px; max-width: 800px; margin: 0 auto; }
-        .brand-btn { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 10px; }
-        .brand-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 24px; color: var(--brand); }
+        .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; /* Reducido de 60px */ padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
+        .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
+        .brand-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 24px; color: var(--brand); line-height: 1; }
         
         .ticker-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; }
-        .ticker-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 6px 14px; border-radius: 24px; }
-        .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-secondary); transition: background 0.3s; }
-        .ticker-dot.pulse { background: var(--long); box-shadow: 0 0 8px rgba(16, 203, 129, 0.4); }
+        .ticker-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 4px 12px; /* Padding reducido */ border-radius: 24px; height: 32px; }
+        .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); transition: background 0.3s; }
+        .ticker-dot.pulse { animation: pulse-ring 1.5s infinite; }
         .ticker-sym { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 13px; color: var(--text-secondary); }
         .ticker-price { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); }
         
-        .pin-btn { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
+        .pin-btn { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
         .pin-btn.pinned { color: var(--brand); background: rgba(59, 130, 246, 0.1); }
-        .theme-btn { width: 40px; height: 40px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .theme-btn { width: 36px; height: 36px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; font-size: 16px; }
 
-        .content-spacer { margin-top: 105px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
+        /* ESPACIADO REDUCIDO GLOBAL */
+        .content-spacer { margin-top: 92px; /* Reducido de 105px */ max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
         .app-section { display: none; }
-        .app-section.active { display: block; animation: slide-up 0.4s ease-out; }
+        .app-section.active { display: block; animation: slide-in 0.3s ease-out; }
 
-        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; }
-        .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 6px 0; text-align: center; font-family: sans-serif; font-size: 13px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
+        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; /* Padding reducido */ border-bottom: 1px solid var(--border); justify-content: center; }
+        .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 4px 0; text-align: center; font-family: sans-serif; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
         .tf-btn.active { color: var(--brand); background: rgba(59, 130, 246, 0.1); font-weight: 800; }
 
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; position: sticky; top: calc(102px + var(--safe-top)); z-index: 900; background: var(--bg); border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; position: sticky; top: calc(90px + var(--safe-top)); z-index: 900; background: var(--bg); border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .slot-card { background: transparent; color: var(--text-tertiary); padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700; border-radius: 8px; position: relative; transition: all 0.3s; }
-        .slot-card.active { color: var(--text-primary); background: rgba(255,255,255,0.02); font-weight: 800; border: 1px solid var(--border); }
-        .slot-card.active::after { content: ''; position: absolute; bottom: -1px; left: 20%; right: 20%; height: 2px; background: var(--brand); }
-        .slot-card.has-profit:not(.active)::before { content: '•'; position: absolute; top: 4px; right: 4px; color: var(--long); font-size: 18px; line-height: 0; }
+        .slot-card.active { color: var(--text-primary); background: rgba(255,255,255,0.02); font-weight: 800; }
+        .slot-card.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px; background: var(--brand); border-radius: 3px 3px 0 0; }
+        .slot-card.has-profit:not(.active)::before { content: '•'; position: absolute; bottom: 2px; left: 0; right: 0; color: var(--long); font-size: 14px; line-height: 0; }
 
         .chart-wrapper { height: 280px; background: var(--chart-bg); margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; position: relative; }
         .chart-wrapper.fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; margin: 0; border-radius: 0; border: none; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); background: var(--bg); }
-        .chart-fs-btn { position: absolute; bottom: 10px; right: 10px; z-index: 20; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); backdrop-filter: blur(4px); }
+        .chart-fs-btn { position: absolute; bottom: 10px; right: 10px; z-index: 20; width: 30px; height: 30px; background: rgba(128,128,128,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); backdrop-filter: blur(4px); }
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 10px; }
         .input-group { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; transition: border-color 0.3s; }
@@ -112,9 +114,9 @@
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; }
         
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
-        .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--brand), var(--long)); }
+        .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
-        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 10px; }
+        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 12px; text-align: center; margin-bottom: 10px; }
         .radar-title { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); }
         
@@ -126,6 +128,7 @@
         
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .be-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-secondary); }
+        .be-btn:active { background: var(--brand); color: #fff; }
         .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; padding: 10px; border-radius: 12px; margin: 0 8px; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
@@ -157,7 +160,7 @@
         .etf-fav-icon { margin-left: auto; margin-right: 10px; color: var(--text-border); cursor: pointer; transition: 0.2s; font-size: 18px; }
         .etf-fav-icon.is-fav { color: var(--warning); }
 
-        .setting-section-title { padding: 10px 5px; font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 10px;}
+        .setting-section-title { padding: 5px 5px; /* Reducido */ font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; /* Reducido */ }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
@@ -177,7 +180,7 @@
         .nav-item.selected { background: rgba(59, 130, 246, 0.1); border-color: var(--brand); box-shadow: 0 5px 20px rgba(59, 130, 246, 0.15); }
         .nav-icon { width: 40px; height: 40px; margin-right: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
         .nav-item.selected .nav-icon { color: var(--brand); }
-        .nav-icon svg { width: 24px; height: 24px; }
+        .nav-icon svg { width: 24px; height: 24px; fill: currentColor; }
         .nav-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
         .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
@@ -192,7 +195,10 @@
         .equity-total { border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px; color: var(--brand); font-size: 18px; }
 
         .action-btn { background: var(--surface); border: 1px solid var(--brand); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 5px; }
-        .log-header-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 16px 15px 16px; }
+        /* CENTRADO DE BOTONES BITÁCORA */
+        .log-header-bar { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 5px 16px 10px 16px; /* Padding reducido arriba */ }
+        .log-title { margin-bottom: 5px; }
+        .log-actions { display: flex; gap: 15px; width: 100%; justify-content: center; }
     </style>
 </head>
 <body onload="init()">
@@ -217,7 +223,9 @@
                 <span class="brand-text">C5X</span>
                 <svg width="20" height="20" style="color:var(--text-tertiary)"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
             </div>
+            
             <div class="ticker-container"><div class="ticker-pill anim-click" onclick="viewTickerChart(event)"><div class="ticker-dot" id="t-dot"></div><span class="ticker-sym" id="t-sym">BTC</span><span class="ticker-price" id="t-price">--.--</span></div><button class="pin-btn anim-click" id="tickerPinBtn" onclick="toggleTickerPin()"><svg width="14" height="14"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button></div>
+            
             <button class="theme-btn anim-click" onclick="toggleTheme()" id="themeBtn">🌙</button>
         </header>
         <div class="tf-bar" id="tfBarContainer">
@@ -321,7 +329,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V34.0 ELITE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V33.5 REFINED</div>
         </div>
     </div>
 
@@ -354,9 +362,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
-        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
-
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -420,10 +426,10 @@
             
             const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); 
             if(viewName === 'operate') { 
-                tfBar.style.display = 'grid'; spacer.style.marginTop = '120px'; 
+                tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; 
                 if(chartSymbol) loadChart(chartSymbol); 
             } else { 
-                tfBar.style.display = 'none'; spacer.style.marginTop = '80px'; 
+                tfBar.style.display = 'none'; spacer.style.marginTop = '60px'; 
             } 
             
             if(viewName === 'etf') loadGateETFs(); 
@@ -619,17 +625,12 @@
         }
         function smartSelectETF(symbol, price) { 
             triggerHaptic(); 
-            // FIX CRÍTICO: Bloquear duplicados
+            // ANTI-DUPLICATE
             let cleanName = symbol.replace('_USDT','').replace('USDT','');
             const dupSlot = slots.findIndex(s => s.name === cleanName);
+            if (dupSlot !== -1) { showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); return; }
             
-            if (dupSlot !== -1) {
-                showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1));
-                return;
-            }
-            
-            const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); 
-            if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
+            const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
             
             slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); 
         }
@@ -639,12 +640,8 @@
         function selectSlot(i) { triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
         function updateCoin() { 
             const el = document.getElementById('coinInput'); let val = el.value.toUpperCase().replace('USDT','').trim(); 
-            // FIX CRÍTICO: Bloquear duplicados manuales
-            if (val && slots.some((s, i) => s.name === val && i !== activeIdx)) { 
-                showToast("⛔ DUPLICADO: " + val + " YA EXISTE"); 
-                el.value = slots[activeIdx].name; // Revertir
-                return; 
-            }
+            // ANTI DUPLICATE ON MANUAL EDIT
+            if(val && slots.some((s, i) => s.name === val && i !== activeIdx)) { showToast("⛔ DUPLICADO"); el.value = slots[activeIdx].name; return; }
             el.value = val; slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); 
         }
         function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("⚠️ Slot Bloqueado"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
