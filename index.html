@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V41.0 FORCE SAVE</title>
+    <title>C5X - V41.5 INDIVIDUAL SEC</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -139,7 +139,6 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* UNIFIED CARD (GRID SYSTEM) */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
@@ -195,7 +194,11 @@
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
         .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
-        .btn-save-config { width: 100%; background: var(--brand); color: #fff; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-family: 'Orbitron', sans-serif; margin-top: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* BOTÓN DE GUARDADO INDIVIDUAL */
+        .input-row-save { display: flex; align-items: center; gap: 10px; width: 100%; }
+        .btn-save-mini { background: var(--brand); color: #fff; border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        
         .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-data { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron', sans-serif; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
@@ -277,7 +280,7 @@
             <div class="nav-item selected anim-click" id="nav-operate" onclick="switchView('operate')"><div class="nav-icon"><svg width="24" height="24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="nav-text">OPERAR</div></div>
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
-            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -355,7 +358,10 @@
             <div class="settings-grid">
                 <div class="setting-card-item">
                     <label class="setting-label">CAPITAL TOTAL BASE ($)</label>
-                    <input type="number" class="setting-input" id="setGlobalCapital" placeholder="0.00" onblur="saveGlobalCapital()">
+                    <div class="input-row-save">
+                        <input type="number" class="setting-input" id="setGlobalCapital" placeholder="0.00">
+                        <button class="btn-save-mini anim-click" onclick="saveGlobalCapSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
                 </div>
                 <div class="setting-card-item">
                     <label class="setting-label">GANANCIA MES ACTUAL</label>
@@ -363,31 +369,51 @@
                 </div>
             </div>
 
-            <div class="setting-section-title"><svg width="14" height="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ESTRATEGIA (SLOT ACTUAL)</div>
+            <div class="setting-section-title"><svg width="14" height="14"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ESTRATEGIA Y GESTIÓN</div>
             <div class="settings-grid">
-                <div class="setting-card-item"><label class="setting-label">CAPITAL DEL SLOT ($)</label><input type="number" class="setting-input" id="setCapital"></div>
-                <div class="setting-card-item"><label class="setting-label">META DE GANANCIA (ROI)</label><div style="display:flex; align-items:center"><input type="number" class="setting-input" id="setRoi" placeholder="100"><span style="font-size:12px; font-weight:900">%</span></div></div>
-                <div class="setting-card-item"><label class="setting-label">DRAWDOWN MAX (DD)</label><div style="display:flex; align-items:center"><input type="number" class="setting-input" id="setDD" placeholder="10"><span style="font-size:12px; font-weight:900">%</span></div></div>
-                
-                <div class="setting-card-item"><label class="setting-label">INC. BASE (NORMAL)</label><div style="display:flex; align-items:center"><input type="number" class="setting-input" id="setInc"><span style="font-size:12px; font-weight:900">%</span></div></div>
-                <div class="setting-card-item"><label class="setting-label">DESC. AGRESIVO</label><div style="display:flex; align-items:center"><input type="number" class="setting-input" id="setDesc"><span style="font-size:12px; font-weight:900">%</span></div></div>
+                <div class="setting-card-item">
+                    <div class="input-row-save" style="margin-bottom:10px; justify-content:space-between;">
+                        <span class="setting-label">CONFIGURACIÓN SLOT ACTUAL</span>
+                        <button class="btn-save-mini anim-click" onclick="saveSlotParamsSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div><label class="setting-label">CAPITAL ($)</label><input type="number" class="setting-input" id="setCapital"></div>
+                        <div><label class="setting-label">ROI (%)</label><input type="number" class="setting-input" id="setRoi" placeholder="100"></div>
+                        <div><label class="setting-label">INC. BASE (%)</label><input type="number" class="setting-input" id="setInc"></div>
+                        <div><label class="setting-label">AGRESIVO (%)</label><input type="number" class="setting-input" id="setDesc"></div>
+                        <div><label class="setting-label">DD MAX (%)</label><input type="number" class="setting-input" id="setDD" placeholder="10"></div>
+                    </div>
+                </div>
             </div>
 
             <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <label class="setting-label">ITEMS EN RADAR (CANTIDAD)</label>
-                    <input type="number" class="setting-input" id="setRadarLimit" placeholder="8">
+                     <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
+                        <span class="setting-label">RADAR ETF</span>
+                        <button class="btn-save-mini anim-click" onclick="saveRadarSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <div><label class="setting-label">CANTIDAD</label><input type="number" class="setting-input" id="setRadarLimit" placeholder="8"></div>
+                        <div><label class="setting-label">VELOCIDAD (S)</label><input type="number" class="setting-input" id="setRadarSpeed" placeholder="5"></div>
+                    </div>
                 </div>
+                
                 <div class="setting-card-item">
-                    <label class="setting-label">VELOCIDAD ROTACIÓN (SEG)</label>
-                    <input type="number" class="setting-input" id="setRadarSpeed" placeholder="5">
-                </div>
-                <div class="setting-card-item">
-                    <label class="setting-label">CADENA MULTIPLICADORES (INTERVALOS)</label>
+                    <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
+                        <span class="setting-label">MULTIPLICADORES</span>
+                        <button class="btn-save-mini anim-click" onclick="saveMultiSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
                     <div id="multiGrid" class="multi-grid"></div>
                 </div>
-                <div class="setting-card-item"><label class="setting-label">PROXY PERSONALIZADO</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." onblur="saveProxy()"></div>
+
+                <div class="setting-card-item">
+                     <div class="input-row-save">
+                        <div style="flex:1"><label class="setting-label">PROXY</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." ></div>
+                        <button class="btn-save-mini anim-click" onclick="saveProxySecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                     </div>
+                </div>
+
                 <div class="setting-card-item">
                     <label class="setting-label">MONEDAS DEL TICKER</label>
                     <div id="tickerChipsContainer" class="chip-container"></div>
@@ -398,10 +424,11 @@
             <div class="setting-section-title"><svg width="14" height="14"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> SEGURIDAD</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <label class="setting-label">CAMBIAR CONTRASEÑA (ACTUAL: ****)</label>
-                    <input type="password" class="setting-input" id="setNewPass" placeholder="Nueva Clave" maxlength="4" style="letter-spacing:4px;">
+                     <div class="input-row-save">
+                        <div style="flex:1"><label class="setting-label">NUEVA CLAVE</label><input type="password" class="setting-input" id="setNewPass" placeholder="****" maxlength="4" style="letter-spacing:4px;"></div>
+                        <button class="btn-save-mini anim-click" onclick="savePassSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                     </div>
                 </div>
-                <button class="btn-save-config anim-click" onclick="applySettings()"><svg width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> GUARDAR CAMBIOS</button>
             </div>
 
             <div class="setting-section-title"><svg width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> GESTIÓN DE DATOS</div>
@@ -413,7 +440,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V41.0 FORCE SAVE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V41.5 INDIVIDUAL SEC</div>
         </div>
     </div>
 
@@ -425,9 +452,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW registrado', reg))
-                    .catch(err => console.log('SW fallo', err));
+                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW', reg)).catch(err => console.log('SW Fail', err));
             });
         }
 
@@ -446,9 +471,7 @@
         let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
-        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
-
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -464,23 +487,22 @@
 
         function init() { 
             try {
-                // PRIORIDAD MÁXIMA: Cargar ajustes de estrategia ANTES de renderizar nada
+                // CARGAR ESTRATEGIA PERSISTENTE AL INICIO
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
                 if(savedParams) {
                     document.getElementById('incInput').value = savedParams.inc;
                     document.getElementById('descInput').value = savedParams.desc;
+                    document.getElementById('setInc').value = savedParams.inc;
+                    document.getElementById('setDesc').value = savedParams.desc;
                 }
 
                 if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
-                
-                // ... (Resto de inicialización de variables)
                 slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; if(typeof s.note === 'undefined') s.note = ''; if(typeof s.alerted === 'undefined') s.alerted = false; });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
                 const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
-
                 if("Notification" in window) Notification.requestPermission();
 
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
@@ -491,11 +513,122 @@
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
                 requestWakeLock();
-
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- SISTEMA DE GRÁFICO PNL ---
+        // --- SISTEMA DE GUARDADO INDIVIDUAL SEGURO ---
+        function reqSec(cb) {
+            secCallback = cb;
+            const m = document.getElementById('secModal');
+            document.getElementById('secPinInput').value = '';
+            m.style.display = 'flex';
+        }
+
+        function verifySec() {
+            const inp = document.getElementById('secPinInput').value;
+            if(inp === appConfig.pin) {
+                closeModals();
+                if(secCallback) secCallback();
+            } else {
+                showToast("⛔ PIN INCORRECTO");
+            }
+        }
+
+        function saveGlobalCapSecure() {
+            reqSec(() => {
+                const val = parseFloat(document.getElementById('setGlobalCapital').value);
+                if(!isNaN(val)) {
+                    globalCapital = val;
+                    localStorage.setItem('c5x_global_capital', globalCapital);
+                    calculateGlobalStats();
+                    showToast("✅ Capital Global Guardado");
+                }
+            });
+        }
+
+        function saveSlotParamsSecure() {
+            reqSec(() => {
+                const newCap = parseFloat(document.getElementById('setCapital').value);
+                const newRoi = parseFloat(document.getElementById('setRoi').value);
+                const newDD = parseFloat(document.getElementById('setDD').value);
+                const newInc = parseFloat(document.getElementById('setInc').value);
+                const newDesc = parseFloat(document.getElementById('setDesc').value);
+
+                if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
+
+                slots[activeIdx].capital = newCap;
+                slots[activeIdx].roi = newRoi;
+                if(!isNaN(newDD)) appConfig.dd = newDD;
+                localStorage.setItem('c5x_config', JSON.stringify(appConfig));
+                save(); // Guarda slots
+
+                // Guardar Estrategia Persistente
+                if(!isNaN(newInc) && !isNaN(newDesc)) {
+                    localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc }));
+                    document.getElementById('incInput').value = newInc;
+                    document.getElementById('descInput').value = newDesc;
+                }
+
+                calculate();
+                updateDashUI();
+                showToast("✅ Configuración Slot Guardada");
+            });
+        }
+
+        function saveRadarSecure() {
+            reqSec(() => {
+                const lim = parseInt(document.getElementById('setRadarLimit').value);
+                const spd = parseInt(document.getElementById('setRadarSpeed').value);
+                if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); }
+                if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); }
+                showToast("✅ Radar Actualizado");
+            });
+        }
+
+        function saveMultiSecure() {
+            reqSec(() => {
+                const inputs = document.querySelectorAll('.multi-inp');
+                let newMultipliers = [];
+                inputs.forEach(inp => {
+                    let val = parseFloat(inp.value);
+                    if(!isNaN(val)) newMultipliers.push(val);
+                });
+                if(newMultipliers.length >= 5) {
+                    customMultipliers = newMultipliers;
+                    localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
+                    calculate();
+                    showToast("✅ Multiplicadores Guardados");
+                } else {
+                    showToast("⚠️ Mínimo 5 Niveles");
+                }
+            });
+        }
+
+        function saveProxySecure() {
+            reqSec(() => {
+                const val = document.getElementById('setProxy').value.trim();
+                customProxy = val;
+                localStorage.setItem('c5x_custom_proxy', customProxy);
+                proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url='];
+                if(customProxy) proxies.unshift(customProxy);
+                showToast("✅ Proxy Guardado");
+            });
+        }
+
+        function savePassSecure() {
+            reqSec(() => { // Pide clave antigua primero
+                const newPass = document.getElementById('setNewPass').value;
+                if(newPass && newPass.length === 4) {
+                    appConfig.pin = newPass;
+                    localStorage.setItem('c5x_config', JSON.stringify(appConfig));
+                    showToast("✅ Contraseña Cambiada");
+                } else {
+                    showToast("⚠️ Clave debe ser 4 dígitos");
+                }
+            });
+        }
+
+        // --- RESTO DE FUNCIONES ---
         function updateStats(tf) {
             triggerHaptic();
             document.querySelectorAll('.stat-btn').forEach(b => b.classList.remove('active'));
@@ -562,7 +695,6 @@
             document.getElementById('chartWr').textContent = total > 0 ? Math.round((wins/total)*100) + '%' : '0%';
         }
 
-        // --- FUNCIONES CORE ---
         function openMenuViaButton() { document.getElementById('navModal').style.display = 'flex'; window.history.pushState({modal: 'menu'}, '', '#menu'); }
         function closeMenuViaButton() { window.history.back(); }
         function switchView(viewName) { triggerHaptic(); document.getElementById('navModal').style.display = 'none'; if (viewName !== 'operate') { window.history.pushState({page: viewName}, '', `#${viewName}`); } updateViewVisuals(viewName); }
@@ -570,38 +702,14 @@
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
-        
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-        
-        // --- FORCE AUDIO & NOTIFICATION ---
-        function unlockAudioAndWake() { 
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { 
-                audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); 
-            }
-            if("Notification" in window && Notification.permission !== "granted") {
-                Notification.requestPermission();
-            }
-            requestWakeLock(); 
-            // CHECK AUTO BACKUP ON INTERACTION
-            checkAutoBackup();
-        }
-
-        function triggerCrashAlert(coin, pct) { 
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
-            if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); 
-            showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true);
-            if("Notification" in window && Notification.permission === "granted") {
-                new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' });
-            }
-        }
-
+        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
+        function triggerCrashAlert(coin, pct) { const audio = document.getElementById('alertSound'); if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true); if("Notification" in window && Notification.permission === "granted") { new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' }); } }
         function showToast(txt, duration = 2500, isAlert = false) { const t = document.getElementById("toast"); t.textContent = txt; if(isAlert) { t.classList.add("alert-mode"); } else { t.classList.remove("alert-mode"); } t.classList.add("show"); setTimeout(() => { t.classList.remove("show"); }, duration); }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { let totalRealizedProfit = history.reduce((sum, item) => sum + (parseFloat(item.profit) || 0), 0); let currentEquity = globalCapital + totalRealizedProfit; let pnl = currentEquity - globalCapital; let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; document.getElementById('displayCapTotal').textContent = `$${currentEquity.toFixed(2)}`; const pnlEl = document.getElementById('displayCapPnl'); pnlEl.textContent = `${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (${pnlPct.toFixed(2)}%)`; pnlEl.style.color = pnl >= 0 ? 'var(--long)' : 'var(--short)'; }
         function cleanSlotOnly() { triggerHaptic(); if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) { slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: false, roi: 100, note: '', alerted: false }; sortSlots(); selectSlot(0); showToast("🗑️ Slot Limpiado"); } }
-        function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
+        function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = false; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptyIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         async function fetchAndCalcTopDroppers() { try { const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")); if(!res.ok) throw new Error("Network"); data = await res.json(); allGateETFs = data.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }); topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); topDroppers.forEach(t => { const pct = parseFloat(t.change_percentage); const pair = t.currency_pair.replace('_USDT', ''); if(pct <= -50.0) { let currentLevel = 0; if (pct <= -90) currentLevel = -90; else if (pct <= -80) currentLevel = -80; else if (pct <= -70) currentLevel = -70; else if (pct <= -60) currentLevel = -60; else if (pct <= -50) currentLevel = -50; let lastLevel = crashAlertedCoins[pair] || 0; if (lastLevel === 0 || currentLevel < lastLevel) { triggerCrashAlert(pair, pct); crashAlertedCoins[pair] = currentLevel; localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); } } }); startRadarRotation(); } catch(e) { console.log("Error loading radar"); } }
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
