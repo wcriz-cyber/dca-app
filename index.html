@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V35.0 FINAL COMPLETE</title>
+    <title>C5X - V35.5 UX MASTER</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -55,7 +55,6 @@
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.3s ease-out; }
 
-        /* ICONOS CLEAN */
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 
         /* --- COMPONENTES UI --- */
@@ -72,7 +71,6 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
 
-        /* HEADER COMPACTO V33.5 */
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
@@ -128,7 +126,6 @@
         
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .be-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; color: var(--text-secondary); }
-        .be-btn:active { background: var(--brand); color: #fff; }
         .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; padding: 10px; border-radius: 12px; margin: 0 8px; border: 1px solid transparent; }
         .strat-display.aggressive { color: var(--warning); background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         .icon-sq-btn { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
@@ -173,6 +170,12 @@
         .chip { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
         .chip-del { cursor: pointer; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
 
+        /* GRID EDITOR PARA MULTIPLICADORES (FACILITAR EDICIÓN) */
+        .multi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 5px; }
+        .multi-item { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 5px; text-align: center; }
+        .multi-lbl { font-size: 9px; color: var(--text-tertiary); display: block; font-weight: 700; }
+        .multi-inp { width: 100%; background: transparent; border: none; color: var(--brand); font-family: 'JetBrains Mono'; font-weight: 800; font-size: 14px; text-align: center; }
+
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; padding-top: var(--safe-top); }
         .nav-content { background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; padding: 35px 25px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 15px; }
         .nav-title { font-family: 'Orbitron', sans-serif; font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
@@ -196,12 +199,11 @@
 
         .action-btn { background: var(--surface); border: 1px solid var(--brand); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 5px; }
         
-        /* BITÁCORA HEADER Y CHART PNL */
+        /* BITÁCORA - LISTA DESLIZABLE + CHART */
         .log-header-bar { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 5px 16px 10px 16px; }
         .log-title { margin-bottom: 5px; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; color:var(--brand); }
         .log-actions { display: flex; gap: 15px; width: 100%; justify-content: center; }
 
-        /* ESTILOS CHART PNL (V34.5) */
         .stats-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin: 0 10px 15px; padding: 15px; }
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .stats-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 1px; }
@@ -214,12 +216,19 @@
         .chart-bar:hover { opacity: 0.8; }
         .chart-bar.win { background: linear-gradient(to top, rgba(16,203,129,0.3), var(--long)); }
         .chart-bar.loss { background: linear-gradient(to top, rgba(246,70,93,0.3), var(--short)); }
-        .chart-bar::after { content: attr(data-val); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: 'JetBrains Mono'; color: var(--text-primary); opacity: 0; transition: 0.2s; pointer-events: none; white-space: nowrap; }
-        .chart-bar:hover::after { opacity: 1; top: -20px; }
-
+        
         .stats-summary { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .sum-label { color: var(--text-tertiary); font-weight: 700; margin-right: 5px; }
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
+
+        /* SCROLL LIMITADO PARA BITÁCORA */
+        #logGrid {
+            max-height: 400px; /* Muestra aprox 5 tarjetas */
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body onload="init()">
@@ -338,7 +347,10 @@
                     <label class="setting-label">VELOCIDAD ROTACIÓN (SEG)</label>
                     <input type="number" class="setting-input" id="setRadarSpeed" placeholder="5">
                 </div>
-                <div class="setting-card-item"><label class="setting-label">CADENA MULTIPLICADORES</label><input type="text" class="setting-input" id="setMultipliers" placeholder="1, 1, 1.5, 2..." onblur="saveMultipliers()"></div>
+                <div class="setting-card-item">
+                    <label class="setting-label">CADENA MULTIPLICADORES (INTERVALOS)</label>
+                    <div id="multiGrid" class="multi-grid"></div>
+                </div>
                 <div class="setting-card-item"><label class="setting-label">PROXY PERSONALIZADO</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." onblur="saveProxy()"></div>
                 <div class="setting-card-item">
                     <label class="setting-label">MONEDAS DEL TICKER</label>
@@ -365,21 +377,18 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V35.0 FINAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V35.5 UX MASTER</div>
         </div>
     </div>
 
     <div id="confirmModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:15px; color:var(--danger)">¿LIQUIDAR POSICIÓN?</div><p style="font-size:12px; color:var(--text-secondary); margin-bottom:20px;">Esta acción cerrará el slot actual y guardará el registro.</p><button class="btn-modal btn-confirm anim-click" style="background:var(--danger)" onclick="executeRelease()">SÍ, LIQUIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
-    <div id="portfolioModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:14px; margin-bottom:20px; color:var(--brand)">PATRIMONIO GLOBAL</div><div class="equity-row"><span class="equity-label">CAPITAL TOTAL</span><span class="equity-val" id="eqTotal">$0.00</span></div><div class="equity-row"><span class="equity-label">INVERTIDO</span><span class="equity-val" id="eqInvested" style="color:var(--long)">$0.00</span></div><div class="equity-row"><span class="equity-label">DISPONIBLE</span><span class="equity-val" id="eqFree">$0.00</span></div><div class="equity-row equity-total"><span class="equity-label" style="color:var(--text-primary)">EN JUEGO</span><span class="equity-val" id="eqPercent">0%</span></div><button class="btn-modal btn-cancel anim-click" style="margin-top:20px" onclick="closeModals()">CERRAR</button></div></div>
     <div id="securityModal" class="generic-modal"><div class="modal-box section-enter"><div style="font-family:'Orbitron'; font-size:12px;">SEGURIDAD</div><input type="password" id="secInput" class="modal-inp" placeholder="••••" maxlength="4" inputmode="numeric" pattern="[0-9]*"><button class="btn-modal btn-confirm anim-click" onclick="validateSecurity()">VALIDAR</button><button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button></div></div>
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW registrado', reg))
-                    .catch(err => console.log('SW fallo', err));
+                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW', reg)).catch(err => console.log('SW Fail', err));
             });
         }
 
@@ -425,8 +434,6 @@
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
-                
-                // INICIALIZAR GRÁFICO SI HAY DATOS
                 updateStats('D');
 
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
@@ -436,12 +443,10 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- SISTEMA DE GRÁFICO PNL (PRO ANALYTICS) ---
+        // --- SISTEMA DE GRÁFICO PNL ---
         function updateStats(tf) {
             triggerHaptic();
-            // Actualizar botones
             document.querySelectorAll('.stat-btn').forEach(b => b.classList.remove('active'));
-            // Encontrar el botón clickeado o el default
             const btns = document.querySelectorAll('.stat-btn');
             if(tf === 'D') btns[0].classList.add('active');
             else if(tf === 'W') btns[1].classList.add('active');
@@ -455,14 +460,12 @@
             let totalNet = 0;
             let wins = 0, total = 0;
 
-            // Filtrar y Agrupar Datos
             const filtered = history.filter(h => {
                 if(!h.date) return false;
                 const parts = h.date.split('/');
                 const hDate = new Date(parts[2], parts[1]-1, parts[0]);
                 const diffTime = Math.abs(now - hDate);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                
                 if(tf === 'D' && diffDays <= 7) return true;
                 if(tf === 'W' && diffDays <= 60) return true;
                 if(tf === 'M' && diffDays <= 365) return true;
@@ -475,7 +478,7 @@
                 let key = h.date;
                 if(tf === 'M' || tf === 'A') {
                     const parts = h.date.split('/');
-                    key = parts[1] + '/' + parts[2].substring(2); // MM/YY
+                    key = parts[1] + '/' + parts[2].substring(2);
                 }
                 if(!groups[key]) groups[key] = 0;
                 const p = parseFloat(h.profit) || 0;
@@ -536,7 +539,18 @@
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(10); }
         function forceCaps(el) { const start = el.selectionStart; const end = el.selectionEnd; el.value = el.value.toUpperCase(); el.setSelectionRange(start, end); }
         function handleEnter(e) { if(e.key === 'Enter') verifyAndAddCoin(); }
-        function saveMultipliers() { const raw = document.getElementById('setMultipliers').value; try { const arr = raw.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n)); if(arr.length < 5) return showToast("⚠️ Mínimo 5 niveles"); customMultipliers = arr; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); showToast("✅ Multiplicadores Guardados"); calculate(); } catch(e) { showToast("❌ Error de formato"); } }
+        function saveMultipliers() { 
+            const inputs = document.querySelectorAll('.multi-inp');
+            let newMultipliers = [];
+            inputs.forEach(inp => {
+                let val = parseFloat(inp.value);
+                if(!isNaN(val)) newMultipliers.push(val);
+            });
+            if(newMultipliers.length < 5) return showToast("⚠️ Mínimo 5 niveles");
+            customMultipliers = newMultipliers;
+            localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
+            calculate();
+        }
         function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
         function startTickerSystem() { updateTicker(); setInterval(() => { if(!isTickerPinned) { assetIdx = (assetIdx + 1) % tickerAssets.length; localStorage.setItem('c5x_ticker_index', assetIdx); updateTicker(); } }, 7000); }
         async function updateTicker() { let sym = tickerAssets[assetIdx]; let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; let displaySym = sym.replace("USDT",""); document.getElementById('t-sym').textContent = displaySym; if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } try { const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; currentWs = new WebSocket(wsUrl); currentWs.onmessage = (event) => { const data = JSON.parse(event.data); const price = parseFloat(data.p); updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); document.getElementById('t-dot').classList.add('pulse'); }; currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; } catch(e) { fetchTickerRest(apiSym, displaySym); } }
@@ -572,9 +586,69 @@
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); calculateGlobalStats(); showToast("🗑️ Historial Borrado"); }); }
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
-        function loadSettingsValues() { const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', '); calcMonthlyPerformance(); }
+        
+        // EDITOR DE MULTIPLICADORES TIPO GRID
+        function loadSettingsValues() { 
+            const s = slots[activeIdx]; 
+            document.getElementById('setCapital').value = s.capital; 
+            document.getElementById('setInc').value = document.getElementById('incInput').value; 
+            document.getElementById('setDesc').value = document.getElementById('descInput').value; 
+            document.getElementById('setRoi').value = s.roi || 100; 
+            document.getElementById('setGlobalCapital').value = globalCapital; 
+            document.getElementById('setRadarLimit').value = radarLimit; 
+            document.getElementById('setRadarSpeed').value = radarSpeed; 
+            document.getElementById('setDD').value = appConfig.dd; 
+            document.getElementById('setNewPass').value = ''; 
+            
+            // GENERAR GRID DE MULTIPLICADORES
+            const grid = document.getElementById('multiGrid');
+            grid.innerHTML = customMultipliers.map((val, i) => `
+                <div class="multi-item">
+                    <span class="multi-lbl">N${i+1}</span>
+                    <input type="number" class="multi-inp" value="${val}" step="0.1">
+                </div>
+            `).join('');
+
+            calcMonthlyPerformance(); 
+        }
         function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += parseFloat(h.profit) || 0; } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
-        function applySettings() { triggerHaptic(); openSecurity(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newGlob = parseFloat(document.getElementById('setGlobalCapital').value); const newDD = parseFloat(document.getElementById('setDD').value); const newPass = document.getElementById('setNewPass').value; if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } if(!isNaN(newDD)) { appConfig.dd = newDD; } if(newPass && newPass.length === 4) { appConfig.pin = newPass; } localStorage.setItem('c5x_config', JSON.stringify(appConfig)); document.getElementById('incInput').value = document.getElementById('setInc').value; document.getElementById('descInput').value = document.getElementById('setDesc').value; save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); }); }
+        
+        function applySettings() { 
+            triggerHaptic(); 
+            openSecurity(() => { 
+                const newCap = parseFloat(document.getElementById('setCapital').value);
+                const newRoi = parseFloat(document.getElementById('setRoi').value);
+                const newGlob = parseFloat(document.getElementById('setGlobalCapital').value);
+                const newDD = parseFloat(document.getElementById('setDD').value);
+                const newPass = document.getElementById('setNewPass').value;
+
+                // GUARDAR MULTIPLICADORES DEL GRID
+                const inputs = document.querySelectorAll('.multi-inp');
+                let newMultipliers = [];
+                inputs.forEach(inp => {
+                    let val = parseFloat(inp.value);
+                    if(!isNaN(val)) newMultipliers.push(val);
+                });
+                if(newMultipliers.length >= 5) {
+                    customMultipliers = newMultipliers;
+                    localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
+                }
+
+                if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); 
+                
+                slots[activeIdx].capital = newCap; 
+                slots[activeIdx].roi = newRoi; 
+                if(!isNaN(newGlob)) { globalCapital = newGlob; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); }
+                if(!isNaN(newDD)) { appConfig.dd = newDD; }
+                if(newPass && newPass.length === 4) { appConfig.pin = newPass; }
+                localStorage.setItem('c5x_config', JSON.stringify(appConfig));
+
+                document.getElementById('incInput').value = document.getElementById('setInc').value; 
+                document.getElementById('descInput').value = document.getElementById('setDesc').value; 
+                save(); calculate(); updateDashUI(); showToast("✅ Configuración Guardada"); 
+            }); 
+        }
+
         function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; renderTickerSettings(); showToast("✅ Agregada"); }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
