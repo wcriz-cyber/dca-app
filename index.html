@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V37.5 CLEAN LOG</title>
+    <title>C5X - V38.5 ETF FINAL</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -139,7 +139,7 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* UNIFIED CARD (GRID SYSTEM) - EXACT MATCH */
+        /* UNIFIED CARD FIXED */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
@@ -186,8 +186,17 @@
         .etf-change-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
         .etf-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
         .etf-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
-        .etf-fav-icon { margin-left: auto; margin-right: 10px; color: var(--text-border); cursor: pointer; transition: 0.2s; font-size: 18px; }
-        .etf-fav-icon.is-fav { color: var(--warning); }
+        
+        .etf-fav-icon { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 8px; color: var(--text-secondary); cursor: pointer; transition: 0.2s; }
+        .etf-fav-icon.is-fav { color: var(--warning); background: rgba(240, 185, 11, 0.1); }
+        
+        /* ETF CARD RESTRUCTURED */
+        .etf-card-right {
+             display: flex;
+             align-items: center;
+             gap: 12px;
+             text-align: right;
+        }
 
         .setting-section-title { padding: 5px 5px; font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
@@ -254,7 +263,7 @@
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
 
         #logGrid {
-            max-height: 395px; /* Altura calculada para exactamente 5 tarjetas (72*5 + 8*4 aprox) */
+            max-height: 395px; /* Altura para mostrar 5 tarjetas */
             overflow-y: auto;
             overscroll-behavior: contain;
             border-bottom: 1px solid var(--border);
@@ -629,7 +638,7 @@
         function toggleFullscreenChart(e) { if(e) e.stopPropagation(); const wrapper = document.getElementById('tv_chart'); wrapper.classList.toggle('fullscreen'); setTimeout(() => loadChart(chartSymbol), 100); }
         async function loadGateETFs() { const grid = document.getElementById('etfGrid'); if(allGateETFs.length > 0) { filterETFs(""); return; } try { await fetchAndCalcTopDroppers(); filterETFs(""); } catch(e) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>'; } }
         function toggleEtfFavorite(symbol, e) { e.stopPropagation(); if(etfFavorites.includes(symbol)) etfFavorites = etfFavorites.filter(s => s !== symbol); else etfFavorites.push(symbol); localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); filterETFs(document.querySelector('.etf-search-input').value); }
-        function filterETFs(query) { const grid = document.getElementById('etfGrid'); const term = query.toUpperCase().trim(); let sorted = [...allGateETFs].sort((a, b) => { const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); }); let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 50); if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } const fragment = document.createDocumentFragment(); filtered.forEach((t, index) => { const price = parseFloat(t.last); const change = parseFloat(t.change_percentage); const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); const pairName = t.currency_pair.replace('_', ''); const isFav = etfFavorites.includes(pairName); const div = document.createElement('div'); div.className = 'unified-card'; div.onclick = () => smartSelectETF(pairName, price); div.innerHTML = `<div class="u-index">${index+1}</div><div class="u-center"><div class="u-title">${pairName}</div><div class="u-sub" style="color:var(--warning);font-size:15px;font-weight:800;font-family:var(--font-num)">$${displayPrice}</div></div><div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)">★</div><div class="u-right"><div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div></div>`; fragment.appendChild(div); }); grid.innerHTML = ''; grid.appendChild(fragment); }
+        function filterETFs(query) { const grid = document.getElementById('etfGrid'); const term = query.toUpperCase().trim(); let sorted = [...allGateETFs].sort((a, b) => { const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); }); let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 50); if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } const fragment = document.createDocumentFragment(); filtered.forEach((t, index) => { const price = parseFloat(t.last); const change = parseFloat(t.change_percentage); const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); const pairName = t.currency_pair.replace('_', ''); const isFav = etfFavorites.includes(pairName); const div = document.createElement('div'); div.className = 'unified-card'; div.onclick = () => smartSelectETF(pairName, price); div.innerHTML = `<div class="u-index">${index+1}</div><div class="u-center"><div class="u-title">${pairName}</div><div class="u-sub" style="color:var(--warning);font-size:15px;font-weight:800;font-family:var(--font-num)">$${displayPrice}</div></div><div class="etf-card-right"><div style="text-align:right"><div style="font-family:var(--font-num);font-weight:800;font-size:15px;color:var(--text-primary)">$${displayPrice}</div><div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div></div><div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)"><svg width="22" height="22" stroke="currentColor" fill="${isFav?'currentColor':'none'}" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>`; fragment.appendChild(div); }); grid.innerHTML = ''; grid.appendChild(fragment); }
         function smartSelectETF(symbol, price) { triggerHaptic(); let cleanName = symbol.replace('_USDT','').replace('USDT',''); const dupSlot = slots.findIndex(s => s.name === cleanName); if (dupSlot !== -1) { showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); return; } const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = false; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
@@ -650,7 +659,6 @@
             if(!history || history.length === 0) { 
                 grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; 
             } 
-            // RE-RENDER WITH IDENTICAL UNIFIED-CARD STRUCTURE (FLEXIBLE HEIGHT FIXED)
             grid.innerHTML = history.map(h => { 
                 const inv = parseFloat(h.totalInv) || 0; 
                 const prof = parseFloat(h.profit) || 0; 
@@ -677,14 +685,13 @@
             a.download = `C5X_Backup_${date}.json`; 
             document.body.appendChild(a); 
             a.click();
-            // Guardar fecha ultimo respaldo
             localStorage.setItem('c5x_last_backup', Date.now());
             showToast("☁️ Archivo generado para Drive");
         }
         function checkAutoBackup() {
             const last = localStorage.getItem('c5x_last_backup');
             const now = Date.now();
-            if(!last || (now - last > 2592000000)) { // 30 dias
+            if(!last || (now - last > 2592000000)) { 
                 if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) {
                     triggerDriveBackup();
                 }
