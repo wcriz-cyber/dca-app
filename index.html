@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V37.0 DRIVE</title>
+    <title>C5X - V37.5 CLEAN LOG</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -25,7 +25,7 @@
             --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
             --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d;
             --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px;
-            --drive: #34A853; /* Color Google Drive */
+            --drive: #34A853; 
             --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
         }
@@ -58,7 +58,7 @@
 
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
 
-        /* --- UI COMPONENTS --- */
+        /* --- COMPONENTES UI --- */
         #toast { 
             visibility: hidden; width: 90%; max-width: 400px;
             background-color: var(--surface); border: 1px solid var(--border);
@@ -139,7 +139,7 @@
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         
-        /* UNIFIED CARD FIXED */
+        /* UNIFIED CARD (GRID SYSTEM) - EXACT MATCH */
         .unified-card { 
             background: var(--card-bg); 
             border: 1px solid var(--border); 
@@ -156,7 +156,6 @@
             min-height: 72px; height: 72px;
         }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
-        .unified-card.drive-card { border-color: var(--drive); background: rgba(52, 168, 83, 0.05); }
         
         .u-index { 
             width: 50px; height: 50px; 
@@ -170,8 +169,6 @@
             white-space: nowrap; overflow: hidden;
             text-overflow: ellipsis;
         }
-        .drive-card .u-index { color: var(--drive); border-color: rgba(52, 168, 83, 0.3); }
-
         .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .u-title { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
         .u-sub { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; }
@@ -257,7 +254,7 @@
         .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
 
         #logGrid {
-            max-height: 315px; /* Altura exacta para 4 tarjetas */
+            max-height: 395px; /* Altura calculada para exactamente 5 tarjetas (72*5 + 8*4 aprox) */
             overflow-y: auto;
             overscroll-behavior: contain;
             border-bottom: 1px solid var(--border);
@@ -327,6 +324,7 @@
                 <div class="log-title">BITÁCORA</div>
                 <div class="log-actions">
                     <button class="action-btn anim-click" onclick="exportPDF()"><svg width="14" height="14"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> REPORTE</button>
+                    <button class="action-btn anim-click" onclick="triggerDriveBackup()"><svg width="14" height="14"><path d="M19 18a3.5 3.5 0 0 0 0-7h-1A5 4.5 0 0 0 8 9a4.5 4.5 0 0 0-4.5 4.5c0 .4.04.79.12 1.16"/></svg> RESPALDO</button>
                     <button class="action-btn anim-click" style="color:var(--danger); border-color:var(--danger)" onclick="clearLogs()"><svg width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> BORRAR</button>
                 </div>
             </div>
@@ -414,7 +412,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V36.5 LOG FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V37.5 CLEAN LOG</div>
         </div>
     </div>
 
@@ -668,20 +666,7 @@
                                 <div class="u-val-secondary">ROI ${h.roi}</div>
                             </div>
                         </div>`; 
-            }).reverse().join('') +
-            // DRIVE CARD APPENDED AT THE END
-            `<div class="unified-card drive-card anim-click" onclick="triggerDriveBackup()">
-                <div class="u-index" style="color:#34A853; border-color:rgba(52,168,83,0.3)">
-                    <svg width="24" height="24"><path d="M19 18a3.5 3.5 0 0 0 0-7h-1A5 4.5 0 0 0 8 9a4.5 4.5 0 0 0-4.5 4.5c0 .4.04.79.12 1.16"/></svg>
-                </div>
-                <div class="u-center">
-                    <div class="u-title" style="font-size:14px">RESPALDO DRIVE</div>
-                    <div class="u-sub">MANUAL / MENSUAL</div>
-                </div>
-                <div class="u-right">
-                    <div class="u-val-primary" style="font-size:12px; color:#34A853">GUARDAR</div>
-                </div>
-            </div>`;
+            }).reverse().join('');
         }
         function triggerDriveBackup() {
             const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); 
