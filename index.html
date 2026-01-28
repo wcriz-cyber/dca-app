@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V17.5 SILENT</title>
+    <title>C5X - V17.6 STABLE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -401,12 +401,13 @@
             <div class="settings-grid">
                 <div class="setting-card-item">
                      <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
-                        <span class="setting-label">RADAR ETF</span>
+                        <span class="setting-label">RADAR & TICKER</span>
                         <button class="btn-save-mini anim-click" onclick="saveRadarSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
                     </div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <div><label class="setting-label">CANTIDAD</label><input type="number" class="setting-input" id="setRadarLimit" placeholder="8"></div>
-                        <div><label class="setting-label">VELOCIDAD (S)</label><input type="number" class="setting-input" id="setRadarSpeed" placeholder="5"></div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                        <div><label class="setting-label">ITEMS</label><input type="number" class="setting-input" id="setRadarLimit" placeholder="8"></div>
+                        <div><label class="setting-label">VEL. RADAR</label><input type="number" class="setting-input" id="setRadarSpeed" placeholder="5"></div>
+                        <div><label class="setting-label">VEL. TICKER</label><input type="number" class="setting-input" id="setTickerSpeed" placeholder="7"></div>
                     </div>
                 </div>
                 
@@ -451,7 +452,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.5 SILENT</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.6 STABLE</div>
         </div>
     </div>
 
@@ -474,7 +475,6 @@
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-        // DEFAULT LOCKED TO TRUE
         let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }));
         if(Array.isArray(slots) && slots.length > 5) slots = slots.slice(0, 5);
         if(Array.isArray(slots) && slots.length < 5) while(slots.length < 5) slots.push({ name:'', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false });
@@ -493,14 +493,15 @@
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
         let currentTickerSymbol = "BTC";
         let currentWs = null; 
+        let tickerIntervalId = null;
+        let tickerSpeed = parseInt(localStorage.getItem('c5x_ticker_speed')) || 7;
+
         let radarLimit = parseInt(localStorage.getItem('c5x_radar_limit')) || 8;
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
-        // ALERTS LOADED
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
         
-        // --- OPTIMIZED PROXY LIST (MIX OF SERVICES) ---
         let proxies = [
             'https://api.cors.lol/?url=',
             'https://corsproxy.io/?',
@@ -551,7 +552,19 @@
         function validateSecurity() { const inp = document.getElementById('secInput').value; closeModals(); if(inp === appConfig.pin) { if(secCallback) secCallback(); } else { showToast("⛔ PIN INCORRECTO"); } }
         function saveGlobalCapSecure() { reqSec(() => { const val = parseFloat(document.getElementById('setGlobalCapital').value); const feeVal = parseFloat(document.getElementById('setFee').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); } if(!isNaN(feeVal)) { exchangeFee = feeVal; localStorage.setItem('c5x_fee', exchangeFee); } calculateGlobalStats(); showToast("✅ Capital y Comisión Guardados"); }); }
         function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
-        function saveRadarSecure() { reqSec(() => { const lim = parseInt(document.getElementById('setRadarLimit').value); const spd = parseInt(document.getElementById('setRadarSpeed').value); if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } showToast("✅ Radar Actualizado"); }); }
+        function saveRadarSecure() { 
+            reqSec(() => { 
+                const lim = parseInt(document.getElementById('setRadarLimit').value); 
+                const spd = parseInt(document.getElementById('setRadarSpeed').value); 
+                const tickSpd = parseInt(document.getElementById('setTickerSpeed').value);
+                
+                if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } 
+                if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } 
+                if(tickSpd > 0) { tickerSpeed = tickSpd; localStorage.setItem('c5x_ticker_speed', tickSpd); startTickerSystem(); }
+                
+                showToast("✅ Tiempos y Límites Actualizados"); 
+            }); 
+        }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
         function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
@@ -688,11 +701,10 @@
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            // Intenta proxies en secuencia
             for(let proxy of proxies) {
                 try {
                     const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), 6000); // 6s timeout por proxy
+                    const id = setTimeout(() => controller.abort(), 6000); 
                     
                     const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"), {
                         signal: controller.signal,
@@ -700,18 +712,16 @@
                     });
                     clearTimeout(id);
                     
-                    if(!res.ok) continue; // Si falla, intenta el siguiente
+                    if(!res.ok) continue; 
 
                     let json = await res.json();
                     let data = json;
-                    // Algunos proxies envuelven la respuesta en .contents
                     if(json.contents) {
                         try { data = JSON.parse(json.contents); } catch(e) { data = json.contents; }
                     }
                     
-                    if(!Array.isArray(data)) continue; // Si no es array, siguiente proxy
+                    if(!Array.isArray(data)) continue; 
 
-                    // ÉXITO
                     elStatus.className = 'radar-status-dot online'; 
                     allGateETFs = data.filter(t => { 
                         const pair = t.currency_pair; 
@@ -721,21 +731,17 @@
                     
                     processDropperAlerts(); 
                     startRadarRotation(); 
-                    return; // Salir del bucle si éxito
+                    return; 
                     
                 } catch(e) { console.log("Proxy fail:", proxy); }
             }
-
-            // SI LLEGA AQUI, FALLARON TODOS
             console.error("ALL PROXIES FAILED");
             elStatus.className = 'radar-status-dot offline';
             elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
         }
 
-        // --- ALERTS DISABLED PER REQUEST ---
         function processDropperAlerts() {
-            // Lógica eliminada para evitar molestias. 
-            // El radar ahora es solo visual.
+            // SILENT
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
@@ -826,13 +832,24 @@
             calculate();
         }
         function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
-        function startTickerSystem() { updateTicker(); setInterval(() => { if(!isTickerPinned) { assetIdx = (assetIdx + 1) % tickerAssets.length; localStorage.setItem('c5x_ticker_index', assetIdx); updateTicker(); } }, 7000); }
+        function startTickerSystem() { 
+            if(tickerIntervalId) clearInterval(tickerIntervalId);
+            updateTicker(); 
+            tickerIntervalId = setInterval(() => { 
+                if(!isTickerPinned) { 
+                    assetIdx = (assetIdx + 1) % tickerAssets.length; 
+                    localStorage.setItem('c5x_ticker_index', assetIdx); 
+                    updateTicker(); 
+                } 
+            }, tickerSpeed * 1000); 
+        }
         async function updateTicker() { 
             let sym = tickerAssets[assetIdx]; 
             let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; 
             let displaySym = sym.replace("USDT",""); 
             document.getElementById('t-sym').textContent = displaySym; 
-            if(!isTickerPinned) { document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>'; }
+            // ELIMINADO EL SKELETON PARA EVITAR EL SUSPENSO AL ROTAR
+            
             if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
             try { 
                 const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; 
@@ -1021,7 +1038,7 @@
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
         function loadSettingsValues() { 
-            const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setFee').value = exchangeFee; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; 
+            const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setFee').value = exchangeFee; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setTickerSpeed').value = tickerSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; 
             const grid = document.getElementById('multiGrid'); grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join('');
             calcMonthlyPerformance(); 
         }
