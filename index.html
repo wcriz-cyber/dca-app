@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.2 RADAR ULTIMATE</title>
+    <title>C5X - V44.3 TICKER REPAIR</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -130,12 +130,10 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
-        /* RADAR MODERNO CON INDICADOR DE ESTADO */
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; min-height: 80px; display:flex; flex-direction:column; justify-content:center; position: relative; }
         .radar-status-dot { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: background 0.3s; }
         .radar-status-dot.online { background: var(--long); box-shadow: 0 0 8px var(--long); }
         .radar-status-dot.offline { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-        
         .radar-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 22px; color: var(--text-primary); min-height: 30px; display: flex; align-items: center; justify-content: center;}
         
@@ -270,7 +268,7 @@
             <div class="nav-item selected anim-click" id="nav-operate" onclick="switchView('operate')"><div class="nav-icon"><svg width="24" height="24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="nav-text">OPERAR</div></div>
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
-            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -387,7 +385,7 @@
                 </div>
             </div>
 
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
+            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
                      <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
@@ -441,7 +439,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.2 RADAR ULTIMATE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.3 TICKER REPAIR</div>
         </div>
     </div>
 
@@ -802,6 +800,7 @@
         
         // --- LOGIC FOR DROPPERS (FIXED WITH MULTI-FETCH RACE) ---
         async function fetchAndCalcTopDroppers() { 
+            let success = false;
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; // Set offline initially
@@ -1001,8 +1000,10 @@
             let displaySym = sym.replace("USDT",""); 
             document.getElementById('t-sym').textContent = displaySym; 
             
-            // SKELETON RESET
-            document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>';
+            // SKELETON RESET ONLY IF ROTATING
+            if(!isTickerPinned) {
+                document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>';
+            }
             
             if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
             try { 
@@ -1023,7 +1024,28 @@
         }
         async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
         function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
-        function toggleTickerPin() { triggerHaptic(); isTickerPinned = !isTickerPinned; localStorage.setItem('c5x_ticker_pinned', isTickerPinned); updatePinUI(); if(isTickerPinned) showToast("⚓ Fijado: " + currentTickerSymbol); else { showToast("▶️ Rotando"); updateTicker(); } }
+        
+        function toggleTickerPin() { 
+            triggerHaptic(); 
+            isTickerPinned = !isTickerPinned; 
+            localStorage.setItem('c5x_ticker_pinned', isTickerPinned); 
+            
+            if(isTickerPinned) {
+                // LOCK TO CURRENT VISIBLE COIN
+                const currentSym = document.getElementById('t-sym').textContent;
+                const foundIdx = tickerAssets.indexOf(currentSym);
+                if(foundIdx !== -1) {
+                    assetIdx = foundIdx;
+                    localStorage.setItem('c5x_ticker_index', assetIdx);
+                }
+                showToast("⚓ Fijado: " + currentSym);
+            } else {
+                showToast("▶️ Rotando");
+                updateTicker(); // Resume immediately
+            }
+            updatePinUI(); 
+        }
+        
         function updatePinUI() { const btn = document.getElementById('tickerPinBtn'); if(isTickerPinned) btn.classList.add('pinned'); else btn.classList.remove('pinned'); }
         function toggleFullscreenChart(e) { if(e) e.stopPropagation(); const wrapper = document.getElementById('tv_chart'); wrapper.classList.toggle('fullscreen'); setTimeout(() => loadChart(chartSymbol), 100); }
         async function loadGateETFs() { const grid = document.getElementById('etfGrid'); if(allGateETFs.length > 0) { filterETFs(""); return; } try { await fetchAndCalcTopDroppers(); filterETFs(""); } catch(e) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>'; } }
