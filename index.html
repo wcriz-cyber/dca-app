@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.5 FINAL</title>
+    <title>C5X - V44.6 REFINED</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="icon.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -150,7 +150,15 @@
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 4px; text-align: center; }
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text-primary); }
+        
+        /* UPDATED: MORE READABLE DASHBOARD STATS */
+        .stat-value { 
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 15px; /* Larger */
+            font-weight: 600; /* Regular weight, not too bold */
+            color: var(--text-primary); 
+            letter-spacing: 0.5px;
+        }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 50px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
@@ -159,22 +167,14 @@
         .u-index { width: 50px; height: 50px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--text-secondary); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         
-        /* UPDATED TITLE FOR LARGER PRICE */
+        /* UPDATED: LESS BOLD FOR LEVELS, SMALLER FOR ETF NAMES */
         .u-title { 
             font-family: 'JetBrains Mono', monospace; 
-            font-size: 24px; 
-            font-weight: 800; 
+            font-size: 21px; /* Slightly smaller for balance */
+            font-weight: 700; /* Reduced from 800 */
             color: var(--text-primary); 
             line-height: 1; 
             margin-bottom: 2px;
-        }
-        /* ADDED LABEL FOR ENTRY */
-        .u-sub-entry {
-            font-size: 10px;
-            font-weight: 800;
-            color: var(--brand);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .u-sub { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; }
@@ -455,7 +455,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.5 FINAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.6 REFINED</div>
         </div>
     </div>
 
@@ -1066,7 +1066,42 @@
         function toggleFullscreenChart(e) { if(e) e.stopPropagation(); const wrapper = document.getElementById('tv_chart'); wrapper.classList.toggle('fullscreen'); setTimeout(() => loadChart(chartSymbol), 100); }
         async function loadGateETFs() { const grid = document.getElementById('etfGrid'); if(allGateETFs.length > 0) { filterETFs(""); return; } try { await fetchAndCalcTopDroppers(); filterETFs(""); } catch(e) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--danger)">Error al cargar datos.<br>Revisa tu conexión.</div>'; } }
         function toggleEtfFavorite(symbol, e) { e.stopPropagation(); if(etfFavorites.includes(symbol)) etfFavorites = etfFavorites.filter(s => s !== symbol); else etfFavorites.push(symbol); localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); filterETFs(document.querySelector('.etf-search-input').value); }
-        function filterETFs(query) { const grid = document.getElementById('etfGrid'); const term = query.toUpperCase().trim(); let sorted = [...allGateETFs].sort((a, b) => { const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); }); let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 50); if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } const fragment = document.createDocumentFragment(); filtered.forEach((t, index) => { const price = parseFloat(t.last); const change = parseFloat(t.change_percentage); const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); const pairName = t.currency_pair.replace('_', ''); const isFav = etfFavorites.includes(pairName); const div = document.createElement('div'); div.className = 'unified-card'; div.onclick = () => smartSelectETF(pairName, price); div.innerHTML = `<div class="u-index">${index+1}</div><div class="u-center"><div class="u-title">${pairName}</div></div><div class="etf-card-right"><div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div><div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)"><svg width="22" height="22" stroke="currentColor" fill="${isFav?'currentColor':'none'}" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>`; fragment.appendChild(div); }); grid.innerHTML = ''; grid.appendChild(fragment); }
+        
+        function filterETFs(query) { 
+            const grid = document.getElementById('etfGrid'); 
+            const term = query.toUpperCase().trim(); 
+            let sorted = [...allGateETFs].sort((a, b) => { 
+                const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); 
+                const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); 
+                if(aFav && !bFav) return -1; 
+                if(!aFav && bFav) return 1; 
+                return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); 
+            }); 
+            
+            let filtered = sorted; 
+            if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); 
+            else filtered = sorted.slice(0, 50); 
+            
+            if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } 
+            
+            const fragment = document.createDocumentFragment(); 
+            filtered.forEach((t, index) => { 
+                const price = parseFloat(t.last); 
+                const change = parseFloat(t.change_percentage); 
+                const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); 
+                // CLEAN NAME HERE: Remove _USDT or USDT
+                const pairName = t.currency_pair.replace('_USDT', '').replace('USDT', ''); 
+                const isFav = etfFavorites.includes(pairName); 
+                const div = document.createElement('div'); 
+                div.className = 'unified-card'; 
+                div.onclick = () => smartSelectETF(pairName, price); 
+                div.innerHTML = `<div class="u-index">${index+1}</div><div class="u-center"><div class="u-title">${pairName}</div></div><div class="etf-card-right"><div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div><div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)"><svg width="22" height="22" stroke="currentColor" fill="${isFav?'currentColor':'none'}" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>`; 
+                fragment.appendChild(div); 
+            }); 
+            grid.innerHTML = ''; 
+            grid.appendChild(fragment); 
+        }
+
         function smartSelectETF(symbol, price) { triggerHaptic(); let cleanName = symbol.replace('_USDT','').replace('USDT',''); const dupSlot = slots.findIndex(s => s.name === cleanName); if (dupSlot !== -1) { showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); return; } const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = true; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
@@ -1167,12 +1202,11 @@
                     displayPrice = pLevel.toFixed(4);
                 }
 
-                // HTML MODIFICADO: Sin texto "NIVEL", precio más grande
+                // HTML MODIFICADO: Precio menos negrita, sin "ENTRADA"
                 html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                             <div class="u-index">${i+1}</div>
                             <div class="u-center">
                                 <div class="u-title">${displayPrice}</div>
-                                ${i === 0 ? '<div class="u-sub-entry">ENTRADA</div>' : ''} 
                             </div>
                             <div class="u-right">
                                 <div class="u-val-primary">$${mUSD.toFixed(1)}</div>
