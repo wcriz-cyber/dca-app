@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.6 REFINED</title>
+    <title>C5X - V44.7 RADAR FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -150,33 +150,29 @@
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 4px; text-align: center; }
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        
-        /* UPDATED: MORE READABLE DASHBOARD STATS */
-        .stat-value { 
-            font-family: 'JetBrains Mono', monospace; 
-            font-size: 15px; /* Larger */
-            font-weight: 600; /* Regular weight, not too bold */
-            color: var(--text-primary); 
-            letter-spacing: 0.5px;
-        }
+        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
-        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 50px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
+        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
-        .u-index { width: 50px; height: 50px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--text-secondary); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         
-        /* UPDATED: LESS BOLD FOR LEVELS, SMALLER FOR ETF NAMES */
-        .u-title { 
-            font-family: 'JetBrains Mono', monospace; 
-            font-size: 21px; /* Slightly smaller for balance */
-            font-weight: 700; /* Reduced from 800 */
-            color: var(--text-primary); 
-            line-height: 1; 
-            margin-bottom: 2px;
+        /* --- CHANGED: ICON STYLE FOR NUMBERS --- */
+        .u-index { 
+            width: 36px; height: 36px; 
+            border-radius: 50%; 
+            background: rgba(59, 130, 246, 0.1); 
+            border: 1px solid var(--brand); 
+            display: flex; align-items: center; justify-content: center; 
+            font-family: 'Orbitron', sans-serif; font-weight: 900; 
+            color: var(--brand); 
+            font-size: 12px; 
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.15);
+            margin: 0 auto;
         }
 
+        .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+        .u-title { font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 2px; }
         .u-sub { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; }
         .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 2px; flex-shrink: 0; }
         .u-val-primary { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: var(--long); }
@@ -455,7 +451,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.6 REFINED</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.7 RADAR FIX</div>
         </div>
     </div>
 
@@ -503,18 +499,20 @@
         let radarIntervalId = null;
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
         
-        // PROXY LIST - ORDERED BY RELIABILITY
-        let proxies = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?', 'https://thingproxy.freeboard.io/fetch/'];
+        // PROXY LIST - OPTIMIZED FOR LARGE JSONs
+        let proxies = [
+            'https://api.codetabs.com/v1/proxy?quest=', // Often best for large payloads
+            'https://api.allorigins.win/raw?url=', 
+            'https://corsproxy.io/?'
+        ];
         if(customProxy) proxies.unshift(customProxy);
 
         function init() { 
             try {
-                // CARGAR ESTRATEGIA PERSISTENTE AL INICIO
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
                 if(savedParams) {
                     document.getElementById('incInput').value = savedParams.inc;
                     document.getElementById('descInput').value = savedParams.desc;
-                    // También actualizar los inputs visibles en ajustes
                     document.getElementById('setInc').value = savedParams.inc;
                     document.getElementById('setDesc').value = savedParams.desc;
                 }
@@ -524,7 +522,6 @@
                     if(typeof s.roi === 'undefined') s.roi = 100; 
                     if(typeof s.note === 'undefined') s.note = ''; 
                     if(typeof s.alerted === 'undefined') s.alerted = false; 
-                    // ENSURE LOCKED PROPERTY EXISTS
                     if(typeof s.locked === 'undefined') s.locked = true;
                 });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
@@ -547,127 +544,15 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- SISTEMA DE GUARDADO INDIVIDUAL SEGURO ---
         let secCallback = null;
-
-        function reqSec(cb) {
-            secCallback = cb;
-            const m = document.getElementById('securityModal');
-            document.getElementById('secInput').value = '';
-            m.style.display = 'flex';
-            void m.offsetWidth;
-        }
-
-        function validateSecurity() {
-            const inp = document.getElementById('secInput').value;
-            closeModals(); 
-            if(inp === appConfig.pin) {
-                if(secCallback) secCallback();
-            } else {
-                showToast("⛔ PIN INCORRECTO");
-            }
-        }
-
-        function saveGlobalCapSecure() {
-            reqSec(() => {
-                const val = parseFloat(document.getElementById('setGlobalCapital').value);
-                const feeVal = parseFloat(document.getElementById('setFee').value);
-
-                if(!isNaN(val)) {
-                    globalCapital = val;
-                    localStorage.setItem('c5x_global_capital', globalCapital);
-                }
-                
-                if(!isNaN(feeVal)) {
-                    exchangeFee = feeVal;
-                    localStorage.setItem('c5x_fee', exchangeFee);
-                }
-
-                calculateGlobalStats();
-                showToast("✅ Capital y Comisión Guardados");
-            });
-        }
-
-        function saveSlotParamsSecure() {
-            reqSec(() => {
-                const newCap = parseFloat(document.getElementById('setCapital').value);
-                const newRoi = parseFloat(document.getElementById('setRoi').value);
-                const newDD = parseFloat(document.getElementById('setDD').value);
-                const newInc = parseFloat(document.getElementById('setInc').value);
-                const newDesc = parseFloat(document.getElementById('setDesc').value);
-
-                if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos");
-
-                slots[activeIdx].capital = newCap;
-                slots[activeIdx].roi = newRoi;
-                if(!isNaN(newDD)) appConfig.dd = newDD;
-                localStorage.setItem('c5x_config', JSON.stringify(appConfig));
-                save(); 
-
-                if(!isNaN(newInc) && !isNaN(newDesc)) {
-                    localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc }));
-                    document.getElementById('incInput').value = newInc;
-                    document.getElementById('descInput').value = newDesc;
-                }
-
-                calculate();
-                updateDashUI();
-                showToast("✅ Configuración Slot Guardada");
-            });
-        }
-
-        function saveRadarSecure() {
-            reqSec(() => {
-                const lim = parseInt(document.getElementById('setRadarLimit').value);
-                const spd = parseInt(document.getElementById('setRadarSpeed').value);
-                if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); }
-                if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); }
-                showToast("✅ Radar Actualizado");
-            });
-        }
-
-        function saveMultiSecure() {
-            reqSec(() => {
-                const inputs = document.querySelectorAll('.multi-inp');
-                let newMultipliers = [];
-                inputs.forEach(inp => {
-                    let val = parseFloat(inp.value);
-                    if(!isNaN(val)) newMultipliers.push(val);
-                });
-                if(newMultipliers.length >= 5) {
-                    customMultipliers = newMultipliers;
-                    localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
-                    calculate();
-                    showToast("✅ Multiplicadores Guardados");
-                } else {
-                    showToast("⚠️ Mínimo 5 Niveles");
-                }
-            });
-        }
-
-        function saveProxySecure() {
-            reqSec(() => {
-                const val = document.getElementById('setProxy').value.trim();
-                customProxy = val;
-                localStorage.setItem('c5x_custom_proxy', customProxy);
-                proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://thingproxy.freeboard.io/fetch/'];
-                if(customProxy) proxies.unshift(customProxy);
-                showToast("✅ Proxy Guardado");
-            });
-        }
-
-        function savePassSecure() {
-            reqSec(() => { 
-                const newPass = document.getElementById('setNewPass').value;
-                if(newPass && newPass.length === 4) {
-                    appConfig.pin = newPass;
-                    localStorage.setItem('c5x_config', JSON.stringify(appConfig));
-                    showToast("✅ Contraseña Cambiada");
-                } else {
-                    showToast("⚠️ Clave debe ser 4 dígitos");
-                }
-            });
-        }
+        function reqSec(cb) { secCallback = cb; const m = document.getElementById('securityModal'); document.getElementById('secInput').value = ''; m.style.display = 'flex'; void m.offsetWidth; }
+        function validateSecurity() { const inp = document.getElementById('secInput').value; closeModals(); if(inp === appConfig.pin) { if(secCallback) secCallback(); } else { showToast("⛔ PIN INCORRECTO"); } }
+        function saveGlobalCapSecure() { reqSec(() => { const val = parseFloat(document.getElementById('setGlobalCapital').value); const feeVal = parseFloat(document.getElementById('setFee').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); } if(!isNaN(feeVal)) { exchangeFee = feeVal; localStorage.setItem('c5x_fee', exchangeFee); } calculateGlobalStats(); showToast("✅ Capital y Comisión Guardados"); }); }
+        function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
+        function saveRadarSecure() { reqSec(() => { const lim = parseInt(document.getElementById('setRadarLimit').value); const spd = parseInt(document.getElementById('setRadarSpeed').value); if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } showToast("✅ Radar Actualizado"); }); }
+        function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
+        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://api.codetabs.com/v1/proxy?quest=', 'https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
+        function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
             triggerHaptic();
@@ -707,9 +592,7 @@
                 }
                 if(!groups[key]) groups[key] = 0;
                 
-                // USE NET PROFIT IF AVAILABLE, ELSE GROSS
                 const p = (h.netProfit !== undefined) ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0);
-                
                 groups[key] += p;
                 totalNet += p;
                 total++;
@@ -734,7 +617,6 @@
             const netEl = document.getElementById('chartNeto');
             netEl.textContent = (totalNet>=0?'+':'') + '$' + totalNet.toFixed(2);
             netEl.style.color = totalNet >= 0 ? 'var(--long)' : 'var(--short)';
-            
             document.getElementById('chartWr').textContent = total > 0 ? Math.round((wins/total)*100) + '%' : '0%';
         }
 
@@ -766,14 +648,10 @@
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
-        // --- NOTIFICATION FIX ---
         function triggerCrashAlert(coin, pct) { 
             const audio = document.getElementById('alertSound'); 
-            if(audio) { 
-                audio.currentTime = 0; 
-                audio.play().catch(e => console.log("Audio play failed")); 
-            } 
-            if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); // Stronger Vibe
+            if(audio) { audio.currentTime = 0; audio.play().catch(e => console.log("Audio play failed")); } 
+            if(navigator.vibrate) navigator.vibrate([500, 200, 500, 200, 500]); 
             showToast(`⚠️ ${coin} CAYÓ ${pct.toFixed(2)}%`, 5000, true); 
             if("Notification" in window && Notification.permission === "granted") { 
                 new Notification(`ALERTA DE CRASH: ${coin}`, { body: `El precio cayó un ${pct.toFixed(2)}%`, icon: 'icon.png' }); 
@@ -792,15 +670,9 @@
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { 
             let totalRealizedProfit = history.reduce((sum, item) => {
-                // Use Net Profit if available, otherwise legacy gross
                 return sum + (item.netProfit !== undefined ? parseFloat(item.netProfit) : (parseFloat(item.profit) || 0));
             }, 0); 
-            
             let currentEquity = globalCapital + totalRealizedProfit; 
-            let pnl = currentEquity - globalCapital; 
-            let pnlPct = (globalCapital > 0) ? (pnl / globalCapital) * 100 : 0; 
-            
-            // REMOVED FROM DASHBOARD, BUT KEPT FOR SETTINGS
         }
         function cleanSlotOnly() { 
             triggerHaptic(); 
@@ -814,15 +686,15 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- LOGIC FOR DROPPERS (FIXED WITH MULTI-FETCH RACE) ---
+        // --- FIXED: RADAR OFFLINE ISSUE ---
+        // Uses more robust proxies and longer timeouts for heavy Gate.io JSON
         async function fetchAndCalcTopDroppers() { 
             let success = false;
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
-            elStatus.className = 'radar-status-dot offline'; // Set offline initially
+            elStatus.className = 'radar-status-dot offline'; 
 
-            // Helper to try fetch with timeout
-            const fetchWithTimeout = (url, timeout = 8000) => {
+            const fetchWithTimeout = (url, timeout = 15000) => { // Increased timeout
                 return new Promise((resolve, reject) => {
                     const timer = setTimeout(() => reject(new Error('Timeout')), timeout);
                     fetch(url).then(response => {
@@ -833,20 +705,14 @@
                 });
             };
 
-            // PROXY RACE: Try all proxies simultaneously, first one wins
             const p1 = fetchWithTimeout(proxies[0] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
             const p2 = fetchWithTimeout(proxies[1] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
-            // Add third proxy if defined
-            const p3 = (proxies.length > 2) ? fetchWithTimeout(proxies[2] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")) : new Promise((_, r) => setTimeout(r, 9000));
+            const p3 = (proxies.length > 2) ? fetchWithTimeout(proxies[2] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")) : new Promise((_, r) => setTimeout(r, 16000));
 
             try {
-                // RACE THEM!
                 const data = await Promise.any([p1, p2, p3]);
+                elStatus.className = 'radar-status-dot online'; 
                 
-                // IF WE GOT HERE, ONE WORKED!
-                elStatus.className = 'radar-status-dot online'; // Green Light
-                
-                // DATA NORMALIZATION (Handle different proxy structures if needed)
                 let finalData = data;
                 if(data.contents) {
                     try { finalData = JSON.parse(data.contents); } catch(e) { finalData = data; }
@@ -864,7 +730,7 @@
             } catch(e) { 
                 console.log("ALL PROXIES FAILED"); 
                 elStatus.className = 'radar-status-dot offline';
-                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN RED - TOCAR</div>';
+                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ REINTENTAR CONEXIÓN</div>';
             }
         }
 
@@ -911,7 +777,6 @@
             try { 
                 slots.forEach((s, idx) => { 
                     if(s.name === symbol && s.buys.length > 0) { 
-                        // Visual update logic
                         const el = document.getElementById('nav-s'+idx); 
                         if(el) {
                             let avg = calculateAvgPriceForSlot(s); 
@@ -925,12 +790,7 @@
                                 } 
                             }
                         }
-                        
-                        // --- AUTO-PILOT LOGIC (Check and Buy Levels) ---
-                        // Only run if active entry (Level 0) exists
-                        if(s.buys.includes(0)) {
-                            checkAutoFill(s, idx, currentPrice);
-                        }
+                        if(s.buys.includes(0)) { checkAutoFill(s, idx, currentPrice); }
                     } 
                 }); 
             } catch(e) { console.warn("Heatmap/Auto Error", e); } 
@@ -942,49 +802,26 @@
             const limit = customMultipliers ? customMultipliers.length : 12; 
             let lastPrice = s.price;
             let changesMade = false;
-
             for(let i=0; i<limit; i++){ 
                 let pLevel; 
                 let currentStepDrop = 0;
-                
-                if(i===0) {
-                    pLevel = s.price; 
-                } else { 
-                    if(s.strat === "normal") { 
-                        if(i===1) currentStepDrop = 17; 
-                        else currentStepDrop += incPct; 
-                    } else { 
-                        currentStepDrop = descPct; 
-                    } 
+                if(i===0) { pLevel = s.price; } else { 
+                    if(s.strat === "normal") { if(i===1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } 
                     pLevel = lastPrice * (1 - (currentStepDrop/100)); 
                 } 
-                
-                // CORE LOGIC: If price is BELOW level AND NOT Bought yet
                 if (currentPrice <= pLevel && !s.buys.includes(i)) {
                     s.buys.push(i);
                     changesMade = true;
-                    // Trigger Notification
                     triggerAutoBuyAlert(s.name, i);
                 }
-
                 lastPrice = pLevel; 
             }
-
-            if(changesMade) {
-                save();
-                // If currently viewing this slot, refresh UI
-                if(activeIdx === idx) {
-                    calculate(); // This calls renderLevels
-                }
-            }
+            if(changesMade) { save(); if(activeIdx === idx) { calculate(); } }
         }
 
         function triggerAutoBuyAlert(coin, level) {
             const audio = document.getElementById('alertSound'); 
-            if(audio) { 
-                audio.currentTime = 0; 
-                audio.play().catch(e => {}); 
-            } 
+            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
             if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
             showToast(`🛒 COMPRA AUTO: ${coin} NIVEL ${level}`, 3000, false, true);
         }
@@ -999,10 +836,7 @@
         function saveMultipliers() { 
             const inputs = document.querySelectorAll('.multi-inp');
             let newMultipliers = [];
-            inputs.forEach(inp => {
-                let val = parseFloat(inp.value);
-                if(!isNaN(val)) newMultipliers.push(val);
-            });
+            inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); });
             if(newMultipliers.length < 5) return showToast("⚠️ Mínimo 5 niveles");
             customMultipliers = newMultipliers;
             localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
@@ -1015,12 +849,7 @@
             let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; 
             let displaySym = sym.replace("USDT",""); 
             document.getElementById('t-sym').textContent = displaySym; 
-            
-            // SKELETON RESET ONLY IF ROTATING
-            if(!isTickerPinned) {
-                document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>';
-            }
-            
+            if(!isTickerPinned) { document.getElementById('t-price').innerHTML = '<span class="skeleton-text skeleton-box"></span>'; }
             if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
             try { 
                 const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; 
@@ -1032,10 +861,7 @@
                     updateSlotStatus(displaySym, price); 
                     document.getElementById('t-dot').classList.add('pulse'); 
                 }; 
-                currentWs.onerror = () => { 
-                    fetchTickerRest(apiSym, displaySym); 
-                    document.getElementById('t-dot').classList.remove('pulse'); 
-                }; 
+                currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; 
             } catch(e) { fetchTickerRest(apiSym, displaySym); } 
         }
         async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
@@ -1045,19 +871,14 @@
             triggerHaptic(); 
             isTickerPinned = !isTickerPinned; 
             localStorage.setItem('c5x_ticker_pinned', isTickerPinned); 
-            
             if(isTickerPinned) {
-                // LOCK TO CURRENT VISIBLE COIN
                 const currentSym = document.getElementById('t-sym').textContent;
                 const foundIdx = tickerAssets.indexOf(currentSym);
-                if(foundIdx !== -1) {
-                    assetIdx = foundIdx;
-                    localStorage.setItem('c5x_ticker_index', assetIdx);
-                }
+                if(foundIdx !== -1) { assetIdx = foundIdx; localStorage.setItem('c5x_ticker_index', assetIdx); }
                 showToast("⚓ Fijado: " + currentSym);
             } else {
                 showToast("▶️ Rotando");
-                updateTicker(); // Resume immediately
+                updateTicker(); 
             }
             updatePinUI(); 
         }
@@ -1089,7 +910,6 @@
                 const price = parseFloat(t.last); 
                 const change = parseFloat(t.change_percentage); 
                 const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); 
-                // CLEAN NAME HERE: Remove _USDT or USDT
                 const pairName = t.currency_pair.replace('_USDT', '').replace('USDT', ''); 
                 const isFav = etfFavorites.includes(pairName); 
                 const div = document.createElement('div'); 
@@ -1109,50 +929,17 @@
         function selectSlot(i) { triggerHaptic(); activeIdx = i; localStorage.setItem('c5x_last_slot', i); const s = slots[i]; document.getElementById('coinInput').value = s.name; document.getElementById('baseInput').value = s.price || ''; document.getElementById('capitalInput').value = s.capital; renderNav(); loadChart(s.name); updateDashUI(); }
         function updateCoin() { const el = document.getElementById('coinInput'); let val = el.value.toUpperCase().replace('USDT','').trim(); if (val && slots.some((s, i) => s.name === val && i !== activeIdx)) { showToast("⛔ DUPLICADO"); el.value = slots[activeIdx].name; return; } el.value = val; slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
         
-        function rotateDash() { 
-            triggerHaptic(); 
-            const s = slots[activeIdx]; 
-            // LOCK CHECK
-            if(s.locked) return showToast("🔒 Desbloquea para editar"); 
-            
-            s.strat = (s.strat === "normal") ? "agresiva" : "normal"; 
-            save(); 
-            updateDashUI(); 
-        }
-        
-        function toggleLock() { 
-            triggerHaptic(); 
-            const s = slots[activeIdx]; 
-            s.locked = !s.locked; 
-            save(); 
-            updateDashUI(); 
-        }
+        function rotateDash() { triggerHaptic(); const s = slots[activeIdx]; if(s.locked) return showToast("🔒 Desbloquea para editar"); s.strat = (s.strat === "normal") ? "agresiva" : "normal"; save(); updateDashUI(); }
+        function toggleLock() { triggerHaptic(); const s = slots[activeIdx]; s.locked = !s.locked; save(); updateDashUI(); }
         
         function updateDashUI() { 
             const s = slots[activeIdx], isNormal = s.strat === "normal"; 
             const elBadge = document.getElementById('stratBadge'); 
             const elCard = document.getElementById('dashMain'); 
-            const elTarget = document.getElementById('resTarget'); 
             const btnLock = document.getElementById('lockBtn'); 
-            
             elBadge.textContent = isNormal ? "NORMAL" : "AGRESIVA"; 
-            
-            if(isNormal) { 
-                elBadge.classList.remove('aggressive'); 
-                elCard.style.borderColor = "var(--border)"; 
-            } else { 
-                elBadge.classList.add('aggressive'); 
-                elCard.style.borderColor = "var(--warning)"; 
-            } 
-            
-            if(s.locked) { 
-                btnLock.classList.add('locked'); 
-                btnLock.innerHTML = '<svg width="24" height="24"><path d="M19 21H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/><path d="M12 11v4"/><path d="M8 7v-2a4 4 0 0 1 8 0v2"/></svg>'; 
-            } else { 
-                btnLock.classList.remove('locked'); 
-                btnLock.innerHTML = '<svg width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'; 
-            } 
-            
+            if(isNormal) { elBadge.classList.remove('aggressive'); elCard.style.borderColor = "var(--border)"; } else { elBadge.classList.add('aggressive'); elCard.style.borderColor = "var(--warning)"; } 
+            if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg width="24" height="24"><path d="M19 21H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/><path d="M12 11v4"/><path d="M8 7v-2a4 4 0 0 1 8 0v2"/></svg>'; } else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'; } 
             document.getElementById('capitalInput').value = s.capital; 
             calculate(); 
         }
@@ -1162,47 +949,25 @@
         function renderLevels() { 
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; 
             updateBodyMode(s.name); 
-            
-            if(!s.price || s.price <= 0) { 
-                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; 
-                return; 
-            } 
+            if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } 
             
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; 
             const maxLevels = customMultipliers ? customMultipliers.length : 12; 
             
             for(let i=0; i < maxLevels; i++){ 
                 let pLevel; 
-                // CÁLCULO DE NIVELES
-                if(i === 0) { 
-                    pLevel = s.price; 
-                    currentStepDrop = 0; 
-                } else { 
-                    if(s.strat === "normal") { 
-                        if(i === 1) currentStepDrop = 17; 
-                        else currentStepDrop += incPct; 
-                    } else { 
-                        currentStepDrop = descPct; 
-                    } 
-                    // El descuento se aplica sobre lastPrice (el nivel anterior)
+                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
+                else { 
+                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } 
                     pLevel = lastPrice * (1 - (currentStepDrop / 100)); 
                 } 
                 
                 const mUSD = (customMultipliers[i] || 1) * s.capital, on = s.buys.includes(i); 
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } 
                 
-                // LÓGICA CORREGIDA PARA PRECIOS PEQUEÑOS (EVITA EL 0.00)
                 let displayPrice;
-                if(pLevel < 0.0001) {
-                    // Si es muy pequeño, usa hasta 10 decimales y quita ceros al final
-                    displayPrice = pLevel.toFixed(10).replace(/\.?0+$/, "");
-                } else if (pLevel < 1) {
-                    displayPrice = pLevel.toFixed(6);
-                } else {
-                    displayPrice = pLevel.toFixed(4);
-                }
+                if(pLevel < 0.0001) { displayPrice = pLevel.toFixed(10).replace(/\.?0+$/, ""); } else if (pLevel < 1) { displayPrice = pLevel.toFixed(6); } else { displayPrice = pLevel.toFixed(4); }
 
-                // HTML MODIFICADO: Precio menos negrita, sin "ENTRADA"
                 html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                             <div class="u-index">${i+1}</div>
                             <div class="u-center">
@@ -1213,25 +978,20 @@
                                 <div class="u-val-secondary" style="${i>0?'color:var(--short)':''}">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
                             </div>
                         </div>`; 
-                
                 lastPrice = pLevel; 
             } 
-            
             html += `<div class="liquidate-card anim-click" onclick="openLiquidateConfirm()"><svg width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg> LIQUIDAR POSICIÓN</div>`; 
             grid.innerHTML = html; 
             
             const avg = totalQty > 0 ? totalSpent/totalQty : 0; 
             const targetPrice = avg * (1 + (s.roi / 100)); 
-            
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; 
-            // También aplicamos formato preciso al promedio y objetivo
             document.getElementById('resAvg').textContent = (avg < 0.0001 && avg > 0) ? avg.toFixed(10).replace(/\.?0+$/, "") : ((avg < 1) ? avg.toFixed(6) : avg.toFixed(4)); 
             document.getElementById('resTarget').textContent = (targetPrice < 0.0001 && targetPrice > 0) ? targetPrice.toFixed(10).replace(/\.?0+$/, "") : ((targetPrice < 1) ? targetPrice.toFixed(6) : targetPrice.toFixed(4)); 
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`; 
         }
 
         function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
-        
         function executeRelease() { 
             triggerHaptic(); closeModals(); 
             try { 
@@ -1246,85 +1006,30 @@
                 const grossProfit = grossExitValue - totalInv;
                 const netProfit = grossProfit - totalFees;
 
-                const logEntry = { 
-                    date: new Date().toLocaleDateString(), 
-                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), 
-                    coin: s.name || 'S/N', 
-                    strategy: s.strat.toUpperCase(), 
-                    basePrice: s.price, 
-                    avgPrice: avgPrice, 
-                    exitPrice: targetPrice, 
-                    qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), 
-                    totalInv: totalInv.toFixed(2), 
-                    profit: grossProfit.toFixed(2), 
-                    netProfit: netProfit.toFixed(2), 
-                    fees: totalFees.toFixed(2), 
-                    roi: s.roi + '%', 
-                    levelsUsed: s.buys ? s.buys.length : 0 
-                }; 
-                
-                if(!history) history = []; 
-                history.push(logEntry); 
-                localStorage.setItem('c5x_history', JSON.stringify(history)); 
-                
-                renderHistory(); 
-                // RESET TO LOCKED NORMAL
-                slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }; 
-                sortSlots(); 
-                save(); 
-                selectSlot(0); 
-                showToast(`✅ Cerrada. Neta: $${netProfit.toFixed(2)}`); 
-                switchView('log', false); 
-                calculateGlobalStats(); 
+                const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: targetPrice, qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: grossProfit.toFixed(2), netProfit: netProfit.toFixed(2), fees: totalFees.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0 }; 
+                if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); 
+                renderHistory(); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }; sortSlots(); save(); selectSlot(0); showToast(`✅ Cerrada. Neta: $${netProfit.toFixed(2)}`); switchView('log', false); calculateGlobalStats(); 
             } catch(e) { showToast("❌ Error al liquidar"); } 
         }
 
         function updateBodyMode(n) { const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } else { r.style.setProperty('--brand', '#3b82f6'); } }
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
-            if(!history || history.length === 0) { 
-                grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; 
-            } 
+            if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
             grid.innerHTML = history.map(h => { 
                 const hasNet = h.netProfit !== undefined;
                 const finalProfit = hasNet ? parseFloat(h.netProfit) : parseFloat(h.profit);
                 const isWin = finalProfit >= 0; 
                 return `<div class="unified-card">
-                            <div class="u-index" style="color:var(--brand)">${h.coin.substring(0,3)}</div>
-                            <div class="u-center">
-                                <div class="u-title">${h.coin}</div>
-                                <div class="u-sub">${h.date} - ${h.time}</div>
-                            </div>
-                            <div class="u-right">
-                                <div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${finalProfit.toFixed(2)}</div>
-                                <div class="u-val-secondary">${hasNet ? 'NETO' : 'BRUTO'} ${h.roi}</div>
-                            </div>
+                            <div class="u-index" style="color:var(--brand); border-color:var(--brand)">${h.coin.substring(0,3)}</div>
+                            <div class="u-center"><div class="u-title">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div>
+                            <div class="u-right"><div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${finalProfit.toFixed(2)}</div><div class="u-val-secondary">${hasNet ? 'NETO' : 'BRUTO'} ${h.roi}</div></div>
                         </div>`; 
             }).reverse().join('');
         }
-        function triggerDriveBackup() {
-            const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); 
-            const blob = new Blob([dataStr], {type: "application/json"}); 
-            const a = document.createElement('a'); 
-            const date = new Date().toISOString().slice(0,10);
-            a.href = URL.createObjectURL(blob); 
-            a.download = `C5X_Backup_${date}.json`; 
-            document.body.appendChild(a); 
-            a.click();
-            localStorage.setItem('c5x_last_backup', Date.now());
-            showToast("☁️ Archivo generado para Drive");
-        }
-        function checkAutoBackup() {
-            const last = localStorage.getItem('c5x_last_backup');
-            const now = Date.now();
-            if(!last || (now - last > 2592000000)) { 
-                if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) {
-                    triggerDriveBackup();
-                }
-            }
-        }
+        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
+        function checkAutoBackup() { const last = localStorage.getItem('c5x_last_backup'); const now = Date.now(); if(!last || (now - last > 2592000000)) { if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) { triggerDriveBackup(); } } }
         function openSecurity(cb) { secCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
-        
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
         function renderNav() { document.getElementById('slotNav').innerHTML = slots.map((s, i) => { let statusClass = ''; if(s.name) statusClass = 'is-occupied'; return `<div class="slot-card ${i === activeIdx ? 'active' : ''} ${statusClass}" id="nav-s${i}" onclick="selectSlot(${i})">${s.name || 'S'+(i+1)}</div>`; }).join(''); }
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
@@ -1333,80 +1038,23 @@
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
         function loadSettingsValues() { 
-            const s = slots[activeIdx]; 
-            document.getElementById('setCapital').value = s.capital; 
-            document.getElementById('setInc').value = document.getElementById('incInput').value; 
-            document.getElementById('setDesc').value = document.getElementById('descInput').value; 
-            document.getElementById('setRoi').value = s.roi || 100; 
-            document.getElementById('setGlobalCapital').value = globalCapital; 
-            document.getElementById('setFee').value = exchangeFee; // LOAD FEE
-            document.getElementById('setRadarLimit').value = radarLimit; 
-            document.getElementById('setRadarSpeed').value = radarSpeed; 
-            document.getElementById('setDD').value = appConfig.dd; 
-            document.getElementById('setNewPass').value = ''; 
-            
-            const grid = document.getElementById('multiGrid');
-            grid.innerHTML = customMultipliers.map((val, i) => `
-                <div class="multi-item">
-                    <span class="multi-lbl">N${i+1}</span>
-                    <input type="number" class="multi-inp" value="${val}" step="0.1">
-                </div>
-            `).join('');
-
+            const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setFee').value = exchangeFee; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; 
+            const grid = document.getElementById('multiGrid'); grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join('');
             calcMonthlyPerformance(); 
         }
-        function calcMonthlyPerformance() { 
-            const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); 
-            let monthlyProfit = 0; 
-            history.forEach(h => { 
-                const parts = h.date.split('/'); 
-                if(parts.length === 3) { 
-                    const hDate = new Date(parts[2], parts[1]-1, parts[0]); 
-                    if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { 
-                        // Use netProfit if exists
-                        monthlyProfit += (h.netProfit !== undefined ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0)); 
-                    } 
-                } 
-            }); 
-            let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; 
-            const el = document.getElementById('monthlyProfitDisplay'); 
-            el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; 
-        }
-        
+        function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += (h.netProfit !== undefined ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0)); } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
         function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; renderTickerSettings(); showToast("✅ Agregada"); }
         function renderTickerSettings() { document.getElementById('tickerChipsContainer').innerHTML = tickerAssets.map((a,i)=>`<div class="chip">${a}<div class="chip-del" onclick="removeTickerCoin(${i})">✕</div></div>`).join(''); }
         function removeTickerCoin(i) { tickerAssets.splice(i,1); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); renderTickerSettings(); }
         function exportPDF() { 
             if(history.length === 0) return showToast("⚠️ Sin Datos"); 
-            const { jsPDF } = window.jspdf; 
-            const doc = new jsPDF('l', 'mm', 'a4'); 
-            let totalProfit = 0; let totalInvested = 0; let wins = 0; 
-            history.forEach(h => { 
-                const inv = parseFloat(h.totalInv) || 0; 
-                // Use Net
-                const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0; 
-                totalInvested += inv; 
-                totalProfit += prof; 
-                if(prof > 0) wins++; 
-            }); 
+            const { jsPDF } = window.jspdf; const doc = new jsPDF('l', 'mm', 'a4'); let totalProfit = 0; let totalInvested = 0; let wins = 0; 
+            history.forEach(h => { const inv = parseFloat(h.totalInv) || 0; const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0; totalInvested += inv; totalProfit += prof; if(prof > 0) wins++; }); 
             const winRate = history.length > 0 ? ((wins / history.length) * 100).toFixed(1) : 0; 
             doc.setFillColor(11, 14, 17); doc.rect(0, 0, 297, 25, 'F'); doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(59, 130, 246); doc.text("C5X", 14, 16); doc.setFontSize(14); doc.setTextColor(255, 255, 255); doc.text("REPORTE PROFESIONAL", 40, 16); 
-            doc.setFillColor(245, 247, 250); doc.rect(14, 30, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); 
-            doc.text("CAPITAL MOVIDO", 20, 38); doc.text("NET PROFIT", 90, 38); doc.text("WIN RATE", 160, 38); doc.text("TOTAL OPS", 230, 38); 
-            doc.setFontSize(14); doc.setTextColor(0); 
-            doc.text("$" + totalInvested.toFixed(2), 20, 46); 
-            doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); 
-            doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 90, 46); 
-            doc.setTextColor(0); doc.text(winRate + "%", 160, 46); doc.text(history.length.toString(), 230, 46); 
-            
-            const bodyData = history.map(h => { 
-                const inv = parseFloat(h.totalInv) || 0; 
-                const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0;
-                const avg = parseFloat(h.avgPrice) || 0; 
-                const exit = parseFloat(h.exitPrice) || 0; 
-                return [ h.date + '\n' + h.time, h.coin, '$' + (avg < 1 ? avg.toFixed(6) : avg.toFixed(2)), '$' + (exit < 1 ? exit.toFixed(6) : exit.toFixed(2)), '$' + inv.toFixed(2), (prof>=0?'+':'') + '$' + prof.toFixed(2), h.roi ]; 
-            }); 
-            
+            doc.setFillColor(245, 247, 250); doc.rect(14, 30, 270, 20, 'F'); doc.setFontSize(10); doc.setTextColor(80); doc.text("CAPITAL MOVIDO", 20, 38); doc.text("NET PROFIT", 90, 38); doc.text("WIN RATE", 160, 38); doc.text("TOTAL OPS", 230, 38); 
+            doc.setFontSize(14); doc.setTextColor(0); doc.text("$" + totalInvested.toFixed(2), 20, 46); doc.setTextColor(totalProfit >= 0 ? 14 : 200, totalProfit >= 0 ? 203 : 50, totalProfit >= 0 ? 129 : 50); doc.text((totalProfit>=0?'+':'') + "$" + totalProfit.toFixed(2), 90, 46); doc.setTextColor(0); doc.text(winRate + "%", 160, 46); doc.text(history.length.toString(), 230, 46); 
+            const bodyData = history.map(h => { const inv = parseFloat(h.totalInv) || 0; const prof = (h.netProfit !== undefined ? parseFloat(h.netProfit) : parseFloat(h.profit)) || 0; const avg = parseFloat(h.avgPrice) || 0; const exit = parseFloat(h.exitPrice) || 0; return [ h.date + '\n' + h.time, h.coin, '$' + (avg < 1 ? avg.toFixed(6) : avg.toFixed(2)), '$' + (exit < 1 ? exit.toFixed(6) : exit.toFixed(2)), '$' + inv.toFixed(2), (prof>=0?'+':'') + '$' + prof.toFixed(2), h.roi ]; }); 
             doc.autoTable({ head: [['FECHA / HORA', 'ACTIVO', 'PRECIO ENT.', 'PRECIO SALIDA', 'INVERSIÓN', 'PNL NETO', 'ROI']], body: bodyData, startY: 58, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle', halign: 'center' }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold', halign: 'center' }, didParseCell: function(data) { if (data.section === 'body' && data.column.index === 5) { const raw = data.cell.raw; if(raw.startsWith('+')) data.cell.styles.textColor = [14, 203, 129]; else data.cell.styles.textColor = [246, 70, 93]; } } }); 
             doc.save("C5X_Pro_Report.pdf"); 
         }
