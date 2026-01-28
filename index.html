@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.5 OPTIMIZED</title>
+    <title>C5X DCA ENGINE V44.5</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
@@ -13,152 +13,101 @@
 
     <style>
         :root {
-            --bg-main: #0b0e11;
-            --bg-card: #181a20;
-            --bg-input: #1e2329;
-            --accent: #fcd535;
-            --long: #0ecb81;
-            --short: #f6465d;
-            --text-primary: #eaecef;
-            --text-secondary: #929aa5;
-            --text-tertiary: #474d57;
-            --border: rgba(255,255,255,0.05);
-            --header-h: 60px;
-            --tab-h: 65px;
+            --bg-main: #0b0e11; --bg-card: #181a20; --bg-input: #1e2329;
+            --accent: #fcd535; --long: #0ecb81; --short: #f6465d;
+            --text-primary: #eaecef; --text-secondary: #929aa5; --text-tertiary: #474d57;
+            --border: rgba(255,255,255,0.05); --header-h: 60px; --tab-h: 70px;
         }
 
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { 
-            background: var(--bg-main); 
-            color: var(--text-primary); 
-            font-family: 'Rajdhani', sans-serif; 
-            overflow-x: hidden; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-        }
+        body { background: var(--bg-main); color: var(--text-primary); font-family: 'Rajdhani', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
         /* HEADER & TICKER */
-        header { 
-            height: var(--header-h); 
-            background: rgba(11,14,17,0.95); 
-            backdrop-filter: blur(10px); 
-            border-bottom: 1px solid var(--border); 
-            display: flex; 
-            align-items: center; 
-            padding: 0 15px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-        }
+        header { height: var(--header-h); background: rgba(11,14,17,0.98); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 15px; position: relative; z-index: 100; }
         .ticker-container { flex:1; overflow:hidden; white-space:nowrap; margin-right:10px; }
-        #tickerScroll { display:inline-block; animation: scrollTicker 30s linear infinite; }
+        #tickerScroll { display:inline-block; animation: scrollTicker 40s linear infinite; }
         @keyframes scrollTicker { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
         .ticker-item { display:inline-block; margin-right:20px; font-family:'JetBrains Mono'; font-size:12px; font-weight:700; }
-        .up { color: var(--long); } .down { color: var(--short); }
 
         /* MAIN CONTENT */
-        main { flex:1; overflow-y:auto; padding:15px 15px 100px; }
+        main { flex:1; overflow-y:auto; padding:15px 15px 120px; }
 
-        /* SLOTS GRID */
-        .slots-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:20px; }
+        /* SLOTS */
+        .slots-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; margin-bottom:15px; }
         .slot-btn { 
-            background: var(--bg-card); border: 1px solid var(--border); border-radius:10px; padding:12px 5px;
-            text-align:center; transition:0.2s; position:relative; overflow:hidden;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius:10px; padding:10px 4px;
+            text-align:center; position:relative; transition: 0.2s;
         }
         .slot-btn.active { border-color: var(--accent); background: rgba(252,213,53,0.05); }
-        .slot-btn .s-name { font-size:14px; font-weight:800; display:block; }
-        .slot-btn .s-strat { font-size:9px; color:var(--text-secondary); text-transform:uppercase; margin-top:2px; }
-        .slot-indicator { position:absolute; top:4px; right:4px; width:6px; height:6px; border-radius:50%; background:var(--text-tertiary); }
-        .slot-indicator.on { background: var(--long); box-shadow: 0 0 5px var(--long); }
+        .slot-btn.is-long { border-bottom: 3px solid var(--long); }
+        .slot-btn.is-short { border-bottom: 3px solid var(--short); }
+        .slot-btn span { display:block; font-size:11px; font-weight:800; overflow:hidden; text-overflow:ellipsis; }
 
         /* CONTROL CARD */
-        .control-card { background:var(--bg-card); border-radius:16px; padding:20px; margin-bottom:15px; border:1px solid var(--border); }
-        .input-row { display:flex; gap:12px; margin-bottom:15px; }
+        .control-card { background:var(--bg-card); border-radius:16px; padding:18px; margin-bottom:15px; border:1px solid var(--border); }
+        .input-row { display:flex; gap:10px; margin-bottom:12px; }
         .input-group { flex:1; }
-        .input-group label { display:block; font-size:11px; color:var(--text-secondary); margin-bottom:6px; font-weight:700; text-transform:uppercase; }
-        .input-wrap { position:relative; background:var(--bg-input); border-radius:8px; border:1px solid var(--border); }
-        .input-wrap input { 
-            width:100%; background:transparent; border:none; padding:12px; color:var(--text-primary); 
-            font-family:'JetBrains Mono'; font-weight:700; font-size:15px;
-        }
-        
-        /* BOTONES ESTRATEGIA */
-        .strat-toggle { display:flex; background:var(--bg-input); border-radius:10px; padding:4px; margin-bottom:15px; }
-        .st-btn { flex:1; padding:10px; border:none; background:transparent; color:var(--text-secondary); font-weight:800; border-radius:8px; font-size:12px; transition:0.2s; }
-        .st-btn.active { background:var(--bg-card); color:var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .input-group label { display:block; font-size:10px; color:var(--text-secondary); margin-bottom:4px; font-weight:700; }
+        .input-wrap { background:var(--bg-input); border-radius:8px; border:1px solid var(--border); display:flex; align-items:center; }
+        .input-wrap input { width:100%; background:transparent; border:none; padding:10px; color:var(--text-primary); font-family:'JetBrains Mono'; font-weight:700; font-size:14px; }
 
-        /* UNIFIED LEVELS LIST */
-        .levels-grid { display: flex; flex-direction: column; gap: 8px; }
+        /* STRAT TOGGLE */
+        .strat-toggle { display:flex; background:var(--bg-input); border-radius:10px; padding:4px; margin-bottom:12px; }
+        .st-btn { flex:1; padding:8px; border:none; background:transparent; color:var(--text-secondary); font-weight:800; border-radius:8px; font-size:11px; }
+        .st-btn.active { background:var(--bg-card); color:var(--accent); }
+
+        /* NIVELES ESTILO V44.5 */
+        .levels-grid { display: flex; flex-direction: column; gap: 6px; }
         .unified-card {
             background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
-            display: flex; align-items: center; padding: 12px 15px; transition: 0.2s;
+            display: flex; align-items: center; padding: 10px 15px; transition: 0.2s;
         }
-        .unified-card.active { border-left: 4px solid var(--long); background: rgba(14,203,129,0.05); }
-        .u-index { width: 25px; font-family: 'Orbitron'; font-size: 14px; color: var(--text-tertiary); }
+        .unified-card.active { background: rgba(255,255,255,0.05); border-left: 4px solid var(--accent); }
+        .u-index { width: 25px; font-family: 'Orbitron'; font-size: 13px; color: var(--text-tertiary); }
         .u-center { flex: 1; }
         
-        /* PRECIO GRANDE COMO SOLICITADO */
+        /* PRECIO GRANDE Y CLARO */
         .u-title { 
             font-family: 'JetBrains Mono', monospace; 
-            font-size: 20px; /* Tamaño grande */
+            font-size: 20px; /* Tamaño solicitado */
             font-weight: 800; 
             color: var(--text-primary); 
-            line-height: 1.1;
+            line-height: 1;
         }
-        .u-sub { font-size: 10px; font-weight: 700; color: var(--text-tertiary); margin-top: 2px; }
+        .u-sub { font-size: 9px; font-weight: 800; color: var(--text-tertiary); margin-top: 2px; }
         
         .u-right { text-align: right; }
         .u-val-primary { font-family: 'JetBrains Mono'; font-size: 14px; font-weight: 700; color: var(--accent); }
         .u-val-secondary { font-size: 11px; font-weight: 700; color: var(--text-secondary); }
 
+        /* DASHBOARD FLOTANTE */
+        .res-panel { 
+            position: fixed; bottom: 85px; left: 15px; right: 15px; 
+            background: var(--accent); color: #000; border-radius: 14px; 
+            padding: 12px 18px; display: flex; justify-content: space-between; 
+            z-index: 900; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .res-item span { display:block; font-size:9px; font-weight:800; text-transform:uppercase; opacity:0.7; }
+        .res-item div { font-family:'JetBrains Mono'; font-size:15px; font-weight:800; }
+
         /* NAVBAR */
         nav { 
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--tab-h);
-            background: rgba(24,26,32,0.98); border-top: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-around; z-index: 1000;
-            padding-bottom: env(safe-area-inset-bottom);
+            background: #181a20; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-around; padding-bottom: 10px;
         }
-        .nav-item { flex:1; text-align:center; color: var(--text-secondary); font-size:11px; font-weight:700; text-transform:uppercase; }
+        .nav-item { flex:1; text-align:center; color: var(--text-secondary); font-size:10px; font-weight:700; }
         .nav-item.active { color: var(--accent); }
-        .nav-item svg { display:block; margin:0 auto 4px; width:22px; height:22px; }
+        .nav-item svg { display:block; margin:0 auto 4px; width:20px; height:20px; }
 
-        .res-panel { 
-            position:sticky; bottom:calc(var(--tab-h) + 10px); background:var(--accent); 
-            color:var(--bg-main); border-radius:12px; padding:15px; display:flex; 
-            justify-content:space-between; align-items:center; font-weight:800;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4); margin-top:15px;
-        }
-        .res-item span { display:block; font-size:10px; text-transform:uppercase; opacity:0.8; }
-        .res-item div { font-family:'JetBrains Mono'; font-size:16px; }
-
-        /* MODALES */
-        .modal { 
-            position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:2000; 
-            display:none; align-items:center; justify-content:center; padding:20px; 
-        }
-        .modal-content { background:var(--bg-card); width:100%; max-width:400px; border-radius:20px; padding:25px; border:1px solid var(--border); }
-        .modal-title { font-family:'Orbitron'; font-size:18px; margin-bottom:20px; text-align:center; color:var(--accent); }
-        
-        .btn-full { width:100%; padding:15px; border-radius:12px; border:none; font-weight:800; font-family:'Rajdhani'; font-size:16px; margin-top:10px; }
-        .btn-accent { background:var(--accent); color:var(--bg-main); }
-        .btn-ghost { background:transparent; color:var(--text-secondary); }
-
-        .liquidate-card {
-            background: rgba(246,70,93,0.1); border: 1px dashed var(--short);
-            border-radius:12px; padding:15px; text-align:center; color:var(--short);
-            font-weight:800; margin-top:10px; font-size:14px;
-        }
-
-        #view-log, #view-settings { display:none; }
-
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="ticker-container"><div id="tickerScroll">Cargando mercados...</div></div>
-    <div style="font-family:'Orbitron'; font-size:18px; font-weight:900; color:var(--accent);">C5X</div>
+    <div class="ticker-container"><div id="tickerScroll">CONECTANDO GATE.IO...</div></div>
+    <div style="font-family:'Orbitron'; font-size:16px; font-weight:900; color:var(--accent);">C5X</div>
 </header>
 
 <main>
@@ -168,134 +117,106 @@
         <div class="control-card">
             <div class="input-row">
                 <div class="input-group">
-                    <label>Activo ETF</label>
-                    <div class="input-wrap"><input type="text" id="coinInput" placeholder="BTC3L" oninput="updateSlot()"></div>
+                    <label>TOKEN (BTC3L / ETH5S)</label>
+                    <div class="input-wrap"><input type="text" id="coinInput" placeholder="SUI3L" oninput="updateSlot()"></div>
                 </div>
                 <div class="input-group">
-                    <label>Precio Base</label>
-                    <div class="input-wrap"><input type="number" id="priceInput" step="0.000001" placeholder="0.00" oninput="updateSlot()"></div>
+                    <label>PRECIO ACTUAL</label>
+                    <div class="input-wrap"><input type="number" id="priceInput" step="any" oninput="updateSlot()"></div>
                 </div>
             </div>
 
             <div class="strat-toggle">
-                <button class="st-btn active" id="btnNormal" onclick="setStrat('normal')">NORMAL</button>
-                <button class="st-btn" id="btnAgg" onclick="setStrat('aggressive')">AGRESIVA</button>
+                <button class="st-btn active" id="btnNormal" onclick="setStrat('normal')">ESTRATEGIA NORMAL</button>
+                <button class="st-btn" id="btnAgg" onclick="setStrat('aggressive')">AGRESIVA (DCA66)</button>
             </div>
 
             <div class="input-row">
                 <div class="input-group">
-                    <label>Capital Nivel 1</label>
-                    <div class="input-wrap"><input type="number" id="capInput" value="10" oninput="updateSlot()"></div>
+                    <label>CAPITAL BASE ($)</label>
+                    <div class="input-wrap"><input type="number" id="capInput" oninput="updateSlot()"></div>
                 </div>
                 <div class="input-group">
-                    <label>ROI %</label>
-                    <div class="input-wrap"><input type="number" id="roiInput" value="50" oninput="updateSlot()"></div>
+                    <label>OBJETIVO ROI %</label>
+                    <div class="input-wrap"><input type="number" id="roiInput" oninput="updateSlot()"></div>
                 </div>
             </div>
             
-            <div id="extraInputs" style="display:none; gap:12px; margin-top:10px;">
-                <div class="input-group">
-                    <label>Caída Escalonada %</label>
-                    <div class="input-wrap"><input type="number" id="incInput" value="7" oninput="updateSlot()"></div>
-                </div>
-                <div class="input-group">
-                    <label>Caída Fija (Agr) %</label>
-                    <div class="input-wrap"><input type="number" id="descInput" value="66" oninput="updateSlot()"></div>
+            <div id="configLock" class="hidden">
+                <div class="input-row" style="margin-top:10px; border-top:1px solid var(--border); padding-top:10px;">
+                    <div class="input-group">
+                        <label>INC. CAÍDA %</label>
+                        <input type="number" id="incInput" value="7" style="width:100%; background:var(--bg-input); color:#fff; border:none; padding:8px; border-radius:5px;" oninput="updateSlot()">
+                    </div>
+                    <div class="input-group">
+                        <label>CAÍDA FIJA %</label>
+                        <input type="number" id="descInput" value="66" style="width:100%; background:var(--bg-input); color:#fff; border:none; padding:8px; border-radius:5px;" oninput="updateSlot()">
+                    </div>
                 </div>
             </div>
-            <button class="btn-ghost" style="font-size:10px; width:100%;" onclick="toggleSettingsLock()">🔒 EDITAR ESTRATEGIA</button>
+            <button onclick="unlock()" style="width:100%; background:transparent; border:none; color:var(--text-tertiary); font-size:9px; margin-top:5px;">[ CONFIGURACIÓN AVANZADA ]</button>
         </div>
 
         <div class="levels-grid" id="levelsGrid"></div>
-
-        <div class="res-panel">
-            <div class="res-item"><span>Inversión</span><div id="resInv">$0.00</div></div>
-            <div class="res-item"><span>AVG Buy</span><div id="resAvg">0.00</div></div>
-            <div class="res-item"><span>Target</span><div id="resTarget">0.00</div></div>
-        </div>
     </section>
 
-    <section id="view-log">
+    <section id="view-log" class="hidden">
         <div class="control-card">
-            <h3 style="margin-bottom:15px; font-family:'Orbitron';">HISTORIAL DE CIERRES</h3>
+            <h3 style="color:var(--accent); font-family:'Orbitron'; font-size:14px; margin-bottom:15px;">BITÁCORA DE OPERACIONES</h3>
             <div id="logContent"></div>
-            <button class="btn-full btn-accent" onclick="exportToExcel()">EXPORTAR EXCEL</button>
-        </div>
-    </section>
-
-    <section id="view-settings">
-        <div class="control-card">
-            <h3 style="margin-bottom:15px;">CONFIGURACIÓN GLOBAL</h3>
-            <label style="font-size:11px;">Capital Total App</label>
-            <div class="input-wrap" style="margin-bottom:15px;">
-                <input type="number" id="globalCapInput" onchange="updateGlobalCap()">
-            </div>
-            <button class="btn-full btn-ghost" onclick="exportData()">RESPALDO GOOGLE DRIVE (JSON)</button>
         </div>
     </section>
 </main>
 
+<div class="res-panel" id="resPanel">
+    <div class="res-item"><span>INVERSIÓN</span><div id="resInv">$0.00</div></div>
+    <div class="res-item"><span>PROMEDIO (AVG)</span><div id="resAvg">0.0000</div></div>
+    <div class="res-item"><span>VENTA (TARGET)</span><div id="resTarget">0.0000</div></div>
+</div>
+
 <nav>
     <div class="nav-item active" onclick="switchView('operar', this)">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16.5C21 16.88 20.79 17.21 20.47 17.38L12.57 21.82C12.41 21.94 12.21 22 12 22C11.79 22 11.59 21.94 11.43 21.82L3.53 17.38C3.21 17.21 3 16.88 3 16.5V7.5C3 7.12 3.21 6.79 3.53 6.62L11.43 2.18C11.59 2.06 11.79 2 12 2C12.21 2 12.41 2.06 12.57 2.18L20.47 6.62C20.79 6.79 21 7.12 21 7.5V16.5Z"/></svg>
-        Operar
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16.5V7.5L12 2L3 7.5V16.5L12 22L21 16.5Z"/></svg>
+        OPERAR
     </div>
     <div class="nav-item" onclick="switchView('log', this)">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2M18 20H6V4H13V9H18V20Z"/></svg>
-        Bitácora
-    </div>
-    <div class="nav-item" onclick="switchView('settings', this)">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15.5C13.93 15.5 15.5 13.93 15.5 12C15.5 10.07 13.93 8.5 12 8.5C10.07 8.5 8.5 10.07 8.5 12C8.5 13.93 10.07 15.5 12 15.5M19.43 12.98C19.47 12.66 19.5 12.34 19.5 12C19.5 11.66 19.47 11.34 19.43 11.02L21.54 9.37C21.73 9.22 21.78 8.95 21.66 8.73L19.66 5.27C19.54 5.05 19.27 4.97 19.05 5.05L16.56 6.05C16.04 5.65 15.48 5.32 14.87 5.07L14.49 2.42C14.46 2.18 14.25 2 14 2H10C9.75 2 9.54 2.18 9.51 2.42L9.13 5.07C8.52 5.32 7.96 5.66 7.44 6.05L4.95 5.05C4.73 4.97 4.46 5.05 4.34 5.27L2.34 8.73C2.21 8.95 2.27 9.22 2.46 9.37L4.57 11.02C4.53 11.34 4.5 11.66 4.5 12C4.5 12.34 4.53 12.66 4.57 12.98L2.46 14.63C2.27 14.78 2.22 15.05 2.34 15.27L4.34 18.73C4.46 18.95 4.73 19.03 4.95 18.95L7.44 17.95C7.96 18.35 8.52 18.68 9.13 18.93L9.51 21.58C9.54 21.82 9.75 22 10 22H14C14.25 22 14.46 21.82 14.49 21.58L14.87 18.93C15.48 18.67 16.04 18.34 16.56 17.95L19.05 18.95C19.27 19.03 19.54 18.95 19.66 18.73L21.66 15.27C21.78 15.05 21.73 14.78 21.54 14.63L19.43 12.98Z"/></svg>
-        Ajustes
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z"/></svg>
+        BITÁCORA
     </div>
 </nav>
 
-<div class="modal" id="modalLiquidate">
-    <div class="modal-content">
-        <div class="modal-title">CERRAR OPERACIÓN</div>
-        <p style="text-align:center; color:var(--text-secondary); margin-bottom:20px;">¿Deseas guardar este cierre en la bitácora?</p>
-        <button class="btn-full btn-accent" onclick="confirmLiquidate(true)">SÍ, GUARDAR Y LIMPIAR</button>
-        <button class="btn-full btn-ghost" onclick="confirmLiquidate(false)">SOLO LIMPIAR SLOT</button>
-        <button class="btn-full btn-ghost" onclick="closeModal()">CANCELAR</button>
-    </div>
-</div>
-
 <script>
-    // --- ESTADO INICIAL ---
-    let slots = JSON.parse(localStorage.getItem('c5x_slots')) || Array(8).fill().map((_,i)=>({
-        id: i, name: '', price: 0, capital: 10, roi: 50, strat: 'normal', buys: [0]
+    let slots = JSON.parse(localStorage.getItem('c5x_v44_slots')) || Array(8).fill().map((_,i)=>({
+        id:i, name:'', price:0, capital:10, roi:50, strat:'normal', buys:[0]
     }));
     let activeIdx = 0;
-    let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
-    let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
-    let globalCapital = localStorage.getItem('c5x_global_capital') || 5000;
+    let history = JSON.parse(localStorage.getItem('c5x_v44_history')) || [];
+    let customMultipliers = [1, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024];
 
-    // --- TICKER LOGIC ---
+    function save() { localStorage.setItem('c5x_v44_slots', JSON.stringify(slots)); }
+
     async function updateTicker() {
         try {
-            const resp = await fetch('https://api.gateio.ws/api/v4/spot/tickers');
-            const data = await resp.json();
-            const relevant = ['BTC_USDT', 'ETH_USDT', 'AVAX_USDT', 'SOL_USDT', 'LTC_USDT'];
-            const filtered = data.filter(t => relevant.includes(t.currency_pair));
-            
-            document.getElementById('tickerScroll').innerHTML = filtered.map(t => {
-                const change = parseFloat(t.change_percentage);
-                return `<span class="ticker-item">${t.currency_pair.replace('_','/')} <span class="${change>=0?'up':'down'}">${parseFloat(t.last).toFixed(2)} (${change>=0?'+':''}${change.toFixed(2)}%)</span></span>`;
-            }).join('');
-        } catch(e) { console.error("Ticker Error", e); }
+            const r = await fetch('https://api.gateio.ws/api/v4/spot/tickers');
+            const data = await r.json();
+            const list = ['BTC_USDT','ETH_USDT','SOL_USDT','AVAX_USDT','DOGE_USDT'];
+            document.getElementById('tickerScroll').innerHTML = data.filter(t => list.includes(t.currency_pair))
+                .map(t => `<span class="ticker-item">${t.currency_pair.split('_')[0]} $${parseFloat(t.last).toFixed(2)}</span>`).join('');
+        } catch(e){}
     }
-    setInterval(updateTicker, 10000); updateTicker();
+    setInterval(updateTicker, 15000); updateTicker();
 
-    // --- RENDER SLOTS ---
     function renderSlots() {
         const grid = document.getElementById('slotsGrid');
-        grid.innerHTML = slots.map((s, i) => `
-            <div class="slot-btn ${i === activeIdx ? 'active' : ''}" onclick="selectSlot(${i})">
-                <div class="slot-indicator ${s.buys.length > 0 && s.name ? 'on' : ''}"></div>
-                <span class="s-name">${s.name || 'Slot '+(i+1)}</span>
-                <span class="s-strat">${s.strat}</span>
-            </div>
-        `).join('');
+        grid.innerHTML = slots.map((s, i) => {
+            let cls = s.id === activeIdx ? 'active' : '';
+            if(s.name.includes('3L') || s.name.includes('5L')) cls += ' is-long';
+            if(s.name.includes('3S') || s.name.includes('5S')) cls += ' is-short';
+            return `<div class="slot-btn ${cls}" onclick="selectSlot(${i})">
+                <span>${s.name || 'SLOT '+(i+1)}</span>
+                <div style="font-size:8px; color:var(--text-tertiary)">${s.strat.toUpperCase()}</div>
+            </div>`;
+        }).join('');
     }
 
     function selectSlot(idx) {
@@ -316,161 +237,94 @@
         s.price = parseFloat(document.getElementById('priceInput').value) || 0;
         s.capital = parseFloat(document.getElementById('capInput').value) || 10;
         s.roi = parseFloat(document.getElementById('roiInput').value) || 50;
-        save();
-        renderSlots();
-        renderLevels();
+        save(); renderSlots(); renderLevels();
     }
 
-    function setStrat(type, update = true) {
-        slots[activeIdx].strat = type;
-        document.getElementById('btnNormal').classList.toggle('active', type === 'normal');
-        document.getElementById('btnAgg').classList.toggle('active', type === 'aggressive');
-        if(update) { save(); renderSlots(); renderLevels(); }
+    function setStrat(st, up=true) {
+        slots[activeIdx].strat = st;
+        document.getElementById('btnNormal').classList.toggle('active', st==='normal');
+        document.getElementById('btnAgg').classList.toggle('active', st==='aggressive');
+        if(up){ save(); renderSlots(); renderLevels(); }
     }
 
-    // --- LÓGICA DE NIVELES (V44.5 CORREGIDA) ---
-    function renderLevels() { 
+    function formatPrice(p) {
+        if (p < 0.000001) return p.toFixed(10);
+        if (p < 0.001) return p.toFixed(8);
+        if (p < 1) return p.toFixed(6);
+        return p.toFixed(4);
+    }
+
+    function renderLevels() {
         const grid = document.getElementById('levelsGrid');
         const s = slots[activeIdx];
-        const descPct = parseFloat(document.getElementById('descInput').value) || 66; 
-        const incPct = parseFloat(document.getElementById('incInput').value) || 7; 
+        if(!s.price) { grid.innerHTML = ''; return; }
+
+        const inc = parseFloat(document.getElementById('incInput').value) || 7;
+        const fix = parseFloat(document.getElementById('descInput').value) || 66;
         
-        if(!s.price || s.price <= 0) { 
-            grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa activo y precio base</div>'; 
-            return; 
-        } 
-        
-        let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; 
-        const maxLevels = 12; 
-        
-        for(let i=0; i < maxLevels; i++){ 
-            let pLevel; 
-            
-            // Estrategia de caída (No modificada)
-            if(i === 0) { 
-                pLevel = s.price; 
-                currentStepDrop = 0; 
-            } else { 
-                if(s.strat === "normal") { 
-                    if(i === 1) currentStepDrop = 17; 
-                    else currentStepDrop += incPct; 
-                } else { 
-                    currentStepDrop = descPct; 
-                } 
-                pLevel = lastPrice * (1 - (currentStepDrop / 100)); 
-            } 
+        let html = '', lastP = s.price, totalSpent = 0, totalQty = 0, currentDrop = 0;
 
-            const mUSD = (customMultipliers[i] || 1) * s.capital;
-            const on = s.buys.includes(i); 
-            if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } 
+        for(let i=0; i<12; i++) {
+            let pLvl;
+            if(i===0) { pLvl = s.price; }
+            else {
+                if(s.strat === 'normal') {
+                    let step = (i === 1) ? 17 : inc;
+                    currentDrop += step;
+                } else {
+                    currentDrop = fix;
+                }
+                pLvl = lastP * (1 - (currentDrop/100));
+            }
 
-            // Formateo dinámico para evitar ceros
-            let displayPrice;
-            if (pLevel < 0.000001) displayPrice = pLevel.toFixed(10);
-            else if (pLevel < 1) displayPrice = pLevel.toFixed(6);
-            else displayPrice = pLevel.toFixed(4);
+            const mUSD = customMultipliers[i] * s.capital;
+            const active = s.buys.includes(i);
+            if(active) { totalSpent += mUSD; totalQty += (mUSD/pLvl); }
 
-            // Renderizado: Se quitó la palabra "Nivel" y se aplicó clase u-title (20px)
-            html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                        <div class="u-index">${i+1}</div>
-                        <div class="u-center">
-                            <div class="u-title">${displayPrice}</div>
-                            <div class="u-sub">${i===0 ? 'ENTRADA' : ''}</div>
-                        </div>
-                        <div class="u-right">
-                            <div class="u-val-primary">$${mUSD.toFixed(1)}</div>
-                            <div class="u-val-secondary" style="${i>0?'color:var(--short)':''}">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
-                        </div>
-                    </div>`; 
-            
-            lastPrice = pLevel; 
-        } 
-        
-        grid.innerHTML = html; 
-        
-        const avg = totalQty > 0 ? totalSpent/totalQty : 0; 
-        const targetPrice = avg * (1 + (s.roi / 100)); 
-        
-        document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; 
-        document.getElementById('resAvg').textContent = avg < 1 ? avg.toFixed(6) : avg.toFixed(4); 
-        document.getElementById('resTarget').textContent = targetPrice < 1 ? targetPrice.toFixed(6) : targetPrice.toFixed(4); 
-    }
-
-    function toggleLvl(idx) {
-        const s = slots[activeIdx];
-        if(s.buys.includes(idx)) s.buys = s.buys.filter(n => n !== idx);
-        else s.buys.push(idx);
-        save(); renderLevels(); renderSlots();
-    }
-
-    // --- LIQUIDACIÓN Y BITÁCORA ---
-    function openLiquidateConfirm() { document.getElementById('modalLiquidate').style.display = 'flex'; }
-    function closeModal() { document.getElementById('modalLiquidate').style.display = 'none'; }
-
-    function confirmLiquidate(saveInLog) {
-        const s = slots[activeIdx];
-        if(saveInLog) {
-            const inv = parseFloat(document.getElementById('resInv').textContent.replace('$',''));
-            const logEntry = {
-                date: new Date().toLocaleString(),
-                coin: s.name,
-                investment: inv,
-                profit: inv * (s.roi/100),
-                strat: s.strat
-            };
-            history.unshift(logEntry);
-            localStorage.setItem('c5x_history', JSON.stringify(history));
-            renderLog();
-        }
-        // Limpiar slot
-        s.name = ''; s.price = 0; s.buys = [0];
-        document.getElementById('coinInput').value = '';
-        document.getElementById('priceInput').value = '';
-        save(); renderSlots(); renderLevels(); closeModal();
-    }
-
-    function renderLog() {
-        const container = document.getElementById('logContent');
-        if(history.length === 0) { container.innerHTML = '<p style="color:var(--text-tertiary)">No hay cierres registrados.</p>'; return; }
-        container.innerHTML = history.map(h => `
-            <div style="padding:10px; border-bottom:1px solid var(--border); font-size:13px;">
-                <div style="display:flex; justify-content:space-between;">
-                    <b style="color:var(--accent)">${h.coin}</b>
-                    <span style="color:var(--long)">+$${h.profit.toFixed(2)}</span>
+            // RENDER: Sin palabra Nivel, Precio Grande, Formato de Ceros arreglado
+            html += `<div class="unified-card ${active?'active':''}" onclick="toggleLvl(${i})">
+                <div class="u-index">${i+1}</div>
+                <div class="u-center">
+                    <div class="u-title">${formatPrice(pLvl)}</div>
+                    <div class="u-sub">${i===0?'PUNTO DE ENTRADA':''}</div>
                 </div>
-                <div style="color:var(--text-secondary); font-size:10px;">${h.date} | Inv: $${h.investment.toFixed(2)}</div>
-            </div>
-        `).join('');
+                <div class="u-right">
+                    <div class="u-val-primary">$${mUSD}</div>
+                    <div class="u-val-secondary" style="color:${i>0?'var(--short)':'var(--text-tertiary)'}">${i===0?'- - -':'-'+currentDrop.toFixed(1)+'%'}</div>
+                </div>
+            </div>`;
+            
+            // Si es agresivo, la caída es sobre el precio anterior siempre
+            if(s.strat === 'aggressive') lastP = pLvl; 
+            else lastP = pLvl; // En normal también mantenemos la lógica de cascada solicitada
+        }
+        grid.innerHTML = html;
+
+        const avg = totalQty > 0 ? totalSpent/totalQty : 0;
+        const target = avg * (1 + (s.roi/100));
+
+        document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`;
+        document.getElementById('resAvg').textContent = formatPrice(avg);
+        document.getElementById('resTarget').textContent = formatPrice(target);
     }
 
-    // --- UTILIDADES ---
-    function save() { localStorage.setItem('c5x_slots', JSON.stringify(slots)); }
+    function toggleLvl(i) {
+        const s = slots[activeIdx];
+        if(s.buys.includes(i)) s.buys = s.buys.filter(x => x!==i);
+        else s.buys.push(i);
+        save(); renderLevels();
+    }
 
-    function switchView(view, el) {
-        ['view-operar', 'view-log', 'view-settings'].forEach(v => document.getElementById(v).style.display = 'none');
-        document.getElementById('view-'+view).style.display = 'block';
+    function switchView(v, el) {
+        document.getElementById('view-operar').classList.toggle('hidden', v!=='operar');
+        document.getElementById('view-log').classList.toggle('hidden', v!=='log');
+        document.getElementById('resPanel').classList.toggle('hidden', v!=='operar');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         el.classList.add('active');
-        if(view === 'log') renderLog();
     }
 
-    function toggleSettingsLock() {
-        const pass = prompt("Clave de configuración:");
-        if(pass === "2524") {
-            document.getElementById('extraInputs').style.display = 'flex';
-        } else {
-            alert("Clave incorrecta");
-        }
-    }
+    function unlock() { if(prompt("Pass:")==="2524") document.getElementById('configLock').classList.remove('hidden'); }
 
-    function exportToExcel() {
-        const ws = XLSX.utils.json_to_sheet(history);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Cierres");
-        XLSX.writeFile(wb, "Bitacora_C5X.xlsx");
-    }
-
-    // Inicializar
     renderSlots();
     selectSlot(0);
 </script>
