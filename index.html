@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V43.3 GOLD EDITION</title>
+    <title>C5X - V43.4 GOLD STANDARD</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -26,7 +26,7 @@
             --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d;
             --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px;
             --drive: #34A853; 
-            /* COLOR ORO FIJO QUE NO CAMBIA CON EL TEMA */
+            /* COLOR ORO FIJO */
             --gold-fixed: #f0b90b;
             --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
@@ -144,9 +144,16 @@
         
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; padding: 0 5px; }
         
-        .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; padding: 12px; border-radius: 12px; border: 1px solid transparent; }
-        /* AGGRESSIVE USES GOLD FIXED */
-        .strat-display.aggressive { color: var(--gold-fixed) !important; background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
+        /* STRATEGY DISPLAY - FIXED GOLD COLOR ALWAYS */
+        .strat-display { 
+            flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; 
+            font-weight: 900; font-size: 11px; 
+            color: var(--gold-fixed) !important; /* SIEMPRE DORADO */
+            letter-spacing: 1px; padding: 12px; border-radius: 12px; border: 1px solid transparent; 
+        }
+        
+        /* AGGRESSIVE ADDS BACKGROUND, COLOR IS ALREADY GOLD */
+        .strat-display.aggressive { background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         
         .icon-sq-btn { width: 42px; height: 42px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
         .icon-sq-btn.locked { color: var(--danger); border-color: var(--danger); background: rgba(207, 48, 74, 0.1); }
@@ -471,7 +478,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.3 GOLD EDITION</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.4 GOLD STANDARD</div>
         </div>
     </div>
 
@@ -956,13 +963,9 @@
             
             if(isNormal) { 
                 elBadge.classList.remove('aggressive'); 
-                // NORMAL MODE: TARGET IS WHITE (Standard)
-                elTarget.style.color = "var(--text-primary)"; 
                 elCard.style.borderColor = "var(--border)"; 
             } else { 
                 elBadge.classList.add('aggressive'); 
-                // AGGRESSIVE MODE: TARGET IS GOLD FIXED
-                elTarget.style.color = "var(--gold-fixed)"; 
                 elCard.style.borderColor = "var(--warning)"; 
             } 
             
