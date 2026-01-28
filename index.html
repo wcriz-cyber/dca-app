@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.7 RADAR FIX</title>
+    <title>C5X - V44.8 STABLE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -157,7 +157,7 @@
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
-        /* --- CHANGED: ICON STYLE FOR NUMBERS --- */
+        /* ICON STYLE FOR NUMBERS */
         .u-index { 
             width: 36px; height: 36px; 
             border-radius: 50%; 
@@ -451,7 +451,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.7 RADAR FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.8 STABLE</div>
         </div>
     </div>
 
@@ -497,13 +497,14 @@
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
+        // LOAD SAVED ALERTS
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
         
-        // PROXY LIST - OPTIMIZED FOR LARGE JSONs
+        // PROXY LIST - RESTORED CORSPROXY AS PRIMARY
         let proxies = [
-            'https://api.codetabs.com/v1/proxy?quest=', // Often best for large payloads
+            'https://corsproxy.io/?', // BEST STABILITY
             'https://api.allorigins.win/raw?url=', 
-            'https://corsproxy.io/?'
+            'https://api.codetabs.com/v1/proxy?quest='
         ];
         if(customProxy) proxies.unshift(customProxy);
 
@@ -551,7 +552,7 @@
         function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
         function saveRadarSecure() { reqSec(() => { const lim = parseInt(document.getElementById('setRadarLimit').value); const spd = parseInt(document.getElementById('setRadarSpeed').value); if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } showToast("✅ Radar Actualizado"); }); }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://api.codetabs.com/v1/proxy?quest=', 'https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
+        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -686,15 +687,14 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- FIXED: RADAR OFFLINE ISSUE ---
-        // Uses more robust proxies and longer timeouts for heavy Gate.io JSON
+        // --- FIXED: RADAR OFFLINE & SPAM ALERTS ---
         async function fetchAndCalcTopDroppers() { 
             let success = false;
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            const fetchWithTimeout = (url, timeout = 15000) => { // Increased timeout
+            const fetchWithTimeout = (url, timeout = 15000) => { 
                 return new Promise((resolve, reject) => {
                     const timer = setTimeout(() => reject(new Error('Timeout')), timeout);
                     fetch(url).then(response => {
@@ -734,24 +734,35 @@
             }
         }
 
+        // --- NEW ALERT LOGIC: STRICT BUCKETS (-50, -60, -70...) ---
         function processDropperAlerts() {
             topDroppers.forEach(t => { 
                 const pct = parseFloat(t.change_percentage); 
                 const pair = t.currency_pair.replace('_USDT', ''); 
-                if(pct <= -50.0) { 
-                    let currentLevel = 0; 
-                    if (pct <= -90) currentLevel = -90; 
-                    else if (pct <= -80) currentLevel = -80; 
-                    else if (pct <= -70) currentLevel = -70; 
-                    else if (pct <= -60) currentLevel = -60; 
-                    else if (pct <= -50) currentLevel = -50; 
-                    let lastLevel = crashAlertedCoins[pair] || 0; 
-                    if (lastLevel === 0 || currentLevel < lastLevel) { 
+                
+                // Determine current bucket
+                let bucket = 0;
+                if (pct <= -90) bucket = -90;
+                else if (pct <= -80) bucket = -80;
+                else if (pct <= -70) bucket = -70;
+                else if (pct <= -60) bucket = -60;
+                else if (pct <= -50) bucket = -50;
+                
+                if (bucket !== 0) {
+                    // Check if we already alerted for this bucket or a deeper one
+                    let lastBucket = crashAlertedCoins[pair] || 0;
+                    
+                    // Trigger ONLY if current bucket is deeper (smaller number) than last alerted
+                    // E.g. Last: 0. Curr: -50. (-50 < 0) -> TRUE
+                    // E.g. Last: -50. Curr: -55 (bucket -50). (-50 < -50) -> FALSE
+                    // E.g. Last: -50. Curr: -62 (bucket -60). (-60 < -50) -> TRUE
+                    
+                    if (bucket < lastBucket) {
                         triggerCrashAlert(pair, pct); 
-                        crashAlertedCoins[pair] = currentLevel; 
+                        crashAlertedCoins[pair] = bucket; 
                         localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); 
-                    } 
-                } 
+                    }
+                }
             }); 
         }
 
