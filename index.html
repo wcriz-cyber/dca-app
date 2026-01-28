@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V44.8 STABLE</title>
+    <title>C5X - V44.9 FINAL FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="icon.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -157,7 +157,7 @@
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
-        /* ICON STYLE FOR NUMBERS */
+        /* ICON STYLE FOR NUMBERS - CIRCLE BADGE */
         .u-index { 
             width: 36px; height: 36px; 
             border-radius: 50%; 
@@ -451,7 +451,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.8 STABLE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.9 FINAL FIX</div>
         </div>
     </div>
 
@@ -497,13 +497,13 @@
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
-        // LOAD SAVED ALERTS
+        // ALERTS LOADED
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
         
-        // PROXY LIST - RESTORED CORSPROXY AS PRIMARY
+        // PROXY LIST - WITH FALLBACK LOGIC
         let proxies = [
-            'https://corsproxy.io/?', // BEST STABILITY
-            'https://api.allorigins.win/raw?url=', 
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
             'https://api.codetabs.com/v1/proxy?quest='
         ];
         if(customProxy) proxies.unshift(customProxy);
@@ -552,7 +552,7 @@
         function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
         function saveRadarSecure() { reqSec(() => { const lim = parseInt(document.getElementById('setRadarLimit').value); const spd = parseInt(document.getElementById('setRadarSpeed').value); if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } showToast("✅ Radar Actualizado"); }); }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
+        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -687,38 +687,51 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- FIXED: RADAR OFFLINE & SPAM ALERTS ---
+        // --- FIXED: RADAR OFFLINE WITH FALLBACK ---
         async function fetchAndCalcTopDroppers() { 
-            let success = false;
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            const fetchWithTimeout = (url, timeout = 15000) => { 
-                return new Promise((resolve, reject) => {
-                    const timer = setTimeout(() => reject(new Error('Timeout')), timeout);
-                    fetch(url).then(response => {
-                        clearTimeout(timer);
-                        if(!response.ok) reject(new Error('HTTP Error'));
-                        return response.json();
-                    }).then(data => resolve(data)).catch(err => reject(err));
-                });
+            // Function to attempt fetch with a specific proxy
+            const tryFetch = async (proxyUrl) => {
+                const controller = new AbortController();
+                const id = setTimeout(() => controller.abort(), 12000); // 12s limit
+                try {
+                    const res = await fetch(proxyUrl + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"), {
+                        signal: controller.signal,
+                        cache: "no-store"
+                    });
+                    clearTimeout(id);
+                    if(!res.ok) throw new Error("Status " + res.status);
+                    const json = await res.json();
+                    return json.contents ? JSON.parse(json.contents) : json; // Handle proxy wrappers
+                } catch(e) {
+                    clearTimeout(id);
+                    throw e;
+                }
             };
 
-            const p1 = fetchWithTimeout(proxies[0] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
-            const p2 = fetchWithTimeout(proxies[1] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"));
-            const p3 = (proxies.length > 2) ? fetchWithTimeout(proxies[2] + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers")) : new Promise((_, r) => setTimeout(r, 16000));
-
+            // SEQUENTIAL FALLBACK (Chain)
             try {
-                const data = await Promise.any([p1, p2, p3]);
-                elStatus.className = 'radar-status-dot online'; 
-                
-                let finalData = data;
-                if(data.contents) {
-                    try { finalData = JSON.parse(data.contents); } catch(e) { finalData = data; }
+                let data;
+                try {
+                    data = await tryFetch(proxies[0]); // Primary: CORSProxy
+                } catch(e1) {
+                    console.log("Primary failed, trying fallback 1...");
+                    try {
+                        data = await tryFetch(proxies[1]); // Fallback 1: AllOrigins
+                    } catch(e2) {
+                        console.log("Fallback 1 failed, trying fallback 2...");
+                        data = await tryFetch(proxies[2]); // Fallback 2: CodeTabs
+                    }
                 }
 
-                allGateETFs = finalData.filter(t => { 
+                if(!data) throw new Error("All proxies failed");
+
+                // Success
+                elStatus.className = 'radar-status-dot online'; 
+                allGateETFs = data.filter(t => { 
                     const pair = t.currency_pair; 
                     return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
                 }); 
@@ -728,19 +741,20 @@
                 startRadarRotation(); 
 
             } catch(e) { 
-                console.log("ALL PROXIES FAILED"); 
+                console.error("FINAL FAIL", e);
                 elStatus.className = 'radar-status-dot offline';
-                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ REINTENTAR CONEXIÓN</div>';
+                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
             }
         }
 
-        // --- NEW ALERT LOGIC: STRICT BUCKETS (-50, -60, -70...) ---
+        // --- STRICT ALERT LOGIC (NO REFRESH SPAM) ---
         function processDropperAlerts() {
+            let alertsChanged = false;
             topDroppers.forEach(t => { 
                 const pct = parseFloat(t.change_percentage); 
                 const pair = t.currency_pair.replace('_USDT', ''); 
                 
-                // Determine current bucket
+                // Determine current bucket (-50, -60, -70...)
                 let bucket = 0;
                 if (pct <= -90) bucket = -90;
                 else if (pct <= -80) bucket = -80;
@@ -749,21 +763,23 @@
                 else if (pct <= -50) bucket = -50;
                 
                 if (bucket !== 0) {
-                    // Check if we already alerted for this bucket or a deeper one
+                    // Check saved history
                     let lastBucket = crashAlertedCoins[pair] || 0;
                     
-                    // Trigger ONLY if current bucket is deeper (smaller number) than last alerted
-                    // E.g. Last: 0. Curr: -50. (-50 < 0) -> TRUE
-                    // E.g. Last: -50. Curr: -55 (bucket -50). (-50 < -50) -> FALSE
-                    // E.g. Last: -50. Curr: -62 (bucket -60). (-60 < -50) -> TRUE
-                    
+                    // Alert ONLY if the new bucket is DEEPER than the last saved one
+                    // Example: Last: -50. Current: -50 -> NO ALERT
+                    // Example: Last: -50. Current: -60 -> ALERT
                     if (bucket < lastBucket) {
                         triggerCrashAlert(pair, pct); 
                         crashAlertedCoins[pair] = bucket; 
-                        localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); 
+                        alertsChanged = true;
                     }
                 }
             }); 
+            
+            if(alertsChanged) {
+                localStorage.setItem('c5x_alert_levels', JSON.stringify(crashAlertedCoins)); 
+            }
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
