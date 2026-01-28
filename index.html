@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V43.4 GOLD STANDARD</title>
+    <title>C5X - V44.0 AUTO-PILOT</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -55,11 +55,13 @@
         @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes flash-green { 0% { background-color: rgba(14, 203, 129, 0); } 50% { background-color: rgba(14, 203, 129, 0.3); } 100% { background-color: rgba(14, 203, 129, 0); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
         .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .flash-buy { animation: flash-green 1s ease-out; }
 
         /* SKELETON LOADER */
         .skeleton-box {
@@ -88,6 +90,7 @@
         }
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
+        #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
@@ -424,7 +427,7 @@
                 </div>
             </div>
 
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
+            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
                      <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
@@ -478,7 +481,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V43.4 GOLD STANDARD</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V44.0 AUTO-PILOT</div>
         </div>
     </div>
 
@@ -801,7 +804,15 @@
             } 
         }
         
-        function showToast(txt, duration = 2500, isAlert = false) { const t = document.getElementById("toast"); t.textContent = txt; if(isAlert) { t.classList.add("alert-mode"); } else { t.classList.remove("alert-mode"); } t.classList.add("show"); setTimeout(() => { t.classList.remove("show"); }, duration); }
+        function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
+            const t = document.getElementById("toast"); 
+            t.textContent = txt; 
+            t.classList.remove("alert-mode", "success-mode"); 
+            if(isAlert) t.classList.add("alert-mode"); 
+            if(isSuccess) t.classList.add("success-mode"); 
+            t.classList.add("show"); 
+            setTimeout(() => { t.classList.remove("show"); }, duration); 
+        }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { 
             let totalRealizedProfit = history.reduce((sum, item) => {
@@ -870,7 +881,88 @@
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
         function updateRadarUI() { if(topDroppers.length === 0) return; const elVal = document.getElementById('radarValue'); const item = topDroppers[dropperIdx]; if(!item) return; elVal.style.opacity = 0; setTimeout(() => { const pairName = item.currency_pair.replace('_USDT', ''); const change = parseFloat(item.change_percentage).toFixed(2); const price = parseFloat(item.last); const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2); elVal.innerHTML = `<span onclick="quickAddFromTicker('${pairName}', ${price}, event)" style="color:var(--text-primary); text-decoration:underline dotted; text-underline-offset:4px; cursor:pointer">${pairName}</span> <span style="color:var(--text-tertiary); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`; elVal.style.opacity = 1; }, 200); }
         
-        function updateSlotStatus(symbol, currentPrice) { try { slots.forEach((s, idx) => { if(s.name === symbol && s.buys.length > 0) { const el = document.getElementById('nav-s'+idx); if(!el) return; let avg = calculateAvgPriceForSlot(s); if(avg > 0) { if(currentPrice > avg) { el.classList.remove('has-loss'); el.classList.add('has-profit'); const target = avg * (1 + (s.roi/100)); if(currentPrice >= target && !s.alerted) { triggerAlert(s.name); s.alerted = true; save(); } } else { el.classList.remove('has-profit'); el.classList.add('has-loss'); s.alerted = false; } } } }); } catch(e) { console.warn("Heatmap Error", e); } }
+        function updateSlotStatus(symbol, currentPrice) { 
+            try { 
+                slots.forEach((s, idx) => { 
+                    if(s.name === symbol && s.buys.length > 0) { 
+                        // Visual update logic
+                        const el = document.getElementById('nav-s'+idx); 
+                        if(el) {
+                            let avg = calculateAvgPriceForSlot(s); 
+                            if(avg > 0) { 
+                                if(currentPrice > avg) { 
+                                    el.classList.remove('has-loss'); el.classList.add('has-profit'); 
+                                    const target = avg * (1 + (s.roi/100)); 
+                                    if(currentPrice >= target && !s.alerted) { triggerAlert(s.name); s.alerted = true; save(); } 
+                                } else { 
+                                    el.classList.remove('has-profit'); el.classList.add('has-loss'); s.alerted = false; 
+                                } 
+                            }
+                        }
+                        
+                        // --- AUTO-PILOT LOGIC (Check and Buy Levels) ---
+                        // Only run if active entry (Level 0) exists
+                        if(s.buys.includes(0)) {
+                            checkAutoFill(s, idx, currentPrice);
+                        }
+                    } 
+                }); 
+            } catch(e) { console.warn("Heatmap/Auto Error", e); } 
+        }
+
+        function checkAutoFill(s, idx, currentPrice) {
+            const descPct = parseFloat(document.getElementById('descInput').value) || 66; 
+            const incPct = parseFloat(document.getElementById('incInput').value) || 7; 
+            const limit = customMultipliers ? customMultipliers.length : 12; 
+            let lastPrice = s.price;
+            let changesMade = false;
+
+            for(let i=0; i<limit; i++){ 
+                let pLevel; 
+                let currentStepDrop = 0;
+                
+                if(i===0) {
+                    pLevel = s.price; 
+                } else { 
+                    if(s.strat === "normal") { 
+                        if(i===1) currentStepDrop = 17; 
+                        else currentStepDrop += incPct; 
+                    } else { 
+                        currentStepDrop = descPct; 
+                    } 
+                    pLevel = lastPrice * (1 - (currentStepDrop/100)); 
+                } 
+                
+                // CORE LOGIC: If price is BELOW level AND NOT Bought yet
+                if (currentPrice <= pLevel && !s.buys.includes(i)) {
+                    s.buys.push(i);
+                    changesMade = true;
+                    // Trigger Notification
+                    triggerAutoBuyAlert(s.name, i);
+                }
+
+                lastPrice = pLevel; 
+            }
+
+            if(changesMade) {
+                save();
+                // If currently viewing this slot, refresh UI
+                if(activeIdx === idx) {
+                    calculate(); // This calls renderLevels
+                }
+            }
+        }
+
+        function triggerAutoBuyAlert(coin, level) {
+            const audio = document.getElementById('alertSound'); 
+            if(audio) { 
+                audio.currentTime = 0; 
+                audio.play().catch(e => {}); 
+            } 
+            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
+            showToast(`🛒 COMPRA AUTO: ${coin} NIVEL ${level}`, 3000, false, true);
+        }
+
         function calculateAvgPriceForSlot(s) { if(!s.price) return 0; let totalSpent = 0, totalQty = 0, lastPrice = s.price; const descPct = parseFloat(document.getElementById('descInput').value) || 66; const incPct = parseFloat(document.getElementById('incInput').value) || 7; const limit = customMultipliers ? customMultipliers.length : 12; for(let i=0; i<limit; i++){ let pLevel; if(i===0) pLevel = s.price; else { let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; pLevel = lastPrice * (1 - (step/100)); } if(s.buys.includes(i)) { const m = customMultipliers ? (customMultipliers[i] || 1) : 1; const mUSD = m * s.capital; totalSpent += mUSD; totalQty += (mUSD/pLevel); } lastPrice = pLevel; } return totalQty > 0 ? totalSpent/totalQty : 0; }
         function triggerAlert(coin) { const audio = document.getElementById('alertSound'); if(audio) audio.play().catch(e => console.log("Audio autoplay blocked by browser")); if(navigator.vibrate) navigator.vibrate([200, 100, 200]); showToast("🎯 OBJETIVO ALCANZADO: " + coin); }
         function toggleTheme() { isLight = !isLight; if(isLight) document.body.classList.add('light-mode'); else document.body.classList.remove('light-mode'); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); if(chartSymbol) loadChart(chartSymbol); }
