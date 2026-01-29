@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V17.9 STABLE</title>
+    <title>C5X - V17.10 GOLD PRICE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -459,7 +459,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.9 STABLE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.10 GOLD PRICE</div>
         </div>
     </div>
 
@@ -796,7 +796,8 @@
                 const change = parseFloat(item.change_percentage).toFixed(2); 
                 const price = parseFloat(item.last); 
                 const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2); 
-                elVal.innerHTML = `<span onclick="quickAddFromTicker('${pairName}', ${price}, event)" style="color:var(--text-primary); text-decoration:underline dotted; text-underline-offset:4px; cursor:pointer">${pairName}</span> <span style="color:var(--text-tertiary); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`; 
+                // AQUI CAMBIO COLOR PRECIO
+                elVal.innerHTML = `<span onclick="quickAddFromTicker('${pairName}', ${price}, event)" style="color:var(--text-primary); text-decoration:underline dotted; text-underline-offset:4px; cursor:pointer">${pairName}</span> <span style="color:var(--gold-fixed); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`; 
                 elVal.style.opacity = 1; 
             }, 200); 
         }
@@ -953,10 +954,11 @@
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
+                // AQUI CAMBIO COLOR PRECIO
                 div.innerHTML = `<div class="u-index">${index+1}</div>
                                  <div class="u-center">
                                     <div class="u-title" style="font-size:16px">${pairName}</div>
-                                    <div style="font-family:'JetBrains Mono'; font-size:14px; color:var(--text-secondary); font-weight:700; margin-top:4px">$${displayPrice}</div>
+                                    <div style="font-family:'JetBrains Mono'; font-size:14px; color:var(--gold-fixed); font-weight:700; margin-top:4px">$${displayPrice}</div>
                                  </div>
                                  <div class="etf-card-right">
                                     <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
