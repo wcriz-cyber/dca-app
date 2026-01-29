@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.5 PRO THEMES</title>
+    <title>C5X - V18.6 FONTS & GRID</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -12,7 +12,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/png" href="icon.png">
     
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Montserrat:wght@500;700;900&family=Nunito:wght@600;800&family=Orbitron:wght@600;900&family=Outfit:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Roboto+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -20,8 +22,14 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
-        /* --- 1. CLASSIC (DEFAULT C5X) --- */
+        /* --- VARIABLES GLOBALES DE FUENTES Y COLORES --- */
         :root {
+            /* VARIABLES DE FUENTE POR DEFECTO (CLASSIC) */
+            --font-main: 'Rajdhani', sans-serif;
+            --font-num: 'JetBrains Mono', monospace;
+            --font-head: 'Orbitron', sans-serif;
+
+            /* COLORES BASE (CLASSIC) */
             --bg: #0b0e11; 
             --surface: #151a21; 
             --surface-glass: rgba(21, 26, 33, 0.98);
@@ -35,61 +43,92 @@
             --warning: #f0b90b; 
             --danger: #cf304a; 
             --border: #2b3139; 
-            --radius-m: 16px;
             --gold-fixed: #f0b90b;
-            --chart-bg: #000000; 
+            --chart-bg: #000000;
+            
             --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
             --skeleton: rgba(255,255,255,0.05);
+            --radius-m: 16px;
         }
 
-        /* --- 2. NATURE (Verde Bosque) --- */
+        /* --- DEFINICIÓN DE TEMAS (COLORES + FUENTES) --- */
+
+        /* 1. NATURE (Orgánico, Fuentes Redondeadas) */
         body.theme-nature {
             --bg: #051008; --surface: #0e2015; --surface-glass: rgba(14, 32, 21, 0.98);
             --brand: #22c55e; --border: #1a3825; --card-bg: rgba(34, 197, 94, 0.05);
             --text-secondary: #86efac;
+            /* Fuentes Nature */
+            --font-main: 'Nunito', sans-serif;
+            --font-num: 'Roboto Mono', monospace;
+            --font-head: 'Outfit', sans-serif;
         }
 
-        /* --- 3. OCEAN (Índigo Profundo) --- */
+        /* 2. OCEAN (Moderno, Fuentes Geométricas) */
         body.theme-ocean {
             --bg: #070712; --surface: #10101f; --surface-glass: rgba(16, 16, 31, 0.98);
             --brand: #6366f1; --border: #262645; --card-bg: rgba(99, 102, 241, 0.05);
             --text-secondary: #a5b4fc;
+            /* Fuentes Ocean */
+            --font-main: 'Montserrat', sans-serif;
+            --font-num: 'JetBrains Mono', monospace;
+            --font-head: 'Montserrat', sans-serif;
         }
 
-        /* --- 4. SUNSET (Naranja Cálido) --- */
+        /* 3. SUNSET (Cálido, Fuentes Humanistas) */
         body.theme-sunset {
             --bg: #140805; --surface: #24100a; --surface-glass: rgba(36, 16, 10, 0.98);
             --brand: #f97316; --border: #4d2312; --card-bg: rgba(249, 115, 22, 0.05);
             --text-secondary: #fdba74;
+            /* Fuentes Sunset */
+            --font-main: 'Inter', sans-serif;
+            --font-num: 'Roboto Mono', monospace;
+            --font-head: 'Outfit', sans-serif;
         }
 
-        /* --- 5. CYBER (Amarillo Alto Contraste) --- */
+        /* 4. CYBER (Hacker, Fuentes Cuadradas/Tech) */
         body.theme-cyber {
             --bg: #000000; --surface: #0f0f0f; --surface-glass: rgba(15, 15, 15, 0.98);
             --brand: #eab308; --border: #333333; --card-bg: rgba(234, 179, 8, 0.08);
             --text-primary: #ffffff; --text-secondary: #fde047;
+            /* Fuentes Cyber */
+            --font-main: 'Chakra Petch', sans-serif;
+            --font-num: 'JetBrains Mono', monospace;
+            --font-head: 'Orbitron', sans-serif;
         }
 
-        /* --- 6. AMETHYST (Púrpura Místico) --- */
+        /* 5. AMETHYST (Místico, Fuentes Espaciales) */
         body.theme-amethyst {
             --bg: #0f0514; --surface: #1a0b24; --surface-glass: rgba(26, 11, 36, 0.98);
             --brand: #d946ef; --border: #4a1d5c; --card-bg: rgba(217, 70, 239, 0.05);
             --text-secondary: #f0abfc;
+            /* Fuentes Amethyst */
+            --font-main: 'Space Grotesk', sans-serif;
+            --font-num: 'JetBrains Mono', monospace;
+            --font-head: 'Space Grotesk', sans-serif;
         }
 
-        /* --- 7. VELVET (Rojo Vino) --- */
+        /* 6. VELVET (Elegante, Fuentes Serias) */
         body.theme-velvet {
             --bg: #120406; --surface: #21080c; --surface-glass: rgba(33, 8, 12, 0.98);
             --brand: #f43f5e; --border: #521422; --card-bg: rgba(244, 63, 94, 0.05);
             --text-secondary: #fda4af;
+            /* Fuentes Velvet */
+            --font-main: 'Inter', sans-serif;
+            --font-num: 'Roboto Mono', monospace;
+            --font-head: 'Montserrat', sans-serif;
         }
 
-        /* --- 8. SLATE (Gris Profesional/Minimalista) --- */
+        /* 7. SLATE (Profesional, Fuentes Estándar) */
         body.theme-slate {
             --bg: #0f172a; --surface: #1e293b; --surface-glass: rgba(30, 41, 59, 0.98);
             --brand: #94a3b8; --border: #334155; --card-bg: rgba(148, 163, 184, 0.08);
             --text-primary: #f8fafc; --text-secondary: #cbd5e1; --long: #6ee7b7;
+            /* Fuentes Slate */
+            --font-main: 'Inter', sans-serif;
+            --font-num: 'Roboto Mono', monospace;
+            --font-head: 'Inter', sans-serif;
         }
 
         /* MODO CLARO (Global Override) */
@@ -102,8 +141,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
         body { 
-            font-family: 'Rajdhani', sans-serif; font-weight: 600;
+            font-family: var(--font-main); /* FUENTE DINÁMICA */
+            font-weight: 600;
             background: var(--bg); color: var(--text-primary); 
             padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; user-select: none; font-size: 16px; 
@@ -111,24 +152,35 @@
             transition: background 0.3s ease, color 0.3s ease; 
         }
 
-        /* ANIMACIONES */
+        /* --- ELEMENTOS DE TEXTO DINÁMICOS --- */
+        .brand-text, .nav-title, .setting-section-title, .theme-name-label {
+            font-family: var(--font-head); 
+        }
+        .ticker-price, .input-field, .stat-value, .u-val-primary {
+            font-family: var(--font-num);
+        }
+
+        /* --- ANIMACIONES --- */
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes flash-red { 0%, 100% { background-color: var(--surface); } 50% { background-color: rgba(207, 48, 74, 0.3); } }
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
+        .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* UI ELEMENTS */
+        /* SKELETON */
         .skeleton-box { background: var(--skeleton); background: linear-gradient(90deg, var(--skeleton) 25%, var(--card-bg) 50%, var(--skeleton) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; color: transparent !important; }
         .skeleton-text { display: inline-block; min-width: 40px; min-height: 1em; border-radius: 4px; }
+
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; pointer-events: none; }
 
-        #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; font-size: 14px; font-family: 'Orbitron', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease; opacity: 0; }
+        #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; font-size: 14px; font-family: var(--font-head); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease; opacity: 0; }
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
@@ -137,14 +189,14 @@
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); transition: background 0.3s; }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
-        .brand-text { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 24px; color: var(--brand); line-height: 1; }
+        .brand-text { font-family: var(--font-head); font-weight: 900; font-size: 24px; color: var(--brand); line-height: 1; }
         
         .ticker-container { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: 8px; }
         .ticker-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 4px 12px; border-radius: 24px; height: 32px; }
         .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); transition: background 0.3s; }
         .ticker-dot.pulse { animation: pulse-ring 1.5s infinite; }
-        .ticker-sym { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 13px; color: var(--text-secondary); }
-        .ticker-price { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--text-primary); }
+        .ticker-sym { font-family: var(--font-head); font-weight: 800; font-size: 13px; color: var(--text-secondary); }
+        .ticker-price { font-family: var(--font-num); font-weight: 800; font-size: 16px; color: var(--text-primary); }
         
         .pin-btn { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: 1px solid transparent; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
         .pin-btn.pinned { color: var(--brand); background: rgba(59, 130, 246, 0.1); }
@@ -172,7 +224,7 @@
         .input-group { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; transition: border-color 0.3s, background 0.3s; }
         .input-group:focus-within { border-color: var(--brand); }
         .input-label { font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px; }
-        .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; }
+        .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 15px; font-weight: 700; text-align: center; }
         
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
@@ -181,14 +233,14 @@
         .radar-status-dot { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: background 0.3s; }
         .radar-status-dot.online { background: var(--long); box-shadow: 0 0 8px var(--long); }
         .radar-status-dot.offline { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
-        .radar-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .radar-content { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 22px; color: var(--text-primary); min-height: 30px; display: flex; align-items: center; justify-content: center;}
+        .radar-title { font-family: var(--font-head); font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .radar-content { font-family: var(--font-num); font-weight: 800; font-size: 22px; color: var(--text-primary); min-height: 30px; display: flex; align-items: center; justify-content: center;}
         
         .main-target-box { text-align: center; margin-bottom: 10px; } 
-        .target-price { font-family: 'JetBrains Mono', monospace; font-size: 38px; font-weight: 800; color: var(--gold-fixed); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(240, 185, 11, 0.15); }
+        .target-price { font-family: var(--font-num); font-size: 38px; font-weight: 800; color: var(--gold-fixed); line-height: 1; letter-spacing: -1.5px; text-shadow: 0 0 20px rgba(240, 185, 11, 0.15); }
         
         .control-row-three { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; padding: 0 5px; }
-        .strat-display { flex: 1; text-align: center; font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 11px; color: var(--gold-fixed) !important; letter-spacing: 1px; padding: 12px; border-radius: 12px; border: 1px solid transparent; }
+        .strat-display { flex: 1; text-align: center; font-family: var(--font-head); font-weight: 900; font-size: 11px; color: var(--gold-fixed) !important; letter-spacing: 1px; padding: 12px; border-radius: 12px; border: 1px solid transparent; }
         .strat-display.aggressive { background: rgba(240, 185, 11, 0.1); border-color: rgba(240, 185, 11, 0.2); }
         
         .icon-sq-btn { width: 42px; height: 42px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); cursor: pointer; }
@@ -197,48 +249,48 @@
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
         .stat-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 4px; text-align: center; }
         .stat-label { font-size: 10px; color: var(--text-tertiary); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
+        .stat-value { font-family: var(--font-num); font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
         .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease, border-color 0.3s; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
-        /* ICON STYLE FOR NUMBERS - CIRCLE BADGE */
-        .u-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--brand); display: flex; align-items: center; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--brand); font-size: 12px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); margin: 0 auto; }
+        /* ICON STYLE FOR NUMBERS */
+        .u-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--brand); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-weight: 900; color: var(--brand); font-size: 12px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); margin: 0 auto; }
         .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-        .u-title { font-family: 'JetBrains Mono', monospace; font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 2px; }
+        .u-title { font-family: var(--font-num); font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 2px; }
         .u-sub { font-size: 11px; font-weight: 600; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; }
         .u-right { text-align: right; display: flex; flex-direction: column; justify-content: center; gap: 2px; flex-shrink: 0; }
-        .u-val-primary { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 800; color: var(--long); }
+        .u-val-primary { font-family: var(--font-num); font-size: 15px; font-weight: 800; color: var(--long); }
         .u-val-secondary { font-size: 11px; color: var(--text-secondary); font-weight: 700; }
         
-        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: 'Orbitron', sans-serif; font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; }
+        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: var(--font-head); font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; }
 
         .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
-        .etf-search-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: var(--radius-m); color: var(--text-primary); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; transition: border 0.3s; }
+        .etf-search-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: var(--radius-m); color: var(--text-primary); font-family: var(--font-head); font-weight: 700; font-size: 14px; transition: border 0.3s; }
         .etf-search-input:focus { border-color: var(--brand); }
         .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
-        .etf-change-badge { padding: 6px 12px; border-radius: 8px; font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .etf-change-badge { padding: 6px 12px; border-radius: 8px; font-size: 16px; font-weight: 800; font-family: var(--font-num); }
         .etf-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
         .etf-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
         .etf-fav-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: var(--text-tertiary); cursor: pointer; transition: 0.2s; }
         .etf-fav-icon.is-fav { color: var(--warning); }
         .etf-card-right { display: flex; align-items: center; gap: 12px; }
 
-        /* AJUSTES UI */
-        .setting-section-title { padding: 5px 5px; font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
+        /* AJUSTES UI REPARADA */
+        .setting-section-title { padding: 5px 5px; font-family: var(--font-head); color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; transition: background 0.3s, border-color 0.3s; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
-        .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
+        .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 18px; font-weight: 700; }
         
         .input-row-save { display: flex; align-items: center; gap: 10px; width: 100%; }
         .btn-save-mini { background: var(--brand); color: #fff; border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         
         .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-data { background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: 'Orbitron', sans-serif; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .btn-reset { background: rgba(207, 48, 74, 0.1); color: var(--danger); border: 1px solid var(--danger); padding: 12px 20px; border-radius: 10px; font-weight: 900; width: 100%; margin-top: 10px; font-family: var(--font-head); cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
         .chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
         .chip { background: rgba(59, 130, 246, 0.1); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
         .chip-del { cursor: pointer; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-secondary); }
@@ -246,37 +298,37 @@
         .multi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 5px; }
         .multi-item { background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 8px; padding: 5px; text-align: center; }
         .multi-lbl { font-size: 9px; color: var(--text-tertiary); display: block; font-weight: 700; }
-        .multi-inp { width: 100%; background: transparent; border: none; color: var(--brand); font-family: 'JetBrains Mono'; font-weight: 800; font-size: 14px; text-align: center; }
+        .multi-inp { width: 100%; background: transparent; border: none; color: var(--brand); font-family: var(--font-num); font-weight: 800; font-size: 14px; text-align: center; }
 
         #navModal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; justify-content: center; align-items: center; padding-top: var(--safe-top); }
         .nav-content { background: var(--surface); width: 85%; max-width: 320px; border-radius: 30px; padding: 35px 25px; border: 1px solid var(--border); box-shadow: 0 30px 60px rgba(0,0,0,0.6); display: flex; flex-direction: column; gap: 15px; }
-        .nav-title { font-family: 'Orbitron', sans-serif; font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
+        .nav-title { font-family: var(--font-head); font-size: 18px; margin-bottom: 10px; color: var(--brand); text-align: center; font-weight: 900; letter-spacing: 2px; }
         .nav-item { display: flex; align-items: center; padding: 20px; border-radius: 18px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); cursor: pointer; transition: 0.3s; }
         .nav-item.selected { background: rgba(59, 130, 246, 0.1); border-color: var(--brand); box-shadow: 0 5px 20px rgba(59, 130, 246, 0.15); }
         .nav-icon { width: 40px; height: 40px; margin-right: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
         .nav-item.selected .nav-icon { color: var(--brand); }
-        .nav-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
-        .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .nav-text { font-family: var(--font-head); font-weight: 700; font-size: 14px; letter-spacing: 1px; color: var(--text-primary); }
+        .btn-close-menu { margin-top: 10px; width: 100%; padding: 16px; border-radius: 16px; border: 1px solid var(--border); background: var(--surface); color: var(--danger); font-family: var(--font-head); font-weight: 900; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
 
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: var(--surface); width: 85%; max-width: 300px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
         .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
         .btn-confirm { background: var(--brand); color: #fff; }
         .btn-cancel { background: transparent; color: var(--text-secondary); }
-        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; font-family: 'JetBrains Mono', monospace; }
+        .modal-inp { width: 100%; background: var(--bg); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: var(--text-primary); font-size: 24px; letter-spacing: 5px; text-align: center; margin: 20px 0; font-family: var(--font-num); monospace; }
         .equity-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; }
-        .equity-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
+        .equity-val { font-family: var(--font-num); font-weight: 800; color: var(--text-primary); }
         .equity-total { border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px; color: var(--brand); font-size: 18px; }
 
-        .action-btn { background: var(--surface); border: 1px solid var(--brand); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 5px; }
+        .action-btn { background: var(--surface); border: 1px solid var(--brand); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: var(--font-head); display: flex; align-items: center; gap: 5px; }
         
         .log-header-bar { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 5px 16px 10px 16px; }
-        .log-title { margin-bottom: 5px; font-family: 'Orbitron'; font-weight: 900; letter-spacing: 1px; color:var(--brand); }
+        .log-title { margin-bottom: 5px; font-family: var(--font-head); font-weight: 900; letter-spacing: 1px; color:var(--brand); }
         .log-actions { display: flex; gap: 15px; width: 100%; justify-content: center; }
 
         .stats-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; margin: 0 10px 15px; padding: 15px; }
         .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .stats-title { font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 1px; }
+        .stats-title { font-family: var(--font-head); font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 1px; }
         .stats-toggles { display: flex; gap: 5px; background: rgba(0,0,0,0.2); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
         .stat-btn { background: transparent; border: none; color: var(--text-tertiary); font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
         .stat-btn.active { background: var(--brand); color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -286,12 +338,12 @@
         .chart-bar.win { background: linear-gradient(to top, rgba(16,203,129,0.3), var(--long)); }
         .chart-bar.loss { background: linear-gradient(to top, rgba(246,70,93,0.3), var(--short)); }
         .chart-bar:hover { opacity: 0.8; }
-        .chart-bar::after { content: attr(data-val); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: 'JetBrains Mono'; color: var(--text-primary); opacity: 0; transition: 0.2s; pointer-events: none; white-space: nowrap; }
+        .chart-bar::after { content: attr(data-val); position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 9px; font-family: var(--font-num); color: var(--text-primary); opacity: 0; transition: 0.2s; pointer-events: none; white-space: nowrap; }
         .chart-bar:hover::after { opacity: 1; top: -20px; }
 
         .stats-summary { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
         .sum-label { color: var(--text-tertiary); font-weight: 700; margin-right: 5px; }
-        .sum-val { font-family: 'JetBrains Mono', monospace; font-weight: 800; color: var(--text-primary); }
+        .sum-val { font-family: var(--font-num); font-weight: 800; color: var(--text-primary); }
 
         #logGrid {
             max-height: 395px; /* Altura para mostrar 5 tarjetas */
@@ -304,20 +356,21 @@
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* --- THEME SCROLLER (TELEGRAM STYLE) --- */
-        .theme-scroll-container {
-            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
-            scrollbar-width: none;
+        /* --- THEME GRID CONTAINER (NO SCROLL) --- */
+        .theme-grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding-bottom: 5px;
         }
-        .theme-scroll-container::-webkit-scrollbar { display: none; }
 
         .theme-card {
-            min-width: 80px; height: 110px;
             background: rgba(255,255,255,0.03); border: 2px solid var(--border);
             border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.2s;
             position: relative; overflow: hidden;
+            padding: 15px 5px;
         }
         .theme-card.active {
             border-color: var(--brand);
@@ -325,16 +378,16 @@
         }
         
         .theme-preview-bubble {
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 32px; height: 32px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 8px;
-            font-size: 20px;
+            font-size: 16px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         
         .theme-name-label {
-            font-size: 10px; font-weight: 700; color: var(--text-secondary);
-            font-family: 'Orbitron', sans-serif; letter-spacing: 1px;
+            font-size: 9px; font-weight: 800; color: var(--text-secondary);
+            font-family: var(--font-head); letter-spacing: 1px;
         }
     </style>
 </head>
@@ -350,6 +403,7 @@
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
             <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -436,8 +490,8 @@
             
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <label class="setting-label">TEMAS PROFESIONALES</label>
-                    <div class="theme-scroll-container">
+                    <label class="setting-label">SELECCIONAR TEMA</label>
+                    <div class="theme-grid-container">
                         
                         <div class="theme-card active" id="pal-default" onclick="setPalette('default')">
                             <div class="theme-preview-bubble" style="background:#3b82f6; color:#fff">💠</div>
@@ -574,7 +628,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.5 PRO THEMES</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.6 FONTS & GRID</div>
         </div>
     </div>
 
