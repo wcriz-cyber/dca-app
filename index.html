@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.7 PRO THEMES</title>
+    <title>C5X - V19.0 TRADING CORE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -14,147 +14,47 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Montserrat:wght@500;700;900&family=Nunito:wght@600;800&family=Orbitron:wght@600;900&family=Outfit:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Roboto+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Montserrat:wght@500;700;900&family=Nunito:wght@600;800&family=Orbitron:wght@600;900&family=Outfit:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Roboto+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://s3.tradingview.com/tv.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* --- 1. CLASSIC (INTOCABLE - DEFAULT) --- */
+        /* --- VARIABLES BASE --- */
         :root {
-            --bg: #0b0e11; 
-            --surface: #151a21; 
-            --surface-glass: rgba(21, 26, 33, 0.98);
-            --card-bg: rgba(255, 255, 255, 0.03); 
-            --text-primary: #eaecef; 
-            --text-secondary: #848e9c;
-            --text-tertiary: #5e6673; 
-            --brand: #3b82f6; 
-            --long: #0ecb81; 
-            --short: #f6465d;
-            --warning: #f0b90b; 
-            --danger: #cf304a; 
-            --border: #2b3139; 
-            --radius-m: 16px;
-            --gold-fixed: #f0b90b;
-            --chart-bg: #000000; 
-            --safe-top: env(safe-area-inset-top, 20px);
-            --safe-bottom: env(safe-area-inset-bottom, 20px);
+            --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98);
+            --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
+            --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d;
+            --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px;
+            --gold-fixed: #f0b90b; --chart-bg: #000000; 
+            --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px);
             --skeleton: rgba(255,255,255,0.05);
 
-            /* Fuentes Classic */
-            --font-main: 'Rajdhani', sans-serif;
-            --font-num: 'JetBrains Mono', monospace;
-            --font-head: 'Orbitron', sans-serif;
+            --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
         }
 
-        /* --- 2. NATURE (Mejorado: Bosque Profundo) --- */
-        body.theme-nature {
-            --bg: #021208; --surface: #0a1f12; --surface-glass: rgba(10, 31, 18, 0.98);
-            --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06);
-            --text-primary: #e6fcf5; --text-secondary: #82e0aa;
-            /* Fuentes: Amigables y Redondas */
-            --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif;
-        }
+        /* TEMAS (Copiados de V18.7) */
+        body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
+        body.theme-ocean { --bg: #030712; --surface: #0f172a; --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06); --text-primary: #f8fafc; --text-secondary: #94a3b8; --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif; }
+        body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --brand: #f97316; --border: #52200b; --card-bg: rgba(249, 115, 22, 0.06); --text-primary: #fff7ed; --text-secondary: #fdba74; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
+        body.theme-cyber { --bg: #000000; --surface: #111111; --brand: #fbbf24; --border: #333333; --card-bg: rgba(251, 191, 36, 0.08); --text-primary: #ffffff; --text-secondary: #fde68a; --font-main: 'Chakra Petch', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        body.theme-amethyst { --bg: #10041c; --surface: #1e0b33; --brand: #d946ef; --border: #4c1d6e; --card-bg: rgba(217, 70, 239, 0.06); --text-primary: #fae8ff; --text-secondary: #e879f9; --font-main: 'Space Grotesk', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
+        body.theme-velvet { --bg: #180407; --surface: #2b080e; --brand: #f43f5e; --border: #5c1421; --card-bg: rgba(244, 63, 94, 0.06); --text-primary: #fff1f2; --text-secondary: #fda4af; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Montserrat', sans-serif; }
+        body.theme-slate { --bg: #0f172a; --surface: #1e293b; --brand: #94a3b8; --border: #334155; --card-bg: rgba(148, 163, 184, 0.08); --text-primary: #f8fafc; --text-secondary: #cbd5e1; --long: #34d399; --font-main: 'Roboto Mono', monospace; --font-num: 'Roboto Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
+        body.theme-aurora { --bg: #041014; --surface: #082026; --brand: #06b6d4; --border: #164e63; --card-bg: rgba(6, 182, 212, 0.06); --text-primary: #ecfeff; --text-secondary: #67e8f9; --font-main: 'Outfit', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
 
-        /* --- 3. OCEAN (Mejorado: Azul Medianoche) --- */
-        body.theme-ocean {
-            --bg: #030712; --surface: #0f172a; --surface-glass: rgba(15, 23, 42, 0.98);
-            --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06);
-            --text-primary: #f8fafc; --text-secondary: #94a3b8;
-            /* Fuentes: Geométricas y Limpias */
-            --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif;
-        }
-
-        /* --- 4. SUNSET (Mejorado: Atardecer Cálido) --- */
-        body.theme-sunset {
-            --bg: #1c0802; --surface: #2b1106; --surface-glass: rgba(43, 17, 6, 0.98);
-            --brand: #f97316; --border: #52200b; --card-bg: rgba(249, 115, 22, 0.06);
-            --text-primary: #fff7ed; --text-secondary: #fdba74;
-            /* Fuentes: Humanistas */
-            --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif;
-        }
-
-        /* --- 5. CYBER (Mejorado: Negro & Amarillo) --- */
-        body.theme-cyber {
-            --bg: #000000; --surface: #111111; --surface-glass: rgba(17, 17, 17, 0.98);
-            --brand: #fbbf24; --border: #333333; --card-bg: rgba(251, 191, 36, 0.08);
-            --text-primary: #ffffff; --text-secondary: #fde68a;
-            /* Fuentes: Tecnológicas / Cuadradas */
-            --font-main: 'Chakra Petch', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
-        }
-
-        /* --- 6. AMETHYST (Mejorado: Púrpura Real) --- */
-        body.theme-amethyst {
-            --bg: #10041c; --surface: #1e0b33; --surface-glass: rgba(30, 11, 51, 0.98);
-            --brand: #d946ef; --border: #4c1d6e; --card-bg: rgba(217, 70, 239, 0.06);
-            --text-primary: #fae8ff; --text-secondary: #e879f9;
-            /* Fuentes: Espaciales */
-            --font-main: 'Space Grotesk', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Space Grotesk', sans-serif;
-        }
-
-        /* --- 7. VELVET (Mejorado: Rojo Vino) --- */
-        body.theme-velvet {
-            --bg: #180407; --surface: #2b080e; --surface-glass: rgba(43, 8, 14, 0.98);
-            --brand: #f43f5e; --border: #5c1421; --card-bg: rgba(244, 63, 94, 0.06);
-            --text-primary: #fff1f2; --text-secondary: #fda4af;
-            /* Fuentes: Elegantes */
-            --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Montserrat', sans-serif;
-        }
-
-        /* --- 8. SLATE (Mejorado: Gris Técnico) --- */
-        body.theme-slate {
-            --bg: #0f172a; --surface: #1e293b; --surface-glass: rgba(30, 41, 59, 0.98);
-            --brand: #94a3b8; --border: #334155; --card-bg: rgba(148, 163, 184, 0.08);
-            --text-primary: #f8fafc; --text-secondary: #cbd5e1; --long: #34d399;
-            /* Fuentes: Monospaced / Developer */
-            --font-main: 'Roboto Mono', monospace; --font-num: 'Roboto Mono', monospace; --font-head: 'Space Grotesk', sans-serif;
-        }
-
-        /* --- 9. AURORA (NUEVO: Cian/Turquesa) --- */
-        body.theme-aurora {
-            --bg: #041014; --surface: #082026; --surface-glass: rgba(8, 32, 38, 0.98);
-            --brand: #06b6d4; --border: #164e63; --card-bg: rgba(6, 182, 212, 0.06);
-            --text-primary: #ecfeff; --text-secondary: #67e8f9;
-            /* Fuentes: Limpias y Futuras */
-            --font-main: 'Outfit', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
-        }
-
-
-        /* MODO CLARO (Global Override) */
-        body.light-mode {
-            --bg: #f8fafc !important; --surface: #ffffff !important;
-            --surface-glass: rgba(255, 255, 255, 0.98) !important; --card-bg: #f1f5f9 !important;
-            --text-primary: #0f172a !important; --text-secondary: #64748b !important;
-            --border: #e2e8f0 !important; --chart-bg: #ffffff !important; --warning: #d97706 !important;
-            --skeleton: rgba(0,0,0,0.05) !important;
-        }
+        body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --text-secondary: #64748b !important; --border: #e2e8f0 !important; --chart-bg: #ffffff !important; --warning: #d97706 !important; --skeleton: rgba(0,0,0,0.05) !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        
-        body { 
-            font-family: var(--font-main); /* FUENTE DINÁMICA */
-            font-weight: 600;
-            background: var(--bg); color: var(--text-primary); 
-            padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
-            overflow-x: hidden; user-select: none; font-size: 16px; 
-            overscroll-behavior-y: none;
-            transition: background 0.3s ease, color 0.3s ease; 
-        }
+        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease, color 0.3s ease; }
 
-        /* --- ELEMENTOS DE TEXTO DINÁMICOS --- */
-        .brand-text, .nav-title, .setting-section-title, .theme-name-label {
-            font-family: var(--font-head); 
-        }
-        .ticker-price, .input-field, .stat-value, .u-val-primary {
-            font-family: var(--font-num);
-        }
+        .brand-text, .nav-title, .setting-section-title, .theme-name-label { font-family: var(--font-head); }
+        .ticker-price, .input-field, .stat-value, .u-val-primary { font-family: var(--font-num); }
 
-        /* --- ANIMACIONES --- */
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
-        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
@@ -162,14 +62,11 @@
         @keyframes flash-red { 0%, 100% { background-color: var(--surface); } 50% { background-color: rgba(207, 48, 74, 0.3); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
-        .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
-        /* SKELETON */
         .skeleton-box { background: var(--skeleton); background: linear-gradient(90deg, var(--skeleton) 25%, var(--card-bg) 50%, var(--skeleton) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; color: transparent !important; }
         .skeleton-text { display: inline-block; min-width: 40px; min-height: 1em; border-radius: 4px; }
-
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; pointer-events: none; }
 
         #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; font-size: 14px; font-family: var(--font-head); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease; opacity: 0; }
@@ -248,7 +145,6 @@
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
-        /* ICON STYLE FOR NUMBERS */
         .u-index { width: 36px; height: 36px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--brand); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-weight: 900; color: var(--brand); font-size: 12px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.15); margin: 0 auto; }
         .u-center { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
         .u-title { font-family: var(--font-num); font-size: 21px; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 2px; }
@@ -270,13 +166,12 @@
         .etf-fav-icon.is-fav { color: var(--warning); }
         .etf-card-right { display: flex; align-items: center; gap: 12px; }
 
-        /* AJUSTES UI REPARADA */
+        /* AJUSTES UI */
         .setting-section-title { padding: 5px 5px; font-family: var(--font-head); color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; transition: background 0.3s, border-color 0.3s; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
         .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 18px; font-weight: 700; }
-        
         .input-row-save { display: flex; align-items: center; gap: 10px; width: 100%; }
         .btn-save-mini { background: var(--brand); color: #fff; border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         
@@ -338,50 +233,21 @@
         .sum-val { font-family: var(--font-num); font-weight: 800; color: var(--text-primary); }
 
         #logGrid {
-            max-height: 395px; /* Altura para mostrar 5 tarjetas */
-            overflow-y: auto;
-            overscroll-behavior: contain;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
-            padding-right: 2px;
+            max-height: 395px; overflow-y: auto; overscroll-behavior: contain; border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-right: 2px;
         }
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* --- THEME GRID CONTAINER (9 ITEMS) --- */
-        .theme-grid-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding-bottom: 5px;
-        }
+        /* THEME GRID */
+        .theme-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 5px; }
+        .theme-card { background: rgba(255,255,255,0.03); border: 2px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; padding: 15px 5px; }
+        .theme-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.1); }
+        .theme-preview-bubble { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1); }
+        .theme-name-label { font-size: 9px; font-weight: 800; color: var(--text-secondary); font-family: var(--font-head); letter-spacing: 1px; }
 
-        .theme-card {
-            background: rgba(255,255,255,0.03); border: 2px solid var(--border);
-            border-radius: 12px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
-            position: relative; overflow: hidden;
-            padding: 15px 5px;
-        }
-        .theme-card.active {
-            border-color: var(--brand);
-            background: rgba(59, 130, 246, 0.1);
-        }
-        
-        .theme-preview-bubble {
-            width: 32px; height: 32px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 8px;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-        
-        .theme-name-label {
-            font-size: 9px; font-weight: 800; color: var(--text-secondary);
-            font-family: var(--font-head); letter-spacing: 1px;
-        }
+        /* CONFIRMACION MODAL */
+        .modal-info-text { font-size: 12px; color: var(--text-secondary); margin-bottom: 15px; }
+        .trade-details { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-family: var(--font-num); font-size: 13px; text-align: left; }
     </style>
 </head>
 <body onload="init()">
@@ -479,56 +345,32 @@
         <div id="section-settings" class="app-section">
             
             <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg> APARIENCIA & TEMA</div>
-            
             <div class="settings-grid">
                 <div class="setting-card-item">
                     <div class="theme-grid-container">
-                        
-                        <div class="theme-card active" id="pal-default" onclick="setPalette('default')">
-                            <div class="theme-preview-bubble" style="background:#3b82f6; color:#fff">💠</div>
-                            <span class="theme-name-label">CLASSIC</span>
-                        </div>
+                        <div class="theme-card active" id="pal-default" onclick="setPalette('default')"><div class="theme-preview-bubble" style="background:#3b82f6; color:#fff">💠</div><span class="theme-name-label">CLASSIC</span></div>
+                        <div class="theme-card" id="pal-nature" onclick="setPalette('nature')"><div class="theme-preview-bubble" style="background:#22c55e; color:#fff">🌿</div><span class="theme-name-label">NATURE</span></div>
+                        <div class="theme-card" id="pal-ocean" onclick="setPalette('ocean')"><div class="theme-preview-bubble" style="background:#6366f1; color:#fff">🌊</div><span class="theme-name-label">OCEAN</span></div>
+                        <div class="theme-card" id="pal-sunset" onclick="setPalette('sunset')"><div class="theme-preview-bubble" style="background:#f97316; color:#fff">🌅</div><span class="theme-name-label">SUNSET</span></div>
+                        <div class="theme-card" id="pal-cyber" onclick="setPalette('cyber')"><div class="theme-preview-bubble" style="background:#000; border:2px solid #eab308; color:#eab308">⚠️</div><span class="theme-name-label">CYBER</span></div>
+                        <div class="theme-card" id="pal-amethyst" onclick="setPalette('amethyst')"><div class="theme-preview-bubble" style="background:#d946ef; color:#fff">🔮</div><span class="theme-name-label">AMETHYST</span></div>
+                        <div class="theme-card" id="pal-velvet" onclick="setPalette('velvet')"><div class="theme-preview-bubble" style="background:#f43f5e; color:#fff">🍷</div><span class="theme-name-label">VELVET</span></div>
+                        <div class="theme-card" id="pal-slate" onclick="setPalette('slate')"><div class="theme-preview-bubble" style="background:#64748b; color:#fff">👽</div><span class="theme-name-label">SLATE</span></div>
+                        <div class="theme-card" id="pal-aurora" onclick="setPalette('aurora')"><div class="theme-preview-bubble" style="background:#06b6d4; color:#fff">❄️</div><span class="theme-name-label">AURORA</span></div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="theme-card" id="pal-nature" onclick="setPalette('nature')">
-                            <div class="theme-preview-bubble" style="background:#22c55e; color:#fff">🌿</div>
-                            <span class="theme-name-label">NATURE</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-ocean" onclick="setPalette('ocean')">
-                            <div class="theme-preview-bubble" style="background:#6366f1; color:#fff">🌊</div>
-                            <span class="theme-name-label">OCEAN</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-sunset" onclick="setPalette('sunset')">
-                            <div class="theme-preview-bubble" style="background:#f97316; color:#fff">🌅</div>
-                            <span class="theme-name-label">SUNSET</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-cyber" onclick="setPalette('cyber')">
-                            <div class="theme-preview-bubble" style="background:#000; border:2px solid #eab308; color:#eab308">⚠️</div>
-                            <span class="theme-name-label">CYBER</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-amethyst" onclick="setPalette('amethyst')">
-                            <div class="theme-preview-bubble" style="background:#d946ef; color:#fff">🔮</div>
-                            <span class="theme-name-label">AMETHYST</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-velvet" onclick="setPalette('velvet')">
-                            <div class="theme-preview-bubble" style="background:#f43f5e; color:#fff">🍷</div>
-                            <span class="theme-name-label">VELVET</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-slate" onclick="setPalette('slate')">
-                            <div class="theme-preview-bubble" style="background:#64748b; color:#fff">👽</div>
-                            <span class="theme-name-label">SLATE</span>
-                        </div>
-
-                        <div class="theme-card" id="pal-aurora" onclick="setPalette('aurora')">
-                            <div class="theme-preview-bubble" style="background:#06b6d4; color:#fff">❄️</div>
-                            <span class="theme-name-label">AURORA</span>
-                        </div>
-
+            <div class="setting-section-title"><svg width="14" height="14"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> API & TRADING (GATE.IO)</div>
+            <div class="settings-grid">
+                <div class="setting-card-item">
+                    <div class="input-row-save" style="margin-bottom:10px; justify-content:space-between;">
+                        <span class="setting-label">CREDENCIALES API</span>
+                        <button class="btn-save-mini anim-click" onclick="saveApiKeysSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:10px">
+                        <input type="password" class="setting-input" id="apiKey" placeholder="API KEY (KEY)" style="border-bottom:1px solid var(--border)">
+                        <input type="password" class="setting-input" id="apiSecret" placeholder="API SECRET (SECRET)">
                     </div>
                 </div>
             </div>
@@ -624,7 +466,24 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.7 PRO THEMES</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.0 TRADING CORE</div>
+        </div>
+    </div>
+
+    <div id="tradeModal" class="generic-modal">
+        <div class="modal-box section-enter">
+            <div class="nav-title" style="color:var(--brand); margin-bottom:10px;">EJECUTAR ORDEN</div>
+            <div class="modal-info-text">Estás a punto de enviar una orden real a Gate.io</div>
+            
+            <div class="trade-details">
+                <div>PAR: <span id="trade-pair" style="color:var(--text-primary); font-weight:800">BTC_USDT</span></div>
+                <div>PRECIO: <span id="trade-price" style="color:var(--text-primary); font-weight:800">0.00</span></div>
+                <div>CANTIDAD: <span id="trade-amount" style="color:var(--text-primary); font-weight:800">0.00</span></div>
+                <div>TOTAL: <span id="trade-total" style="color:var(--long); font-weight:800">$0.00</span></div>
+            </div>
+
+            <button class="btn-modal btn-confirm anim-click" onclick="executeGateOrder()">CONFIRMAR COMPRA</button>
+            <button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button>
         </div>
     </div>
 
@@ -642,7 +501,6 @@
         }
 
         let isLight = localStorage.getItem('theme') === 'light';
-        // --- VARIABLE DE PALETA ---
         let currentPalette = localStorage.getItem('c5x_palette') || 'default';
 
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
@@ -662,6 +520,8 @@
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
         
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
+        // API KEYS STORAGE
+        let apiConfig = JSON.parse(localStorage.getItem('c5x_api_keys')) || { key: '', secret: '' };
 
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
@@ -697,7 +557,6 @@
                 }
 
                 if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
-                // APLICAR PALETA
                 applyPalette(currentPalette);
 
                 slots.forEach(s => { 
@@ -726,7 +585,7 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- GESTIÓN DE PALETAS (TELEGRAM STYLE) ---
+        // --- TEMAS (V19) ---
         function setPalette(palName) {
             triggerHaptic();
             currentPalette = palName;
@@ -735,26 +594,35 @@
         }
 
         function applyPalette(palName) {
-            // Limpiar clases previas
             document.body.classList.remove('theme-nature', 'theme-ocean', 'theme-sunset', 'theme-cyber', 'theme-amethyst', 'theme-velvet', 'theme-slate', 'theme-aurora');
-            
-            // Aplicar nueva clase si no es default
-            if(palName !== 'default') {
-                document.body.classList.add('theme-' + palName);
-            }
-
-            // Actualizar botones UI
+            if(palName !== 'default') document.body.classList.add('theme-' + palName);
             document.querySelectorAll('.theme-card').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById('pal-' + palName);
             if(activeBtn) activeBtn.classList.add('active');
-            
-            // Si hay gráfico, recargar para adaptar colores
             if(chartSymbol && currentSection === 'operate') loadChart(chartSymbol);
         }
 
         let secCallback = null;
         function reqSec(cb) { secCallback = cb; const m = document.getElementById('securityModal'); document.getElementById('secInput').value = ''; m.style.display = 'flex'; void m.offsetWidth; }
         function validateSecurity() { const inp = document.getElementById('secInput').value; closeModals(); if(inp === appConfig.pin) { if(secCallback) secCallback(); } else { showToast("⛔ PIN INCORRECTO"); } }
+        
+        // --- API KEYS MANAGEMENT ---
+        function saveApiKeysSecure() {
+            reqSec(() => {
+                const k = document.getElementById('apiKey').value.trim();
+                const s = document.getElementById('apiSecret').value.trim();
+                if(k && s) {
+                    apiConfig = { key: k, secret: s };
+                    localStorage.setItem('c5x_api_keys', JSON.stringify(apiConfig));
+                    showToast("✅ API Keys Guardadas");
+                    document.getElementById('apiKey').value = '';
+                    document.getElementById('apiSecret').value = '';
+                } else {
+                    showToast("⚠️ Campos vacíos");
+                }
+            });
+        }
+        
         function saveGlobalCapSecure() { reqSec(() => { const val = parseFloat(document.getElementById('setGlobalCapital').value); const feeVal = parseFloat(document.getElementById('setFee').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); } if(!isNaN(feeVal)) { exchangeFee = feeVal; localStorage.setItem('c5x_fee', exchangeFee); } calculateGlobalStats(); showToast("✅ Capital y Comisión Guardados"); }); }
         function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
         function saveRadarSecure() { 
@@ -872,7 +740,7 @@
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
         function triggerCrashAlert(coin, pct) { 
-            // ELIMINADO PARA SILENCIAR NOTIFICACIONES PERSISTENTES
+            // ELIMINADO
         }
         
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
@@ -964,7 +832,6 @@
                 const change = parseFloat(item.change_percentage).toFixed(2); 
                 const price = parseFloat(item.last); 
                 const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2); 
-                // AQUI CAMBIO COLOR PRECIO
                 elVal.innerHTML = `<span onclick="quickAddFromTicker('${pairName}', ${price}, event)" style="color:var(--text-primary); text-decoration:underline dotted; text-underline-offset:4px; cursor:pointer">${pairName}</span> <span style="color:var(--gold-fixed); font-size:14px; margin:0 5px;">$${displayPrice}</span> <span class="radar-pct">(${change}%)</span>`; 
                 elVal.style.opacity = 1; 
             }, 200); 
@@ -1160,7 +1027,138 @@
             calculate(); 
         }
         function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
-        function toggleLvl(idx) { triggerHaptic(); const s = slots[activeIdx]; if (!s.buys.includes(idx)) { for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } } else { s.buys = s.buys.filter(val => val < idx); } calculate(); }
+
+        // --- TRADING LOGIC (V19) ---
+        let currentTrade = { level: 0, amount: 0, price: 0, pair: '' };
+
+        function toggleLvl(idx) { 
+            triggerHaptic(); 
+            const s = slots[activeIdx]; 
+            
+            // Si el nivel NO está comprado, preguntar si quiere comprar
+            if (!s.buys.includes(idx)) { 
+                // Calcular parámetros para el trade
+                let pLevel;
+                const descPct = parseFloat(document.getElementById('descInput').value) || 66;
+                const incPct = parseFloat(document.getElementById('incInput').value) || 7;
+                let lastPrice = s.price;
+
+                for(let i=0; i<=idx; i++) {
+                     if(i===0) pLevel = s.price; 
+                     else { 
+                         let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
+                         pLevel = lastPrice * (1 - (step/100)); 
+                     }
+                     lastPrice = pLevel;
+                }
+
+                const multiplier = customMultipliers[idx] || 1;
+                const usdAmount = s.capital * multiplier;
+                const coinAmount = usdAmount / pLevel;
+
+                currentTrade = {
+                    level: idx,
+                    pair: s.name + "_USDT",
+                    price: pLevel,
+                    amount: coinAmount,
+                    usd: usdAmount
+                };
+
+                // Mostrar Modal de Confirmación
+                document.getElementById('trade-pair').textContent = currentTrade.pair;
+                document.getElementById('trade-price').textContent = currentTrade.price.toFixed(6);
+                document.getElementById('trade-amount').textContent = currentTrade.amount.toFixed(4);
+                document.getElementById('trade-total').textContent = "$" + currentTrade.usd.toFixed(2);
+                document.getElementById('tradeModal').style.display = 'flex';
+
+            } else { 
+                // Si ya está comprado, simplemente desmarcar (lógica visual antigua)
+                s.buys = s.buys.filter(val => val < idx); 
+                calculate();
+            }
+        }
+
+        async function executeGateOrder() {
+            closeModals();
+            
+            // Verificar API Keys
+            if(!apiConfig.key || !apiConfig.secret) {
+                // Si no hay API Keys, simular éxito visualmente (Modo Calculadora)
+                simulatedBuy(currentTrade.level);
+                showToast("⚠️ Modo Simulación (Sin API Keys)", 3000);
+                return;
+            }
+
+            showToast("⏳ Enviando Orden a Gate.io...");
+
+            try {
+                const host = "https://api.gateio.ws";
+                const prefix = "/api/v4";
+                const url = "/spot/orders";
+                const timestamp = Math.floor(Date.now() / 1000);
+                
+                // Payload para Gate.io
+                const body = JSON.stringify({
+                    "currency_pair": currentTrade.pair,
+                    "side": "buy",
+                    "amount": currentTrade.amount.toFixed(4), // Cantidad de moneda
+                    "price": currentTrade.price.toFixed(6),   // Precio límite
+                    "type": "limit",
+                    "account": "spot"
+                });
+
+                const payloadHash = CryptoJS.SHA512(body).toString(CryptoJS.enc.Hex);
+                const signatureString = `POST\n${prefix}${url}\n\n${payloadHash}\n${timestamp}`;
+                const signature = CryptoJS.HmacSHA512(signatureString, apiConfig.secret).toString(CryptoJS.enc.Hex);
+
+                // NOTA: Para producción real, se necesita un Proxy que soporte CORS y reenvío de headers
+                // O usar una extensión de navegador "Allow CORS". 
+                // Aquí intentamos fetch directo (fallará en navegadores estándar sin config).
+                const proxyUrl = proxies[0]; // Usamos el primer proxy configurado
+
+                const response = await fetch(proxyUrl + encodeURIComponent(host + prefix + url), {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'KEY': apiConfig.key,
+                        'Timestamp': timestamp,
+                        'SIGN': signature
+                    },
+                    body: body
+                });
+
+                if(response.ok) {
+                    showToast("✅ ORDEN CREADA CON ÉXITO", 4000, false, true);
+                    simulatedBuy(currentTrade.level); // Actualizar UI
+                } else {
+                    const errText = await response.text();
+                    console.error(errText);
+                    showToast("❌ Error API: " + response.status, 4000, true);
+                    // Fallback visual si el usuario lo desea
+                    if(confirm("Error de red/CORS. ¿Marcar nivel manualmente?")) {
+                         simulatedBuy(currentTrade.level);
+                    }
+                }
+
+            } catch (e) {
+                console.error(e);
+                showToast("❌ Error de Conexión", 4000, true);
+                 // Fallback visual
+                if(confirm("Error de conexión. ¿Marcar nivel manualmente?")) {
+                     simulatedBuy(currentTrade.level);
+                }
+            }
+        }
+
+        function simulatedBuy(idx) {
+            const s = slots[activeIdx];
+            for(let i=0; i<=idx; i++) { 
+                if(!s.buys.includes(i)) s.buys.push(i); 
+            }
+            calculate();
+        }
+
         
         function renderLevels() { 
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; 
@@ -1272,6 +1270,10 @@
                 
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
                 const elProxy = document.getElementById('setProxy'); if(elProxy) elProxy.value = customProxy;
+
+                // Load API Keys (masked)
+                if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
+                if(apiConfig.secret) document.getElementById('apiSecret').value = apiConfig.secret;
 
                 const grid = document.getElementById('multiGrid'); 
                 if(grid) {
