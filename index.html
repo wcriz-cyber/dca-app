@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V17.8 DEV LINK</title>
+    <title>C5X - V17.9 STABLE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -290,14 +290,6 @@
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
             <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
-            
-            <div class="nav-item anim-click" onclick="openDeveloper()">
-                <div class="nav-icon" style="color:var(--brand)">
-                    <svg width="24" height="24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                </div>
-                <div class="nav-text" style="color:var(--brand)">DESARROLLADOR</div>
-            </div>
-
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -375,10 +367,7 @@
                 </div>
             </div>
 
-            <div id="logGrid" class="levels-container"></div>
-        </div>
-
-        <div id="section-settings" class="app-section">
+            <div id="section-settings" class="app-section">
             <div class="setting-section-title"><svg width="14" height="14"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> CAPITAL & RENDIMIENTO</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
@@ -470,7 +459,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.8 DEV LINK</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.9 STABLE</div>
         </div>
     </div>
 
@@ -486,9 +475,6 @@
                     .catch(err => console.log('SW fallo', err));
             });
         }
-        
-        // --- USUARIO TELEGRAM (Modificable) ---
-        let telegramUser = "wcriz";
 
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
@@ -522,7 +508,6 @@
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
         
-        // --- NUEVO: ESTADO DE ALERTAS DE CRASH ---
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
         
         let proxies = [
@@ -591,10 +576,6 @@
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
         function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
-
-        function openDeveloper() {
-             window.open(`https://t.me/${telegramUser}`, '_blank');
-        }
 
         function updateStats(tf) {
             triggerHaptic();
@@ -690,7 +671,6 @@
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
-        // --- NUEVO: LÓGICA DE ALERTA DE CRASH ---
         function triggerCrashAlert(coin, pct) { 
             const audio = document.getElementById('alertSound'); 
             if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
@@ -703,7 +683,7 @@
             
             setTimeout(() => { 
                 t.classList.remove("show", "crash-mode"); 
-            }, 6000); // Alerta dura 6 segundos
+            }, 6000); 
         }
         
         function clearCrashMemory() {
@@ -717,7 +697,7 @@
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
             t.textContent = txt; 
-            t.className = ""; // Limpiar clases
+            t.className = ""; 
             if(isAlert) t.classList.add("alert-mode"); 
             if(isSuccess) t.classList.add("success-mode"); 
             t.classList.add("show"); 
@@ -742,7 +722,6 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- MODIFICADO: LOGICA DE MONITOR ---
         async function fetchAndCalcTopDroppers() { 
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
@@ -776,7 +755,7 @@
                     }); 
                     topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
                     
-                    processDropperAlerts(); // EJECUTAR LOGICA DE ALERTAS
+                    processDropperAlerts(); 
                     startRadarRotation(); 
                     return; 
                     
@@ -787,28 +766,14 @@
             elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
         }
 
-        // --- NUEVO: FUNCIÓN DE FILTRADO DE ALERTAS INTELIGENTE ---
         function processDropperAlerts() {
-            // Revisamos topDroppers o allGateETFs (usaremos topDroppers para eficiencia, ya que son los que mas caen)
             topDroppers.forEach(item => {
                 const pct = parseFloat(item.change_percentage);
                 const pair = item.currency_pair.replace('_USDT', '');
                 
-                // Solo nos interesa si cae 50% o más
                 if (pct <= -50) {
-                    // Calculamos en qué "escalón" de 10% estamos
-                    // Math.floor(abs(pct) / 10) * 10
-                    // Ejemplo: -53% -> abs(53) / 10 = 5.3 -> floor(5) -> 50.
-                    // Ejemplo: -61% -> abs(61) / 10 = 6.1 -> floor(6) -> 60.
                     const currentBracket = Math.floor(Math.abs(pct) / 10) * 10;
-                    
-                    // Recuperamos el último nivel alertado (o 0 si nunca se alertó)
                     const lastAlertedLevel = crashAlertedCoins[pair] || 0;
-                    
-                    // Si el nivel actual es MAYOR que el último alertado, activamos alerta
-                    // Ejemplo: currentBracket 50 > last 0 -> ALERTA. Se guarda 50.
-                    // Siguiente ciclo: pct -52. currentBracket 50 > last 50 -> FALSO. NO ALERTA.
-                    // Siguiente ciclo: pct -61. currentBracket 60 > last 50 -> ALERTA. Se guarda 60.
                     if (currentBracket > lastAlertedLevel) {
                         triggerCrashAlert(pair, pct);
                         crashAlertedCoins[pair] = currentBracket;
@@ -922,7 +887,6 @@
             let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; 
             let displaySym = sym.replace("USDT",""); 
             document.getElementById('t-sym').textContent = displaySym; 
-            // ELIMINADO EL SKELETON PARA EVITAR EL SUSPENSO AL ROTAR
             
             if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
             try { 
@@ -989,7 +953,15 @@
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
-                div.innerHTML = `<div class="u-index">${index+1}</div><div class="u-center"><div class="u-title">${pairName}</div></div><div class="etf-card-right"><div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div><div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)"><svg width="22" height="22" stroke="currentColor" fill="${isFav?'currentColor':'none'}" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>`; 
+                div.innerHTML = `<div class="u-index">${index+1}</div>
+                                 <div class="u-center">
+                                    <div class="u-title" style="font-size:16px">${pairName}</div>
+                                    <div style="font-family:'JetBrains Mono'; font-size:14px; color:var(--text-secondary); font-weight:700; margin-top:4px">$${displayPrice}</div>
+                                 </div>
+                                 <div class="etf-card-right">
+                                    <div class="etf-change-badge ${change >= 0 ? 'etf-up' : 'etf-down'}">${change >= 0 ? '+' : ''}${change.toFixed(2)}%</div>
+                                    <div class="etf-fav-icon ${isFav ? 'is-fav' : ''}" onclick="toggleEtfFavorite('${pairName}', event)"><svg width="22" height="22" stroke="currentColor" fill="${isFav?'currentColor':'none'}" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                                 </div>`; 
                 fragment.appendChild(div); 
             }); 
             grid.innerHTML = ''; 
