@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.3 THEME BUILDER</title>
+    <title>C5X - V18.4 TELEGRAM THEMES</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -20,9 +20,8 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
-        /* --- VARIABLES BASE --- */
+        /* --- VARIABLES BASE (DEFAULT CLASSIC) --- */
         :root {
-            /* VALORES POR DEFECTO (Classic C5X) */
             --bg: #0b0e11; 
             --surface: #151a21; 
             --surface-glass: rgba(21, 26, 33, 0.98);
@@ -44,37 +43,37 @@
             --skeleton: rgba(255,255,255,0.05);
         }
 
-        /* --- CLASES DE TEMAS PREDEFINIDOS --- */
+        /* --- TEMAS (Telegram Style) --- */
         
-        /* NATURE */
-        body.theme-nature {
-            --bg: #051008; --surface: #0e2015; --surface-glass: rgba(14, 32, 21, 0.98);
-            --brand: #22c55e; --border: #1a3825; --card-bg: rgba(34, 197, 94, 0.05);
-            --text-secondary: #86efac;
-        }
-        
-        /* OCEAN */
-        body.theme-ocean {
-            --bg: #070712; --surface: #10101f; --surface-glass: rgba(16, 16, 31, 0.98);
-            --brand: #6366f1; --border: #262645; --card-bg: rgba(99, 102, 241, 0.05);
-            --text-secondary: #a5b4fc;
+        /* TULIP (Rosa/Rojo) */
+        body.theme-tulip {
+            --bg: #0f0a0a; --surface: #1a1010; --surface-glass: rgba(26, 16, 16, 0.98);
+            --brand: #fb7185; --border: #3f2025; --card-bg: rgba(251, 113, 133, 0.05);
+            --text-secondary: #fecdd3;
         }
 
-        /* SUNSET */
-        body.theme-sunset {
-            --bg: #140805; --surface: #24100a; --surface-glass: rgba(36, 16, 10, 0.98);
-            --brand: #f97316; --border: #4d2312; --card-bg: rgba(249, 115, 22, 0.05);
-            --text-secondary: #fdba74;
+        /* AMETHYST (Morado) */
+        body.theme-amethyst {
+            --bg: #0a0510; --surface: #130a20; --surface-glass: rgba(19, 10, 32, 0.98);
+            --brand: #c084fc; --border: #2e1a47; --card-bg: rgba(192, 132, 252, 0.05);
+            --text-secondary: #e9d5ff;
         }
 
-        /* CYBER */
-        body.theme-cyber {
-            --bg: #000000; --surface: #0a0a0a; --surface-glass: rgba(10, 10, 10, 0.98);
-            --brand: #eab308; --border: #333333; --card-bg: rgba(234, 179, 8, 0.1);
-            --text-primary: #ffffff; --text-secondary: #fde047;
+        /* AMBER (Naranja/Pizza) */
+        body.theme-amber {
+            --bg: #120c00; --surface: #1e1400; --surface-glass: rgba(30, 20, 0, 0.98);
+            --brand: #fbbf24; --border: #422d05; --card-bg: rgba(251, 191, 36, 0.05);
+            --text-secondary: #fde68a;
         }
 
-        /* MODO CLARO (Global override) */
+        /* CYAN (Hielo/Snowman) */
+        body.theme-cyan {
+            --bg: #00090a; --surface: #001214; --surface-glass: rgba(0, 18, 20, 0.98);
+            --brand: #22d3ee; --border: #0e3f45; --card-bg: rgba(34, 211, 238, 0.05);
+            --text-secondary: #a5f3fc;
+        }
+
+        /* MODO CLARO (Global Override) */
         body.light-mode {
             --bg: #f5f7fa !important; --surface: #ffffff !important;
             --surface-glass: rgba(255, 255, 255, 0.98) !important; --card-bg: #f0f2f5 !important;
@@ -93,17 +92,15 @@
             transition: background 0.3s ease, color 0.3s ease; 
         }
 
-        /* --- ANIMACIONES --- */
+        /* ANIMACIONES */
         @keyframes click-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
-        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         @keyframes flash-red { 0%, 100% { background-color: var(--surface); } 50% { background-color: rgba(207, 48, 74, 0.3); } }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
-        .anim-spin { animation: spin-slow 8s linear infinite; }
         .anim-pulse { animation: pulse-ring 2s infinite; }
         .section-enter { animation: slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
 
@@ -288,41 +285,51 @@
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* THEME SELECTOR BUTTONS GRID */
-        .theme-grid-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            padding: 5px;
+        /* --- THEME SCROLLER (TELEGRAM STYLE) --- */
+        .theme-scroll-container {
+            display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;
+            scrollbar-width: none; /* Firefox */
         }
-        .theme-opt-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s;
+        .theme-scroll-container::-webkit-scrollbar { display: none; }
+
+        .theme-card {
+            min-width: 80px; height: 110px;
+            background: rgba(255,255,255,0.03); border: 2px solid var(--border);
+            border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .theme-opt-btn.active {
+        .theme-card.active {
             border-color: var(--brand);
             background: rgba(59, 130, 246, 0.1);
         }
-        .theme-preview-dot {
-            width: 20px; height: 20px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.1);
+        
+        .theme-preview-bubble {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 8px;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .theme-name {
+        
+        .theme-name-label {
             font-size: 10px; font-weight: 700; color: var(--text-secondary);
+            font-family: 'Orbitron', sans-serif; letter-spacing: 1px;
         }
 
         /* CUSTOM THEME BUILDER */
         .custom-builder-box {
             background: var(--card-bg); border: 1px solid var(--border);
-            border-radius: 12px; padding: 15px; margin-top: 10px;
-            display: none; /* Hidden by default */
+            border-radius: 12px; padding: 15px; margin-top: 15px;
+            display: none; animation: slide-in 0.3s ease;
         }
-        .custom-builder-box.show { display: block; animation: slide-in 0.3s ease; }
+        .custom-builder-box.show { display: block; }
         
         .color-row {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         .color-row:last-child { border-bottom: none; }
         .color-label { font-size: 12px; font-weight: 700; color: var(--text-primary); }
@@ -435,44 +442,52 @@
         <div id="section-settings" class="app-section">
             
             <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg> APARIENCIA & TEMA</div>
+            
             <div class="settings-grid">
                 <div class="setting-card-item">
                     <label class="setting-label">SELECCIONAR TEMA</label>
-                    <div class="theme-grid-selector">
-                        <div class="theme-opt-btn active" id="pal-default" onclick="setPalette('default')">
-                            <div class="theme-preview-dot" style="background:#3b82f6;"></div>
-                            <span class="theme-name">C5X</span>
+                    <div class="theme-scroll-container">
+                        
+                        <div class="theme-card active" id="pal-default" onclick="setPalette('default')">
+                            <div class="theme-preview-bubble" style="background:#3b82f6; color:#fff">💠</div>
+                            <span class="theme-name-label">CLASSIC</span>
                         </div>
-                        <div class="theme-opt-btn" id="pal-nature" onclick="setPalette('nature')">
-                            <div class="theme-preview-dot" style="background:#22c55e;"></div>
-                            <span class="theme-name">NATURE</span>
+
+                        <div class="theme-card" id="pal-tulip" onclick="setPalette('tulip')">
+                            <div class="theme-preview-bubble" style="background:#fb7185; color:#fff">🌷</div>
+                            <span class="theme-name-label">TULIP</span>
                         </div>
-                        <div class="theme-opt-btn" id="pal-ocean" onclick="setPalette('ocean')">
-                            <div class="theme-preview-dot" style="background:#6366f1;"></div>
-                            <span class="theme-name">OCEAN</span>
+
+                        <div class="theme-card" id="pal-amethyst" onclick="setPalette('amethyst')">
+                            <div class="theme-preview-bubble" style="background:#c084fc; color:#fff">💜</div>
+                            <span class="theme-name-label">AMETHYST</span>
                         </div>
-                        <div class="theme-opt-btn" id="pal-sunset" onclick="setPalette('sunset')">
-                            <div class="theme-preview-dot" style="background:#f97316;"></div>
-                            <span class="theme-name">SUNSET</span>
+
+                        <div class="theme-card" id="pal-amber" onclick="setPalette('amber')">
+                            <div class="theme-preview-bubble" style="background:#fbbf24; color:#000">🍕</div>
+                            <span class="theme-name-label">AMBER</span>
                         </div>
-                        <div class="theme-opt-btn" id="pal-cyber" onclick="setPalette('cyber')">
-                            <div class="theme-preview-dot" style="background:#000; border-color:#eab308"></div>
-                            <span class="theme-name">CYBER</span>
+
+                        <div class="theme-card" id="pal-cyan" onclick="setPalette('cyan')">
+                            <div class="theme-preview-bubble" style="background:#22d3ee; color:#000">☃️</div>
+                            <span class="theme-name-label">CYAN</span>
                         </div>
-                        <div class="theme-opt-btn" id="pal-custom" onclick="setPalette('custom')">
-                            <div class="theme-preview-dot" style="background:linear-gradient(45deg, #f00, #00f);"></div>
-                            <span class="theme-name">CUSTOM</span>
+
+                        <div class="theme-card" id="pal-custom" onclick="setPalette('custom')">
+                            <div class="theme-preview-bubble" style="background:linear-gradient(45deg, #f00, #00f); color:#fff">🎨</div>
+                            <span class="theme-name-label">EDITAR</span>
                         </div>
+
                     </div>
 
                     <div id="customBuilder" class="custom-builder-box">
-                        <div class="setting-label" style="margin-bottom:10px; color:var(--brand)">EDITAR COLORES</div>
+                        <div class="setting-label" style="margin-bottom:10px; color:var(--brand)">PERSONALIZAR COLORES</div>
                         <div class="color-row">
                             <span class="color-label">FONDO PRINCIPAL</span>
                             <input type="color" class="color-picker-input" id="cust-bg" value="#000000" onchange="updateCustomColor('--bg', this.value)">
                         </div>
                         <div class="color-row">
-                            <span class="color-label">SUPERFICIE / TARJETAS</span>
+                            <span class="color-label">TARJETAS / SUPERFICIE</span>
                             <input type="color" class="color-picker-input" id="cust-surf" value="#111111" onchange="updateCustomColor('--surface', this.value)">
                         </div>
                         <div class="color-row">
@@ -574,7 +589,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.3 THEME BUILDER</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.4 TELEGRAM UI</div>
         </div>
     </div>
 
@@ -679,7 +694,7 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- GESTIÓN DE PALETAS ---
+        // --- GESTIÓN DE PALETAS (TELEGRAM STYLE) ---
         function setPalette(palName) {
             triggerHaptic();
             currentPalette = palName;
@@ -689,16 +704,16 @@
 
         function applyPalette(palName) {
             // Limpiar clases previas
-            document.body.classList.remove('theme-nature', 'theme-ocean', 'theme-sunset', 'theme-cyber');
+            document.body.classList.remove('theme-tulip', 'theme-amethyst', 'theme-amber', 'theme-cyan');
             document.body.style = ''; // Reset inline styles for custom theme
             
             const builder = document.getElementById('customBuilder');
             if(builder) builder.classList.remove('show');
 
-            if(palName === 'nature') document.body.classList.add('theme-nature');
-            if(palName === 'ocean') document.body.classList.add('theme-ocean');
-            if(palName === 'sunset') document.body.classList.add('theme-sunset');
-            if(palName === 'cyber') document.body.classList.add('theme-cyber');
+            if(palName === 'tulip') document.body.classList.add('theme-tulip');
+            if(palName === 'amethyst') document.body.classList.add('theme-amethyst');
+            if(palName === 'amber') document.body.classList.add('theme-amber');
+            if(palName === 'cyan') document.body.classList.add('theme-cyan');
             
             if(palName === 'custom') {
                 if(builder) builder.classList.add('show');
@@ -706,7 +721,7 @@
             }
 
             // Actualizar botones UI
-            document.querySelectorAll('.theme-opt-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.theme-card').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById('pal-' + palName);
             if(activeBtn) activeBtn.classList.add('active');
             
@@ -855,32 +870,13 @@
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
         function triggerCrashAlert(coin, pct) { 
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
-            
-            if(navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 500]); 
-            
-            const t = document.getElementById("toast"); 
-            t.textContent = `⚠️ ALERTA: ${coin} CAÍDA ${pct.toFixed(1)}%`; 
-            t.className = "crash-mode show";
-            
-            setTimeout(() => { 
-                t.classList.remove("show", "crash-mode"); 
-            }, 6000); 
-        }
-        
-        function clearCrashMemory() {
-            if(confirm("¿Borrar memoria de alertas de caída?")) {
-                crashAlertedCoins = {};
-                localStorage.setItem('c5x_crash_alerts', JSON.stringify(crashAlertedCoins));
-                showToast("✅ Memoria de Alertas Borrada");
-            }
+            // ELIMINADO PARA SILENCIAR NOTIFICACIONES PERSISTENTES
         }
         
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
             t.textContent = txt; 
-            t.className = ""; 
+            t.classList.remove("alert-mode", "success-mode"); 
             if(isAlert) t.classList.add("alert-mode"); 
             if(isSuccess) t.classList.add("success-mode"); 
             t.classList.add("show"); 
@@ -950,20 +946,7 @@
         }
 
         function processDropperAlerts() {
-            topDroppers.forEach(item => {
-                const pct = parseFloat(item.change_percentage);
-                const pair = item.currency_pair.replace('_USDT', '');
-                
-                if (pct <= -50) {
-                    const currentBracket = Math.floor(Math.abs(pct) / 10) * 10;
-                    const lastAlertedLevel = crashAlertedCoins[pair] || 0;
-                    if (currentBracket > lastAlertedLevel) {
-                        triggerCrashAlert(pair, pct);
-                        crashAlertedCoins[pair] = currentBracket;
-                        localStorage.setItem('c5x_crash_alerts', JSON.stringify(crashAlertedCoins));
-                    }
-                }
-            });
+            // SILENT
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
