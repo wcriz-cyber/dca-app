@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V17.6 STABLE</title>
+    <title>C5X - V17.7 CRASH MONITOR</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -54,6 +54,7 @@
         @keyframes slide-in { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes grow-up { from { height: 0; opacity: 0; } to { opacity: 1; } }
         @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes flash-red { 0%, 100% { background-color: var(--surface); } 50% { background-color: rgba(207, 48, 74, 0.3); } }
 
         .anim-click:active { animation: click-pop 0.2s ease-in-out; }
         .anim-spin { animation: spin-slow 8s linear infinite; }
@@ -86,6 +87,15 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
+        
+        /* ESTILO PARA ALERTA DE CRASH */
+        #toast.crash-mode {
+            background-color: #cf304a; 
+            color: white;
+            border: 2px solid #ff9999;
+            box-shadow: 0 0 20px rgba(207, 48, 74, 0.6);
+            animation: flash-red 1s infinite;
+        }
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
@@ -446,13 +456,14 @@
             <div class="setting-section-title"><svg width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> GESTIÓN DE DATOS</div>
             <div class="data-actions"><button class="btn-data anim-click" onclick="exportData()">⬇️ EXPORTAR BACKUP</button><button class="btn-data anim-click" onclick="document.getElementById('importFile').click()">⬆️ IMPORTAR BACKUP</button><input type="file" id="importFile" style="display:none" onchange="importData(this)"></div>
             <button class="btn-reset anim-click" style="margin-top:15px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearLogs()"><svg width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> BORRAR HISTORIAL</button>
+            <button class="btn-reset anim-click" style="margin-top:5px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearCrashMemory()"><svg width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg> RESETEAR ALERTAS CRASH</button>
 
             <div class="settings-card danger">
                 <div class="setting-header" style="color:var(--danger); border-bottom-color:rgba(207, 48, 74, 0.3);">⚠️ ZONA CRÍTICA</div>
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.6 STABLE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.7 CRASH MONITOR</div>
         </div>
     </div>
 
@@ -500,7 +511,9 @@
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
-        let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_alert_levels')) || {};
+        
+        // --- NUEVO: ESTADO DE ALERTAS DE CRASH ---
+        let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
         
         let proxies = [
             'https://api.cors.lol/?url=',
@@ -663,14 +676,34 @@
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
+        // --- NUEVO: LÓGICA DE ALERTA DE CRASH ---
         function triggerCrashAlert(coin, pct) { 
-            // ELIMINADO PARA SILENCIAR NOTIFICACIONES PERSISTENTES
+            const audio = document.getElementById('alertSound'); 
+            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
+            
+            if(navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 500]); 
+            
+            const t = document.getElementById("toast"); 
+            t.textContent = `⚠️ ALERTA: ${coin} CAÍDA ${pct.toFixed(1)}%`; 
+            t.className = "crash-mode show";
+            
+            setTimeout(() => { 
+                t.classList.remove("show", "crash-mode"); 
+            }, 6000); // Alerta dura 6 segundos
+        }
+        
+        function clearCrashMemory() {
+            if(confirm("¿Borrar memoria de alertas de caída?")) {
+                crashAlertedCoins = {};
+                localStorage.setItem('c5x_crash_alerts', JSON.stringify(crashAlertedCoins));
+                showToast("✅ Memoria de Alertas Borrada");
+            }
         }
         
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
             t.textContent = txt; 
-            t.classList.remove("alert-mode", "success-mode"); 
+            t.className = ""; // Limpiar clases
             if(isAlert) t.classList.add("alert-mode"); 
             if(isSuccess) t.classList.add("success-mode"); 
             t.classList.add("show"); 
@@ -695,7 +728,7 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- FIXED: ROBUST PROXY ROTATION FOR RADAR ---
+        // --- MODIFICADO: LOGICA DE MONITOR ---
         async function fetchAndCalcTopDroppers() { 
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
@@ -729,7 +762,7 @@
                     }); 
                     topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
                     
-                    processDropperAlerts(); 
+                    processDropperAlerts(); // EJECUTAR LOGICA DE ALERTAS
                     startRadarRotation(); 
                     return; 
                     
@@ -740,8 +773,35 @@
             elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
         }
 
+        // --- NUEVO: FUNCIÓN DE FILTRADO DE ALERTAS INTELIGENTE ---
         function processDropperAlerts() {
-            // SILENT
+            // Revisamos topDroppers o allGateETFs (usaremos topDroppers para eficiencia, ya que son los que mas caen)
+            topDroppers.forEach(item => {
+                const pct = parseFloat(item.change_percentage);
+                const pair = item.currency_pair.replace('_USDT', '');
+                
+                // Solo nos interesa si cae 50% o más
+                if (pct <= -50) {
+                    // Calculamos en qué "escalón" de 10% estamos
+                    // Math.floor(abs(pct) / 10) * 10
+                    // Ejemplo: -53% -> abs(53) / 10 = 5.3 -> floor(5) -> 50.
+                    // Ejemplo: -61% -> abs(61) / 10 = 6.1 -> floor(6) -> 60.
+                    const currentBracket = Math.floor(Math.abs(pct) / 10) * 10;
+                    
+                    // Recuperamos el último nivel alertado (o 0 si nunca se alertó)
+                    const lastAlertedLevel = crashAlertedCoins[pair] || 0;
+                    
+                    // Si el nivel actual es MAYOR que el último alertado, activamos alerta
+                    // Ejemplo: currentBracket 50 > last 0 -> ALERTA. Se guarda 50.
+                    // Siguiente ciclo: pct -52. currentBracket 50 > last 50 -> FALSO. NO ALERTA.
+                    // Siguiente ciclo: pct -61. currentBracket 60 > last 50 -> ALERTA. Se guarda 60.
+                    if (currentBracket > lastAlertedLevel) {
+                        triggerCrashAlert(pair, pct);
+                        crashAlertedCoins[pair] = currentBracket;
+                        localStorage.setItem('c5x_crash_alerts', JSON.stringify(crashAlertedCoins));
+                    }
+                }
+            });
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
