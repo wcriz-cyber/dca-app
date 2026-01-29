@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V17.7 CRASH MONITOR</title>
+    <title>C5X - V17.8 DEV LINK</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -88,7 +88,6 @@
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
         
-        /* ESTILO PARA ALERTA DE CRASH */
         #toast.crash-mode {
             background-color: #cf304a; 
             color: white;
@@ -291,6 +290,14 @@
             <div class="nav-item anim-click" id="nav-etf" onclick="switchView('etf')"><div class="nav-icon anim-pulse"><svg width="24" height="24"><circle cx="12" cy="12" r="10"/><path d="M16.24 7.76l-2.12 2.12"/><path d="M7.76 16.24l2.12-2.12"/><line x1="12" y1="12" x2="12" y2="8"/><line x1="12" y1="12" x2="16" y2="12"/></svg></div><div class="nav-text">MONITOR ETF</div></div>
             <div class="nav-item anim-click" id="nav-log" onclick="switchView('log')"><div class="nav-icon"><svg width="24" height="24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="nav-text">BITÁCORA</div></div>
             <div class="nav-item anim-click" id="nav-settings" onclick="switchView('settings')"><div class="nav-icon anim-spin"><svg width="24" height="24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><div class="nav-text">AJUSTES</div></div>
+            
+            <div class="nav-item anim-click" onclick="openDeveloper()">
+                <div class="nav-icon" style="color:var(--brand)">
+                    <svg width="24" height="24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                </div>
+                <div class="nav-text" style="color:var(--brand)">DESARROLLADOR</div>
+            </div>
+
             <button class="btn-close-menu anim-click" onclick="closeMenuViaButton()"><svg width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> CERRAR MENÚ</button>
         </div>
     </div>
@@ -463,7 +470,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.7 CRASH MONITOR</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V17.8 DEV LINK</div>
         </div>
     </div>
 
@@ -479,6 +486,9 @@
                     .catch(err => console.log('SW fallo', err));
             });
         }
+        
+        // --- USUARIO TELEGRAM (Modificable) ---
+        let telegramUser = "wcriz";
 
         let isLight = localStorage.getItem('theme') === 'light';
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
@@ -581,6 +591,10 @@
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
         function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
+
+        function openDeveloper() {
+             window.open(`https://t.me/${telegramUser}`, '_blank');
+        }
 
         function updateStats(tf) {
             triggerHaptic();
