@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.1 THEME FIX</title>
+    <title>C5X - V18.2 PRO UI</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -43,11 +43,18 @@
             --skeleton: rgba(0,0,0,0.05) !important;
         }
 
-        /* --- TEMA NATURE (ANDROID 15) --- */
+        /* --- TEMA NATURE (ANDROID 15) - AJUSTADO (FONDO MÁS SUTIL) --- */
         body.theme-nature {
-            --bg: #05180d; --surface: #0f291a; --surface-glass: rgba(15, 41, 26, 0.98);
-            --text-primary: #e8f5e9; --text-secondary: #a5d6a7; --text-tertiary: #588c64;
-            --brand: #4ade80; --border: #1b4d2e; --card-bg: rgba(74, 222, 128, 0.05);
+            /* Fondo casi negro con un toque muy sutil de verde bosque */
+            --bg: #0a0e0b; 
+            --surface: #121814; 
+            --surface-glass: rgba(18, 24, 20, 0.98);
+            --text-primary: #ecfdf5; 
+            --text-secondary: #86efac; 
+            --text-tertiary: #4ade80;
+            --brand: #22c55e; /* Verde vibrante para acentos */
+            --border: #1e2923; 
+            --card-bg: rgba(34, 197, 94, 0.04);
         }
         body.theme-nature.light-mode {
             --bg: #f0fdf4 !important; --surface: #ffffff !important; 
@@ -56,11 +63,18 @@
             --card-bg: #ffffff !important;
         }
 
-        /* --- TEMA OCEAN (ANDROID 16) --- */
+        /* --- TEMA OCEAN (ANDROID 16) - AJUSTADO (FONDO MÁS SUTIL) --- */
         body.theme-ocean {
-            --bg: #0b0a14; --surface: #161424; --surface-glass: rgba(22, 20, 36, 0.98);
-            --text-primary: #eef2ff; --text-secondary: #a5b4fc; --text-tertiary: #6366f1;
-            --brand: #818cf8; --border: #312e81; --card-bg: rgba(129, 140, 248, 0.05);
+            /* Fondo casi negro con un toque muy sutil de azul noche */
+            --bg: #0b0b10; 
+            --surface: #13131c; 
+            --surface-glass: rgba(19, 19, 28, 0.98);
+            --text-primary: #eef2ff; 
+            --text-secondary: #a5b4fc; 
+            --text-tertiary: #818cf8;
+            --brand: #6366f1; /* Indigo vibrante para acentos */
+            --border: #1e1b4b; 
+            --card-bg: rgba(99, 102, 241, 0.04);
         }
         body.theme-ocean.light-mode {
             --bg: #eef2ff !important; --surface: #ffffff !important;
@@ -76,7 +90,7 @@
             padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; user-select: none; font-size: 16px; 
             overscroll-behavior-y: none;
-            transition: background 0.3s ease, color 0.3s ease; /* Suavizar cambio de tema */
+            transition: background 0.3s ease, color 0.3s ease; 
         }
 
         /* --- ANIMACIONES --- */
@@ -309,26 +323,34 @@
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* PALETTE BUTTONS STYLES */
-        .palette-btn {
-            border: 2px solid transparent;
+        /* THEME SELECTOR BUTTONS (MATCHING TF-BTN) */
+        .theme-selector-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 4px;
             border-radius: 12px;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+        }
+        .theme-opt {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            padding: 10px 0;
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.2s;
             cursor: pointer;
-            transition: 0.2s;
-            margin-bottom: 5px;
         }
-        .palette-btn.active {
-            border-color: var(--brand);
-            background: rgba(59, 130, 246, 0.15);
-        }
-        .palette-circle {
-            width: 24px; height: 24px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.2);
+        .theme-opt.active {
+            color: var(--brand);
+            background: rgba(59, 130, 246, 0.1);
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
     </style>
 </head>
@@ -421,25 +443,16 @@
                 </div>
             </div>
 
-            <div id="logGrid" class="levels-container"></div>
-        </div>
-
-        <div id="section-settings" class="app-section">
+            <div id="section-settings" class="app-section">
             
             <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg> APARIENCIA & TEMA</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <div class="palette-btn active anim-click" id="pal-default" onclick="setPalette('default')">
-                        <div class="palette-circle" style="background:#3b82f6;"></div>
-                        <div style="font-size:12px; font-weight:700;">PREDETERMINADO (C5X CLASSIC)</div>
-                    </div>
-                    <div class="palette-btn anim-click" id="pal-nature" onclick="setPalette('nature')">
-                        <div class="palette-circle" style="background:#4ade80;"></div>
-                        <div style="font-size:12px; font-weight:700;">NATURE (ANDROID 15)</div>
-                    </div>
-                    <div class="palette-btn anim-click" id="pal-ocean" onclick="setPalette('ocean')">
-                        <div class="palette-circle" style="background:#818cf8;"></div>
-                        <div style="font-size:12px; font-weight:700;">OCEAN (ANDROID 16)</div>
+                    <label class="setting-label">PALETA DE COLORES</label>
+                    <div class="theme-selector-row">
+                        <button class="theme-opt active" id="pal-default" onclick="setPalette('default')">C5X</button>
+                        <button class="theme-opt" id="pal-nature" onclick="setPalette('nature')">NATURE</button>
+                        <button class="theme-opt" id="pal-ocean" onclick="setPalette('ocean')">OCEAN</button>
                     </div>
                 </div>
             </div>
@@ -535,7 +548,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.1 THEME FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.2 PRO UI</div>
         </div>
     </div>
 
@@ -654,7 +667,7 @@
             if(palName === 'ocean') document.body.classList.add('theme-ocean');
 
             // Actualizar botones UI
-            document.querySelectorAll('.palette-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.theme-opt').forEach(btn => btn.classList.remove('active'));
             const activeBtn = document.getElementById('pal-' + palName);
             if(activeBtn) activeBtn.classList.add('active');
             
