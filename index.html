@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V18.0 COLOR PALETTES</title>
+    <title>C5X - V18.1 THEME FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -20,18 +20,21 @@
     <script src="https://s3.tradingview.com/tv.js"></script>
 
     <style>
-        /* --- TEMA PREDETERMINADO (TECH BLUE) --- */
+        /* --- VARIABLES BASE Y TEMAS --- */
         :root {
+            /* PREDETERMINADO (TECH BLUE) */
             --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98);
             --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
             --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d;
             --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px;
             --drive: #34A853; 
-            --gold-fixed: #f0b90b; /* Color Oro Fijo */
+            --gold-fixed: #f0b90b;
             --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px);
             --safe-bottom: env(safe-area-inset-bottom, 20px);
             --skeleton: rgba(255,255,255,0.05);
         }
+
+        /* LIGHT MODE DEFAULT */
         body.light-mode {
             --bg: #f5f7fa !important; --surface: #ffffff !important;
             --surface-glass: rgba(255, 255, 255, 0.98) !important; --card-bg: #ffffff !important;
@@ -40,30 +43,28 @@
             --skeleton: rgba(0,0,0,0.05) !important;
         }
 
-        /* --- TEMA NATURE (ANDROID 15 - VERDE/SALVIA) --- */
+        /* --- TEMA NATURE (ANDROID 15) --- */
         body.theme-nature {
-            --bg: #0f1811; --surface: #16241a; --surface-glass: rgba(22, 36, 26, 0.98);
-            --text-primary: #ecfdf5; --text-secondary: #86efac; --brand: #4ade80;
-            --border: #2d4a35; --card-bg: rgba(74, 222, 128, 0.05);
+            --bg: #05180d; --surface: #0f291a; --surface-glass: rgba(15, 41, 26, 0.98);
+            --text-primary: #e8f5e9; --text-secondary: #a5d6a7; --text-tertiary: #588c64;
+            --brand: #4ade80; --border: #1b4d2e; --card-bg: rgba(74, 222, 128, 0.05);
         }
         body.theme-nature.light-mode {
             --bg: #f0fdf4 !important; --surface: #ffffff !important; 
-            --surface-glass: rgba(255, 255, 255, 0.98) !important;
             --text-primary: #14532d !important; --text-secondary: #166534 !important;
-            --brand: #15803d !important; --border: #bbf7d0 !important;
+            --brand: #16a34a !important; --border: #bbf7d0 !important;
             --card-bg: #ffffff !important;
         }
 
-        /* --- TEMA OCEAN (ANDROID 16 - LAVANDA/INDIGO) --- */
+        /* --- TEMA OCEAN (ANDROID 16) --- */
         body.theme-ocean {
-            --bg: #0f0e1a; --surface: #19172b; --surface-glass: rgba(25, 23, 43, 0.98);
-            --text-primary: #e0e7ff; --text-secondary: #a5b4fc; --brand: #818cf8;
-            --border: #312e81; --card-bg: rgba(129, 140, 248, 0.05);
+            --bg: #0b0a14; --surface: #161424; --surface-glass: rgba(22, 20, 36, 0.98);
+            --text-primary: #eef2ff; --text-secondary: #a5b4fc; --text-tertiary: #6366f1;
+            --brand: #818cf8; --border: #312e81; --card-bg: rgba(129, 140, 248, 0.05);
         }
         body.theme-ocean.light-mode {
             --bg: #eef2ff !important; --surface: #ffffff !important;
-            --surface-glass: rgba(255, 255, 255, 0.98) !important;
-            --text-primary: #1e1b4b !important; --text-secondary: #4338ca !important;
+            --text-primary: #312e81 !important; --text-secondary: #4338ca !important;
             --brand: #4f46e5 !important; --border: #c7d2fe !important;
             --card-bg: #ffffff !important;
         }
@@ -74,8 +75,8 @@
             background: var(--bg); color: var(--text-primary); 
             padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); 
             overflow-x: hidden; user-select: none; font-size: 16px; 
-            overscroll-behavior-y: none; 
-            transition: background 0.3s ease, color 0.3s ease;
+            overscroll-behavior-y: none;
+            transition: background 0.3s ease, color 0.3s ease; /* Suavizar cambio de tema */
         }
 
         /* --- ANIMACIONES --- */
@@ -147,11 +148,11 @@
         .app-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
         .app-section.active { display: block; opacity: 1; animation: slide-in 0.3s ease-out; }
 
-        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; }
+        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; transition: border-color 0.3s; }
         .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 4px 0; text-align: center; font-family: sans-serif; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
         .tf-btn.active { color: var(--brand); background: rgba(59, 130, 246, 0.1); font-weight: 800; }
 
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; position: sticky; top: calc(90px + var(--safe-top)); z-index: 900; background: var(--bg); border-bottom: 1px solid var(--border); margin-bottom: 10px; transition: background 0.3s; }
+        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; position: sticky; top: calc(90px + var(--safe-top)); z-index: 900; background: var(--bg); border-bottom: 1px solid var(--border); margin-bottom: 10px; transition: background 0.3s, border-color 0.3s; }
         .slot-card { background: transparent; color: var(--text-tertiary); padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700; border-radius: 8px; position: relative; transition: all 0.3s; }
         .slot-card.active { color: var(--text-primary); background: rgba(255,255,255,0.02); font-weight: 800; }
         .slot-card.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px; background: var(--brand); border-radius: 3px 3px 0 0; }
@@ -162,12 +163,12 @@
         .chart-fs-btn { position: absolute; bottom: 10px; right: 10px; z-index: 20; width: 30px; height: 30px; background: rgba(128,128,128,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); backdrop-filter: blur(4px); }
 
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 10px; }
-        .input-group { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; transition: border-color 0.3s; }
+        .input-group { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 8px; text-align: center; transition: border-color 0.3s, background 0.3s; }
         .input-group:focus-within { border-color: var(--brand); }
         .input-label { font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; text-align: center; }
         
-        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
+        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; min-height: 80px; display:flex; flex-direction:column; justify-content:center; position: relative; }
@@ -193,7 +194,7 @@
         .stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
 
         .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
-        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
+        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 0 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; cursor: pointer; transition: transform 0.1s ease, background 0.2s ease, border-color 0.3s; position: relative; overflow: hidden; min-height: 72px; height: 72px; }
         .unified-card:active { transform: scale(0.98); }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
         
@@ -233,7 +234,7 @@
 
         .setting-section-title { padding: 5px 5px; font-family: 'Orbitron', sans-serif; color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
-        .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; }
+        .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; transition: background 0.3s, border-color 0.3s; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
         .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; }
         
@@ -308,7 +309,7 @@
         #logGrid::-webkit-scrollbar { width: 4px; }
         #logGrid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        /* PALETTE BUTTONS */
+        /* PALETTE BUTTONS STYLES */
         .palette-btn {
             border: 2px solid transparent;
             border-radius: 12px;
@@ -316,16 +317,18 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: var(--card-bg);
+            background: rgba(255,255,255,0.05);
             cursor: pointer;
             transition: 0.2s;
+            margin-bottom: 5px;
         }
         .palette-btn.active {
             border-color: var(--brand);
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.15);
         }
         .palette-circle {
             width: 24px; height: 24px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
         }
     </style>
 </head>
@@ -418,20 +421,23 @@
                 </div>
             </div>
 
-            <div id="section-settings" class="app-section">
+            <div id="logGrid" class="levels-container"></div>
+        </div>
+
+        <div id="section-settings" class="app-section">
             
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg> APARIENCIA & TEMA</div>
+            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg> APARIENCIA & TEMA</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
-                    <div class="palette-btn active" id="pal-default" onclick="setPalette('default')">
+                    <div class="palette-btn active anim-click" id="pal-default" onclick="setPalette('default')">
                         <div class="palette-circle" style="background:#3b82f6;"></div>
-                        <div style="font-size:12px; font-weight:700;">PREDETERMINADO</div>
+                        <div style="font-size:12px; font-weight:700;">PREDETERMINADO (C5X CLASSIC)</div>
                     </div>
-                    <div class="palette-btn" id="pal-nature" onclick="setPalette('nature')">
+                    <div class="palette-btn anim-click" id="pal-nature" onclick="setPalette('nature')">
                         <div class="palette-circle" style="background:#4ade80;"></div>
                         <div style="font-size:12px; font-weight:700;">NATURE (ANDROID 15)</div>
                     </div>
-                    <div class="palette-btn" id="pal-ocean" onclick="setPalette('ocean')">
+                    <div class="palette-btn anim-click" id="pal-ocean" onclick="setPalette('ocean')">
                         <div class="palette-circle" style="background:#818cf8;"></div>
                         <div style="font-size:12px; font-weight:700;">OCEAN (ANDROID 16)</div>
                     </div>
@@ -473,7 +479,7 @@
                 </div>
             </div>
 
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
+            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> AJUSTES AVANZADOS</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
                      <div class="input-row-save" style="justify-content:space-between; margin-bottom:5px;">
@@ -524,12 +530,12 @@
             <button class="btn-reset anim-click" style="margin-top:15px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearLogs()"><svg width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg> BORRAR HISTORIAL</button>
             <button class="btn-reset anim-click" style="margin-top:5px; border-color:var(--border); color:var(--text-secondary); background:transparent;" onclick="clearCrashMemory()"><svg width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg> RESETEAR ALERTAS CRASH</button>
 
-            <div class="settings-card danger">
-                <div class="setting-header" style="color:var(--danger); border-bottom-color:rgba(207, 48, 74, 0.3);">⚠️ ZONA CRÍTICA</div>
-                <div class="setting-info" style="text-align:center; margin-bottom:10px;"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
+            <div class="settings-card danger" style="margin-top:20px; border:1px solid var(--danger); background:rgba(207, 48, 74, 0.05); border-radius:16px; padding:15px;">
+                <div class="setting-header" style="color:var(--danger); border-bottom:1px solid rgba(207, 48, 74, 0.3); padding-bottom:10px; margin-bottom:10px; font-weight:800;">⚠️ ZONA CRÍTICA</div>
+                <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px;">C5X V18.0 COLOR PALETTES</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V18.1 THEME FIX</div>
         </div>
     </div>
 
@@ -547,7 +553,7 @@
         }
 
         let isLight = localStorage.getItem('theme') === 'light';
-        // --- NUEVA LÓGICA DE PALETA ---
+        // --- VARIABLE DE PALETA ---
         let currentPalette = localStorage.getItem('c5x_palette') || 'default';
 
         let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
@@ -601,8 +607,8 @@
                     document.getElementById('setDesc').value = savedParams.desc;
                 }
 
-                // APLICAR TEMA
                 if(isLight) { document.body.classList.add('light-mode'); updateThemeIcon(); }
+                // APLICAR PALETA
                 applyPalette(currentPalette);
 
                 slots.forEach(s => { 
@@ -631,7 +637,7 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- GESTIÓN DE PALETAS DE COLOR ---
+        // --- GESTIÓN DE PALETAS ---
         function setPalette(palName) {
             triggerHaptic();
             currentPalette = palName;
@@ -653,7 +659,7 @@
             if(activeBtn) activeBtn.classList.add('active');
             
             // Si hay gráfico, recargar para adaptar colores
-            if(chartSymbol) loadChart(chartSymbol);
+            if(chartSymbol && currentSection === 'operate') loadChart(chartSymbol);
         }
 
         let secCallback = null;
@@ -750,10 +756,13 @@
         function updateViewVisuals(viewName) { 
             currentSection = viewName; 
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); 
-            document.getElementById('section-' + viewName).classList.add('active'); 
+            const section = document.getElementById('section-' + viewName);
+            if(section) section.classList.add('active'); 
+            
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); 
             const navItem = document.getElementById('nav-' + viewName); 
             if(navItem) navItem.classList.add('selected'); 
+            
             const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); 
             if(viewName === 'operate') { 
                 tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; 
@@ -1187,9 +1196,31 @@
         function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
         function loadSettingsValues() { 
-            const s = slots[activeIdx]; document.getElementById('setCapital').value = s.capital; document.getElementById('setInc').value = document.getElementById('incInput').value; document.getElementById('setDesc').value = document.getElementById('descInput').value; document.getElementById('setRoi').value = s.roi || 100; document.getElementById('setGlobalCapital').value = globalCapital; document.getElementById('setFee').value = exchangeFee; document.getElementById('setRadarLimit').value = radarLimit; document.getElementById('setRadarSpeed').value = radarSpeed; document.getElementById('setTickerSpeed').value = tickerSpeed; document.getElementById('setDD').value = appConfig.dd; document.getElementById('setNewPass').value = ''; 
-            const grid = document.getElementById('multiGrid'); grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join('');
-            calcMonthlyPerformance(); 
+            try {
+                const s = slots[activeIdx]; 
+                
+                // Cargar valores con verificaciones de seguridad
+                const elCap = document.getElementById('setCapital'); if(elCap) elCap.value = s.capital;
+                const elInc = document.getElementById('setInc'); if(elInc) elInc.value = document.getElementById('incInput').value;
+                const elDesc = document.getElementById('setDesc'); if(elDesc) elDesc.value = document.getElementById('descInput').value;
+                const elRoi = document.getElementById('setRoi'); if(elRoi) elRoi.value = s.roi || 100;
+                const elGlobCap = document.getElementById('setGlobalCapital'); if(elGlobCap) elGlobCap.value = globalCapital;
+                const elFee = document.getElementById('setFee'); if(elFee) elFee.value = exchangeFee;
+                
+                const elRadarLim = document.getElementById('setRadarLimit'); if(elRadarLim) elRadarLim.value = radarLimit;
+                const elRadarSpd = document.getElementById('setRadarSpeed'); if(elRadarSpd) elRadarSpd.value = radarSpeed;
+                const elTickSpd = document.getElementById('setTickerSpeed'); if(elTickSpd) elTickSpd.value = tickerSpeed;
+                const elDD = document.getElementById('setDD'); if(elDD) elDD.value = appConfig.dd;
+                
+                const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
+                const elProxy = document.getElementById('setProxy'); if(elProxy) elProxy.value = customProxy;
+
+                const grid = document.getElementById('multiGrid'); 
+                if(grid) {
+                    grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join('');
+                }
+                calcMonthlyPerformance(); 
+            } catch(e) { console.warn("Error cargando ajustes", e); }
         }
         function calcMonthlyPerformance() { const now = new Date(); const currentMonth = now.getMonth(); const currentYear = now.getFullYear(); let monthlyProfit = 0; history.forEach(h => { const parts = h.date.split('/'); if(parts.length === 3) { const hDate = new Date(parts[2], parts[1]-1, parts[0]); if(hDate.getMonth() === currentMonth && hDate.getFullYear() === currentYear) { monthlyProfit += (h.netProfit !== undefined ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0)); } } }); let growth = (globalCapital > 0) ? (monthlyProfit / globalCapital) * 100 : 0; const el = document.getElementById('monthlyProfitDisplay'); el.innerHTML = `$${monthlyProfit.toFixed(2)} <span style="font-size:14px; color:${monthlyProfit>=0?'var(--long)':'var(--short)'}">(${growth.toFixed(2)}%)</span>`; }
         function verifyAndAddCoin() { const input = document.getElementById('newTickerCoin'); let val = input.value.trim().toUpperCase().replace('USDT',''); if(!val) return; tickerAssets.push(val); localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); input.value=''; renderTickerSettings(); showToast("✅ Agregada"); }
