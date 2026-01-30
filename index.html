@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.2 VISUAL FIX</title>
+    <title>C5X - V22.3 SILENT MODE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* --- ESTILOS ORIGINALES V19.0 + UPGRADE V22 --- */
+        /* --- ESTILOS ORIGINALES + UPGRADE V22 --- */
         :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98); --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
         
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
@@ -492,7 +492,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.2 VISUAL FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.3 SILENT MODE</div>
         </div>
     </div>
 
@@ -846,7 +846,7 @@
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
+        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); /* checkAutoBackup(); REMOVIDO */ }
         
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
@@ -1103,7 +1103,7 @@
             grid.appendChild(fragment); 
         }
 
-        // --- CORRECCIÓN LÓGICA DE SELECCIÓN DE SLOT ---
+        // --- CORRECCIÓN SELECCIÓN SLOT (DE V22.2) ---
         function smartSelectETF(symbol, price) { 
             triggerHaptic(); 
             let cleanName = symbol.replace('_USDT','').replace('USDT',''); 
@@ -1151,7 +1151,7 @@
             localStorage.setItem('c5x_last_slot', i); 
             const s = slots[i]; 
             
-            // --- UI Updates con Bloqueo de Input ---
+            // --- UI Updates con Bloqueo de Input (DE V22.2) ---
             const cInput = document.getElementById('coinInput');
             cInput.value = s.name;
             cInput.setAttribute('readonly', true); 
@@ -1232,8 +1232,9 @@
         async function executeGateOrder() {
             closeModals();
             
+            // Si falta configuración, asumimos modo simulación
             if(!apiConfig.key || !apiConfig.secret) {
-                showToast("⚠️ Modo Simulación (Sin Keys)", 3000);
+                // showToast("⚠️ Modo Simulación (Sin Keys)", 3000); // Comentado para menos ruido
                 simulatedBuy(currentTrade.level);
                 return;
             }
@@ -1259,10 +1260,12 @@
                 setTimeout(fetchWalletBalance, 1500);
 
             } catch (e) {
-                showToast("❌ FALLO: " + e.message, 4000, true);
-                if(confirm("La API falló. ¿Marcar nivel manualmente en la app?")) {
-                     simulatedBuy(currentTrade.level);
-                }
+                // --- MODIFICACIÓN SILENCIOSA ---
+                // En lugar de alertar y pedir confirmación, simplemente marcamos en app
+                console.warn("API Fail (Auto-Manual): " + e.message); 
+                simulatedBuy(currentTrade.level);
+                // Opcional: Avisar discretamente
+                // showToast("⚠️ Offline: Marcado Manualmente", 2000);
             }
         }
 
@@ -1439,7 +1442,7 @@
             fetchWalletBalance();
         }
 
-        // --- LÓGICA DE EDICIÓN SEGURA DE MONEDA (LONG PRESS) ---
+        // --- LÓGICA DE EDICIÓN SEGURA DE MONEDA (LONG PRESS - V22.2) ---
         let coinPressTimer = null;
         const coinInputEl = document.getElementById('coinInput');
 
