@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.0 TRADING CORE</title>
+    <title>C5X - V19.1 REAL TRADING</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -36,7 +36,7 @@
             --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
         }
 
-        /* TEMAS (Copiados de V18.7) */
+        /* TEMAS */
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
         body.theme-ocean { --bg: #030712; --surface: #0f172a; --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06); --text-primary: #f8fafc; --text-secondary: #94a3b8; --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif; }
         body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --brand: #f97316; --border: #52200b; --card-bg: rgba(249, 115, 22, 0.06); --text-primary: #fff7ed; --text-secondary: #fdba74; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
@@ -73,8 +73,7 @@
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
-        #toast.crash-mode { background-color: #cf304a; color: white; border: 2px solid #ff9999; box-shadow: 0 0 20px rgba(207, 48, 74, 0.6); animation: flash-red 1s infinite; }
-
+        
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); transition: background 0.3s; }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
@@ -433,13 +432,6 @@
                 </div>
 
                 <div class="setting-card-item">
-                     <div class="input-row-save">
-                        <div style="flex:1"><label class="setting-label">PROXY</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." ></div>
-                        <button class="btn-save-mini anim-click" onclick="saveProxySecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
-                     </div>
-                </div>
-
-                <div class="setting-card-item">
                     <label class="setting-label">MONEDAS DEL TICKER</label>
                     <div id="tickerChipsContainer" class="chip-container"></div>
                     <div class="add-coin-row"><div class="input-wrapper" style="flex:1"><input type="text" id="newTickerCoin" placeholder="AÑADIR (ej: PEPE)" oninput="forceCaps(this)" onkeypress="handleEnter(event)" style="border:none; background:transparent; color:var(--text-primary); font-family:var(--font-num); font-weight:700;"></div><button id="addCoinBtn" class="btn-data anim-click" style="width:auto; padding:5px 15px; margin:0;" onclick="verifyAndAddCoin()">AÑADIR</button></div>
@@ -466,7 +458,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.0 TRADING CORE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.1 REAL TRADING</div>
         </div>
     </div>
 
@@ -514,7 +506,7 @@
         let currentSection = 'operate';
         let modalCallback = null;
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-        let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
+        let customProxy = ''; 
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
@@ -538,14 +530,6 @@
         
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
         
-        let proxies = [
-            'https://api.cors.lol/?url=',
-            'https://corsproxy.io/?',
-            'https://api.allorigins.win/raw?url=',
-            'https://api.codetabs.com/v1/proxy?quest='
-        ];
-        if(customProxy) proxies.unshift(customProxy);
-
         function init() { 
             try {
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
@@ -567,7 +551,6 @@
                 });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
-                const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
 
@@ -577,6 +560,9 @@
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
                 updateStats('D');
+                
+                // INICIAR CONEXIÓN REAL
+                fetchWalletBalance();
 
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
@@ -585,7 +571,85 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- TEMAS (V19) ---
+        // --- FUNCIÓN UNIVERSAL PARA GATE.IO V4 (CORS ENABLED) ---
+        async function callGateApi(method, path, queryParams = "", body = null) {
+            if (!apiConfig.key || !apiConfig.secret) {
+                // Si es solo lectura pública (como tickers), permitir sin keys
+                if(path.includes('tickers') && method === 'GET') {
+                    // pass
+                } else {
+                    showToast("⛔ Faltan API Keys");
+                    throw new Error("No API Keys");
+                }
+            }
+
+            const host = "https://api.gateio.ws";
+            const prefix = "/api/v4";
+            const url = prefix + path;
+            const timestamp = Math.floor(Date.now() / 1000).toString();
+            
+            let headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            };
+
+            if(apiConfig.key && apiConfig.secret) {
+                const hashedPayload = body 
+                    ? CryptoJS.SHA512(JSON.stringify(body)).toString(CryptoJS.enc.Hex)
+                    : CryptoJS.SHA512("").toString(CryptoJS.enc.Hex);
+
+                const signatureString = `${method}\n${url}\n${queryParams}\n${hashedPayload}\n${timestamp}`;
+                const signature = CryptoJS.HmacSHA512(signatureString, apiConfig.secret).toString(CryptoJS.enc.Hex);
+
+                headers['KEY'] = apiConfig.key;
+                headers['Timestamp'] = timestamp;
+                headers['SIGN'] = signature;
+            }
+
+            const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
+            
+            try {
+                const response = await fetch(fullUrl, {
+                    method: method,
+                    headers: headers,
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error("API Error", errText);
+                    throw new Error(`Error ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        }
+
+        // --- LEER SALDO REAL ---
+        async function fetchWalletBalance() {
+            try {
+                const data = await callGateApi("GET", "/spot/accounts", "currency=USDT");
+                if (data && data.length > 0) {
+                    const available = parseFloat(data[0].available);
+                    globalCapital = available;
+                    localStorage.setItem('c5x_global_capital', globalCapital);
+                    const elCap = document.getElementById('setGlobalCapital');
+                    if(elCap) elCap.value = globalCapital.toFixed(2);
+                    
+                    const elMainCap = document.getElementById('capitalInput');
+                    if(elMainCap && (!elMainCap.value || elMainCap.value == 0)) {
+                         elMainCap.value = globalCapital.toFixed(2);
+                    }
+                    console.log("💰 Saldo actualizado:", available);
+                }
+            } catch (e) {
+                console.warn("No se pudo leer saldo (Falta Key o CORS)");
+            }
+        }
+
         function setPalette(palName) {
             triggerHaptic();
             currentPalette = palName;
@@ -606,7 +670,6 @@
         function reqSec(cb) { secCallback = cb; const m = document.getElementById('securityModal'); document.getElementById('secInput').value = ''; m.style.display = 'flex'; void m.offsetWidth; }
         function validateSecurity() { const inp = document.getElementById('secInput').value; closeModals(); if(inp === appConfig.pin) { if(secCallback) secCallback(); } else { showToast("⛔ PIN INCORRECTO"); } }
         
-        // --- API KEYS MANAGEMENT ---
         function saveApiKeysSecure() {
             reqSec(() => {
                 const k = document.getElementById('apiKey').value.trim();
@@ -617,6 +680,7 @@
                     showToast("✅ API Keys Guardadas");
                     document.getElementById('apiKey').value = '';
                     document.getElementById('apiSecret').value = '';
+                    fetchWalletBalance(); 
                 } else {
                     showToast("⚠️ Campos vacíos");
                 }
@@ -639,7 +703,7 @@
             }); 
         }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
+        
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -739,10 +803,6 @@
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
-        function triggerCrashAlert(coin, pct) { 
-            // ELIMINADO
-        }
-        
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
             t.textContent = txt; 
@@ -776,47 +836,27 @@
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            for(let proxy of proxies) {
-                try {
-                    const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), 6000); 
-                    
-                    const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"), {
-                        signal: controller.signal,
-                        cache: "no-store"
-                    });
-                    clearTimeout(id);
-                    
-                    if(!res.ok) continue; 
+            try {
+                // DIRECTO A GATE (CORS EXTENSION REQUERIDA)
+                const res = await fetch("https://api.gateio.ws/api/v4/spot/tickers", {cache: "no-store"});
+                if(!res.ok) throw new Error("API Error"); 
 
-                    let json = await res.json();
-                    let data = json;
-                    if(json.contents) {
-                        try { data = JSON.parse(json.contents); } catch(e) { data = json.contents; }
-                    }
-                    
-                    if(!Array.isArray(data)) continue; 
-
-                    elStatus.className = 'radar-status-dot online'; 
-                    allGateETFs = data.filter(t => { 
-                        const pair = t.currency_pair; 
-                        return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
-                    }); 
-                    topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
-                    
-                    processDropperAlerts(); 
-                    startRadarRotation(); 
-                    return; 
-                    
-                } catch(e) { console.log("Proxy fail:", proxy); }
+                let data = await res.json();
+                
+                elStatus.className = 'radar-status-dot online'; 
+                allGateETFs = data.filter(t => { 
+                    const pair = t.currency_pair; 
+                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
+                }); 
+                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
+                
+                startRadarRotation(); 
+                
+            } catch(e) { 
+                console.error("Radar Fail", e);
+                elStatus.className = 'radar-status-dot offline';
+                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ REINTENTAR</div>';
             }
-            console.error("ALL PROXIES FAILED");
-            elStatus.className = 'radar-status-dot offline';
-            elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
-        }
-
-        function processDropperAlerts() {
-            // SILENT
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
@@ -906,7 +946,6 @@
             localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
             calculate();
         }
-        function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
         function startTickerSystem() { 
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             updateTicker(); 
@@ -938,7 +977,19 @@
                 currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; 
             } catch(e) { fetchTickerRest(apiSym, displaySym); } 
         }
-        async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
+        async function fetchTickerRest(apiSym, displaySym) { 
+            try { 
+                let price = 0; 
+                try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} 
+                if(price === 0) { 
+                    // FALLBACK A GATE DIRECTO
+                    const gateSym = displaySym + "_USDT"; 
+                    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`); 
+                    if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } 
+                } 
+                if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } 
+            } catch(e) {} 
+        }
         function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
         
         function toggleTickerPin() { 
@@ -989,7 +1040,7 @@
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
-                // AQUI CAMBIO COLOR PRECIO
+                
                 div.innerHTML = `<div class="u-index">${index+1}</div>
                                  <div class="u-center">
                                     <div class="u-title" style="font-size:16px">${pairName}</div>
@@ -1028,16 +1079,15 @@
         }
         function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
 
-        // --- TRADING LOGIC (V19) ---
+        // --- TRADING LOGIC REAL ---
         let currentTrade = { level: 0, amount: 0, price: 0, pair: '' };
 
         function toggleLvl(idx) { 
             triggerHaptic(); 
             const s = slots[activeIdx]; 
             
-            // Si el nivel NO está comprado, preguntar si quiere comprar
+            // Si el nivel NO está comprado, iniciar proceso de compra
             if (!s.buys.includes(idx)) { 
-                // Calcular parámetros para el trade
                 let pLevel;
                 const descPct = parseFloat(document.getElementById('descInput').value) || 66;
                 const incPct = parseFloat(document.getElementById('incInput').value) || 7;
@@ -1064,7 +1114,6 @@
                     usd: usdAmount
                 };
 
-                // Mostrar Modal de Confirmación
                 document.getElementById('trade-pair').textContent = currentTrade.pair;
                 document.getElementById('trade-price').textContent = currentTrade.price.toFixed(6);
                 document.getElementById('trade-amount').textContent = currentTrade.amount.toFixed(4);
@@ -1072,7 +1121,7 @@
                 document.getElementById('tradeModal').style.display = 'flex';
 
             } else { 
-                // Si ya está comprado, simplemente desmarcar (lógica visual antigua)
+                // Desmarcar visualmente
                 s.buys = s.buys.filter(val => val < idx); 
                 calculate();
             }
@@ -1081,71 +1130,33 @@
         async function executeGateOrder() {
             closeModals();
             
-            // Verificar API Keys
             if(!apiConfig.key || !apiConfig.secret) {
-                // Si no hay API Keys, simular éxito visualmente (Modo Calculadora)
+                showToast("⚠️ Modo Simulación (Sin Keys)", 3000);
                 simulatedBuy(currentTrade.level);
-                showToast("⚠️ Modo Simulación (Sin API Keys)", 3000);
                 return;
             }
 
             showToast("⏳ Enviando Orden a Gate.io...");
 
+            const body = {
+                "currency_pair": currentTrade.pair, 
+                "side": "buy",
+                "amount": currentTrade.amount.toFixed(4), 
+                "price": currentTrade.price.toFixed(6),   
+                "type": "limit",
+                "account": "spot",
+                "time_in_force": "gtc"
+            };
+
             try {
-                const host = "https://api.gateio.ws";
-                const prefix = "/api/v4";
-                const url = "/spot/orders";
-                const timestamp = Math.floor(Date.now() / 1000);
-                
-                // Payload para Gate.io
-                const body = JSON.stringify({
-                    "currency_pair": currentTrade.pair,
-                    "side": "buy",
-                    "amount": currentTrade.amount.toFixed(4), // Cantidad de moneda
-                    "price": currentTrade.price.toFixed(6),   // Precio límite
-                    "type": "limit",
-                    "account": "spot"
-                });
-
-                const payloadHash = CryptoJS.SHA512(body).toString(CryptoJS.enc.Hex);
-                const signatureString = `POST\n${prefix}${url}\n\n${payloadHash}\n${timestamp}`;
-                const signature = CryptoJS.HmacSHA512(signatureString, apiConfig.secret).toString(CryptoJS.enc.Hex);
-
-                // NOTA: Para producción real, se necesita un Proxy que soporte CORS y reenvío de headers
-                // O usar una extensión de navegador "Allow CORS". 
-                // Aquí intentamos fetch directo (fallará en navegadores estándar sin config).
-                const proxyUrl = proxies[0]; // Usamos el primer proxy configurado
-
-                const response = await fetch(proxyUrl + encodeURIComponent(host + prefix + url), {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'KEY': apiConfig.key,
-                        'Timestamp': timestamp,
-                        'SIGN': signature
-                    },
-                    body: body
-                });
-
-                if(response.ok) {
-                    showToast("✅ ORDEN CREADA CON ÉXITO", 4000, false, true);
-                    simulatedBuy(currentTrade.level); // Actualizar UI
-                } else {
-                    const errText = await response.text();
-                    console.error(errText);
-                    showToast("❌ Error API: " + response.status, 4000, true);
-                    // Fallback visual si el usuario lo desea
-                    if(confirm("Error de red/CORS. ¿Marcar nivel manualmente?")) {
-                         simulatedBuy(currentTrade.level);
-                    }
-                }
+                const result = await callGateApi("POST", "/spot/orders", "", body);
+                showToast(`✅ COMPRA ÉXITOSA: ${result.id}`, 4000, false, true);
+                simulatedBuy(currentTrade.level);
+                setTimeout(fetchWalletBalance, 1000);
 
             } catch (e) {
-                console.error(e);
-                showToast("❌ Error de Conexión", 4000, true);
-                 // Fallback visual
-                if(confirm("Error de conexión. ¿Marcar nivel manualmente?")) {
+                showToast("❌ " + e.message, 5000, true);
+                if(confirm(`Error API: ${e.message}\n¿Marcar el nivel manualmente en la app?`)) {
                      simulatedBuy(currentTrade.level);
                 }
             }
@@ -1241,7 +1252,7 @@
                         </div>`; 
             }).reverse().join('');
         }
-        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
+        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
         function checkAutoBackup() { const last = localStorage.getItem('c5x_last_backup'); const now = Date.now(); if(!last || (now - last > 2592000000)) { if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) { triggerDriveBackup(); } } }
         function openSecurity(cb) { secCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
@@ -1249,13 +1260,11 @@
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
         function clearLogs() { openSecurity(() => { history = []; localStorage.setItem('c5x_history', JSON.stringify(history)); renderHistory(); calculateGlobalStats(); showToast("🗑️ Historial Borrado"); }); }
         function resetApp() { openSecurity(() => { localStorage.clear(); location.reload(); }); }
-        function toggleMenu() { const m = document.getElementById('navModal'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
         
         function loadSettingsValues() { 
             try {
                 const s = slots[activeIdx]; 
                 
-                // Cargar valores con verificaciones de seguridad
                 const elCap = document.getElementById('setCapital'); if(elCap) elCap.value = s.capital;
                 const elInc = document.getElementById('setInc'); if(elInc) elInc.value = document.getElementById('incInput').value;
                 const elDesc = document.getElementById('setDesc'); if(elDesc) elDesc.value = document.getElementById('descInput').value;
@@ -1269,9 +1278,7 @@
                 const elDD = document.getElementById('setDD'); if(elDD) elDD.value = appConfig.dd;
                 
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
-                const elProxy = document.getElementById('setProxy'); if(elProxy) elProxy.value = customProxy;
 
-                // Load API Keys (masked)
                 if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
                 if(apiConfig.secret) document.getElementById('apiSecret').value = apiConfig.secret;
 
@@ -1298,8 +1305,8 @@
             doc.autoTable({ head: [['FECHA / HORA', 'ACTIVO', 'PRECIO ENT.', 'PRECIO SALIDA', 'INVERSIÓN', 'PNL NETO', 'ROI']], body: bodyData, startY: 58, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle', halign: 'center' }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold', halign: 'center' }, didParseCell: function(data) { if (data.section === 'body' && data.column.index === 5) { const raw = data.cell.raw; if(raw.startsWith('+')) data.cell.styles.textColor = [14, 203, 129]; else data.cell.styles.textColor = [246, 70, 93]; } } }); 
             doc.save("C5X_Pro_Report.pdf"); 
         }
-        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
-        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
+        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
+        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
     </script>
 </body>
 </html>
