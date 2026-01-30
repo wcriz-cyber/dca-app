@@ -6,6 +6,16 @@
     <title>C5X - V22.1 PROXY CORE</title>
     <meta name="theme-color" content="#0b0e11">
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="icon.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Montserrat:wght@500;700;900&family=Nunito:wght@600;800&family=Orbitron:wght@600;900&family=Outfit:wght@500;700;900&family=Rajdhani:wght@500;600;700;800&family=Roboto+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -13,64 +23,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* --- ESTILOS ORIGINALES V19.0 (RESTAURADOS AL 100%) --- */
-        :root { 
-            --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98); 
-            --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; 
-            --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; 
-            --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; 
-            --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); 
-            --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; 
-        }
+        :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98); --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
+        body.theme-cyber { --bg: #000000; --surface: #111111; --brand: #fbbf24; --border: #333333; --card-bg: rgba(251, 191, 36, 0.08); --text-primary: #ffffff; --text-secondary: #fde68a; --font-main: 'Chakra Petch', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --text-secondary: #64748b !important; --border: #e2e8f0 !important; --chart-bg: #ffffff !important; }
         
-        /* Temas Dinámicos */
-        body.theme-cyber { --bg: #000000; --surface: #111111; --brand: #fbbf24; --border: #333333; }
-        body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; }
-
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); overflow-x: hidden; user-select: none; transition: background 0.3s ease; }
-
-        /* Componentes de Interfaz */
-        #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.4s; opacity: 0; }
+        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; }
+        
+        #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; font-family: var(--font-head); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.4s; opacity: 0; }
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
-        #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; }
+        #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
 
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); }
-        .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; }
-        .brand-text { font-family: var(--font-head); font-weight: 900; font-size: 24px; color: var(--brand); letter-spacing: 1px; }
+        .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
+        .brand-text { font-family: var(--font-head); font-weight: 900; font-size: 24px; color: var(--brand); cursor: pointer; }
         
         .ticker-pill { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 4px 12px; border-radius: 24px; height: 32px; cursor: pointer; }
         .ticker-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-secondary); }
         .ticker-dot.pulse { animation: pulse-ring 1.5s infinite; }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
         .content-spacer { margin-top: 92px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 4px; }
-        .app-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
-        .app-section.active { display: block; opacity: 1; }
+        .app-section { display: none; opacity: 0; }
+        .app-section.active { display: block; opacity: 1; transition: opacity 0.3s; }
 
-        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: calc(50px + var(--safe-top)); z-index: 900; }
+        .slot-nav { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 8px 10px; position: sticky; top: calc(90px + var(--safe-top)); z-index: 900; background: var(--bg); border-bottom: 1px solid var(--border); margin-bottom: 10px; }
         .slot-card { background: transparent; color: var(--text-tertiary); padding: 10px 0; text-align: center; font-size: 14px; font-weight: 700; border-radius: 8px; position: relative; }
         .slot-card.active { color: var(--text-primary); background: rgba(255,255,255,0.02); }
-        .slot-card.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px; background: var(--brand); }
+        .slot-card.active::after { content: ''; position: absolute; bottom: 0; left: 25%; right: 25%; height: 3px; background: var(--brand); border-radius: 3px; }
 
-        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); cursor: pointer; }
         .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
 
-        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; position: relative; }
+        .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; min-height: 80px; display:flex; flex-direction:column; justify-content:center; }
         .radar-content { font-family: var(--font-num); font-weight: 800; font-size: 22px; color: var(--text-primary); }
 
-        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; margin-bottom: 8px; transition: 0.2s; cursor: pointer; }
+        .levels-container { padding: 0 10px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 40px; }
+        .unified-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 12px; display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; cursor: pointer; min-height: 72px; }
         .unified-card.active { border-color: var(--brand); background: rgba(59, 130, 246, 0.08); }
 
-        .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: var(--font-head); font-weight: 900; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); }
-
-        /* Modales */
         .generic-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-box { background: var(--surface); width: 85%; max-width: 320px; padding: 25px; border-radius: 20px; border: 1px solid var(--border); text-align: center; }
-        .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 10px; cursor: pointer; }
+        .btn-modal { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: 700; margin-bottom: 8px; cursor: pointer; }
         .btn-confirm { background: var(--brand); color: #fff; }
-        
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
     </style>
 </head>
 <body onload="init()">
@@ -79,36 +76,35 @@
 
     <div class="fixed-header">
         <header class="app-header">
-            <div class="brand-text" onclick="location.reload()">C5X</div>
-            <div class="ticker-pill" onclick="syncConnection()">
+            <div class="brand-text" onclick="openMenu()">C5X</div>
+            <div class="ticker-pill" onclick="syncGateConnection()">
                 <div class="ticker-dot pulse" id="t-dot"></div>
                 <span id="t-sym">BTC</span>
                 <span id="t-price" class="wallet-amount">0.00</span>
             </div>
-            <div style="cursor:pointer;" onclick="toggleTheme()">🌓</div>
+            <div onclick="toggleTheme()" style="cursor:pointer">🌓</div>
         </header>
     </div>
 
     <div class="content-spacer">
         <div id="section-operate" class="app-section active">
             <nav id="slotNav" class="slot-nav"></nav>
-
-            <div id="tv_chart" style="height: 300px; margin: 0 10px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: var(--chart-bg);"></div>
+            <div id="tv_chart" style="height: 300px; margin: 0 10px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); background: #000;"></div>
 
             <div class="dashboard-card" style="margin-top: 15px;">
-                <div class="wallet-bar" onclick="syncConnection()">
-                    <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary);">WALLET GATE.IO</div>
+                <div class="wallet-bar" onclick="syncGateConnection()">
+                    <div style="font-size: 11px; font-weight: 700; color: var(--text-secondary);">WALLET GATE.IO</div>
                     <span id="dashWallet" class="wallet-amount">CONECTAR API</span>
                 </div>
 
                 <div class="radar-ticker-large">
-                    <div style="font-size: 10px; color: var(--brand); font-weight: 900; margin-bottom: 8px; letter-spacing: 1px;">RADAR DE OPORTUNIDADES</div>
+                    <div style="font-size: 10px; color: var(--brand); font-weight: 900; margin-bottom: 8px;">RADAR DE OPORTUNIDADES</div>
                     <div id="radarValue" class="radar-content">Sincronizando...</div>
                 </div>
 
                 <div style="text-align: center; margin-bottom: 15px;">
-                    <div id="resTarget" style="font-family: var(--font-num); font-size: 38px; font-weight: 800; color: var(--gold-fixed);">0.000000</div>
-                    <div style="font-size: 10px; color: var(--text-secondary); margin-top: 4px;">PRECIO OBJETIVO DE SALIDA</div>
+                    <div id="resTarget" style="font-family: var(--font-num); font-size: 36px; font-weight: 800; color: var(--gold-fixed);">0.0000</div>
+                    <div style="font-size: 10px; color: var(--text-secondary);">OBJETIVO SALIDA</div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
@@ -127,12 +123,7 @@
                 </div>
             </div>
 
-            <div id="levelsGrid" style="padding: 0 10px; margin-bottom: 20px;"></div>
-
-            <div class="liquidate-card" onclick="openLiquidateModal()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                LIQUIDAR POSICIÓN TOTAL
-            </div>
+            <main id="levelsGrid" class="levels-container"></main>
         </div>
     </div>
 
@@ -140,26 +131,24 @@
         <div class="modal-box">
             <h2 style="font-family: var(--font-head); color: var(--brand); margin-bottom: 15px; font-size: 18px;">EJECUTAR ORDEN REAL</h2>
             <div id="tradeDetails" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 20px; font-family: var(--font-num); font-size: 13px;">
-                </div>
+            </div>
             <button class="btn-modal btn-confirm" onclick="executeGateOrder()">CONFIRMAR EN GATE.IO</button>
             <button class="btn-modal" style="background: transparent; color: var(--text-secondary);" onclick="closeModals()">CANCELAR</button>
         </div>
     </div>
 
     <script>
-        /* --- LÓGICA DE NEGOCIO C5X V22.1 --- */
+        /* --- MOTOR DE CONEXIÓN V22.1 --- */
         let apiConfig = JSON.parse(localStorage.getItem('c5x_api_keys')) || { key: '', secret: '' };
         let activeIdx = 0;
         let serverTimeOffset = 0;
         const PROXY = "https://corsproxy.io/?";
 
-        // Estructura de 12 Niveles
-        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ 
-            name:'BTC', price:0, capital:5, buys:[], strat:'normal', roi: 100 
-        }));
-
-        // Multiplicadores de los 12 niveles
+        // Estructura de 12 Niveles Restaurada
         const multipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
+        let slots = JSON.parse(localStorage.getItem('dca_v18_slots')) || Array(5).fill(null).map(() => ({ 
+            name:'BTC', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100 
+        }));
 
         // Firma HMAC-SHA512 para Gate.io
         async function callGateApi(method, path, query = "", body = null) {
@@ -170,8 +159,8 @@
             let headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
 
             if (apiConfig.key && apiConfig.secret) {
-                const payloadHash = CryptoJS.SHA512(body ? JSON.stringify(body) : "").toString(CryptoJS.enc.Hex);
-                const sigStr = `${method}\n${url}\n${query}\n${payloadHash}\n${timestamp}`;
+                const hashedPayload = body ? CryptoJS.SHA512(JSON.stringify(body)).toString(CryptoJS.enc.Hex) : CryptoJS.SHA512("").toString(CryptoJS.enc.Hex);
+                const sigStr = `${method}\n${url}\n${query}\n${hashedPayload}\n${timestamp}`;
                 const signature = CryptoJS.HmacSHA512(sigStr, apiConfig.secret).toString(CryptoJS.enc.Hex);
 
                 headers['KEY'] = apiConfig.key;
@@ -185,7 +174,7 @@
             return await response.json();
         }
 
-        async function syncConnection() {
+        async function syncGateConnection() {
             const el = document.getElementById('dashWallet');
             el.textContent = "SINCRO...";
             try {
@@ -196,28 +185,24 @@
                 const acc = await callGateApi("GET", "/spot/accounts", "currency=USDT");
                 el.textContent = "$" + parseFloat(acc[0].available).toFixed(2);
                 el.style.color = "var(--long)";
-                showToast("✅ CONECTADO A GATE.IO", true);
+                showToast("✅ CONECTADO EXITOSAMENTE", true);
             } catch (e) {
                 el.textContent = "ERROR API";
-                showToast("⚠️ REVISA TUS API KEYS EN AJUSTES");
+                showToast("⚠️ CONFIGURA TUS KEYS EN AJUSTES");
             }
         }
 
         function renderLevels() {
             const grid = document.getElementById('levelsGrid');
             const s = slots[activeIdx];
-            let html = '';
-            
-            // Renderizado de los 12 niveles
-            multipliers.forEach((m, i) => {
+            grid.innerHTML = multipliers.map((m, i) => {
                 const active = s.buys.includes(i);
-                const levelPrice = s.price ? (s.price * (1 - (i * 0.02))).toFixed(4) : "0.00";
-                
-                html += `
-                    <div class="unified-card ${active ? 'active' : ''}" onclick="toggleLevel(${i})">
+                const price = s.price ? (s.price * (1 - (i * 0.02))).toFixed(4) : "0.00";
+                return `
+                    <div class="unified-card ${active ? 'active' : ''}" onclick="toggleLvl(${i})">
                         <div style="font-family: var(--font-head); font-size: 11px; color: var(--brand); text-align: center;">L${i+1}</div>
                         <div>
-                            <div style="font-family: var(--font-num); font-size: 18px; font-weight: 700;">${levelPrice}</div>
+                            <div style="font-family: var(--font-num); font-size: 18px; font-weight: 700;">${price}</div>
                             <div style="font-size: 10px; color: var(--text-tertiary);">ORDEN COMPRA</div>
                         </div>
                         <div style="text-align: right;">
@@ -226,45 +211,62 @@
                         </div>
                     </div>
                 `;
-            });
-            grid.innerHTML = html;
+            }).join('');
         }
 
-        function toggleLevel(idx) {
+        function toggleLvl(idx) {
             const s = slots[activeIdx];
             if (!s.buys.includes(idx)) {
-                // Preparar orden real
+                const multiplier = multipliers[idx];
+                const p = s.price * (1 - (idx * 0.02));
                 document.getElementById('tradeDetails').innerHTML = `
-                    <div>PAR: <span style="color:var(--text-primary)">${s.name}_USDT</span></div>
-                    <div>CANTIDAD: <span style="color:var(--long)">$${(s.capital * multipliers[idx]).toFixed(2)}</span></div>
-                    <div>NIVEL: <span style="color:var(--brand)">${idx + 1} de 12</span></div>
+                    <div>PAR: <span style="color:white">${s.name}_USDT</span></div>
+                    <div>MONTO: <span style="color:var(--long)">$${(s.capital * multiplier).toFixed(2)}</span></div>
+                    <div>PRECIO: <span style="color:var(--brand)">${p.toFixed(6)}</span></div>
                 `;
                 document.getElementById('tradeModal').style.display = 'flex';
-                window.currentTradeLevel = idx;
+                window.currentTrade = { idx, pair: s.name + "_USDT", amount: (s.capital * multiplier) / p, price: p };
             } else {
-                s.buys = s.buys.filter(b => b !== idx);
-                save(); renderLevels();
+                s.buys = s.buys.filter(v => v !== idx);
+                save(); renderLevels(); calculateStats();
             }
         }
 
         async function executeGateOrder() {
-            const idx = window.currentTradeLevel;
-            const s = slots[activeIdx];
             closeModals();
-            showToast("⏳ ENVIANDO ORDEN...");
-
             try {
-                // Aquí se ejecuta la orden real en Gate.io
-                s.buys.push(idx);
-                save(); renderLevels();
-                showToast("✅ ORDEN EJECUTADA EXITOSAMENTE", true);
-                syncConnection();
+                const body = {
+                    "currency_pair": window.currentTrade.pair,
+                    "side": "buy",
+                    "amount": window.currentTrade.amount.toFixed(4),
+                    "price": window.currentTrade.price.toFixed(6),
+                    "type": "limit", "account": "spot", "time_in_force": "gtc"
+                };
+                await callGateApi("POST", "/spot/orders", "", body);
+                slots[activeIdx].buys.push(window.currentTrade.idx);
+                save(); renderLevels(); calculateStats();
+                showToast("✅ ORDEN EJECUTADA", true);
             } catch (e) {
-                showToast("❌ ERROR AL EJECUTAR ORDEN");
+                showToast("❌ ERROR DE CONEXIÓN");
             }
         }
 
-        function showToast(txt, success = false) {
+        function calculateStats() {
+            const s = slots[activeIdx];
+            let totalInv = 0, totalQty = 0;
+            s.buys.forEach(idx => {
+                const p = s.price * (1 - (idx * 0.02));
+                const amt = s.capital * multipliers[idx];
+                totalInv += amt;
+                totalQty += amt / p;
+            });
+            const avg = totalQty > 0 ? totalInv / totalQty : 0;
+            document.getElementById('resInv').textContent = "$" + totalInv.toFixed(2);
+            document.getElementById('resAvg').textContent = avg.toFixed(4);
+            document.getElementById('resTarget').textContent = (avg * 1.05).toFixed(4);
+        }
+
+        function showToast(txt, success) {
             const t = document.getElementById('toast');
             t.textContent = txt;
             t.className = success ? "show success-mode" : "show";
@@ -272,13 +274,12 @@
         }
 
         function save() { localStorage.setItem('dca_v18_slots', JSON.stringify(slots)); }
-        function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
+        function closeModals() { document.getElementById('tradeModal').style.display = 'none'; }
 
         function init() {
             renderNav();
             renderLevels();
-            syncConnection();
-            // Cargar ChartingView
+            syncGateConnection();
             new TradingView.widget({
                 "autosize": true, "symbol": "GATEIO:BTCUSDT", "interval": "60", "theme": "dark",
                 "container_id": "tv_chart", "hide_top_toolbar": true, "locale": "es"
@@ -287,7 +288,7 @@
 
         function renderNav() {
             document.getElementById('slotNav').innerHTML = slots.map((s, i) => `
-                <div class="slot-card ${i===activeIdx?'active':''}" onclick="activeIdx=${i};renderNav();renderLevels();">${s.name}</div>
+                <div class="slot-card ${i===activeIdx?'active':''}" onclick="activeIdx=${i};renderNav();renderLevels();calculateStats();">${s.name}</div>
             `).join('');
         }
     </script>
