@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.1 SECURE INPUT</title>
+    <title>C5X - V22.2 VISUAL FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -102,9 +102,16 @@
         .input-label { font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* --- ESTILOS INPUT PROTEGIDO (NUEVO V22.1) --- */
-        .input-field.locked-input { color: var(--text-tertiary); cursor: context-menu; opacity: 0.7; }
-        .input-field.editing-mode { color: var(--brand) !important; border-bottom: 2px solid var(--brand); background: rgba(59, 130, 246, 0.1); opacity: 1; }
+        /* --- ESTILOS INPUT PROTEGIDO V22.2 --- */
+        /* Color FORZADO a Brand (Verde/Rojo/Azul) y 100% visible */
+        .input-field.locked-input { 
+            color: var(--brand) !important; 
+            opacity: 1; 
+            cursor: context-menu; 
+            font-weight: 800;
+            -webkit-text-fill-color: var(--brand); /* Para Safari/iOS */
+        }
+        .input-field.editing-mode { color: var(--text-primary) !important; -webkit-text-fill-color: var(--text-primary); border-bottom: 2px solid var(--brand); background: rgba(59, 130, 246, 0.1); opacity: 1; }
         
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
@@ -485,7 +492,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.1 SECURE INPUT</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.2 VISUAL FIX</div>
         </div>
     </div>
 
@@ -1096,7 +1103,44 @@
             grid.appendChild(fragment); 
         }
 
-        function smartSelectETF(symbol, price) { triggerHaptic(); let cleanName = symbol.replace('_USDT','').replace('USDT',''); const dupSlot = slots.findIndex(s => s.name === cleanName); if (dupSlot !== -1) { showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); return; } const emptySlotIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptySlotIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } slots[emptySlotIdx].name = cleanName; slots[emptySlotIdx].price = price; slots[emptySlotIdx].buys = []; slots[emptySlotIdx].locked = true; slots[emptySlotIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (emptySlotIdx + 1)); }
+        // --- CORRECCIÓN LÓGICA DE SELECCIÓN DE SLOT ---
+        function smartSelectETF(symbol, price) { 
+            triggerHaptic(); 
+            let cleanName = symbol.replace('_USDT','').replace('USDT',''); 
+            
+            const dupSlot = slots.findIndex(s => s.name === cleanName); 
+            if (dupSlot !== -1) { 
+                showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); 
+                return; 
+            } 
+            
+            let targetIdx = -1;
+            // 1. Prioridad: Usar el slot actual si está vacío
+            if (!slots[activeIdx].name || slots[activeIdx].name === '') {
+                targetIdx = activeIdx;
+            } else {
+                // 2. Si no, buscar el primero vacío
+                targetIdx = slots.findIndex(s => !s.name || s.name === '');
+            }
+
+            if(targetIdx === -1) { 
+                showToast("⚠️ No hay slots disponibles"); 
+                return; 
+            } 
+            
+            slots[targetIdx].name = cleanName; 
+            slots[targetIdx].price = price; 
+            slots[targetIdx].buys = []; 
+            slots[targetIdx].locked = true; 
+            slots[targetIdx].note = ''; 
+            
+            save(); 
+            updateBodyMode(cleanName); 
+            selectSlot(targetIdx); 
+            switchView('operate', false); 
+            showToast("✅ Agregado al Slot " + (targetIdx + 1)); 
+        }
+
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
         function loadChart(coin) { chartSymbol = (coin || 'BTC3L').toUpperCase(); new TradingView.widget({ "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#ffffff" : "#0b0e11", "locale": "es" }); }
@@ -1135,6 +1179,7 @@
             if(isNormal) { elBadge.classList.remove('aggressive'); elCard.style.borderColor = "var(--border)"; } else { elBadge.classList.add('aggressive'); elCard.style.borderColor = "var(--warning)"; } 
             if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg width="24" height="24"><path d="M19 21H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/><path d="M12 11v4"/><path d="M8 7v-2a4 4 0 0 1 8 0v2"/></svg>'; } else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'; } 
             document.getElementById('capitalInput').value = s.capital; 
+            updateBodyMode(s.name); // Asegurar color correcto al renderizar
             calculate(); 
         }
         function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
