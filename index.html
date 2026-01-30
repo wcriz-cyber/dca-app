@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V22.0 PROXY CORE</title>
+    <title>C5X - V22.1 STABLE CORE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* --- ESTILOS ORIGINALES V19.0 (RESTAURADOS AL 100%) --- */
+        /* --- ESTILOS ORIGINALES --- */
         :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98); --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
         
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
@@ -105,7 +105,7 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
-        /* BARRA DE SALDO INTEGRADA (ESTILO V19.0) */
+        /* BARRA DE SALDO INTEGRADA */
         .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); }
         .wallet-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px; }
         .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
@@ -459,7 +459,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.0 PROXY CORE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V22.1 STABLE CORE</div>
         </div>
     </div>
 
@@ -576,7 +576,7 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR V22.0: PROXY INVISIBLE
+        // 🚀 MOTOR V22.1: ROBUST CORE (PUBLIC/PRIVATE)
         // ==========================================
 
         function setPalette(palName) {
@@ -1241,20 +1241,21 @@
         function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
     
         // -------------------------------------------------------------------------
-        // --- MOTOR DE CONEXIÓN FINAL (CORREGIDO PARA GATE.IO & CORS) ---
+        // --- MOTOR DE CONEXIÓN FINAL (CORREGIDO PARA RADAR & GATE.IO) ---
         // -------------------------------------------------------------------------
 
         async function callGateApi(method, path, queryParams = "", body = null) {
-            // 1. Configuración
+            // 1. Configuración Base
             const host = "https://api.gateio.ws";
             const prefix = "/api/v4";
             const url = prefix + path;
             
-            // 2. Detectar si es ruta pública (Ticker, Radar) o privada (Saldo, Operar)
-            // Tickers y Candlesticks son públicos y no requieren firma
-            const isPublic = path.includes('tickers') || path.includes('candlesticks') || path.includes('currency_pairs');
+            // 2. DETECTOR DE RUTA PÚBLICA (CRÍTICO PARA EL RADAR)
+            // Si la ruta incluye palabras clave de datos públicos, NO FIRMAR.
+            // Esto evita errores de Auth cuando las keys son inválidas o el reloj falla.
+            const isPublic = path.includes('tickers') || path.includes('candlesticks') || path.includes('currency_pairs') || path.includes('order_book');
 
-            // 3. Validación de seguridad para rutas privadas
+            // 3. Validación de seguridad solo para rutas privadas
             if (!isPublic && (!apiConfig.key || !apiConfig.secret)) {
                  throw new Error("Faltan API Keys. Ve a Ajustes > API y configura tus llaves.");
             }
@@ -1265,9 +1266,8 @@
                 'Content-Type': 'application/json' 
             };
 
-            // 5. Generar Firma (Signature) SOLO si tenemos keys y no es estrictamente pública
-            // Nota: Gate.io permite firmar rutas públicas, pero no es obligatorio.
-            if(apiConfig.key && apiConfig.secret) {
+            // 5. Generar Firma (Signature) SOLO SI ES PRIVADO Y TENEMOS KEYS
+            if(!isPublic && apiConfig.key && apiConfig.secret) {
                 const t = Date.now() / 1000;
                 const timestamp = Math.floor(t).toString(); 
 
@@ -1284,7 +1284,6 @@
             const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
             
             // 7. EJECUCIÓN VÍA PROXY (SOLUCIÓN CORS)
-            // Usamos corsproxy.io porque soporta el reenvío de headers personalizados (KEY/SIGN)
             const proxyBase = "https://corsproxy.io/?"; 
             const finalUrl = proxyBase + encodeURIComponent(fullUrl);
 
@@ -1296,7 +1295,6 @@
                 });
 
                 if (!response.ok) {
-                    // Intentar leer el error de Gate.io
                     const errorText = await response.text();
                     console.error("API Gate Error:", errorText);
                     throw new Error(`Error API (${response.status})`);
