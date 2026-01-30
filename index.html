@@ -42,7 +42,7 @@
         body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --border: #e2e8f0 !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease; }
+        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease, color 0.3s ease; }
 
         .anim-click:active { transform: scale(0.95); }
         .anim-pulse { animation: pulse-ring 2s infinite; }
@@ -144,7 +144,6 @@
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; transition: background 0.3s, border-color 0.3s; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
         .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 18px; font-weight: 700; border-bottom:1px solid var(--border); }
-        .input-row-save { display: flex; align-items: center; gap: 10px; width: 100%; }
         .btn-save-mini { background: var(--brand); color: #fff; border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         
         .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
@@ -482,6 +481,7 @@
         let currentSection = 'operate';
         let modalCallback = null;
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
+        let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
@@ -505,6 +505,15 @@
         
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
         
+        // LISTA DE PUENTES SEGUROS PARA MÓVIL
+        let proxies = [
+            'https://api.cors.lol/?url=',
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://api.codetabs.com/v1/proxy?quest='
+        ];
+        if(customProxy) proxies.unshift(customProxy);
+
         function init() { 
             try {
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
@@ -526,6 +535,7 @@
                 });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
+                const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
 
@@ -536,7 +546,7 @@
                 calculateGlobalStats(); 
                 updateStats('D');
 
-                // NUEVO: CARGAR SALDO AL INICIO
+                // CARGAR SALDO AL INICIO
                 fetchWalletBalance();
 
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
@@ -586,15 +596,7 @@
 
             const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
             
-            // LISTA DE PROXIES PÚBLICOS PARA EVITAR BLOQUEO CORS EN MÓVIL
-            // La extensión no funciona bien en móviles, así que usamos proxies puente.
-            const proxies = [
-                'https://api.cors.lol/?url=', 
-                'https://corsproxy.io/?',
-                'https://api.allorigins.win/raw?url='
-            ];
-
-            // Intentar con proxies en orden
+            // INTENTAR CON PROXIES (SOLUCIÓN MÓVIL)
             for(let proxy of proxies) {
                 try {
                     // Preparamos URL con proxy
@@ -609,13 +611,12 @@
                     if (response.ok) {
                         return await response.json(); // ÉXITO
                     }
-                    // Si falla el proxy, intentamos el siguiente
                 } catch (e) {
                     console.warn("Proxy falló:", proxy);
                 }
             }
             
-            // Último intento: Directo (solo funcionará si la extensión revive)
+            // Último intento: Directo (por si acaso)
             try {
                 const response = await fetch(fullUrl, {
                     method: method,
@@ -720,7 +721,7 @@
             }); 
         }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        
+        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://api.cors.lol/?url=', 'https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -853,28 +854,42 @@
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            try {
-                const data = await callGateApi("GET", "/spot/tickers"); 
-                
-                // Procesar respuesta (puede venir envuelta si es via proxy)
-                let tickers = Array.isArray(data) ? data : (data.contents ? JSON.parse(data.contents) : []);
-                
-                if(tickers.length === 0) throw new Error("No data");
+            for(let proxy of proxies) {
+                try {
+                    const controller = new AbortController();
+                    const id = setTimeout(() => controller.abort(), 6000); 
+                    
+                    const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"), {
+                        signal: controller.signal,
+                        cache: "no-store"
+                    });
+                    clearTimeout(id);
+                    
+                    if(!res.ok) continue; 
 
-                elStatus.className = 'radar-status-dot online'; 
-                allGateETFs = tickers.filter(t => { 
-                    const pair = t.currency_pair; 
-                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
-                }); 
-                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
-                
-                startRadarRotation(); 
-                
-            } catch(e) { 
-                console.error("Radar Fail", e);
-                elStatus.className = 'radar-status-dot offline';
-                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ REINTENTAR</div>';
+                    let json = await res.json();
+                    let data = json;
+                    if(json.contents) {
+                        try { data = JSON.parse(json.contents); } catch(e) { data = json.contents; }
+                    }
+                    
+                    if(!Array.isArray(data)) continue; 
+
+                    elStatus.className = 'radar-status-dot online'; 
+                    allGateETFs = data.filter(t => { 
+                        const pair = t.currency_pair; 
+                        return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
+                    }); 
+                    topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
+                    
+                    startRadarRotation(); 
+                    return; 
+                    
+                } catch(e) { console.log("Proxy fail:", proxy); }
             }
+            console.error("ALL PROXIES FAILED");
+            elStatus.className = 'radar-status-dot offline';
+            elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
@@ -964,6 +979,7 @@
             localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
             calculate();
         }
+        function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
         function startTickerSystem() { 
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             updateTicker(); 
@@ -995,20 +1011,7 @@
                 currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; 
             } catch(e) { fetchTickerRest(apiSym, displaySym); } 
         }
-        async function fetchTickerRest(apiSym, displaySym) { 
-            try { 
-                let price = 0; 
-                try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} 
-                if(price === 0) { 
-                    // FALLBACK A GATE DIRECTO
-                    const gateSym = displaySym + "_USDT"; 
-                    const data = await callGateApi("GET", "/spot/tickers", `currency_pair=${gateSym}`);
-                    let row = Array.isArray(data) ? data[0] : null;
-                    if(row) price = parseFloat(row.last);
-                } 
-                if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } 
-            } catch(e) {} 
-        }
+        async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
         function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
         
         function toggleTickerPin() { 
@@ -1059,7 +1062,7 @@
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
-                
+                // AQUI CAMBIO COLOR PRECIO
                 div.innerHTML = `<div class="u-index">${index+1}</div>
                                  <div class="u-center">
                                     <div class="u-title" style="font-size:16px">${pairName}</div>
@@ -1282,6 +1285,7 @@
             try {
                 const s = slots[activeIdx]; 
                 
+                // Cargar valores con verificaciones de seguridad
                 const elCap = document.getElementById('setCapital'); if(elCap) elCap.value = s.capital;
                 const elInc = document.getElementById('setInc'); if(elInc) elInc.value = document.getElementById('incInput').value;
                 const elDesc = document.getElementById('setDesc'); if(elDesc) elDesc.value = document.getElementById('descInput').value;
@@ -1296,6 +1300,7 @@
                 
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
 
+                // Load API Keys (masked)
                 if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
                 if(apiConfig.secret) document.getElementById('apiSecret').value = apiConfig.secret;
 
