@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.1 STABLE RESTORE</title>
+    <title>C5X - V23.2 INTEGRATED UI</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -24,18 +24,18 @@
 
     <style>
         /* --- ESTILOS BASE --- */
-        :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98); --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(11, 14, 17, 0.95); /* AHORA COINCIDE CON BG */ --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
         
-        body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
-        body.theme-ocean { --bg: #030712; --surface: #0f172a; --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06); --text-primary: #f8fafc; --text-secondary: #94a3b8; --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif; }
-        body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --brand: #f97316; --border: #52200b; --card-bg: rgba(249, 115, 22, 0.06); --text-primary: #fff7ed; --text-secondary: #fdba74; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
-        body.theme-cyber { --bg: #000000; --surface: #111111; --brand: #fbbf24; --border: #333333; --card-bg: rgba(251, 191, 36, 0.08); --text-primary: #ffffff; --text-secondary: #fde68a; --font-main: 'Chakra Petch', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
-        body.theme-amethyst { --bg: #10041c; --surface: #1e0b33; --brand: #d946ef; --border: #4c1d6e; --card-bg: rgba(217, 70, 239, 0.06); --text-primary: #fae8ff; --text-secondary: #e879f9; --font-main: 'Space Grotesk', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
-        body.theme-velvet { --bg: #180407; --surface: #2b080e; --brand: #f43f5e; --border: #5c1421; --card-bg: rgba(244, 63, 94, 0.06); --text-primary: #fff1f2; --text-secondary: #fda4af; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Montserrat', sans-serif; }
-        body.theme-slate { --bg: #0f172a; --surface: #1e293b; --brand: #94a3b8; --border: #334155; --card-bg: rgba(148, 163, 184, 0.08); --text-primary: #f8fafc; --text-secondary: #cbd5e1; --long: #34d399; --font-main: 'Roboto Mono', monospace; --font-num: 'Roboto Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
-        body.theme-aurora { --bg: #041014; --surface: #082026; --brand: #06b6d4; --border: #164e63; --card-bg: rgba(6, 182, 212, 0.06); --text-primary: #ecfeff; --text-secondary: #67e8f9; --font-main: 'Outfit', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        body.theme-nature { --bg: #021208; --surface: #0a1f12; --surface-glass: #021208; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
+        body.theme-ocean { --bg: #030712; --surface: #0f172a; --surface-glass: #030712; --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06); --text-primary: #f8fafc; --text-secondary: #94a3b8; --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif; }
+        body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --surface-glass: #1c0802; --brand: #f97316; --border: #52200b; --card-bg: rgba(249, 115, 22, 0.06); --text-primary: #fff7ed; --text-secondary: #fdba74; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
+        body.theme-cyber { --bg: #000000; --surface: #111111; --surface-glass: #000000; --brand: #fbbf24; --border: #333333; --card-bg: rgba(251, 191, 36, 0.08); --text-primary: #ffffff; --text-secondary: #fde68a; --font-main: 'Chakra Petch', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        body.theme-amethyst { --bg: #10041c; --surface: #1e0b33; --surface-glass: #10041c; --brand: #d946ef; --border: #4c1d6e; --card-bg: rgba(217, 70, 239, 0.06); --text-primary: #fae8ff; --text-secondary: #e879f9; --font-main: 'Space Grotesk', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
+        body.theme-velvet { --bg: #180407; --surface: #2b080e; --surface-glass: #180407; --brand: #f43f5e; --border: #5c1421; --card-bg: rgba(244, 63, 94, 0.06); --text-primary: #fff1f2; --text-secondary: #fda4af; --font-main: 'Inter', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Montserrat', sans-serif; }
+        body.theme-slate { --bg: #0f172a; --surface: #1e293b; --surface-glass: #0f172a; --brand: #94a3b8; --border: #334155; --card-bg: rgba(148, 163, 184, 0.08); --text-primary: #f8fafc; --text-secondary: #cbd5e1; --long: #34d399; --font-main: 'Roboto Mono', monospace; --font-num: 'Roboto Mono', monospace; --font-head: 'Space Grotesk', sans-serif; }
+        body.theme-aurora { --bg: #041014; --surface: #082026; --surface-glass: #041014; --brand: #06b6d4; --border: #164e63; --card-bg: rgba(6, 182, 212, 0.06); --text-primary: #ecfeff; --text-secondary: #67e8f9; --font-main: 'Outfit', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
 
-        body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --text-secondary: #64748b !important; --border: #e2e8f0 !important; --chart-bg: #ffffff !important; --warning: #d97706 !important; --skeleton: rgba(0,0,0,0.05) !important; }
+        body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --surface-glass: #f8fafc !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --text-secondary: #64748b !important; --border: #e2e8f0 !important; --chart-bg: #ffffff !important; --warning: #d97706 !important; --skeleton: rgba(0,0,0,0.05) !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease, color 0.3s ease; }
@@ -62,7 +62,14 @@
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
         
-        .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--surface-glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); transition: background 0.3s; }
+        /* --- HEADER INTEGRADO V23.2 --- */
+        .fixed-header { 
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
+            background: var(--bg); /* Integración de color */
+            border-bottom: 1px solid var(--border); 
+            padding-top: var(--safe-top); 
+            transition: background 0.3s; 
+        }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
         .brand-text { font-family: var(--font-head); font-weight: 900; font-size: 24px; color: var(--brand); line-height: 1; }
@@ -82,7 +89,7 @@
         .app-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
         .app-section.active { display: block; opacity: 1; animation: slide-in 0.3s ease-out; }
 
-        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; transition: border-color 0.3s; }
+        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; transition: border-color 0.3s; background: var(--bg); /* Fondo integrado */ }
         .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 4px 0; text-align: center; font-family: sans-serif; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
         .tf-btn.active { color: var(--brand); background: rgba(59, 130, 246, 0.1); font-weight: 800; }
 
@@ -102,7 +109,6 @@
         .input-label { font-size: 10px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px; }
         .input-field { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 15px; font-weight: 700; text-align: center; }
         
-        /* --- ESTILOS INPUT PROTEGIDO V22.2 (MANTENIDOS) --- */
         .input-field.locked-input { 
             color: var(--brand) !important; 
             opacity: 1; 
@@ -491,7 +497,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.1 STABLE RESTORE</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.2 INTEGRATED UI</div>
         </div>
     </div>
 
@@ -568,6 +574,12 @@
 
         function init() { 
             try {
+                // Auto-Reparación de Ticker
+                if(!tickerAssets || tickerAssets.length === 0) {
+                    tickerAssets = ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"];
+                    localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
+                }
+
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
                 if(savedParams) {
                     document.getElementById('incInput').value = savedParams.inc;
