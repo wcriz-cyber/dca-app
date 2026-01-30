@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.6 MOBILE FIX</title>
+    <title>C5X - V19.7 KIWI EDITION</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -14,7 +14,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&family=Rajdhani:wght@500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@500;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@600;900&family=Rajdhani:wght@500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -23,6 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
+        /* ESTILOS BASE */
         :root {
             --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98);
             --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
@@ -34,6 +35,7 @@
             --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
         }
 
+        /* TEMAS */
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; }
         body.theme-ocean { --bg: #030712; --surface: #0f172a; --brand: #3b82f6; --border: #1e293b; }
         body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --brand: #f97316; --border: #52200b; }
@@ -42,7 +44,7 @@
         body.light-mode { --bg: #f8fafc !important; --surface: #ffffff !important; --card-bg: #f1f5f9 !important; --text-primary: #0f172a !important; --border: #e2e8f0 !important; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease, color 0.3s ease; }
+        body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease; }
 
         .anim-click:active { transform: scale(0.95); }
         .anim-pulse { animation: pulse-ring 2s infinite; }
@@ -143,7 +145,8 @@
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
         .setting-card-item { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-m); padding: 16px; display: flex; flex-direction: column; gap: 5px; transition: background 0.3s, border-color 0.3s; }
         .setting-label { font-size: 11px; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
-        .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 18px; font-weight: 700; border-bottom:1px solid var(--border); }
+        .setting-input { width: 100%; background: transparent; border: none; color: var(--text-primary); font-family: var(--font-num); font-size: 18px; font-weight: 700; }
+        .input-row-save { display: flex; align-items: center; gap: 10px; width: 100%; }
         .btn-save-mini { background: var(--brand); color: #fff; border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
         
         .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
@@ -255,12 +258,12 @@
             <div class="controls-grid"><div class="input-group"><label class="input-label">Moneda</label><input type="text" id="coinInput" class="input-field" placeholder="BTC" oninput="forceCaps(this)" onblur="updateCoin()"></div><div class="input-group"><label class="input-label">Base</label><input type="number" id="baseInput" class="input-field" oninput="calculate()" step="any" placeholder="0.00"></div><div class="input-group readonly"><label class="input-label">Capital</label><input type="number" id="capitalInput" class="input-field" readonly></div></div>
             
             <div class="dashboard-card" id="dashMain">
-                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border);">
-                    <div style="display:flex; align-items:center; gap:6px;">
+                <div class="wallet-bar">
+                    <div class="wallet-label">
                         <svg width="14" height="14" style="color:var(--brand)"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 10h20"/><path d="M7 15h0M2 10h20M7 15h0M2 10h20"/></svg>
-                        <span style="font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px;">SALDO GATE.IO</span>
+                        <span>SALDO GATE.IO</span>
                     </div>
-                    <span id="dashWallet" style="font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px;">Conectando...</span>
+                    <span id="dashWallet" class="wallet-amount">Conectando...</span>
                 </div>
 
                 <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)">
@@ -433,7 +436,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.6 MOBILE FIX</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.7 KIWI EDITION</div>
         </div>
     </div>
 
@@ -481,7 +484,6 @@
         let currentSection = 'operate';
         let modalCallback = null;
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-        let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
@@ -505,15 +507,6 @@
         
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
         
-        // LISTA DE PUENTES SEGUROS PARA MÓVIL
-        let proxies = [
-            'https://api.cors.lol/?url=',
-            'https://corsproxy.io/?',
-            'https://api.allorigins.win/raw?url=',
-            'https://api.codetabs.com/v1/proxy?quest='
-        ];
-        if(customProxy) proxies.unshift(customProxy);
-
         function init() { 
             try {
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
@@ -535,7 +528,6 @@
                 });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
-                const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
 
@@ -546,7 +538,7 @@
                 calculateGlobalStats(); 
                 updateStats('D');
 
-                // CARGAR SALDO AL INICIO
+                // NUEVO: CARGAR SALDO AL INICIO
                 fetchWalletBalance();
 
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
@@ -557,14 +549,16 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR DE TRADING REAL GATE.IO (V4) CON PROXY
+        // 🚀 MOTOR DE TRADING REAL GATE.IO (V4) DIRECTO
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
-            if (!apiConfig.key || !apiConfig.secret) {
-                // Permitir lectura pública de tickers sin keys
+            // Permitir llamadas públicas sin keys
+            if (!apiConfig.key && path.includes('tickers') && method === 'GET') {
+                // pass
+            } else if (!apiConfig.key || !apiConfig.secret) {
                 if(!path.includes('tickers')) {
-                    // Si intenta otra cosa, alerta suave
+                    // Si intenta operar sin keys, falla
                     console.warn("Faltan API Keys");
                     throw new Error("No API Keys");
                 }
@@ -596,37 +590,21 @@
 
             const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
             
-            // INTENTAR CON PROXIES (SOLUCIÓN MÓVIL)
-            for(let proxy of proxies) {
-                try {
-                    // Preparamos URL con proxy
-                    const finalUrl = proxy + encodeURIComponent(fullUrl);
-                    
-                    const response = await fetch(finalUrl, {
-                        method: method,
-                        headers: headers,
-                        body: body ? JSON.stringify(body) : null
-                    });
-
-                    if (response.ok) {
-                        return await response.json(); // ÉXITO
-                    }
-                } catch (e) {
-                    console.warn("Proxy falló:", proxy);
-                }
-            }
-            
-            // Último intento: Directo (por si acaso)
             try {
+                // CONEXIÓN DIRECTA (Requiere CORS Extensión en Navegador)
                 const response = await fetch(fullUrl, {
                     method: method,
                     headers: headers,
                     body: body ? JSON.stringify(body) : null
                 });
-                if (!response.ok) throw new Error(`API Error ${response.status}`);
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    throw new Error(`API Error ${response.status} ${errText}`);
+                }
                 return await response.json();
-            } catch(e) {
-                throw new Error("Conexión fallida. Revisa internet.");
+            } catch (error) {
+                throw error;
             }
         }
 
@@ -640,11 +618,8 @@
                 const data = await callGateApi("GET", "/spot/accounts", "currency=USDT");
                 
                 let available = 0;
-                // A veces el proxy devuelve { result: [...] } o directo [...]
-                const rows = Array.isArray(data) ? data : (data.contents ? JSON.parse(data.contents) : []);
-                
-                if (rows && rows.length > 0) {
-                    available = parseFloat(rows[0].available);
+                if (Array.isArray(data) && data.length > 0) {
+                    available = parseFloat(data[0].available);
                 }
 
                 globalCapital = available;
@@ -660,10 +635,22 @@
 
             } catch (e) {
                 console.error("Error saldo:", e);
-                const elDash = document.getElementById('dashWallet');
+                
+                let errorMsg = "Sin Conexión";
+                // Diagnóstico básico
+                if(e.message.includes("401")) errorMsg = "Error Claves (401)";
+                else if(e.message.includes("403")) errorMsg = "Error Permisos (403)";
+                else if(e.message.includes("Network") || e.message.includes("Failed to fetch")) errorMsg = "Bloqueo CORS (Usa Kiwi)";
+                else if(e.message.includes("signature")) errorMsg = "Error Hora/Firma";
+                
                 if(elDash) {
-                    elDash.textContent = "Sin Conexión";
+                    elDash.textContent = errorMsg;
                     elDash.style.color = "var(--danger)";
+                }
+                // Mostrar toast solo la primera vez para no spamear
+                if(!window.hasAlertedError) {
+                    showToast("❌ " + errorMsg + ". Revisa la Extensión", 4000);
+                    window.hasAlertedError = true;
                 }
             }
         }
@@ -721,7 +708,7 @@
             }); 
         }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://api.cors.lol/?url=', 'https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
+        
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -854,42 +841,27 @@
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
-            for(let proxy of proxies) {
-                try {
-                    const controller = new AbortController();
-                    const id = setTimeout(() => controller.abort(), 6000); 
-                    
-                    const res = await fetch(proxy + encodeURIComponent("https://api.gateio.ws/api/v4/spot/tickers"), {
-                        signal: controller.signal,
-                        cache: "no-store"
-                    });
-                    clearTimeout(id);
-                    
-                    if(!res.ok) continue; 
+            try {
+                // DIRECTO A GATE (CORS EXTENSION REQUERIDA)
+                const res = await fetch("https://api.gateio.ws/api/v4/spot/tickers", {cache: "no-store"});
+                if(!res.ok) throw new Error("API Error"); 
 
-                    let json = await res.json();
-                    let data = json;
-                    if(json.contents) {
-                        try { data = JSON.parse(json.contents); } catch(e) { data = json.contents; }
-                    }
-                    
-                    if(!Array.isArray(data)) continue; 
-
-                    elStatus.className = 'radar-status-dot online'; 
-                    allGateETFs = data.filter(t => { 
-                        const pair = t.currency_pair; 
-                        return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
-                    }); 
-                    topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
-                    
-                    startRadarRotation(); 
-                    return; 
-                    
-                } catch(e) { console.log("Proxy fail:", proxy); }
+                let data = await res.json();
+                
+                elStatus.className = 'radar-status-dot online'; 
+                allGateETFs = data.filter(t => { 
+                    const pair = t.currency_pair; 
+                    return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
+                }); 
+                topDroppers = [...allGateETFs].sort((a,b) => parseFloat(a.change_percentage) - parseFloat(b.change_percentage)).slice(0, radarLimit); 
+                
+                startRadarRotation(); 
+                
+            } catch(e) { 
+                console.error("Radar Fail", e);
+                elStatus.className = 'radar-status-dot offline';
+                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ REINTENTAR</div>';
             }
-            console.error("ALL PROXIES FAILED");
-            elStatus.className = 'radar-status-dot offline';
-            elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
         }
 
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
@@ -979,7 +951,6 @@
             localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); 
             calculate();
         }
-        function saveProxy() { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Actualizado"); }
         function startTickerSystem() { 
             if(tickerIntervalId) clearInterval(tickerIntervalId);
             updateTicker(); 
@@ -1011,7 +982,20 @@
                 currentWs.onerror = () => { fetchTickerRest(apiSym, displaySym); document.getElementById('t-dot').classList.remove('pulse'); }; 
             } catch(e) { fetchTickerRest(apiSym, displaySym); } 
         }
-        async function fetchTickerRest(apiSym, displaySym) { try { let price = 0; try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} if(price === 0) { const gateSym = displaySym + "_USDT"; const proxy = proxies[0]; const res = await fetch(proxy + encodeURIComponent(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`)); if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } } if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } } catch(e) {} }
+        async function fetchTickerRest(apiSym, displaySym) { 
+            try { 
+                let price = 0; 
+                try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} 
+                if(price === 0) { 
+                    // FALLBACK A GATE DIRECTO
+                    const gateSym = displaySym + "_USDT"; 
+                    const data = await callGateApi("GET", "/spot/tickers", `currency_pair=${gateSym}`);
+                    let row = Array.isArray(data) ? data[0] : null;
+                    if(row) price = parseFloat(row.last);
+                } 
+                if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } 
+            } catch(e) {} 
+        }
         function updateTickerUI(sym, price, isUp) { currentTickerSymbol = sym; let displayPrice = (price < 1) ? price.toFixed(8) : price.toLocaleString(); document.getElementById('t-price').textContent = displayPrice; document.getElementById('t-dot').style.background = isUp ? 'var(--long)' : 'var(--short)'; }
         
         function toggleTickerPin() { 
@@ -1062,7 +1046,7 @@
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
-                // AQUI CAMBIO COLOR PRECIO
+                
                 div.innerHTML = `<div class="u-index">${index+1}</div>
                                  <div class="u-center">
                                     <div class="u-title" style="font-size:16px">${pairName}</div>
@@ -1272,7 +1256,7 @@
                         </div>`; 
             }).reverse().join('');
         }
-        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
+        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
         function checkAutoBackup() { const last = localStorage.getItem('c5x_last_backup'); const now = Date.now(); if(!last || (now - last > 2592000000)) { if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) { triggerDriveBackup(); } } }
         function openSecurity(cb) { secCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
@@ -1299,6 +1283,7 @@
                 const elDD = document.getElementById('setDD'); if(elDD) elDD.value = appConfig.dd;
                 
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
+                const elProxy = document.getElementById('setProxy'); if(elProxy) elProxy.value = customProxy;
 
                 // Load API Keys (masked)
                 if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
@@ -1327,8 +1312,8 @@
             doc.autoTable({ head: [['FECHA / HORA', 'ACTIVO', 'PRECIO ENT.', 'PRECIO SALIDA', 'INVERSIÓN', 'PNL NETO', 'ROI']], body: bodyData, startY: 58, theme: 'grid', styles: { fontSize: 9, cellPadding: 3, valign: 'middle', halign: 'center' }, headStyles: { fillColor: [21, 26, 33], textColor: 255, fontStyle: 'bold', halign: 'center' }, didParseCell: function(data) { if (data.section === 'body' && data.column.index === 5) { const raw = data.cell.raw; if(raw.startsWith('+')) data.cell.styles.textColor = [14, 203, 129]; else data.cell.styles.textColor = [246, 70, 93]; } } }); 
             doc.save("C5X_Pro_Report.pdf"); 
         }
-        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
-        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
+        function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, customProxy, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
+        function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.customProxy) { customProxy = data.customProxy; localStorage.setItem('c5x_custom_proxy', customProxy); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
     </script>
 </body>
 </html>
