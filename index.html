@@ -384,6 +384,8 @@
                         <input type="password" class="setting-input" id="apiKey" placeholder="API KEY (KEY)" style="border-bottom:1px solid var(--border)">
                         <input type="password" class="setting-input" id="apiSecret" placeholder="API SECRET (SECRET)">
                     </div>
+                    <button class="btn-data anim-click" style="margin-top:10px; width:100%" onclick="runConnectionTest()">🛠️ PROBAR CONEXIÓN</button>
+                    <div id="diagResult" style="font-size:10px; color:var(--text-secondary); margin-top:5px; word-break:break-all;"></div>
                 </div>
             </div>
 
@@ -442,6 +444,13 @@
                         <button class="btn-save-mini anim-click" onclick="saveMultiSecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
                     </div>
                     <div id="multiGrid" class="multi-grid"></div>
+                </div>
+
+                <div class="setting-card-item">
+                     <div class="input-row-save">
+                        <div style="flex:1"><label class="setting-label">PROXY</label><input type="text" class="setting-input" id="setProxy" placeholder="https://..." ></div>
+                        <button class="btn-save-mini anim-click" onclick="saveProxySecure()"><svg width="18" height="18"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
+                     </div>
                 </div>
 
                 <div class="setting-card-item">
@@ -519,7 +528,7 @@
         let currentSection = 'operate';
         let modalCallback = null;
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-        let customProxy = ''; 
+        let customProxy = localStorage.getItem('c5x_custom_proxy') || '';
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
@@ -545,6 +554,15 @@
         
         let serverTimeOffset = 0;
 
+        // LISTA DE PUENTES SEGUROS PARA MÓVIL
+        let proxies = [
+            'https://api.cors.lol/?url=',
+            'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
+            'https://api.codetabs.com/v1/proxy?quest='
+        ];
+        if(customProxy) proxies.unshift(customProxy);
+
         function init() { 
             try {
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
@@ -566,6 +584,7 @@
                 });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
+                const proxInput = document.getElementById('setProxy'); if(proxInput) proxInput.value = customProxy;
                 
                 window.history.replaceState({page: 'operate'}, '', '');
 
@@ -588,19 +607,15 @@
 
         async function syncTimeAndBalance() {
             try {
-                // Sincronizar hora
                 const start = Date.now();
-                // Usamos fetch simple para time, si falla CORS, no pasa nada grave, usaremos hora local
-                try {
-                    const res = await fetch("https://api.gateio.ws/api/v4/spot/time", { cache: "no-store" });
-                    if(res.ok) {
-                        const data = await res.json();
-                        const serverTime = data.server_time * 1000;
-                        serverTimeOffset = serverTime - (start + ((Date.now() - start) / 2));
-                        console.log("Time Offset:", serverTimeOffset);
-                    }
-                } catch(e) { console.warn("Time sync fail (usando local)", e); }
-            } catch(e) {}
+                const res = await fetch("https://api.gateio.ws/api/v4/spot/time", { cache: "no-store" });
+                if(res.ok) {
+                    const data = await res.json();
+                    const serverTime = data.server_time * 1000;
+                    serverTimeOffset = serverTime - (start + ((Date.now() - start) / 2));
+                    console.log("Time Offset:", serverTimeOffset);
+                }
+            } catch(e) { console.warn("Time sync fail (usando local)", e); }
             
             fetchWalletBalance();
         }
@@ -610,8 +625,8 @@
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
-            // Si es PÚBLICO (Tickers/Radar), NO enviar Auth Headers para evitar bloqueo OPTIONS
-            const isPublic = path.includes('tickers') || path.includes('time') || path.includes('candlesticks');
+            // FIX: Radar es PÚBLICO (Tickers), NO enviar Auth Headers para evitar bloqueo OPTIONS
+            const isPublic = path.includes('/spot/tickers');
             
             if (!isPublic && (!apiConfig.key || !apiConfig.secret)) {
                 throw new Error("Faltan API Keys");
@@ -644,19 +659,19 @@
                 throw new Error("Direct Fail " + res.status);
             } catch(e) {
                 console.warn("Directo falló, probando proxy...", e);
-                // Intento Proxy
-                try {
-                    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(fullUrl);
-                    const resProxy = await fetch(proxyUrl, { method: method, headers: headers, body: body ? JSON.stringify(body) : null });
-                    if(!resProxy.ok) throw new Error("Proxy Fail " + resProxy.status);
-                    return await resProxy.json();
-                } catch(e2) {
-                    throw new Error("Conexión fallida total: " + e2.message);
+                // Intento Proxy (Solo si tenemos proxies seguros configurados o públicos)
+                for(let proxy of proxies) {
+                    try {
+                         const proxyUrl = proxy + encodeURIComponent(fullUrl);
+                         const resProxy = await fetch(proxyUrl, { method: method, headers: headers, body: body ? JSON.stringify(body) : null });
+                         if(resProxy.ok) return await resProxy.json();
+                    } catch(pe) {}
                 }
+                throw new Error("Conexión fallida: " + e.message);
             }
         }
 
-        // --- LECTURA DE SALDO ---
+        // --- LECTURA DE SALDO CON DIAGNÓSTICO ---
         async function fetchWalletBalance() {
             const elDash = document.getElementById('dashWallet');
             if(elDash) elDash.textContent = "Conectando...";
@@ -666,7 +681,12 @@
                 const data = await callGateApi("GET", "/spot/accounts", "currency=USDT");
                 
                 let available = 0;
-                let rows = Array.isArray(data) ? data : (data.result || []); // Manejo de respuestas variadas
+                // Manejo de respuestas variadas (directo vs proxy)
+                let rows = [];
+                if(Array.isArray(data)) rows = data;
+                else if(data.contents) rows = JSON.parse(data.contents);
+                else if(data.result) rows = data.result;
+
                 if (rows.length > 0) available = parseFloat(rows[0].available);
 
                 globalCapital = available;
@@ -676,6 +696,7 @@
                     elDash.textContent = "$" + available.toFixed(2);
                     elDash.style.color = "var(--text-primary)";
                 }
+                
                 const elCap = document.getElementById('setGlobalCapital');
                 if(elCap) elCap.value = available.toFixed(2);
 
@@ -742,7 +763,7 @@
             }); 
         }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        
+        function saveProxySecure() { reqSec(() => { const val = document.getElementById('setProxy').value.trim(); customProxy = val; localStorage.setItem('c5x_custom_proxy', customProxy); proxies = ['https://api.cors.lol/?url=', 'https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', 'https://api.codetabs.com/v1/proxy?quest=']; if(customProxy) proxies.unshift(customProxy); showToast("✅ Proxy Guardado"); }); }
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
@@ -842,6 +863,21 @@
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); checkAutoBackup(); }
         
+        // --- DIAGNÓSTICO ---
+        async function runConnectionTest() {
+            const out = document.getElementById('diagResult');
+            out.innerHTML = "Probando conexión...";
+            try {
+                const t = await callGateApi("GET", "/spot/accounts", "currency=USDT");
+                let bal = 0;
+                let rows = Array.isArray(t) ? t : (t.result || []);
+                if(rows.length>0) bal = rows[0].available;
+                out.innerHTML = `<span style='color:var(--long)'>✅ CONECTADO. Saldo: $${bal}</span>`;
+            } catch(e) {
+                out.innerHTML = `<span style='color:var(--danger)'>❌ ERROR: ${e.message}</span>`;
+            }
+        }
+
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
             t.textContent = txt; 
@@ -870,22 +906,20 @@
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
-        // --- FIX RADAR: Petición PÚBLICA (SIN Auth Headers) ---
         async function fetchAndCalcTopDroppers() { 
             const elVal = document.getElementById('radarValue');
             const elStatus = document.getElementById('radarStatus');
             elStatus.className = 'radar-status-dot offline'; 
 
             try {
-                // LLAMADA PÚBLICA (No pasamos claves ni firmas)
-                const res = await callGateApi("GET", "/spot/tickers"); 
-                
-                let tickers = Array.isArray(res) ? res : (res.result || []);
-                
-                if(tickers.length === 0) throw new Error("No data");
+                // FIX RADAR: LLAMADA PÚBLICA DIRECTA
+                const res = await fetch("https://api.gateio.ws/api/v4/spot/tickers", {cache: "no-store"});
+                if(!res.ok) throw new Error("API Error"); 
 
+                let data = await res.json();
+                
                 elStatus.className = 'radar-status-dot online'; 
-                allGateETFs = tickers.filter(t => { 
+                allGateETFs = data.filter(t => { 
                     const pair = t.currency_pair; 
                     return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
                 }); 
@@ -1023,11 +1057,10 @@
                 let price = 0; 
                 try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} 
                 if(price === 0) { 
-                    // FALLBACK: Usar el callGateApi público
+                    // FALLBACK A GATE DIRECTO (SIN PROXY PARA TICKERS)
                     const gateSym = displaySym + "_USDT"; 
-                    const res = await callGateApi("GET", "/spot/tickers", `currency_pair=${gateSym}`);
-                    let row = Array.isArray(res) ? res[0] : (res.result?res.result[0]:null);
-                    if(row) price = parseFloat(row.last);
+                    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`);
+                    if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } 
                 } 
                 if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } 
             } catch(e) {} 
