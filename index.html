@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V19.5 FULL REAL</title>
+    <title>C5X - V19.6 MOBILE FIX</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -23,7 +23,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* --- ESTILOS ORIGINALES V19 --- */
         :root {
             --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(21, 26, 33, 0.98);
             --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c;
@@ -35,7 +34,6 @@
             --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif;
         }
 
-        /* TEMAS */
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --brand: #2ecc71; --border: #143822; }
         body.theme-ocean { --bg: #030712; --surface: #0f172a; --brand: #3b82f6; --border: #1e293b; }
         body.theme-sunset { --bg: #1c0802; --surface: #2b1106; --brand: #f97316; --border: #52200b; }
@@ -102,11 +100,12 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
-        /* NUEVO: BARRA DE SALDO */
         .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); }
-        
+        .wallet-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px; }
+        .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
+
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; position: relative; }
-        .radar-status-dot { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: background 0.3s; }
+        .radar-status-dot { position: absolute; top: 12px; right: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--text-tertiary); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .radar-status-dot.online { background: var(--long); box-shadow: 0 0 8px var(--long); }
         .radar-status-dot.offline { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
         .radar-title { font-family: var(--font-head); font-size: 12px; font-weight: 900; color: var(--brand); letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
@@ -139,17 +138,6 @@
         .u-val-primary { font-family: var(--font-num); font-size: 15px; font-weight: 800; color: var(--long); }
         .u-val-secondary { font-size: 11px; color: var(--text-secondary); font-weight: 700; }
         .liquidate-card { background: var(--danger); color: #fff; justify-content: center; font-family: var(--font-head); font-weight: 900; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(207, 48, 74, 0.4); border: none; padding: 20px; border-radius: var(--radius-m); margin-top: 10px; cursor: pointer; display: flex; align-items: center; gap:10px; }
-
-        .etf-search-box { position: relative; margin: 5px 10px 10px 10px; } 
-        .etf-search-input { width: 100%; background: var(--card-bg); border: 1px solid var(--border); padding: 14px 14px 14px 45px; border-radius: var(--radius-m); color: var(--text-primary); font-family: var(--font-head); font-weight: 700; font-size: 14px; transition: border 0.3s; }
-        .etf-search-input:focus { border-color: var(--brand); }
-        .etf-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); }
-        .etf-change-badge { padding: 6px 12px; border-radius: 8px; font-size: 16px; font-weight: 800; font-family: var(--font-num); }
-        .etf-up { background: rgba(14, 203, 129, 0.15); color: var(--long); }
-        .etf-down { background: rgba(246, 70, 93, 0.15); color: var(--short); }
-        .etf-fav-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: var(--text-tertiary); cursor: pointer; transition: 0.2s; }
-        .etf-fav-icon.is-fav { color: var(--warning); }
-        .etf-card-right { display: flex; align-items: center; gap: 12px; }
 
         .setting-section-title { padding: 5px 5px; font-family: var(--font-head); color: var(--text-secondary); font-size: 12px; font-weight: 900; letter-spacing: 1px; display:flex; align-items:center; gap:8px; margin-top: 5px; }
         .settings-grid { display: flex; flex-direction: column; gap: 8px; }
@@ -273,7 +261,7 @@
                         <svg width="14" height="14" style="color:var(--brand)"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 10h20"/><path d="M7 15h0M2 10h20M7 15h0M2 10h20"/></svg>
                         <span style="font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px;">SALDO GATE.IO</span>
                     </div>
-                    <span id="dashWallet" style="font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px;">Cargando...</span>
+                    <span id="dashWallet" style="font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px;">Conectando...</span>
                 </div>
 
                 <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)">
@@ -446,7 +434,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.5 FULL REAL</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V19.6 MOBILE FIX</div>
         </div>
     </div>
 
@@ -494,7 +482,6 @@
         let currentSection = 'operate';
         let modalCallback = null;
         let customMultipliers = JSON.parse(localStorage.getItem('c5x_multipliers')) || [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-        let customProxy = ''; 
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
@@ -560,16 +547,14 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR DE TRADING REAL GATE.IO (V4)
+        // 🚀 MOTOR DE TRADING REAL GATE.IO (V4) CON PROXY
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
-            // Permitir llamadas públicas sin keys
-            if (!apiConfig.key && path.includes('tickers') && method === 'GET') {
-                // pass
-            } else if (!apiConfig.key || !apiConfig.secret) {
+            if (!apiConfig.key || !apiConfig.secret) {
+                // Permitir lectura pública de tickers sin keys
                 if(!path.includes('tickers')) {
-                    // Si intenta operar sin keys, falla
+                    // Si intenta otra cosa, alerta suave
                     console.warn("Faltan API Keys");
                     throw new Error("No API Keys");
                 }
@@ -601,20 +586,46 @@
 
             const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
             
+            // LISTA DE PROXIES PÚBLICOS PARA EVITAR BLOQUEO CORS EN MÓVIL
+            // La extensión no funciona bien en móviles, así que usamos proxies puente.
+            const proxies = [
+                'https://api.cors.lol/?url=', 
+                'https://corsproxy.io/?',
+                'https://api.allorigins.win/raw?url='
+            ];
+
+            // Intentar con proxies en orden
+            for(let proxy of proxies) {
+                try {
+                    // Preparamos URL con proxy
+                    const finalUrl = proxy + encodeURIComponent(fullUrl);
+                    
+                    const response = await fetch(finalUrl, {
+                        method: method,
+                        headers: headers,
+                        body: body ? JSON.stringify(body) : null
+                    });
+
+                    if (response.ok) {
+                        return await response.json(); // ÉXITO
+                    }
+                    // Si falla el proxy, intentamos el siguiente
+                } catch (e) {
+                    console.warn("Proxy falló:", proxy);
+                }
+            }
+            
+            // Último intento: Directo (solo funcionará si la extensión revive)
             try {
                 const response = await fetch(fullUrl, {
                     method: method,
                     headers: headers,
                     body: body ? JSON.stringify(body) : null
                 });
-
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(`API Error ${response.status} ${errText}`);
-                }
+                if (!response.ok) throw new Error(`API Error ${response.status}`);
                 return await response.json();
-            } catch (error) {
-                throw error;
+            } catch(e) {
+                throw new Error("Conexión fallida. Revisa internet.");
             }
         }
 
@@ -628,8 +639,11 @@
                 const data = await callGateApi("GET", "/spot/accounts", "currency=USDT");
                 
                 let available = 0;
-                if (Array.isArray(data) && data.length > 0) {
-                    available = parseFloat(data[0].available);
+                // A veces el proxy devuelve { result: [...] } o directo [...]
+                const rows = Array.isArray(data) ? data : (data.contents ? JSON.parse(data.contents) : []);
+                
+                if (rows && rows.length > 0) {
+                    available = parseFloat(rows[0].available);
                 }
 
                 globalCapital = available;
@@ -645,22 +659,10 @@
 
             } catch (e) {
                 console.error("Error saldo:", e);
-                
-                let errorMsg = "Sin Conexión";
-                // Diagnóstico básico
-                if(e.message.includes("401")) errorMsg = "Error Claves (401)";
-                else if(e.message.includes("403")) errorMsg = "Error Permisos (403)";
-                else if(e.message.includes("Network") || e.message.includes("Failed to fetch")) errorMsg = "Bloqueo CORS / Red";
-                else if(e.message.includes("signature")) errorMsg = "Error Hora/Firma";
-                
+                const elDash = document.getElementById('dashWallet');
                 if(elDash) {
-                    elDash.textContent = errorMsg;
+                    elDash.textContent = "Sin Conexión";
                     elDash.style.color = "var(--danger)";
-                }
-                // Mostrar toast solo la primera vez para no spamear
-                if(!window.hasAlertedError) {
-                    showToast("❌ " + errorMsg + ". Revisa la Extensión CORS", 4000);
-                    window.hasAlertedError = true;
                 }
             }
         }
@@ -852,14 +854,15 @@
             elStatus.className = 'radar-status-dot offline'; 
 
             try {
-                // DIRECTO A GATE (CORS EXTENSION REQUERIDA)
-                const res = await fetch("https://api.gateio.ws/api/v4/spot/tickers", {cache: "no-store"});
-                if(!res.ok) throw new Error("API Error"); 
-
-                let data = await res.json();
+                const data = await callGateApi("GET", "/spot/tickers"); 
                 
+                // Procesar respuesta (puede venir envuelta si es via proxy)
+                let tickers = Array.isArray(data) ? data : (data.contents ? JSON.parse(data.contents) : []);
+                
+                if(tickers.length === 0) throw new Error("No data");
+
                 elStatus.className = 'radar-status-dot online'; 
-                allGateETFs = data.filter(t => { 
+                allGateETFs = tickers.filter(t => { 
                     const pair = t.currency_pair; 
                     return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
                 }); 
@@ -999,8 +1002,9 @@
                 if(price === 0) { 
                     // FALLBACK A GATE DIRECTO
                     const gateSym = displaySym + "_USDT"; 
-                    const res = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${gateSym}`); 
-                    if(res.ok) { const data = await res.json(); if(data && data.length > 0) price = parseFloat(data[0].last); } 
+                    const data = await callGateApi("GET", "/spot/tickers", `currency_pair=${gateSym}`);
+                    let row = Array.isArray(data) ? data[0] : null;
+                    if(row) price = parseFloat(row.last);
                 } 
                 if(price > 0) { updateTickerUI(displaySym, price, true); updateSlotStatus(displaySym, price); } 
             } catch(e) {} 
@@ -1278,7 +1282,6 @@
             try {
                 const s = slots[activeIdx]; 
                 
-                // Cargar valores con verificaciones de seguridad
                 const elCap = document.getElementById('setCapital'); if(elCap) elCap.value = s.capital;
                 const elInc = document.getElementById('setInc'); if(elInc) elInc.value = document.getElementById('incInput').value;
                 const elDesc = document.getElementById('setDesc'); if(elDesc) elDesc.value = document.getElementById('descInput').value;
@@ -1293,7 +1296,6 @@
                 
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
 
-                // Load API Keys (masked)
                 if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
                 if(apiConfig.secret) document.getElementById('apiSecret').value = apiConfig.secret;
 
