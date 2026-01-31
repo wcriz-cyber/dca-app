@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.1 HYDRA ENGINE</title>
+    <title>C5X - V24.2 PAPER ENGINE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -23,9 +23,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* C5X V25.0 - TEMA PROFESIONAL ÚNICO */
+        /* C5X V25.0 - ESTRUCTURA BASE (DARK MODE DEFAULT) */
         :root { 
-            /* Backgrounds - Dark Mode (Original) */
+            /* Backgrounds - Dark Mode */
             --bg: #0a0e13; 
             --surface: #141922; 
             --surface-glass: #0a0e13; 
@@ -40,7 +40,7 @@
             --text-secondary: #9ca3af; 
             --text-tertiary: #6b7280; 
             
-            /* Trading Colors (permanecen en ambos modos) */
+            /* Trading Colors (Vibrantes para modo oscuro) */
             --brand: #3b82f6; 
             --long: #10b981; 
             --short: #ef4444; 
@@ -65,36 +65,49 @@
             --font-head: 'Orbitron', sans-serif; 
         }
         
-        /* Light Mode - "PAPER MODE" (Actualizado según captura) */
+        /* Light Mode - "CLOUD AI / PAPER AESTHETIC" */
         body.light-mode { 
-            /* Fondo tipo papel cálido */
-            --bg: #E8E6E1; 
+            /* 1. Fondo Papel Cálido (Cremoso) */
+            --bg: #F2F0E9; 
             
-            /* Superficies ligeramente más oscuras (tipo cartón suave) */
-            --surface: #E2E0DB; 
-            --surface-glass: #E8E6E1; 
+            /* 2. Superficies (Cartón suave) */
+            --surface: #E8E6DF; 
+            --surface-glass: #F2F0E9; 
+            --card-bg: rgba(160, 150, 140, 0.08); /* Sutil oscurecimiento cálido */
             
-            /* Tarjetas con sutil oscurecimiento para contraste */
-            --card-bg: rgba(0, 0, 0, 0.04); 
+            /* 3. Bordes (Tierra suave) */
+            --border: #D6D2C8; 
+            --border-strong: #BFBBB0;
             
-            /* Bordes suaves en tono tierra/gris */
-            --border: #D1CEC7; 
-            --border-strong: #B8B5B0;
+            /* 4. Textos (Café/Gris Orgánico - No negro puro) */
+            --text-primary: #4A453E; 
+            --text-secondary: #7A756D; 
+            --text-tertiary: #9E9890; 
             
-            /* Textos optimizados para descanso visual (Gris Carbón Cálido) */
-            --text-primary: #2A2A2A; 
-            --text-secondary: #595550; 
-            --text-tertiary: #85807A; 
-            
-            /* Gráfico integrado al papel */
-            --chart-bg: #E8E6E1; 
+            /* 5. Chart integrado */
+            --chart-bg: #F2F0E9; 
             
             --skeleton: rgba(0,0,0,0.06); 
             
-            /* Trading colors ajustados ligeramente para el fondo papel */
-            --long: #059669;
-            --short: #cc2929;
-            --warning: #d97706;
+            /* 6. COLORES PASTEL / TIPO CAPTURA */
+            
+            /* Rojo -> Terracotta (Ladrillo suave del botón 'Comenzar Ahora') */
+            --short: #C87965;
+            --danger: #C87965;
+            
+            /* Verde -> Salvia (Sage Green suave y natural) */
+            --long: #6F9C76;
+            
+            /* Brand -> Azul Acero Muted (Para armonizar con tierra) */
+            --brand: #5C7C8A; 
+            
+            /* Advertencia -> Ocre Suave */
+            --warning: #D99E4B;
+            
+            /* Zonas ETF Pastel */
+            --zone-gold: #D99E4B;
+            --zone-hot: #C87965; 
+            --zone-warm: #8C99A6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -146,13 +159,13 @@
         /* Overlay de líneas de precio sobre el gráfico */
         .price-lines-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; }
         .price-line { position: absolute; left: 0; right: 0; height: 2px; display: flex; align-items: center; }
-        .price-line.avg-line { background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5) 5%, rgba(59, 130, 246, 0.5) 95%, transparent); }
-        .price-line.target-line { background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.5) 5%, rgba(245, 158, 11, 0.5) 95%, transparent); border-top: 2px dashed #f59e0b; }
-        .price-line.buy-line { background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3) 5%, rgba(16, 185, 129, 0.3) 95%, transparent); }
+        .price-line.avg-line { background: linear-gradient(90deg, transparent, rgba(92, 124, 138, 0.5) 5%, rgba(92, 124, 138, 0.5) 95%, transparent); }
+        .price-line.target-line { background: linear-gradient(90deg, transparent, rgba(217, 158, 75, 0.5) 5%, rgba(217, 158, 75, 0.5) 95%, transparent); border-top: 2px dashed var(--warning); }
+        .price-line.buy-line { background: linear-gradient(90deg, transparent, rgba(111, 156, 118, 0.3) 5%, rgba(111, 156, 118, 0.3) 95%, transparent); }
         .price-label { position: absolute; right: 10px; background: rgba(10, 14, 19, 0.9); padding: 3px 8px; border-radius: 4px; font-family: var(--font-num); font-size: 10px; font-weight: 800; white-space: nowrap; backdrop-filter: blur(4px); top: -12px; }
-        .price-label.avg { color: #3b82f6; border-left: 3px solid #3b82f6; }
-        .price-label.target { color: #f59e0b; border-left: 3px solid #f59e0b; }
-        .price-label.buy { color: #10b981; border-left: 3px solid #10b981; }
+        .price-label.avg { color: var(--brand); border-left: 3px solid var(--brand); }
+        .price-label.target { color: var(--warning); border-left: 3px solid var(--warning); }
+        .price-label.buy { color: var(--long); border-left: 3px solid var(--long); }
         
         .chart-fs-btn { position: absolute; bottom: 10px; right: 10px; z-index: 20; width: 30px; height: 30px; background: rgba(128,128,128,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--text-primary); backdrop-filter: blur(4px); }
         .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; padding: 10px; }
@@ -1524,7 +1537,7 @@
                 "theme": isLight ? "light" : "dark", 
                 "container_id": "tv_chart", 
                 "hide_top_toolbar": true, 
-                "backgroundColor": isLight ? "#ffffff" : "#0b0e11", 
+                "backgroundColor": isLight ? "#F2F0E9" : "#0b0e11", 
                 "locale": "es",
                 "disabled_features": ["use_localstorage_for_settings"],
                 "enabled_features": ["study_templates"]
