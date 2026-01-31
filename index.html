@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.1 HYDRA ENGINE</title>
+    <title>C5X - V24.2 HYDRA ENGINE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -155,6 +155,7 @@
         .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
         .radar-ticker-large { background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 12px; text-align: center; margin-bottom: 20px; min-height: 80px; display:flex; flex-direction:column; justify-content:center; position: relative; cursor: pointer; transition: all 0.3s; }
         .radar-ticker-large:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
+        .radar-ticker-large:active { transform: scale(0.98); }
         .radar-ticker-large.zone-gold { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.4); }
         .radar-ticker-large.zone-hot { background: rgba(251, 146, 60, 0.12); border-color: rgba(251, 146, 60, 0.4); }
         .radar-ticker-large.zone-warm { background: rgba(148, 163, 184, 0.12); border-color: rgba(148, 163, 184, 0.3); }
@@ -358,7 +359,13 @@
                     <span id="dashWallet" class="wallet-amount" style="color:var(--text-tertiary)">SIMULADO</span>
                 </div>
 
-                <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)">
+                <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" 
+                     onmousedown="startRadarInteraction()"
+                     ontouchstart="startRadarInteraction()"
+                     onmouseup="endRadarInteraction()"
+                     ontouchend="endRadarInteraction()"
+                     onmouseleave="cancelRadarInteraction()">
+                    
                     <div id="radarStatus" class="radar-status-dot offline"></div>
                     <div class="radar-title"><svg width="12" height="12"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> RADAR DE OPORTUNIDADES</div>
                     <div id="radarValue" class="radar-content"><span class="skeleton-text skeleton-box" style="width:120px; height:20px;"></span></div>
@@ -1147,36 +1154,46 @@
         }
 
         // --- GESTIÓN INTERACCIÓN RADAR (TAP VS LONG PRESS) ---
-        let currentRadarData = null;
         let radarPressTimer = null;
         let isRadarLongPress = false;
 
-        function startRadarInteraction(sym, price) {
-            currentRadarData = {sym, price};
+        function startRadarInteraction() {
+            // Obtener datos actuales del radar (global dropperIdx)
+            if(!topDroppers || topDroppers.length === 0) return;
+            const item = topDroppers[dropperIdx];
+            if(!item) return;
+
+            const sym = item.currency_pair.replace('_USDT', '').replace('USDT', '');
+            const price = parseFloat(item.last);
+
             isRadarLongPress = false;
-            // Iniciar temporizador para long press
+            // Iniciar temporizador para long press (500ms)
             radarPressTimer = setTimeout(() => {
                 isRadarLongPress = true;
                 if(navigator.vibrate) navigator.vibrate(50);
                 switchView('etf'); // Ir al Monitor ETF
-            }, 500); // 500ms espera
+            }, 500); 
         }
 
         function endRadarInteraction() {
             if (radarPressTimer) clearTimeout(radarPressTimer);
             
-            if (!isRadarLongPress && currentRadarData) {
-                // Fue un toque corto -> Agregar a slot
-                smartSelectETF(currentRadarData.sym, currentRadarData.price);
+            // Si NO fue long press, es un TAP -> Agregar al slot
+            if (!isRadarLongPress) {
+                // Recuperar datos actuales de nuevo por seguridad
+                 if(!topDroppers || topDroppers.length === 0) return;
+                 const item = topDroppers[dropperIdx];
+                 if(item) {
+                     const sym = item.currency_pair.replace('_USDT', '').replace('USDT', '');
+                     const price = parseFloat(item.last);
+                     smartSelectETF(sym, price);
+                 }
             }
-            
-            currentRadarData = null;
             isRadarLongPress = false;
         }
         
         function cancelRadarInteraction() {
              if (radarPressTimer) clearTimeout(radarPressTimer);
-             currentRadarData = null;
              isRadarLongPress = false;
         }
 
@@ -1208,19 +1225,13 @@
                 const zoneText = item.zone === 'GOLD' ? 'ZONA ORO' : item.zone === 'HOT' ? 'CALIENTE' : 'TEMPLADA';
                 const zoneClass = item.zone === 'GOLD' ? 'gold' : item.zone === 'HOT' ? 'hot' : 'warm';
                 
-                // HTML con eventos Touch/Mouse personalizados
+                // HTML Limpio (sin eventos inline conflictivos)
                 elVal.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
                         <div class="radar-zone-badge ${zoneClass}">
                             ${zoneEmoji} ${zoneText} • Score: ${item.score}
                         </div>
-                        <div 
-                             onmousedown="startRadarInteraction('${pairName}', ${price})"
-                             ontouchstart="startRadarInteraction('${pairName}', ${price})"
-                             onmouseup="endRadarInteraction()"
-                             ontouchend="endRadarInteraction()"
-                             onmouseleave="cancelRadarInteraction()"
-                             style="color:var(--text-primary); font-size:20px; font-weight:800; cursor:pointer; text-decoration:underline dotted; text-underline-offset:4px;">
+                        <div style="color:var(--text-primary); font-size:20px; font-weight:800; text-decoration:underline dotted; text-underline-offset:4px;">
                             ${pairName}
                         </div>
                         <div style="display:flex; gap:12px; font-size:13px; color:var(--text-secondary);">
@@ -2156,6 +2167,98 @@
             el.setAttribute('readonly', true);
             el.classList.remove('editing-mode');
             el.classList.add('locked-input');
+        }
+
+        // --- GESTIÓN INTERACCIÓN RADAR (TAP VS LONG PRESS) ---
+        let radarPressTimer = null;
+        let isRadarLongPress = false;
+
+        function startRadarInteraction() {
+            // Obtener datos actuales del radar (global dropperIdx)
+            if(!topDroppers || topDroppers.length === 0) return;
+            const item = topDroppers[dropperIdx];
+            if(!item) return;
+
+            isRadarLongPress = false;
+            // Iniciar temporizador para long press (500ms)
+            radarPressTimer = setTimeout(() => {
+                isRadarLongPress = true;
+                if(navigator.vibrate) navigator.vibrate(50);
+                switchView('etf'); // Ir al Monitor ETF
+            }, 500); 
+        }
+
+        function endRadarInteraction() {
+            if (radarPressTimer) clearTimeout(radarPressTimer);
+            
+            // Si NO fue long press, es un TAP -> Agregar al slot
+            if (!isRadarLongPress) {
+                // Recuperar datos actuales de nuevo por seguridad
+                 if(!topDroppers || topDroppers.length === 0) return;
+                 const item = topDroppers[dropperIdx];
+                 if(item) {
+                     const sym = item.currency_pair.replace('_USDT', '').replace('USDT', '');
+                     const price = parseFloat(item.last);
+                     smartSelectETF(sym, price);
+                 }
+            }
+            isRadarLongPress = false;
+        }
+        
+        function cancelRadarInteraction() {
+             if (radarPressTimer) clearTimeout(radarPressTimer);
+             isRadarLongPress = false;
+        }
+
+        // --- NUEVA LÓGICA SWIPE: Solo slots con moneda ---
+        function handleSwipe(tsX, tsY, teX, teY) { 
+            const threshold = 60; 
+            const diffX = teX - tsX; 
+            const diffY = teY - tsY; 
+            
+            if (Math.abs(diffY) > Math.abs(diffX)) return; // Ignorar vertical
+            
+            if (currentSection !== 'operate') { 
+                if (diffX > threshold) { window.history.back(); } 
+            } else { 
+                // Filtrar solo slots ocupados
+                const occupiedIndices = slots.map((s, i) => s.name ? i : -1).filter(i => i !== -1);
+                
+                // Si no hay slots ocupados, funcionamiento normal (ciclo 0-4)
+                if (occupiedIndices.length === 0) {
+                     if (diffX < -threshold) { 
+                        let next = activeIdx + 1; if(next > 4) next = 0; selectSlot(next);
+                     } else if (diffX > threshold) {
+                        let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
+                     }
+                     return;
+                }
+
+                // Determinar posición actual relativa a los ocupados
+                let currentPos = occupiedIndices.indexOf(activeIdx);
+                
+                if (diffX < -threshold) { // Swipe Izquierda -> Siguiente Ocupado
+                    let nextIndex;
+                    if (currentPos === -1) {
+                         nextIndex = occupiedIndices[0]; // Si estoy en vacío, ir al primero
+                    } else {
+                        let nextPos = currentPos + 1;
+                        if (nextPos >= occupiedIndices.length) nextPos = 0;
+                        nextIndex = occupiedIndices[nextPos];
+                    }
+                    selectSlot(nextIndex);
+                } else if (diffX > threshold) { // Swipe Derecha -> Anterior Ocupado
+                    let prevIndex;
+                    if (currentPos === -1) {
+                         prevIndex = occupiedIndices[occupiedIndices.length - 1];
+                    } else {
+                        let prevPos = currentPos - 1;
+                        if (prevPos < 0) prevPos = occupiedIndices.length - 1;
+                        prevIndex = occupiedIndices[prevPos];
+                    }
+                    selectSlot(prevIndex);
+                }
+            } 
         }
     </script>
 </body>
