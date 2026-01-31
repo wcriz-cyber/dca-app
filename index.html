@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.4 FINAL</title>
+    <title>C5X - V24.5 SILENT ENGINE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -75,22 +75,13 @@
             --chart-bg: #F2F0E9; 
             --skeleton: rgba(0,0,0,0.06); 
             
-            /* --- NUEVA PALETA: TERRACOTA & SALVIA --- */
-            
-            /* Rojo -> Terracotta (Ladrillo suave) */
+            /* --- PALETA: TERRACOTA & SALVIA --- */
             --short: #C87965;
             --danger: #C87965;
-            
-            /* Verde -> Salvia (Sage Green suave) */
             --long: #6F9C76;
-            
-            /* Brand -> Sigue la lógica Short/Long o un Azul Acero neutro */
             --brand: #5C7C8A; 
-            
-            /* Advertencia -> Ocre Suave */
             --warning: #D99E4B;
             
-            /* Zonas ETF Pastel */
             --zone-gold: #D99E4B;
             --zone-hot: #C87965; 
             --zone-warm: #8C99A6;
@@ -568,8 +559,7 @@
                     let text = s.name || '';
                     if(text) Core.UI.forceCopy(text);
                 },
-                // --- ELIMINADA LA FUNCIÓN DE COPIAR CANTIDADES ---
-                // handleAmountTap: function(idx, amount) { ... }
+                // ELIMINADA FUNCIÓN handleAmountTap PARA EVITAR COPIADO
                 
                 forceCopy: function(text) {
                     const textArea = document.createElement("textarea");
@@ -644,7 +634,6 @@
                 if(savedParams) { document.getElementById('incInput').value = savedParams.inc; document.getElementById('descInput').value = savedParams.desc; document.getElementById('setInc').value = savedParams.inc; document.getElementById('setDesc').value = savedParams.desc; }
                 if(isLight) { document.body.classList.add('light-mode'); }
                 updateThemeIcon();
-                // Eliminado control de tema en settings
                 slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; if(typeof s.note === 'undefined') s.note = ''; if(typeof s.alerted === 'undefined') s.alerted = false; if(typeof s.locked === 'undefined') s.locked = true; });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 window.history.replaceState({page: 'operate'}, '', '');
@@ -659,7 +648,6 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // --- HELPER DE COLOR (DETECTAR SHORT/LONG) ---
         function getCoinColor(name) {
             if (!name) return 'var(--brand)';
             const upper = name.toUpperCase();
@@ -895,8 +883,6 @@
                 const zoneEmoji = item.zone === 'GOLD' ? '🔥' : item.zone === 'HOT' ? '🟡' : '⚪';
                 const zoneText = item.zone === 'GOLD' ? 'ZONA ORO' : item.zone === 'HOT' ? 'CALIENTE' : 'TEMPLADA';
                 const zoneClass = item.zone === 'GOLD' ? 'gold' : item.zone === 'HOT' ? 'hot' : 'warm';
-                
-                // Color dinámico según moneda
                 const nameColor = getCoinColor(pairName);
 
                 elVal.innerHTML = `
@@ -1063,8 +1049,6 @@
                 const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); 
                 const pairName = t.currency_pair.replace('_USDT', '').replace('USDT', ''); 
                 const isFav = etfFavorites.includes(pairName); 
-                
-                // Color Nombre en Lista
                 const nameColor = getCoinColor(pairName);
 
                 const div = document.createElement('div'); 
@@ -1225,15 +1209,10 @@
         function renderLevels() { 
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; 
             updateBodyMode(s.name); 
-            
-            // Determinar color de índice basado en la moneda activa
             const indexColor = getCoinColor(s.name);
-
             if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } 
-            
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; 
             const maxLevels = customMultipliers ? customMultipliers.length : 12; 
-            
             for(let i=0; i < maxLevels; i++){ 
                 let pLevel; 
                 if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
@@ -1241,13 +1220,10 @@
                     if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } 
                     pLevel = lastPrice * (1 - (currentStepDrop / 100)); 
                 } 
-                
                 const mUSD = (customMultipliers[i] || 1) * s.capital, on = s.buys.includes(i); 
                 if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } 
-                
                 let displayPrice;
                 if(pLevel < 0.0001) { displayPrice = pLevel.toFixed(10).replace(/\.?0+$/, ""); } else if (pLevel < 1) { displayPrice = pLevel.toFixed(6); } else { displayPrice = pLevel.toFixed(4); }
-
                 html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
                             <div class="u-index" style="color:${indexColor}; border-color:${indexColor}">${i+1}</div>
                             <div class="u-center">
@@ -1262,14 +1238,12 @@
             } 
             html += `<div class="liquidate-card anim-click" onclick="openLiquidateConfirm()"><svg width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg> LIQUIDAR POSICIÓN</div>`; 
             grid.innerHTML = html; 
-            
             const avg = totalQty > 0 ? totalSpent/totalQty : 0; 
             const targetPrice = avg * (1 + (s.roi / 100)); 
             document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; 
             document.getElementById('resAvg').textContent = (avg < 0.0001 && avg > 0) ? avg.toFixed(10).replace(/\.?0+$/, "") : ((avg < 1) ? avg.toFixed(6) : avg.toFixed(4)); 
             document.getElementById('resTarget').textContent = (targetPrice < 0.0001 && targetPrice > 0) ? targetPrice.toFixed(10).replace(/\.?0+$/, "") : ((targetPrice < 1) ? targetPrice.toFixed(6) : targetPrice.toFixed(4)); 
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
-            
             if (tvWidget) { addTradingLevelsToChart(); }
         }
 
@@ -1278,7 +1252,6 @@
         function toggleLvl(idx) { 
             triggerHaptic(); 
             const s = slots[activeIdx]; 
-            
             if (!s.buys.includes(idx)) { 
                 let pLevel;
                 const descPct = parseFloat(document.getElementById('descInput').value) || 66;
@@ -1296,9 +1269,6 @@
                     document.getElementById('trade-total').textContent = "$" + currentTrade.usd.toFixed(2);
                     document.getElementById('tradeModal').style.display = 'flex';
                 } else {
-                    let rawPrice = pLevel.toFixed(10); 
-                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); 
-                    Core.UI.forceCopy(cleanPrice); // COPIA EL PRECIO (CORRECTO)
                     simulatedBuy(idx);
                 }
             } else { 
@@ -1343,8 +1313,6 @@
         function updateBodyMode(n) { 
             const r = document.querySelector(':root'); 
             if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } 
-            
-            // Lógica para color de Marca (Botones principales, gráficos, etc)
             if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } 
             else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } 
             else { r.style.setProperty('--brand', '#3b82f6'); } 
@@ -1357,10 +1325,7 @@
                 const hasNet = h.netProfit !== undefined;
                 const finalProfit = hasNet ? parseFloat(h.netProfit) : parseFloat(h.profit);
                 const isWin = finalProfit >= 0; 
-                
-                // Color Nombre en Historial
                 const nameColor = getCoinColor(h.coin);
-
                 return `<div class="unified-card">
                             <div class="u-index" style="color:var(--brand); border-color:var(--brand)">${h.coin.substring(0,3)}</div>
                             <div class="u-center"><div class="u-title" style="color:${nameColor}">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div>
