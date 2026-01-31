@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.5 SILENT ENGINE</title>
+    <title>C5X - V24.7 CONNECTED</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -1386,7 +1386,13 @@
         // --- MOTOR DE CONEXIÓN HÍBRIDO (TANQUE V20.2) ---
         let serverTimeOffset = 0;
         let currentProxyIndex = 0;
-        let proxies = [ 'https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', '', 'https://api.codetabs.com/v1/proxy?quest=' ];
+        
+        // --- AQUI ESTA TU PUENTE DE CLOUDFLARE ---
+        let googleProxy = "https://square-snow-092a.wcriz.workers.dev/"; 
+
+        let proxies = [
+            googleProxy + '?endpoint=', // USAR SIEMPRE EL WORKER
+        ];
 
         async function callGateApi(method, endpoint, params = {}, requireAuth = false) {
             const baseUrl = 'https://api.gateio.ws/api/v4';
