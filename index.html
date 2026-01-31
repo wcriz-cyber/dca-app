@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.8 CLEAN COPY</title>
+    <title>C5X - V23.9 UNIVERSAL COPY</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -497,7 +497,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.8 CLEAN COPY</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.9 UNIVERSAL COPY</div>
         </div>
     </div>
 
@@ -534,25 +534,15 @@
                         return;
                     }
                     
-                    // COPIAR NOMBRE MONEDA (SOLO EL NOMBRE)
+                    // COPIAR NOMBRE MONEDA
                     const s = slots[activeIdx];
                     let text = s.name || '';
-                    
-                    if(text) {
-                        navigator.clipboard.writeText(text).then(() => {
-                            showToast("📋 " + text + " Copiado");
-                            if(navigator.vibrate) navigator.vibrate(50);
-                        }).catch(err => {});
-                    }
+                    if(text) Core.UI.copyToClipboard(text);
                 },
                 
-                // NUEVA FUNCIÓN: COPIAR CANTIDAD AL TOCAR PRECIO USD
                 handleAmountTap: function(idx, amount) {
-                    if(isPrivateMode) return; // Solo en simulado
-                    // Calculamos la cantidad de monedas en base al precio del nivel
-                    // Esto es aproximado en simulacion
+                    if(isPrivateMode) return; 
                     const s = slots[activeIdx];
-                    // Recalcular el nivel para obtener el precio
                     let pLevel;
                     const descPct = parseFloat(document.getElementById('descInput').value) || 66; 
                     const incPct = parseFloat(document.getElementById('incInput').value) || 7; 
@@ -565,20 +555,40 @@
                         } 
                         lastPrice = pLevel; 
                     }
-                    
-                    // Cantidad = Monto USD / Precio
                     let qty = amount / pLevel;
-                    
                     // Limpieza inteligente para cantidad
                     let cleanQty = qty.toFixed(8).replace(/\.?0+$/, "");
-                    
-                    navigator.clipboard.writeText(cleanQty).then(() => {
-                        showToast(`📋 Cantidad: ${cleanQty}`);
-                        if(navigator.vibrate) navigator.vibrate(50);
-                    });
-                    
-                    // Detener propagación para no activar toggleLvl
+                    Core.UI.copyToClipboard(cleanQty);
                     window.event.stopPropagation();
+                },
+
+                copyToClipboard: function(text) {
+                    // Método robusto "Fuerza Bruta"
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    
+                    // Asegurar que el textarea no sea visible pero sea parte del DOM
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    document.body.appendChild(textArea);
+                    
+                    textArea.focus();
+                    textArea.select();
+                    
+                    try {
+                        const successful = document.execCommand('copy');
+                        if(successful) {
+                            showToast("📋 Copiado: " + text);
+                            if(navigator.vibrate) navigator.vibrate(50);
+                        } else {
+                            showToast("❌ Error al copiar");
+                        }
+                    } catch (err) {
+                        showToast("❌ Error al copiar");
+                    }
+                    
+                    document.body.removeChild(textArea);
                 }
             }
         };
@@ -1330,15 +1340,11 @@
                     document.getElementById('trade-total').textContent = "$" + currentTrade.usd.toFixed(2);
                     document.getElementById('tradeModal').style.display = 'flex';
                 } else {
-                    // MODO SIMULADO: COPIA PRECIO Y EJECUTA SIN MODAL
-                    // Limpieza de precio para máxima compatibilidad
-                    let rawPrice = pLevel.toFixed(10); // Asegura precisión
-                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); // Quita ceros extra: "10.500" -> "10.5"
+                    // MODO SIMULADO: COPIA PRECIO LIMPIO Y MARCA EL NIVEL
+                    let rawPrice = pLevel.toFixed(10); 
+                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); // Limpieza total de ceros
                     
-                    navigator.clipboard.writeText(cleanPrice).then(() => {
-                        showToast(`📋 ${cleanPrice}`);
-                    });
-                    
+                    Core.UI.copyToClipboard(cleanPrice);
                     simulatedBuy(idx);
                 }
 
@@ -1470,7 +1476,7 @@
                         </div>`; 
             }).reverse().join('');
         }
-        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = `C5X_Backup_${date}.json`; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
+        function triggerDriveBackup() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); const date = new Date().toISOString().slice(0,10); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); localStorage.setItem('c5x_last_backup', Date.now()); showToast("☁️ Archivo generado para Drive"); }
         function checkAutoBackup() { const last = localStorage.getItem('c5x_last_backup'); const now = Date.now(); if(!last || (now - last > 2592000000)) { if(confirm("⚠️ Han pasado 30 días desde tu último respaldo. ¿Guardar en Drive ahora?")) { triggerDriveBackup(); } } }
         function openSecurity(cb) { secCallback = cb; document.getElementById('secInput').value = ''; document.getElementById('securityModal').style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.generic-modal').forEach(m => m.style.display = 'none'); }
