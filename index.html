@@ -978,7 +978,34 @@
         }
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
-        function handleSwipe(tsX, tsY, teX, teY) { const threshold = 60; const diffX = teX - tsX; const diffY = teY - tsY; if (Math.abs(diffY) > Math.abs(diffX)) return; if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { const occupiedIndices = slots.map((s, i) => s.name !== '' ? i : -1).filter(i => i !== -1); if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next >= 5) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } } else { let currentPosInOccupied = occupiedIndices.indexOf(activeIdx); if (currentPosInOccupied === -1) { selectSlot(occupiedIndices[0]); return; } if (diffX < -threshold) { let nextPos = currentPosInOccupied + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; selectSlot(occupiedIndices[nextPos]); } else if (diffX > threshold) { let prevPos = currentPosInOccupied - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; selectSlot(occupiedIndices[prevPos]); } } } }
+        
+        // --- CORRECCIÓN SWIPE: Lógica simplificada para cambio de slot ---
+        function handleSwipe(tsX, tsY, teX, teY) { 
+            const threshold = 60; 
+            const diffX = teX - tsX; 
+            const diffY = teY - tsY; 
+            
+            // Si el movimiento es más vertical que horizontal, ignorar
+            if (Math.abs(diffY) > Math.abs(diffX)) return; 
+            
+            if (currentSection !== 'operate') { 
+                if (diffX > threshold) { window.history.back(); } 
+            } else { 
+                // Navegación de Slots (Siempre activa, ciclo 0-4)
+                if (diffX < -threshold) { 
+                    // Swipe Izquierda -> Siguiente Slot
+                    let next = activeIdx + 1; 
+                    if(next > 4) next = 0; 
+                    selectSlot(next); 
+                } else if (diffX > threshold) { 
+                    // Swipe Derecha -> Slot Anterior
+                    let prev = activeIdx - 1; 
+                    if(prev < 0) prev = 4; 
+                    selectSlot(prev); 
+                } 
+            } 
+        }
+
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
         function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); /* checkAutoBackup(); REMOVIDO */ }
         
@@ -1018,7 +1045,8 @@
 
             try {
                 const res = await callGateApi("GET", "/spot/tickers"); 
-                let tickers = Array.isArray(res) ? res : (res.result || []);
+                // CORRECCIÓN: Asegurar que res sea un array válido
+                let tickers = Array.isArray(res) ? res : (res.result || res.data || []);
                 
                 if(tickers.length === 0) throw new Error("No data");
 
@@ -1371,17 +1399,14 @@
             const isShort = symbol.includes('S');
             
             if (leverage === 0) {
-                panel.style.display = 'none';
+                if(panel) panel.style.display = 'none';
                 return;
             }
             
             // Buscar datos del ETF en allGateETFs
             const etfData = allGateETFs.find(e => e.currency_pair.replace('_USDT', '') === symbol);
             
-            if (!etfData) {
-                panel.style.display = 'none';
-                return;
-            }
+            if (!etfData || !panel) return;
             
             // Calcular métricas
             const expectedRange = leverage === 3 ? '±15-35%' : '±25-60%';
@@ -1529,7 +1554,8 @@
             if (s.name) {
                 showETFVolatilityInfo(s.name);
             } else {
-                document.getElementById('etfVolatilityPanel').style.display = 'none';
+                const p = document.getElementById('etfVolatilityPanel');
+                if(p) p.style.display = 'none';
             }
         }
 
@@ -1855,12 +1881,11 @@
         let serverTimeOffset = 0;
         let currentProxyIndex = 0;
         
-        // Proxies CORS - Probados en orden de confiabilidad
+        // CORRECCIÓN: Lista de proxies actualizada y más robusta para evitar CORS
         let proxies = [
-            '', // Intento directo (funcionará si el navegador permite CORS)
-            'https://api.allorigins.win/raw?url=',
             'https://corsproxy.io/?',
-            'https://cors-anywhere.herokuapp.com/',
+            'https://api.allorigins.win/raw?url=',
+            '', // Intento directo (fallback final)
             'https://api.codetabs.com/v1/proxy?quest='
         ];
 
