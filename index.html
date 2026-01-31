@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.3 SILENT SWITCH</title>
+    <title>C5X - V23.4 SILENT BUY</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -64,7 +64,7 @@
         
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
-            background: var(--bg); /* Integración completa de color */
+            background: var(--bg);
             border-bottom: 1px solid var(--border); 
             padding-top: var(--safe-top); 
             transition: background 0.3s; 
@@ -88,7 +88,7 @@
         .app-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
         .app-section.active { display: block; opacity: 1; animation: slide-in 0.3s ease-out; }
 
-        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; transition: border-color 0.3s; background: var(--bg); /* Fondo integrado */ }
+        .tf-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 4px 12px 8px 12px; border-bottom: 1px solid var(--border); justify-content: center; transition: border-color 0.3s; background: var(--bg); }
         .tf-btn { background: transparent; border: none; color: var(--text-tertiary); padding: 4px 0; text-align: center; font-family: sans-serif; font-size: 12px; font-weight: 700; border-radius: 8px; transition: all 0.2s; }
         .tf-btn.active { color: var(--brand); background: rgba(59, 130, 246, 0.1); font-weight: 800; }
 
@@ -120,6 +120,7 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
+        /* WALLET BAR INTERACTIVA */
         .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); cursor: pointer; }
         .wallet-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px; }
         .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
@@ -496,7 +497,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.2 INTEGRATED UI</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.4 SILENT BUY</div>
         </div>
     </div>
 
@@ -620,7 +621,7 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR V23.3: SILENT SWITCH
+        // 🚀 MOTOR V23.4: SILENT BUY
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
@@ -1275,13 +1276,15 @@
         async function executeGateOrder() {
             closeModals();
             
-            // Si falta configuración, asumimos modo simulación
-            if(!apiConfig.key || !apiConfig.secret) {
-                // showToast("⚠️ Modo Simulación (Sin Keys)", 3000); // Comentado para menos ruido
+            // --- MODO SILENCIOSO / SIMULADO ---
+            // Si falta configuración o NO estamos en modo privado, simular sin ruido.
+            if(!isPrivateMode || !apiConfig.key || !apiConfig.secret) {
+                // No mostrar toast, solo ejecutar lógica interna
                 simulatedBuy(currentTrade.level);
                 return;
             }
 
+            // --- MODO REAL CONECTADO ---
             showToast("⏳ Enviando Orden a Gate.io...");
 
             const body = {
@@ -1303,12 +1306,10 @@
                 setTimeout(fetchWalletBalance, 1500);
 
             } catch (e) {
-                // --- MODIFICACIÓN SILENCIOSA ---
-                // En lugar de alertar y pedir confirmación, simplemente marcamos en app
+                // Si falla la API real, avisar pero no bloquear
                 console.warn("API Fail (Auto-Manual): " + e.message); 
+                showToast("⚠️ API Falló - Marcado Local", 2000);
                 simulatedBuy(currentTrade.level);
-                // Opcional: Avisar discretamente
-                // showToast("⚠️ Offline: Marcado Manualmente", 2000);
             }
         }
 
