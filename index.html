@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.2 INTEGRATED UI</title>
+    <title>C5X - V23.3 SILENT SWITCH</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -24,7 +24,7 @@
 
     <style>
         /* --- ESTILOS BASE --- */
-        :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: rgba(11, 14, 17, 0.95); /* AHORA COINCIDE CON BG */ --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
+        :root { --bg: #0b0e11; --surface: #151a21; --surface-glass: #0b0e11; --card-bg: rgba(255, 255, 255, 0.03); --text-primary: #eaecef; --text-secondary: #848e9c; --text-tertiary: #5e6673; --brand: #3b82f6; --long: #0ecb81; --short: #f6465d; --warning: #f0b90b; --danger: #cf304a; --border: #2b3139; --radius-m: 16px; --gold-fixed: #f0b90b; --chart-bg: #000000; --safe-top: env(safe-area-inset-top, 20px); --safe-bottom: env(safe-area-inset-bottom, 20px); --skeleton: rgba(255,255,255,0.05); --font-main: 'Rajdhani', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Orbitron', sans-serif; }
         
         body.theme-nature { --bg: #021208; --surface: #0a1f12; --surface-glass: #021208; --brand: #2ecc71; --border: #143822; --card-bg: rgba(46, 204, 113, 0.06); --text-primary: #e6fcf5; --text-secondary: #82e0aa; --font-main: 'Nunito', sans-serif; --font-num: 'Roboto Mono', monospace; --font-head: 'Outfit', sans-serif; }
         body.theme-ocean { --bg: #030712; --surface: #0f172a; --surface-glass: #030712; --brand: #3b82f6; --border: #1e293b; --card-bg: rgba(59, 130, 246, 0.06); --text-primary: #f8fafc; --text-secondary: #94a3b8; --font-main: 'Montserrat', sans-serif; --font-num: 'JetBrains Mono', monospace; --font-head: 'Montserrat', sans-serif; }
@@ -62,10 +62,9 @@
         #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
         #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
         
-        /* --- HEADER INTEGRADO V23.2 --- */
         .fixed-header { 
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; 
-            background: var(--bg); /* Integración de color */
+            background: var(--bg); /* Integración completa de color */
             border-bottom: 1px solid var(--border); 
             padding-top: var(--safe-top); 
             transition: background 0.3s; 
@@ -121,7 +120,7 @@
         .dashboard-card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; margin: 0 10px 15px; padding: 15px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; transition: background 0.3s, border-color 0.3s; }
         .dashboard-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--brand), var(--long)); }
         
-        .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); }
+        .wallet-bar { display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:12px; margin-bottom:15px; border:1px solid var(--border); cursor: pointer; }
         .wallet-label { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--text-secondary); letter-spacing:1px; }
         .wallet-amount { font-family:var(--font-num); font-weight:800; color:var(--text-primary); font-size:15px; }
 
@@ -319,12 +318,12 @@
             </div>
             
             <div class="dashboard-card" id="dashMain">
-                <div class="wallet-bar">
+                <div class="wallet-bar" onclick="toggleConnectionMode()">
                     <div class="wallet-label">
                         <svg width="14" height="14" style="color:var(--brand)"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h0M2 10h20"/><path d="M7 15h0M2 10h20M7 15h0M2 10h20"/></svg>
                         <span>SALDO GATE.IO</span>
                     </div>
-                    <span id="dashWallet" class="wallet-amount" onclick="fetchWalletBalance()">Conectando...</span>
+                    <span id="dashWallet" class="wallet-amount" style="color:var(--text-tertiary)">SIMULADO</span>
                 </div>
 
                 <div id="radarTickerContainer" class="radar-ticker-large anim-pulse" onclick="switchView('etf', false)">
@@ -571,6 +570,7 @@
         
         // --- PROXY INVISIBLE ---
         let proxyUrl = "https://corsproxy.io/?";
+        let isPrivateMode = false; // MODO SIMULADO POR DEFECTO
 
         function init() { 
             try {
@@ -609,8 +609,8 @@
                 calculateGlobalStats(); 
                 updateStats('D');
 
-                // AUTO-CONNECT
-                fetchWalletBalance();
+                // NOTA: NO LLAMAMOS A FETCHWALLETBALANCE AUTOMATICAMENTE PARA EVITAR ERRORES AL INICIO
+                // Solo datos públicos (Ticker/Radar) se cargan.
 
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
@@ -620,15 +620,16 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR RESTAURADO Y MEJORADO
+        // 🚀 MOTOR V23.3: SILENT SWITCH
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
-             // FIX RADAR: Si es público, no enviamos keys para evitar bloqueo OPTIONS
+            // FIX RADAR: Si es público, no enviamos keys para evitar bloqueo OPTIONS
             const isPublic = path.includes('tickers') || path.includes('time') || path.includes('candlesticks');
 
-            if (!isPublic && (!apiConfig.key || !apiConfig.secret)) {
-                 throw new Error("Faltan API Keys");
+            // Si es privado y no estamos en modo privado, cancelamos silenciosamente (o lanzamos error controlado)
+            if (!isPublic && !isPrivateMode) {
+                 throw new Error("Simulation Mode");
             }
 
             const host = "https://api.gateio.ws";
@@ -647,26 +648,46 @@
             }
 
             const fullUrl = queryParams ? `${host}${url}?${queryParams}` : `${host}${url}`;
-            const finalUrl = proxyUrl + encodeURIComponent(fullUrl);
-
+            
+            // ESTRATEGIA: 1. Directo -> 2. Proxy A -> 3. Proxy B
             try {
-                // ESTRATEGIA: 1. Directo -> 2. Proxy A -> 3. Proxy B
+                // 1. Directo (Si la extensión está bien configurada)
+                const res = await fetch(fullUrl, { method: method, headers: headers, body: body ? JSON.stringify(body) : null });
+                if(res.ok) return await res.json();
+                // Si es error 401/403 es problema de keys
+                if(res.status === 401 || res.status === 403) throw new Error("Error Auth " + res.status);
+                // Si es otro error, lanzamos para que el catch pruebe proxy
+                throw new Error("Direct Fail " + res.status);
+            } catch(e) {
+                // Intento Proxy
                 try {
-                    // 1. Directo (Si la extensión está bien configurada o CORS no molesta)
-                    const res = await fetch(fullUrl, { method: method, headers: headers, body: body ? JSON.stringify(body) : null });
-                    if(res.ok) return await res.json();
-                    if(res.status === 401 || res.status === 403) throw new Error("Error Auth " + res.status);
-                    throw new Error("Direct Fail " + res.status);
-                } catch(e) {
-                   // console.warn("Directo falló, probando proxy...", e);
-                    // Intento Proxy
                     const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(fullUrl);
                     const resProxy = await fetch(proxyUrl, { method: method, headers: headers, body: body ? JSON.stringify(body) : null });
                     if(!resProxy.ok) throw new Error("Proxy Fail " + resProxy.status);
                     return await resProxy.json();
+                } catch(e2) {
+                    throw new Error("Conexión fallida total: " + e2.message);
                 }
-            } catch (error) {
-                throw error;
+            }
+        }
+
+        // --- TOGGLE DE CONEXIÓN ---
+        function toggleConnectionMode() {
+            triggerHaptic();
+            if(isPrivateMode) {
+                // Desconectar
+                isPrivateMode = false;
+                const elDash = document.getElementById('dashWallet');
+                if(elDash) {
+                    elDash.textContent = "SIMULADO";
+                    elDash.style.color = "var(--text-tertiary)";
+                }
+                showToast("Modo Simulación Activado");
+            } else {
+                // Intentar Conectar
+                showToast("Conectando a Gate.io...", 1000);
+                isPrivateMode = true; // Habilitamos temporalmente para probar
+                fetchWalletBalance();
             }
         }
 
@@ -676,33 +697,42 @@
             if(elDash) elDash.textContent = "Conectando...";
 
             try {
+                // Petición PRIVADA (usa firma)
                 const data = await callGateApi("GET", "/spot/accounts", "currency=USDT");
                 
                 let available = 0;
-                let rows = Array.isArray(data) ? data : (data.result || []);
-                
-                if (rows.length > 0) {
-                    available = parseFloat(rows[0].available);
-                }
+                let rows = Array.isArray(data) ? data : (data.result || []); // Manejo de respuestas variadas
+                if (rows.length > 0) available = parseFloat(rows[0].available);
 
                 globalCapital = available;
                 localStorage.setItem('c5x_global_capital', globalCapital);
+                
+                // Si llegamos aquí, la conexión fue exitosa
+                isPrivateMode = true;
                 
                 if(elDash) {
                     elDash.textContent = "$" + available.toFixed(2);
                     elDash.style.color = "var(--text-primary)";
                 }
-                
                 const elCap = document.getElementById('setGlobalCapital');
                 if(elCap) elCap.value = available.toFixed(2);
+                showToast("✅ Conectado a Gate.io");
 
             } catch (e) {
+                // Si falla, volvemos a modo simulación y avisamos suavemente
+                isPrivateMode = false;
                 console.error("Error saldo:", e);
                 const elDash = document.getElementById('dashWallet');
                 if(elDash) {
-                    elDash.textContent = "Sin Conexión";
+                    elDash.textContent = "Error Conexión";
                     elDash.style.color = "var(--danger)";
                 }
+                setTimeout(() => {
+                     if(elDash) {
+                        elDash.textContent = "SIMULADO";
+                        elDash.style.color = "var(--text-tertiary)";
+                    }
+                }, 2000);
             }
         }
 
@@ -736,6 +766,8 @@
                     showToast("✅ API Keys Guardadas");
                     document.getElementById('apiKey').value = '';
                     document.getElementById('apiSecret').value = '';
+                    // Intentar conectar al guardar
+                    isPrivateMode = true;
                     fetchWalletBalance(); 
                 } else {
                     showToast("⚠️ Campos vacíos");
