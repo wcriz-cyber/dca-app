@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.0 HYDRA ENGINE</title>
+    <title>C5X - V24.1 HYDRA ENGINE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -979,30 +979,54 @@
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         
-        // --- CORRECCIÓN SWIPE: Lógica simplificada para cambio de slot ---
+        // --- NUEVA LÓGICA SWIPE: Solo slots con moneda ---
         function handleSwipe(tsX, tsY, teX, teY) { 
             const threshold = 60; 
             const diffX = teX - tsX; 
             const diffY = teY - tsY; 
             
-            // Si el movimiento es más vertical que horizontal, ignorar
-            if (Math.abs(diffY) > Math.abs(diffX)) return; 
+            if (Math.abs(diffY) > Math.abs(diffX)) return; // Ignorar vertical
             
             if (currentSection !== 'operate') { 
                 if (diffX > threshold) { window.history.back(); } 
             } else { 
-                // Navegación de Slots (Siempre activa, ciclo 0-4)
-                if (diffX < -threshold) { 
-                    // Swipe Izquierda -> Siguiente Slot
-                    let next = activeIdx + 1; 
-                    if(next > 4) next = 0; 
-                    selectSlot(next); 
-                } else if (diffX > threshold) { 
-                    // Swipe Derecha -> Slot Anterior
-                    let prev = activeIdx - 1; 
-                    if(prev < 0) prev = 4; 
-                    selectSlot(prev); 
-                } 
+                // Filtrar solo slots ocupados
+                const occupiedIndices = slots.map((s, i) => s.name ? i : -1).filter(i => i !== -1);
+                
+                // Si no hay slots ocupados, funcionamiento normal (ciclo 0-4)
+                if (occupiedIndices.length === 0) {
+                     if (diffX < -threshold) { 
+                        let next = activeIdx + 1; if(next > 4) next = 0; selectSlot(next);
+                     } else if (diffX > threshold) {
+                        let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
+                     }
+                     return;
+                }
+
+                // Determinar posición actual relativa a los ocupados
+                let currentPos = occupiedIndices.indexOf(activeIdx);
+                
+                if (diffX < -threshold) { // Swipe Izquierda -> Siguiente Ocupado
+                    let nextIndex;
+                    if (currentPos === -1) {
+                         nextIndex = occupiedIndices[0]; // Si estoy en vacío, ir al primero
+                    } else {
+                        let nextPos = currentPos + 1;
+                        if (nextPos >= occupiedIndices.length) nextPos = 0;
+                        nextIndex = occupiedIndices[nextPos];
+                    }
+                    selectSlot(nextIndex);
+                } else if (diffX > threshold) { // Swipe Derecha -> Anterior Ocupado
+                    let prevIndex;
+                    if (currentPos === -1) {
+                         prevIndex = occupiedIndices[occupiedIndices.length - 1];
+                    } else {
+                        let prevPos = currentPos - 1;
+                        if (prevPos < 0) prevPos = occupiedIndices.length - 1;
+                        prevIndex = occupiedIndices[prevPos];
+                    }
+                    selectSlot(prevIndex);
+                }
             } 
         }
 
@@ -1122,7 +1146,42 @@
             }
         }
 
+        // --- GESTIÓN INTERACCIÓN RADAR (TAP VS LONG PRESS) ---
+        let currentRadarData = null;
+        let radarPressTimer = null;
+        let isRadarLongPress = false;
+
+        function startRadarInteraction(sym, price) {
+            currentRadarData = {sym, price};
+            isRadarLongPress = false;
+            // Iniciar temporizador para long press
+            radarPressTimer = setTimeout(() => {
+                isRadarLongPress = true;
+                if(navigator.vibrate) navigator.vibrate(50);
+                switchView('etf'); // Ir al Monitor ETF
+            }, 500); // 500ms espera
+        }
+
+        function endRadarInteraction() {
+            if (radarPressTimer) clearTimeout(radarPressTimer);
+            
+            if (!isRadarLongPress && currentRadarData) {
+                // Fue un toque corto -> Agregar a slot
+                smartSelectETF(currentRadarData.sym, currentRadarData.price);
+            }
+            
+            currentRadarData = null;
+            isRadarLongPress = false;
+        }
+        
+        function cancelRadarInteraction() {
+             if (radarPressTimer) clearTimeout(radarPressTimer);
+             currentRadarData = null;
+             isRadarLongPress = false;
+        }
+
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
+        
         function updateRadarUI() { 
             if(topDroppers.length === 0) return; 
             const elVal = document.getElementById('radarValue'); 
@@ -1149,12 +1208,19 @@
                 const zoneText = item.zone === 'GOLD' ? 'ZONA ORO' : item.zone === 'HOT' ? 'CALIENTE' : 'TEMPLADA';
                 const zoneClass = item.zone === 'GOLD' ? 'gold' : item.zone === 'HOT' ? 'hot' : 'warm';
                 
+                // HTML con eventos Touch/Mouse personalizados
                 elVal.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
                         <div class="radar-zone-badge ${zoneClass}">
                             ${zoneEmoji} ${zoneText} • Score: ${item.score}
                         </div>
-                        <div onclick="smartSelectETF('${pairName}', ${price})" style="color:var(--text-primary); font-size:20px; font-weight:800; cursor:pointer; text-decoration:underline dotted; text-underline-offset:4px;">
+                        <div 
+                             onmousedown="startRadarInteraction('${pairName}', ${price})"
+                             ontouchstart="startRadarInteraction('${pairName}', ${price})"
+                             onmouseup="endRadarInteraction()"
+                             ontouchend="endRadarInteraction()"
+                             onmouseleave="cancelRadarInteraction()"
+                             style="color:var(--text-primary); font-size:20px; font-weight:800; cursor:pointer; text-decoration:underline dotted; text-underline-offset:4px;">
                             ${pairName}
                         </div>
                         <div style="display:flex; gap:12px; font-size:13px; color:var(--text-secondary);">
