@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.7 CONNECTED</title>
+    <title>C5X - V24.8 BLINDADA</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -135,9 +135,9 @@
         
         .price-lines-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; }
         .price-line { position: absolute; left: 0; right: 0; height: 2px; display: flex; align-items: center; }
-        .price-line.avg-line { background: linear-gradient(90deg, transparent, rgba(92, 124, 138, 0.5) 5%, rgba(92, 124, 138, 0.5) 95%, transparent); }
-        .price-line.target-line { background: linear-gradient(90deg, transparent, rgba(217, 158, 75, 0.5) 5%, rgba(217, 158, 75, 0.5) 95%, transparent); border-top: 2px dashed var(--warning); }
-        .price-line.buy-line { background: linear-gradient(90deg, transparent, rgba(111, 156, 118, 0.3) 5%, rgba(111, 156, 118, 0.3) 95%, transparent); }
+        .price-line.avg-line { background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5) 5%, rgba(59, 130, 246, 0.5) 95%, transparent); }
+        .price-line.target-line { background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.5) 5%, rgba(245, 158, 11, 0.5) 95%, transparent); border-top: 2px dashed var(--warning); }
+        .price-line.buy-line { background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3) 5%, rgba(16, 185, 129, 0.3) 95%, transparent); }
         .price-label { position: absolute; right: 10px; background: rgba(10, 14, 19, 0.9); padding: 3px 8px; border-radius: 4px; font-family: var(--font-num); font-size: 10px; font-weight: 800; white-space: nowrap; backdrop-filter: blur(4px); top: -12px; }
         .price-label.avg { color: var(--brand); border-left: 3px solid var(--brand); }
         .price-label.target { color: var(--warning); border-left: 3px solid var(--warning); }
@@ -634,6 +634,7 @@
                 if(savedParams) { document.getElementById('incInput').value = savedParams.inc; document.getElementById('descInput').value = savedParams.desc; document.getElementById('setInc').value = savedParams.inc; document.getElementById('setDesc').value = savedParams.desc; }
                 if(isLight) { document.body.classList.add('light-mode'); }
                 updateThemeIcon();
+                // Eliminado control de tema en settings
                 slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; if(typeof s.note === 'undefined') s.note = ''; if(typeof s.alerted === 'undefined') s.alerted = false; if(typeof s.locked === 'undefined') s.locked = true; });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 window.history.replaceState({page: 'operate'}, '', '');
@@ -648,6 +649,7 @@
             } catch(e) { console.error("Init Error", e); }
         }
 
+        // --- HELPER DE COLOR (DETECTAR SHORT/LONG) ---
         function getCoinColor(name) {
             if (!name) return 'var(--brand)';
             const upper = name.toUpperCase();
@@ -1392,6 +1394,8 @@
 
         let proxies = [
             googleProxy + '?endpoint=', // USAR SIEMPRE EL WORKER
+            'https://corsproxy.io/?',   // RESPALDO 1
+            'https://api.allorigins.win/raw?url=' // RESPALDO 2
         ];
 
         async function callGateApi(method, endpoint, params = {}, requireAuth = false) {
