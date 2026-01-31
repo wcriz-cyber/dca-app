@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.7 FAST COPY</title>
+    <title>C5X - V23.8 CLEAN COPY</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -497,7 +497,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.7 FAST COPY</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.8 CLEAN COPY</div>
         </div>
     </div>
 
@@ -544,6 +544,41 @@
                             if(navigator.vibrate) navigator.vibrate(50);
                         }).catch(err => {});
                     }
+                },
+                
+                // NUEVA FUNCIÓN: COPIAR CANTIDAD AL TOCAR PRECIO USD
+                handleAmountTap: function(idx, amount) {
+                    if(isPrivateMode) return; // Solo en simulado
+                    // Calculamos la cantidad de monedas en base al precio del nivel
+                    // Esto es aproximado en simulacion
+                    const s = slots[activeIdx];
+                    // Recalcular el nivel para obtener el precio
+                    let pLevel;
+                    const descPct = parseFloat(document.getElementById('descInput').value) || 66; 
+                    const incPct = parseFloat(document.getElementById('incInput').value) || 7; 
+                    let lastPrice = s.price;
+                    for(let i=0; i<=idx; i++){ 
+                        if(i===0) pLevel = s.price; 
+                        else { 
+                            let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; 
+                            pLevel = lastPrice * (1 - (step/100)); 
+                        } 
+                        lastPrice = pLevel; 
+                    }
+                    
+                    // Cantidad = Monto USD / Precio
+                    let qty = amount / pLevel;
+                    
+                    // Limpieza inteligente para cantidad
+                    let cleanQty = qty.toFixed(8).replace(/\.?0+$/, "");
+                    
+                    navigator.clipboard.writeText(cleanQty).then(() => {
+                        showToast(`📋 Cantidad: ${cleanQty}`);
+                        if(navigator.vibrate) navigator.vibrate(50);
+                    });
+                    
+                    // Detener propagación para no activar toggleLvl
+                    window.event.stopPropagation();
                 }
             }
         };
@@ -646,7 +681,7 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR V23.6: SMART COPY
+        // 🚀 MOTOR V23.8: CLEAN COPY
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
@@ -1296,10 +1331,14 @@
                     document.getElementById('tradeModal').style.display = 'flex';
                 } else {
                     // MODO SIMULADO: COPIA PRECIO Y EJECUTA SIN MODAL
-                    const displayPrice = (pLevel < 1) ? pLevel.toFixed(6) : pLevel.toFixed(4);
-                    navigator.clipboard.writeText(displayPrice).then(() => {
-                        showToast(`📋 Precio Copiado: $${displayPrice}`);
+                    // Limpieza de precio para máxima compatibilidad
+                    let rawPrice = pLevel.toFixed(10); // Asegura precisión
+                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); // Quita ceros extra: "10.500" -> "10.5"
+                    
+                    navigator.clipboard.writeText(cleanPrice).then(() => {
+                        showToast(`📋 ${cleanPrice}`);
                     });
+                    
                     simulatedBuy(idx);
                 }
 
@@ -1378,7 +1417,7 @@
                                 <div class="u-title">${displayPrice}</div>
                             </div>
                             <div class="u-right">
-                                <div class="u-val-primary">$${mUSD.toFixed(1)}</div>
+                                <div class="u-val-primary anim-click" onclick="Core.UI.handleAmountTap(${i}, ${mUSD})">$${mUSD.toFixed(1)}</div>
                                 <div class="u-val-secondary" style="${i>0?'color:var(--short)':''}">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
                             </div>
                         </div>`; 
