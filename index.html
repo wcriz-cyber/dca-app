@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.2 PAPER ENGINE</title>
+    <title>C5X - V24.3 PASTEL ENGINE</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -25,41 +25,33 @@
     <style>
         /* C5X V25.0 - ESTRUCTURA BASE (DARK MODE DEFAULT) */
         :root { 
-            /* Backgrounds - Dark Mode */
             --bg: #0a0e13; 
             --surface: #141922; 
             --surface-glass: #0a0e13; 
             --card-bg: rgba(255, 255, 255, 0.03); 
-            
-            /* Borders */
             --border: #2b3139; 
             --border-strong: #3d4451;
-            
-            /* Text */
             --text-primary: #e5e7eb; 
             --text-secondary: #9ca3af; 
             --text-tertiary: #6b7280; 
             
-            /* Trading Colors (Vibrantes para modo oscuro) */
+            /* Colores Base Dark Mode (Vibrantes) */
             --brand: #3b82f6; 
             --long: #10b981; 
             --short: #ef4444; 
             --warning: #f59e0b; 
             --danger: #dc2626; 
             
-            /* Zones for ETF Scoring */
             --zone-gold: #f59e0b;
             --zone-hot: #fb923c;
             --zone-warm: #94a3b8;
             
-            /* Others */
             --radius-m: 16px; 
             --chart-bg: #000000; 
             --safe-top: env(safe-area-inset-top, 20px); 
             --safe-bottom: env(safe-area-inset-bottom, 20px); 
             --skeleton: rgba(255,255,255,0.05); 
             
-            /* Fonts */
             --font-main: 'Rajdhani', sans-serif; 
             --font-num: 'JetBrains Mono', monospace; 
             --font-head: 'Orbitron', sans-serif; 
@@ -67,38 +59,32 @@
         
         /* Light Mode - "CLOUD AI / PAPER AESTHETIC" */
         body.light-mode { 
-            /* 1. Fondo Papel Cálido (Cremoso) */
+            /* Fondo Papel Cálido */
             --bg: #F2F0E9; 
-            
-            /* 2. Superficies (Cartón suave) */
             --surface: #E8E6DF; 
             --surface-glass: #F2F0E9; 
-            --card-bg: rgba(160, 150, 140, 0.08); /* Sutil oscurecimiento cálido */
+            --card-bg: rgba(160, 150, 140, 0.08); 
             
-            /* 3. Bordes (Tierra suave) */
+            /* Textos Café/Gris Orgánico */
             --border: #D6D2C8; 
             --border-strong: #BFBBB0;
-            
-            /* 4. Textos (Café/Gris Orgánico - No negro puro) */
             --text-primary: #4A453E; 
             --text-secondary: #7A756D; 
             --text-tertiary: #9E9890; 
             
-            /* 5. Chart integrado */
             --chart-bg: #F2F0E9; 
-            
             --skeleton: rgba(0,0,0,0.06); 
             
-            /* 6. COLORES PASTEL / TIPO CAPTURA */
+            /* --- NUEVA PALETA: TERRACOTA & SALVIA --- */
             
-            /* Rojo -> Terracotta (Ladrillo suave del botón 'Comenzar Ahora') */
+            /* Rojo -> Terracotta (Ladrillo suave del botón Cloud AI) */
             --short: #C87965;
             --danger: #C87965;
             
-            /* Verde -> Salvia (Sage Green suave y natural) */
+            /* Verde -> Salvia (Sage Green suave) */
             --long: #6F9C76;
             
-            /* Brand -> Azul Acero Muted (Para armonizar con tierra) */
+            /* Brand -> Sigue la lógica Short/Long o un Azul Acero neutro */
             --brand: #5C7C8A; 
             
             /* Advertencia -> Ocre Suave */
@@ -127,8 +113,8 @@
         svg { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; pointer-events: none; }
         #toast { visibility: hidden; width: 90%; max-width: 400px; background-color: var(--surface); border: 1px solid var(--border); color: var(--text-primary); text-align: center; border-radius: 12px; padding: 16px; position: fixed; z-index: 9999; left: 50%; top: -100px; transform: translateX(-50%); font-weight: 700; font-size: 14px; font-family: var(--font-head); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease; opacity: 0; }
         #toast.show { top: calc(10px + var(--safe-top)); visibility: visible; opacity: 1; }
-        #toast.alert-mode { background-color: rgba(207, 48, 74, 0.98); color: #fff; border: 1px solid #ff4d4d; }
-        #toast.success-mode { background-color: rgba(14, 203, 129, 0.98); color: #fff; border: 1px solid #0ecb81; }
+        #toast.alert-mode { background-color: var(--danger); color: #fff; border: 1px solid var(--danger); }
+        #toast.success-mode { background-color: var(--long); color: #fff; border: 1px solid var(--long); }
         .fixed-header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); padding-top: var(--safe-top); transition: background 0.3s; }
         .app-header { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 16px; max-width: 800px; margin: 0 auto; position: relative; }
         .brand-btn { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px; }
@@ -156,7 +142,6 @@
         .chart-wrapper { height: 280px; background: var(--chart-bg); margin: 0 10px; border-radius: var(--radius-m); border: 1px solid var(--border); overflow: hidden; position: relative; }
         .chart-wrapper.fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 5000; margin: 0; border-radius: 0; border: none; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); background: var(--bg); }
         
-        /* Overlay de líneas de precio sobre el gráfico */
         .price-lines-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 10; }
         .price-line { position: absolute; left: 0; right: 0; height: 2px; display: flex; align-items: center; }
         .price-line.avg-line { background: linear-gradient(90deg, transparent, rgba(92, 124, 138, 0.5) 5%, rgba(92, 124, 138, 0.5) 95%, transparent); }
@@ -574,14 +559,12 @@
         <div class="modal-box section-enter">
             <div class="nav-title" style="color:var(--brand); margin-bottom:10px;">EJECUTAR ORDEN</div>
             <div class="modal-info-text">Estás a punto de enviar una orden real a Gate.io</div>
-            
             <div class="trade-details">
                 <div>PAR: <span id="trade-pair" style="color:var(--text-primary); font-weight:800">BTC_USDT</span></div>
                 <div>PRECIO: <span id="trade-price" style="color:var(--text-primary); font-weight:800">0.00</span></div>
                 <div>CANTIDAD: <span id="trade-amount" style="color:var(--text-primary); font-weight:800">0.00</span></div>
                 <div>TOTAL: <span id="trade-total" style="color:var(--long); font-weight:800">$0.00</span></div>
             </div>
-
             <button class="btn-modal btn-confirm anim-click" onclick="executeGateOrder()">CONFIRMAR COMPRA</button>
             <button class="btn-modal btn-cancel anim-click" onclick="closeModals()">CANCELAR</button>
         </div>
@@ -592,20 +575,17 @@
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
-        // --- NAMESPACE "Core" PARA LÓGICA COPIA UNIVERSAL ---
+        // --- NAMESPACE "Core" ---
         const Core = {
             UI: {
                 handleCoinTap: function() {
                     if(!coinInputEl.hasAttribute('readonly')) return; 
                     if(coinPressTimer) return; 
                     if(isPrivateMode) { showToast("🔒 Modo Operativo (No Copiar)"); return; }
-                    
-                    // COPIAR NOMBRE MONEDA
                     const s = slots[activeIdx];
                     let text = s.name || '';
                     if(text) Core.UI.forceCopy(text);
                 },
-                
                 handleAmountTap: function(idx, amount) {
                     if(isPrivateMode) return; 
                     const s = slots[activeIdx];
@@ -622,39 +602,26 @@
                         lastPrice = pLevel; 
                     }
                     let qty = amount / pLevel;
-                    // Limpieza: Máximo 8 decimales, sin ceros extra
                     let cleanQty = parseFloat(qty.toFixed(8)).toString(); 
                     Core.UI.forceCopy(cleanQty);
                     window.event.stopPropagation();
                 },
-
-                // --- FUNCIÓN DE COPIADO UNIVERSAL (SOLUCIÓN TÉCNICA) ---
                 forceCopy: function(text) {
-                    // 1. Crear elemento textarea temporal
                     const textArea = document.createElement("textarea");
-                    
-                    // 2. Asignar valor limpio
                     textArea.value = text;
-                    
-                    // 3. Ocultar visualmente pero mantener en DOM
                     textArea.style.position = "fixed";
                     textArea.style.left = "-9999px";
                     textArea.style.top = "0";
                     textArea.setAttribute('readonly', '');
                     document.body.appendChild(textArea);
-                    
-                    // 4. Seleccionar texto (Móvil friendly)
                     textArea.select();
                     textArea.setSelectionRange(0, 99999); 
-                    
-                    // 5. Ejecutar comando nativo
                     try {
                         const successful = document.execCommand('copy');
                         if(successful) {
                             showToast("📋 Copiado: " + text);
                             if(navigator.vibrate) navigator.vibrate(50);
                         } else {
-                            // Fallback moderno si execCommand falla
                             navigator.clipboard.writeText(text).then(() => {
                                 showToast("📋 Copiado: " + text);
                             });
@@ -662,8 +629,6 @@
                     } catch (err) {
                         showToast("❌ Error al copiar");
                     }
-                    
-                    // 6. Limpiar
                     document.body.removeChild(textArea);
                 }
             }
@@ -671,16 +636,12 @@
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('SW registrado', reg))
-                    .catch(err => console.log('SW fallo', err));
+                navigator.serviceWorker.register('sw.js').catch(err => console.log('SW fallo', err));
             });
         }
 
         let isLight = localStorage.getItem('theme') === 'light';
-
-        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot'));
-        if(isNaN(activeIdx)) activeIdx = 0;
+        let activeIdx = parseInt(localStorage.getItem('c5x_last_slot')); if(isNaN(activeIdx)) activeIdx = 0;
         let activeTF = localStorage.getItem('c5x_last_tf') || '60';
         let chartSymbol = '';
         let history = JSON.parse(localStorage.getItem('c5x_history')) || [];
@@ -694,11 +655,8 @@
         let etfFavorites = JSON.parse(localStorage.getItem('c5x_etf_favorites')) || [];
         let globalCapital = parseFloat(localStorage.getItem('c5x_global_capital')) || 0; 
         let exchangeFee = parseFloat(localStorage.getItem('c5x_fee')) || 0.1;
-        
         let appConfig = JSON.parse(localStorage.getItem('c5x_config')) || { pin: '2524', dd: 10 };
-        // API KEYS STORAGE
         let apiConfig = JSON.parse(localStorage.getItem('c5x_api_keys')) || { key: '', secret: '' };
-
         let tickerAssets = JSON.parse(localStorage.getItem('c5x_ticker_assets')) || ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; 
         let isTickerPinned = localStorage.getItem('c5x_ticker_pinned') === 'true'; 
         let assetIdx = parseInt(localStorage.getItem('c5x_ticker_index')) || 0; 
@@ -706,151 +664,86 @@
         let currentWs = null; 
         let tickerIntervalId = null;
         let tickerSpeed = parseInt(localStorage.getItem('c5x_ticker_speed')) || 7;
-
         let radarLimit = parseInt(localStorage.getItem('c5x_radar_limit')) || 8;
         let radarSpeed = parseInt(localStorage.getItem('c5x_radar_speed')) || 5; 
         let allGateETFs = []; let topDroppers = []; let dropperIdx = 0; 
         let radarIntervalId = null;
-        
         let crashAlertedCoins = JSON.parse(localStorage.getItem('c5x_crash_alerts')) || {};
-        
-        // --- PROXY INVISIBLE ---
         let proxyUrl = "https://corsproxy.io/?";
-        let isPrivateMode = false; // MODO SIMULADO POR DEFECTO
+        let isPrivateMode = false; 
 
         function init() { 
             try {
-                // Auto-Reparación de Ticker
-                if(!tickerAssets || tickerAssets.length === 0) {
-                    tickerAssets = ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"];
-                    localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets));
-                }
-
+                if(!tickerAssets || tickerAssets.length === 0) { tickerAssets = ["BTC", "ETH", "SUI", "AVAX", "SOL", "BNB"]; localStorage.setItem('c5x_ticker_assets', JSON.stringify(tickerAssets)); }
                 const savedParams = JSON.parse(localStorage.getItem('c5x_inc_desc'));
-                if(savedParams) {
-                    document.getElementById('incInput').value = savedParams.inc;
-                    document.getElementById('descInput').value = savedParams.desc;
-                    document.getElementById('setInc').value = savedParams.inc;
-                    document.getElementById('setDesc').value = savedParams.desc;
-                }
-
-                // NUEVO: Aplicar tema guardado
-                if(isLight) { 
-                    document.body.classList.add('light-mode'); 
-                }
+                if(savedParams) { document.getElementById('incInput').value = savedParams.inc; document.getElementById('descInput').value = savedParams.desc; document.getElementById('setInc').value = savedParams.inc; document.getElementById('setDesc').value = savedParams.desc; }
+                if(isLight) { document.body.classList.add('light-mode'); }
                 updateThemeIcon();
-                
-                // Actualizar botones de tema en settings
-                if(document.getElementById('btnLight') && document.getElementById('btnDark')) {
-                    setLightMode(isLight);
-                }
-
-                slots.forEach(s => { 
-                    if(typeof s.roi === 'undefined') s.roi = 100; 
-                    if(typeof s.note === 'undefined') s.note = ''; 
-                    if(typeof s.alerted === 'undefined') s.alerted = false; 
-                    if(typeof s.locked === 'undefined') s.locked = true;
-                });
+                if(document.getElementById('btnLight') && document.getElementById('btnDark')) { setLightMode(isLight); }
+                slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; if(typeof s.note === 'undefined') s.note = ''; if(typeof s.alerted === 'undefined') s.alerted = false; if(typeof s.locked === 'undefined') s.locked = true; });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
-                const multInput = document.getElementById('setMultipliers'); if(multInput) multInput.value = customMultipliers.join(', ');
-                
                 window.history.replaceState({page: 'operate'}, '', '');
-
                 if("Notification" in window) Notification.requestPermission();
-
                 renderNav(); selectSlot(activeIdx); renderHistory(); updatePinUI(); startTickerSystem(); fetchAndCalcTopDroppers(); setupSwipe(); 
                 document.querySelectorAll('.tf-btn').forEach(btn => { if(btn.dataset.tf === activeTF) btn.classList.add('active'); });
                 calculateGlobalStats(); 
                 updateStats('D');
-
-                // NOTA: NO LLAMAMOS A FETCHWALLETBALANCE AUTOMATICAMENTE PARA EVITAR ERRORES AL INICIO
-                // Solo datos públicos (Ticker/Radar) se cargan.
-
                 document.body.addEventListener('click', unlockAudioAndWake, { once: true });
                 document.body.addEventListener('touchstart', unlockAudioAndWake, { once: true });
                 requestWakeLock();
-
             } catch(e) { console.error("Init Error", e); }
         }
 
-        // ==========================================
-        // 🚀 MOTOR V23.9: UNIVERSAL COPY
-        // ==========================================
+        // --- HELPER DE COLOR (DETECTAR SHORT/LONG) ---
+        function getCoinColor(name) {
+            if (!name) return 'var(--brand)';
+            const upper = name.toUpperCase();
+            if (upper.includes('3S') || upper.includes('5S') || upper.endsWith('S')) return 'var(--short)';
+            if (upper.includes('3L') || upper.includes('5L') || upper.endsWith('L')) return 'var(--long)';
+            return 'var(--brand)';
+        }
 
-        // --- TOGGLE DE CONEXIÓN ---
         function toggleConnectionMode() {
             triggerHaptic();
             if(isPrivateMode) {
-                // Desconectar
                 isPrivateMode = false;
                 const elDash = document.getElementById('dashWallet');
-                if(elDash) {
-                    elDash.textContent = "SIMULADO";
-                    elDash.style.color = "var(--text-tertiary)";
-                }
+                if(elDash) { elDash.textContent = "SIMULADO"; elDash.style.color = "var(--text-tertiary)"; }
                 showToast("Modo Simulación Activado");
             } else {
-                // Intentar Conectar
                 showToast("Conectando a Gate.io...", 1000);
-                isPrivateMode = true; // Habilitamos temporalmente para probar
+                isPrivateMode = true; 
                 fetchWalletBalance();
             }
         }
 
-        // --- LECTURA DE SALDO ---
         async function fetchWalletBalance() {
             const elDash = document.getElementById('dashWallet');
             if(elDash) elDash.textContent = "Conectando...";
-
             try {
-                // Petición PRIVADA (usa firma)
                 const data = await callGateApi("GET", "/spot/accounts", {currency: "USDT"}, true);
-                
-                if (!data) {
-                    throw new Error("No se recibió respuesta de Gate.io");
-                }
-                
+                if (!data) { throw new Error("No se recibió respuesta de Gate.io"); }
                 let available = 0;
-                let rows = Array.isArray(data) ? data : (data.result || []); // Manejo de respuestas variadas
+                let rows = Array.isArray(data) ? data : (data.result || []); 
                 if (rows.length > 0) available = parseFloat(rows[0].available);
-
                 globalCapital = available;
                 localStorage.setItem('c5x_global_capital', globalCapital);
-                
-                // Si llegamos aquí, la conexión fue exitosa
                 isPrivateMode = true;
-                
-                if(elDash) {
-                    elDash.textContent = "$" + available.toFixed(2);
-                    elDash.style.color = "var(--text-primary)";
-                }
+                if(elDash) { elDash.textContent = "$" + available.toFixed(2); elDash.style.color = "var(--text-primary)"; }
                 const elCap = document.getElementById('setGlobalCapital');
                 if(elCap) elCap.value = available.toFixed(2);
                 showToast("✅ Conectado a Gate.io");
-
             } catch (e) {
-                // Si falla, volvemos a modo simulación y avisamos suavemente
                 isPrivateMode = false;
-                console.error("❌ Error obteniendo saldo:", e.message);
                 const elDash = document.getElementById('dashWallet');
-                if(elDash) {
-                    elDash.textContent = "Error Conexión";
-                    elDash.style.color = "var(--danger)";
-                }
-                setTimeout(() => {
-                     if(elDash) {
-                        elDash.textContent = "SIMULADO";
-                        elDash.style.color = "var(--text-tertiary)";
-                    }
-                }, 2000);
+                if(elDash) { elDash.textContent = "Error Conexión"; elDash.style.color = "var(--danger)"; }
+                setTimeout(() => { if(elDash) { elDash.textContent = "SIMULADO"; elDash.style.color = "var(--text-tertiary)"; } }, 2000);
             }
         }
 
-        // FUNCIÓN SIMPLIFICADA DE TEMA
         function setLightMode(isLightMode) {
             triggerHaptic();
             isLight = isLightMode;
-            
             if(isLight) {
                 document.body.classList.add('light-mode');
                 document.getElementById('btnLight').style.borderColor = 'var(--brand)';
@@ -864,7 +757,6 @@
                 document.getElementById('btnLight').style.borderColor = 'var(--border)';
                 document.getElementById('btnLight').style.background = 'transparent';
             }
-            
             updateThemeIcon();
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
             if(chartSymbol) loadChart(chartSymbol);
@@ -874,87 +766,41 @@
         function reqSec(cb) { secCallback = cb; const m = document.getElementById('securityModal'); document.getElementById('secInput').value = ''; m.style.display = 'flex'; void m.offsetWidth; }
         function validateSecurity() { const inp = document.getElementById('secInput').value; closeModals(); if(inp === appConfig.pin) { if(secCallback) secCallback(); } else { showToast("⛔ PIN INCORRECTO"); } }
         
-        function saveApiKeysSecure() {
-            reqSec(() => {
-                const k = document.getElementById('apiKey').value.trim();
-                const s = document.getElementById('apiSecret').value.trim();
-                if(k && s) {
-                    apiConfig = { key: k, secret: s };
-                    localStorage.setItem('c5x_api_keys', JSON.stringify(apiConfig));
-                    showToast("✅ API Keys Guardadas");
-                    document.getElementById('apiKey').value = '';
-                    document.getElementById('apiSecret').value = '';
-                    // Intentar conectar al guardar
-                    isPrivateMode = true;
-                    fetchWalletBalance(); 
-                } else {
-                    showToast("⚠️ Campos vacíos");
-                }
-            });
-        }
-        
+        function saveApiKeysSecure() { reqSec(() => { const k = document.getElementById('apiKey').value.trim(); const s = document.getElementById('apiSecret').value.trim(); if(k && s) { apiConfig = { key: k, secret: s }; localStorage.setItem('c5x_api_keys', JSON.stringify(apiConfig)); showToast("✅ API Keys Guardadas"); document.getElementById('apiKey').value = ''; document.getElementById('apiSecret').value = ''; isPrivateMode = true; fetchWalletBalance(); } else { showToast("⚠️ Campos vacíos"); } }); }
         function saveGlobalCapSecure() { reqSec(() => { const val = parseFloat(document.getElementById('setGlobalCapital').value); const feeVal = parseFloat(document.getElementById('setFee').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); } if(!isNaN(feeVal)) { exchangeFee = feeVal; localStorage.setItem('c5x_fee', exchangeFee); } calculateGlobalStats(); showToast("✅ Capital y Comisión Guardados"); }); }
         function saveSlotParamsSecure() { reqSec(() => { const newCap = parseFloat(document.getElementById('setCapital').value); const newRoi = parseFloat(document.getElementById('setRoi').value); const newDD = parseFloat(document.getElementById('setDD').value); const newInc = parseFloat(document.getElementById('setInc').value); const newDesc = parseFloat(document.getElementById('setDesc').value); if(isNaN(newCap) || isNaN(newRoi)) return showToast("⚠️ Valores Inválidos"); slots[activeIdx].capital = newCap; slots[activeIdx].roi = newRoi; if(!isNaN(newDD)) appConfig.dd = newDD; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); save(); if(!isNaN(newInc) && !isNaN(newDesc)) { localStorage.setItem('c5x_inc_desc', JSON.stringify({ inc: newInc, desc: newDesc })); document.getElementById('incInput').value = newInc; document.getElementById('descInput').value = newDesc; } calculate(); updateDashUI(); showToast("✅ Configuración Slot Guardada"); }); }
-        function saveRadarSecure() { 
-            reqSec(() => { 
-                const lim = parseInt(document.getElementById('setRadarLimit').value); 
-                const spd = parseInt(document.getElementById('setRadarSpeed').value); 
-                const tickSpd = parseInt(document.getElementById('setTickerSpeed').value);
-                
-                if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } 
-                if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } 
-                if(tickSpd > 0) { tickerSpeed = tickSpd; localStorage.setItem('c5x_ticker_speed', tickSpd); startTickerSystem(); }
-                
-                showToast("✅ Tiempos y Límites Actualizados"); 
-            }); 
-        }
+        function saveRadarSecure() { reqSec(() => { const lim = parseInt(document.getElementById('setRadarLimit').value); const spd = parseInt(document.getElementById('setRadarSpeed').value); const tickSpd = parseInt(document.getElementById('setTickerSpeed').value); if(lim > 0) { radarLimit = lim; localStorage.setItem('c5x_radar_limit', lim); fetchAndCalcTopDroppers(); } if(spd > 0) { radarSpeed = spd; localStorage.setItem('c5x_radar_speed', spd); startRadarRotation(); } if(tickSpd > 0) { tickerSpeed = tickSpd; localStorage.setItem('c5x_ticker_speed', tickSpd); startTickerSystem(); } showToast("✅ Tiempos y Límites Actualizados"); }); }
         function saveMultiSecure() { reqSec(() => { const inputs = document.querySelectorAll('.multi-inp'); let newMultipliers = []; inputs.forEach(inp => { let val = parseFloat(inp.value); if(!isNaN(val)) newMultipliers.push(val); }); if(newMultipliers.length >= 5) { customMultipliers = newMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); calculate(); showToast("✅ Multiplicadores Guardados"); } else { showToast("⚠️ Mínimo 5 Niveles"); } }); }
-        
         function savePassSecure() { reqSec(() => { const newPass = document.getElementById('setNewPass').value; if(newPass && newPass.length === 4) { appConfig.pin = newPass; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); showToast("✅ Contraseña Cambiada"); } else { showToast("⚠️ Clave debe ser 4 dígitos"); } }); }
 
         function updateStats(tf) {
             triggerHaptic();
             document.querySelectorAll('.stat-btn').forEach(b => b.classList.remove('active'));
             const btns = document.querySelectorAll('.stat-btn');
-            if(tf === 'D') btns[0].classList.add('active');
-            else if(tf === 'W') btns[1].classList.add('active');
-            else if(tf === 'M') btns[2].classList.add('active');
-            else if(tf === 'A') btns[3].classList.add('active');
+            if(tf === 'D') btns[0].classList.add('active'); else if(tf === 'W') btns[1].classList.add('active'); else if(tf === 'M') btns[2].classList.add('active'); else if(tf === 'A') btns[3].classList.add('active');
             
             const chart = document.getElementById('pnlChart');
             chart.innerHTML = '';
             
             const now = new Date();
-            let totalNet = 0;
-            let wins = 0, total = 0;
-
+            let totalNet = 0; let wins = 0, total = 0;
             const filtered = history.filter(h => {
                 if(!h.date) return false;
                 const parts = h.date.split('/');
                 const hDate = new Date(parts[2], parts[1]-1, parts[0]);
                 const diffTime = Math.abs(now - hDate);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                if(tf === 'D' && diffDays <= 7) return true;
-                if(tf === 'W' && diffDays <= 60) return true;
-                if(tf === 'M' && diffDays <= 365) return true;
-                if(tf === 'A') return true;
+                if(tf === 'D' && diffDays <= 7) return true; if(tf === 'W' && diffDays <= 60) return true; if(tf === 'M' && diffDays <= 365) return true; if(tf === 'A') return true;
                 return false;
             }).reverse();
 
             let groups = {};
             filtered.forEach(h => {
                 let key = h.date;
-                if(tf === 'M' || tf === 'A') {
-                    const parts = h.date.split('/');
-                    key = parts[1] + '/' + parts[2].substring(2);
-                }
+                if(tf === 'M' || tf === 'A') { const parts = h.date.split('/'); key = parts[1] + '/' + parts[2].substring(2); }
                 if(!groups[key]) groups[key] = 0;
-                
                 const p = (h.netProfit !== undefined) ? parseFloat(h.netProfit) : (parseFloat(h.profit) || 0);
-                groups[key] += p;
-                totalNet += p;
-                total++;
-                if(p > 0) wins++;
+                groups[key] += p; totalNet += p; total++; if(p > 0) wins++;
             });
 
             const keys = Object.keys(groups);
@@ -971,7 +817,6 @@
             });
 
             if(keys.length === 0) chart.innerHTML = '<div style="width:100%; text-align:center; color:var(--text-tertiary); font-size:10px; padding-bottom:20px;">SIN ACTIVIDAD RECIENTE</div>';
-
             const netEl = document.getElementById('chartNeto');
             netEl.textContent = (totalNet>=0?'+':'') + '$' + totalNet.toFixed(2);
             netEl.style.color = totalNet >= 0 ? 'var(--long)' : 'var(--short)';
@@ -986,18 +831,11 @@
             document.querySelectorAll('.app-section').forEach(el => el.classList.remove('active')); 
             const section = document.getElementById('section-' + viewName);
             if(section) section.classList.add('active'); 
-            
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('selected')); 
             const navItem = document.getElementById('nav-' + viewName); 
             if(navItem) navItem.classList.add('selected'); 
-            
             const tfBar = document.getElementById('tfBarContainer'), spacer = document.querySelector('.content-spacer'); 
-            if(viewName === 'operate') { 
-                tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; 
-                if(chartSymbol) loadChart(chartSymbol); 
-            } else { 
-                tfBar.style.display = 'none'; spacer.style.marginTop = '60px'; 
-            } 
+            if(viewName === 'operate') { tfBar.style.display = 'grid'; spacer.style.marginTop = '92px'; if(chartSymbol) loadChart(chartSymbol); } else { tfBar.style.display = 'none'; spacer.style.marginTop = '60px'; } 
             if(viewName === 'etf') loadGateETFs(); 
             if(viewName === 'settings') { loadSettingsValues(); renderTickerSettings(); } 
             if(viewName === 'log') updateStats('D'); 
@@ -1006,59 +844,21 @@
         window.onpopstate = function(event) { const state = event.state; document.getElementById('navModal').style.display = 'none'; if (!state) { updateViewVisuals('operate'); return; } if (state.modal === 'menu') { document.getElementById('navModal').style.display = 'flex'; } else if (state.page) { updateViewVisuals(state.page); } else { updateViewVisuals('operate'); } };
         function setupSwipe() { document.addEventListener('touchstart', e => { window.touchStartX = e.changedTouches[0].screenX; window.touchStartY = e.changedTouches[0].screenY; }, {passive: true}); document.addEventListener('touchend', e => { let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY; handleSwipe(window.touchStartX, window.touchStartY, touchEndX, touchEndY); }, {passive: true}); }
         
-        // --- NUEVA LÓGICA SWIPE: Solo slots con moneda ---
         function handleSwipe(tsX, tsY, teX, teY) { 
             const threshold = 60; 
             const diffX = teX - tsX; 
             const diffY = teY - tsY; 
-            
-            if (Math.abs(diffY) > Math.abs(diffX)) return; // Ignorar vertical
-            
-            if (currentSection !== 'operate') { 
-                if (diffX > threshold) { window.history.back(); } 
-            } else { 
-                // Filtrar solo slots ocupados
+            if (Math.abs(diffY) > Math.abs(diffX)) return; 
+            if (currentSection !== 'operate') { if (diffX > threshold) { window.history.back(); } } else { 
                 const occupiedIndices = slots.map((s, i) => s.name ? i : -1).filter(i => i !== -1);
-                
-                // Si no hay slots ocupados, funcionamiento normal (ciclo 0-4)
-                if (occupiedIndices.length === 0) {
-                     if (diffX < -threshold) { 
-                        let next = activeIdx + 1; if(next > 4) next = 0; selectSlot(next);
-                     } else if (diffX > threshold) {
-                        let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev);
-                     }
-                     return;
-                }
-
-                // Determinar posición actual relativa a los ocupados
+                if (occupiedIndices.length === 0) { if (diffX < -threshold) { let next = activeIdx + 1; if(next > 4) next = 0; selectSlot(next); } else if (diffX > threshold) { let prev = activeIdx - 1; if(prev < 0) prev = 4; selectSlot(prev); } return; }
                 let currentPos = occupiedIndices.indexOf(activeIdx);
-                
-                if (diffX < -threshold) { // Swipe Izquierda -> Siguiente Ocupado
-                    let nextIndex;
-                    if (currentPos === -1) {
-                         nextIndex = occupiedIndices[0]; // Si estoy en vacío, ir al primero
-                    } else {
-                        let nextPos = currentPos + 1;
-                        if (nextPos >= occupiedIndices.length) nextPos = 0;
-                        nextIndex = occupiedIndices[nextPos];
-                    }
-                    selectSlot(nextIndex);
-                } else if (diffX > threshold) { // Swipe Derecha -> Anterior Ocupado
-                    let prevIndex;
-                    if (currentPos === -1) {
-                         prevIndex = occupiedIndices[occupiedIndices.length - 1];
-                    } else {
-                        let prevPos = currentPos - 1;
-                        if (prevPos < 0) prevPos = occupiedIndices.length - 1;
-                        prevIndex = occupiedIndices[prevPos];
-                    }
-                    selectSlot(prevIndex);
-                }
+                if (diffX < -threshold) { let nextIndex; if (currentPos === -1) { nextIndex = occupiedIndices[0]; } else { let nextPos = currentPos + 1; if (nextPos >= occupiedIndices.length) nextPos = 0; nextIndex = occupiedIndices[nextPos]; } selectSlot(nextIndex); } else if (diffX > threshold) { let prevIndex; if (currentPos === -1) { prevIndex = occupiedIndices[occupiedIndices.length - 1]; } else { let prevPos = currentPos - 1; if (prevPos < 0) prevPos = occupiedIndices.length - 1; prevIndex = occupiedIndices[prevPos]; } selectSlot(prevIndex); }
             } 
         }
 
         async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
-        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); /* checkAutoBackup(); REMOVIDO */ }
+        function unlockAudioAndWake() { const audio = document.getElementById('alertSound'); if(audio) { audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e=>{}); } if("Notification" in window && Notification.permission !== "granted") { Notification.requestPermission(); } requestWakeLock(); }
         
         function showToast(txt, duration = 2500, isAlert = false, isSuccess = false) { 
             const t = document.getElementById("toast"); 
@@ -1071,20 +871,10 @@
         }
         function sortSlots() { const filled = slots.filter(s => s.name && s.name !== ''); const empty = slots.filter(s => !s.name || s.name === ''); slots = [...filled, ...empty]; save(); renderNav(); }
         function calculateGlobalStats() { 
-            let totalRealizedProfit = history.reduce((sum, item) => {
-                return sum + (item.netProfit !== undefined ? parseFloat(item.netProfit) : (parseFloat(item.profit) || 0));
-            }, 0); 
+            let totalRealizedProfit = history.reduce((sum, item) => { return sum + (item.netProfit !== undefined ? parseFloat(item.netProfit) : (parseFloat(item.profit) || 0)); }, 0); 
             let currentEquity = globalCapital + totalRealizedProfit; 
         }
-        function cleanSlotOnly() { 
-            triggerHaptic(); 
-            if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) { 
-                slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }; 
-                sortSlots(); 
-                selectSlot(0); 
-                showToast("🗑️ Slot Limpiado"); 
-            } 
-        }
+        function cleanSlotOnly() { triggerHaptic(); if(confirm("¿Limpiar datos del Slot actual? (No se guardará en el historial)")) { slots[activeIdx] = { name:'', price:0, capital: slots[activeIdx].capital || 5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }; sortSlots(); selectSlot(0); showToast("🗑️ Slot Limpiado"); } }
         function quickAddFromTicker(symbol, price, e) { e.stopPropagation(); triggerHaptic(); if(slots.some(s => s.name === symbol)) { showToast("⚠️ " + symbol + " ya existe"); return; } const emptyIdx = slots.findIndex(s => !s.name || s.name === ''); if(emptyIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } let cleanName = symbol.replace('_USDT','').replace('USDT',''); slots[emptyIdx].name = cleanName; slots[emptyIdx].price = price; slots[emptyIdx].buys = []; slots[emptyIdx].locked = true; slots[emptyIdx].note = ''; save(); updateBodyMode(cleanName); selectSlot(emptySlotIdx); showToast("✅ " + symbol + " añadido"); }
         function saveGlobalCapital() { const val = parseFloat(document.getElementById('setGlobalCapital').value); if(!isNaN(val)) { globalCapital = val; localStorage.setItem('c5x_global_capital', globalCapital); calculateGlobalStats(); } }
         
@@ -1093,120 +883,40 @@
             const elStatus = document.getElementById('radarStatus');
             const radarContainer = document.getElementById('radarTickerContainer');
             elStatus.className = 'radar-status-dot offline'; 
-
             try {
                 const res = await callGateApi("GET", "/spot/tickers"); 
-                // CORRECCIÓN: Asegurar que res sea un array válido
                 let tickers = Array.isArray(res) ? res : (res.result || res.data || []);
-                
                 if(tickers.length === 0) throw new Error("No data");
-
                 elStatus.className = 'radar-status-dot online'; 
-                
-                // NUEVO: Calcular score para cada ETF
-                allGateETFs = tickers
-                    .filter(t => { 
-                        const pair = t.currency_pair; 
-                        return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); 
-                    })
-                    .map(t => {
-                        // Calcular score de oportunidad
+                allGateETFs = tickers.filter(t => { const pair = t.currency_pair; return pair.endsWith('_USDT') && (pair.includes('3L') || pair.includes('3S') || pair.includes('5L') || pair.includes('5S')); }).map(t => {
                         const change = parseFloat(t.change_percentage);
                         const volume = parseFloat(t.quote_volume);
                         const leverage = t.currency_pair.match(/5[LS]/) ? 5 : 3;
-                        
                         let score = 0;
-                        
-                        // Scoring por caída
-                        if (change < -70) score += 50;
-                        else if (change < -50) score += 40;
-                        else if (change < -30) score += 30;
-                        else if (change < -15) score += 20;
-                        else if (change < -8) score += 10;
-                        
-                        // Scoring por volumen
-                        if (volume > 10000000) score += 20;
-                        else if (volume > 5000000) score += 15;
-                        else if (volume > 1000000) score += 10;
-                        
-                        // Bonus por tipo
+                        if (change < -70) score += 50; else if (change < -50) score += 40; else if (change < -30) score += 30; else if (change < -15) score += 20; else if (change < -8) score += 10;
+                        if (volume > 10000000) score += 20; else if (volume > 5000000) score += 15; else if (volume > 1000000) score += 10;
                         if (leverage === 5) score += 10;
                         if (t.currency_pair.includes('L')) score += 10;
-                        
-                        // Bonus extremo
                         if (change < -75) score += 20;
-                        
-                        return {
-                            ...t,
-                            score: Math.min(score, 100),
-                            zone: score >= 80 ? 'GOLD' : score >= 60 ? 'HOT' : 'WARM'
-                        };
+                        return { ...t, score: Math.min(score, 100), zone: score >= 80 ? 'GOLD' : score >= 60 ? 'HOT' : 'WARM' };
                     });
-                
-                // Ordenar por score primero, luego por % caída
-                topDroppers = [...allGateETFs]
-                    .sort((a,b) => {
-                        if (a.zone === b.zone) {
-                            return parseFloat(a.change_percentage) - parseFloat(b.change_percentage);
-                        }
-                        return b.score - a.score;
-                    })
-                    .slice(0, radarLimit); 
-                
+                topDroppers = [...allGateETFs].sort((a,b) => { if (a.zone === b.zone) { return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); } return b.score - a.score; }).slice(0, radarLimit); 
                 startRadarRotation(); 
-                
-                // NUEVO: Alertas automáticas para zona GOLD
                 const goldOpportunities = topDroppers.filter(t => t.zone === 'GOLD');
                 if (goldOpportunities.length > 0) {
-                    console.log(`🔥 ${goldOpportunities.length} oportunidades GOLD detectadas`);
-                    // Mostrar alerta solo para la mejor
                     const best = goldOpportunities[0];
-                    if (best.score >= 90) {
-                        showToast(`🔥 ZONA ORO: ${best.currency_pair.replace('_USDT','')} ${best.change_percentage}% (Score: ${best.score})`, 5000);
-                    }
+                    if (best.score >= 90) { showToast(`🔥 ZONA ORO: ${best.currency_pair.replace('_USDT','')} ${best.change_percentage}% (Score: ${best.score})`, 5000); }
                 }
-                
-            } catch(e) { 
-                console.error("Radar Fail", e);
-                elStatus.className = 'radar-status-dot offline';
-                elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>';
-            }
+            } catch(e) { console.error("Radar Fail", e); elStatus.className = 'radar-status-dot offline'; elVal.innerHTML = '<div style="font-size:10px; color:var(--danger); cursor:pointer; padding:5px;" onclick="fetchAndCalcTopDroppers()">⚠️ SIN CONEXIÓN - TOCAR</div>'; }
         }
 
-        // --- GESTIÓN INTERACCIÓN RADAR (TAP VS LONG PRESS) ---
         let currentRadarData = null;
         let radarPressTimer = null;
         let isRadarLongPress = false;
 
-        function startRadarInteraction(sym, price) {
-            currentRadarData = {sym, price};
-            isRadarLongPress = false;
-            // Iniciar temporizador para long press
-            radarPressTimer = setTimeout(() => {
-                isRadarLongPress = true;
-                if(navigator.vibrate) navigator.vibrate(50);
-                switchView('etf'); // Ir al Monitor ETF
-            }, 500); // 500ms espera
-        }
-
-        function endRadarInteraction() {
-            if (radarPressTimer) clearTimeout(radarPressTimer);
-            
-            if (!isRadarLongPress && currentRadarData) {
-                // Fue un toque corto -> Agregar a slot
-                smartSelectETF(currentRadarData.sym, currentRadarData.price);
-            }
-            
-            currentRadarData = null;
-            isRadarLongPress = false;
-        }
-        
-        function cancelRadarInteraction() {
-             if (radarPressTimer) clearTimeout(radarPressTimer);
-             currentRadarData = null;
-             isRadarLongPress = false;
-        }
-
+        function startRadarInteraction(sym, price) { currentRadarData = {sym, price}; isRadarLongPress = false; radarPressTimer = setTimeout(() => { isRadarLongPress = true; if(navigator.vibrate) navigator.vibrate(50); switchView('etf'); }, 500); }
+        function endRadarInteraction() { if (radarPressTimer) clearTimeout(radarPressTimer); if (!isRadarLongPress && currentRadarData) { smartSelectETF(currentRadarData.sym, currentRadarData.price); } currentRadarData = null; isRadarLongPress = false; }
+        function cancelRadarInteraction() { if (radarPressTimer) clearTimeout(radarPressTimer); currentRadarData = null; isRadarLongPress = false; }
         function startRadarRotation() { if(radarIntervalId) clearInterval(radarIntervalId); updateRadarUI(); radarIntervalId = setInterval(() => { dropperIdx = (dropperIdx + 1) % topDroppers.length; updateRadarUI(); }, radarSpeed * 1000); }
         
         function updateRadarUI() { 
@@ -1215,12 +925,8 @@
             const radarContainer = document.getElementById('radarTickerContainer');
             const item = topDroppers[dropperIdx]; 
             if(!item) return; 
-            
-            // Actualizar clase de zona en el contenedor
             radarContainer.className = 'radar-ticker-large';
-            if (item.zone === 'GOLD') radarContainer.classList.add('zone-gold');
-            else if (item.zone === 'HOT') radarContainer.classList.add('zone-hot');
-            else radarContainer.classList.add('zone-warm');
+            if (item.zone === 'GOLD') radarContainer.classList.add('zone-gold'); else if (item.zone === 'HOT') radarContainer.classList.add('zone-hot'); else radarContainer.classList.add('zone-warm');
             
             elVal.style.opacity = 0; 
             setTimeout(() => { 
@@ -1229,13 +935,13 @@
                 const price = parseFloat(item.last); 
                 const displayPrice = price < 1 ? price.toFixed(4) : price.toFixed(2); 
                 const volume = (parseFloat(item.quote_volume) / 1000000).toFixed(1);
-                
-                // Emojis por zona
                 const zoneEmoji = item.zone === 'GOLD' ? '🔥' : item.zone === 'HOT' ? '🟡' : '⚪';
                 const zoneText = item.zone === 'GOLD' ? 'ZONA ORO' : item.zone === 'HOT' ? 'CALIENTE' : 'TEMPLADA';
                 const zoneClass = item.zone === 'GOLD' ? 'gold' : item.zone === 'HOT' ? 'hot' : 'warm';
                 
-                // HTML con eventos Touch/Mouse personalizados
+                // Color dinámico según moneda
+                const nameColor = getCoinColor(pairName);
+
                 elVal.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
                         <div class="radar-zone-badge ${zoneClass}">
@@ -1247,7 +953,7 @@
                              onmouseup="endRadarInteraction()"
                              ontouchend="endRadarInteraction()"
                              onmouseleave="cancelRadarInteraction()"
-                             style="color:var(--text-primary); font-size:20px; font-weight:800; cursor:pointer; text-decoration:underline dotted; text-underline-offset:4px;">
+                             style="color:${nameColor}; font-size:20px; font-weight:800; cursor:pointer; text-decoration:underline dotted; text-underline-offset:4px;">
                             ${pairName}
                         </div>
                         <div style="display:flex; gap:12px; font-size:13px; color:var(--text-secondary);">
@@ -1268,15 +974,7 @@
                         const el = document.getElementById('nav-s'+idx); 
                         if(el) {
                             let avg = calculateAvgPriceForSlot(s); 
-                            if(avg > 0) { 
-                                if(currentPrice > avg) { 
-                                    el.classList.remove('has-loss'); el.classList.add('has-profit'); 
-                                    const target = avg * (1 + (s.roi/100)); 
-                                    if(currentPrice >= target && !s.alerted) { triggerAlert(s.name); s.alerted = true; save(); } 
-                                } else { 
-                                    el.classList.remove('has-profit'); el.classList.add('has-loss'); s.alerted = false; 
-                                } 
-                            }
+                            if(avg > 0) { if(currentPrice > avg) { el.classList.remove('has-loss'); el.classList.add('has-profit'); const target = avg * (1 + (s.roi/100)); if(currentPrice >= target && !s.alerted) { triggerAlert(s.name); s.alerted = true; save(); } } else { el.classList.remove('has-profit'); el.classList.add('has-loss'); s.alerted = false; } }
                         }
                         if(s.buys.includes(0)) { checkAutoFill(s, idx, currentPrice); }
                     } 
@@ -1307,13 +1005,7 @@
             if(changesMade) { save(); if(activeIdx === idx) { calculate(); } }
         }
 
-        function triggerAutoBuyAlert(coin, level) {
-            const audio = document.getElementById('alertSound'); 
-            if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } 
-            if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
-            showToast(`🛒 COMPRA AUTO: ${coin} NIVEL ${level}`, 3000, false, true);
-        }
-
+        function triggerAutoBuyAlert(coin, level) { const audio = document.getElementById('alertSound'); if(audio) { audio.currentTime = 0; audio.play().catch(e => {}); } if(navigator.vibrate) navigator.vibrate([100, 50, 100]); showToast(`🛒 COMPRA AUTO: ${coin} NIVEL ${level}`, 3000, false, true); }
         function calculateAvgPriceForSlot(s) { if(!s.price) return 0; let totalSpent = 0, totalQty = 0, lastPrice = s.price; const descPct = parseFloat(document.getElementById('descInput').value) || 66; const incPct = parseFloat(document.getElementById('incInput').value) || 7; const limit = customMultipliers ? customMultipliers.length : 12; for(let i=0; i<limit; i++){ let pLevel; if(i===0) pLevel = s.price; else { let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; pLevel = lastPrice * (1 - (step/100)); } if(s.buys.includes(i)) { const m = customMultipliers ? (customMultipliers[i] || 1) : 1; const mUSD = m * s.capital; totalSpent += mUSD; totalQty += (mUSD/pLevel); } lastPrice = pLevel; } return totalQty > 0 ? totalSpent/totalQty : 0; }
         function triggerAlert(coin) { const audio = document.getElementById('alertSound'); if(audio) audio.play().catch(e => console.log("Audio autoplay blocked by browser")); if(navigator.vibrate) navigator.vibrate([200, 100, 200]); showToast("🎯 OBJETIVO ALCANZADO: " + coin); }
         function toggleTheme() { isLight = !isLight; if(isLight) document.body.classList.add('light-mode'); else document.body.classList.remove('light-mode'); updateThemeIcon(); localStorage.setItem('theme', isLight ? 'light' : 'dark'); if(chartSymbol) loadChart(chartSymbol); }
@@ -1346,7 +1038,6 @@
             let apiSym = sym.includes('USDT') ? sym : sym + "USDT"; 
             let displaySym = sym.replace("USDT",""); 
             document.getElementById('t-sym').textContent = displaySym; 
-            
             if(currentWs) { if(currentWs.url && currentWs.url.includes(apiSym.toLowerCase())) return; currentWs.close(); currentWs = null; } 
             try { 
                 const wsUrl = `wss://stream.binance.com:9443/ws/${apiSym.toLowerCase()}@trade`; 
@@ -1366,7 +1057,6 @@
                 let price = 0; 
                 try { const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${apiSym}`); if(res.ok) { const d = await res.json(); price = parseFloat(d.price); } } catch(e){} 
                 if(price === 0) { 
-                    // FALLBACK A GATE DIRECTO
                     const gateSym = displaySym + "_USDT"; 
                     const data = await callGateApi("GET", "/spot/tickers", {currency_pair: gateSym});
                     let row = Array.isArray(data) ? data[0] : null;
@@ -1404,15 +1094,9 @@
             let sorted = [...allGateETFs].sort((a, b) => { 
                 const aFav = etfFavorites.includes(a.currency_pair.replace('_', '')); 
                 const bFav = etfFavorites.includes(b.currency_pair.replace('_', '')); 
-                if(aFav && !bFav) return -1; 
-                if(!aFav && bFav) return 1; 
-                return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); 
+                if(aFav && !bFav) return -1; if(!aFav && bFav) return 1; return parseFloat(a.change_percentage) - parseFloat(b.change_percentage); 
             }); 
-            
-            let filtered = sorted; 
-            if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); 
-            else filtered = sorted.slice(0, 10); 
-            
+            let filtered = sorted; if(term) filtered = sorted.filter(t => t.currency_pair.includes(term)); else filtered = sorted.slice(0, 10); 
             if(filtered.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-tertiary)">Sin resultados</div>'; return; } 
             
             const fragment = document.createDocumentFragment(); 
@@ -1422,13 +1106,16 @@
                 const displayPrice = (price < 1) ? price.toFixed(6) : price.toFixed(4); 
                 const pairName = t.currency_pair.replace('_USDT', '').replace('USDT', ''); 
                 const isFav = etfFavorites.includes(pairName); 
+                
+                // Color Nombre en Lista
+                const nameColor = getCoinColor(pairName);
+
                 const div = document.createElement('div'); 
                 div.className = 'unified-card'; 
                 div.onclick = () => smartSelectETF(pairName, price); 
-                
                 div.innerHTML = `<div class="u-index">${index+1}</div>
                                  <div class="u-center">
-                                    <div class="u-title" style="font-size:16px">${pairName}</div>
+                                    <div class="u-title" style="font-size:16px; color:${nameColor}">${pairName}</div>
                                     <div style="font-family:'JetBrains Mono'; font-size:14px; color:var(--gold-fixed); font-weight:700; margin-top:4px">$${displayPrice}</div>
                                  </div>
                                  <div class="etf-card-right">
@@ -1441,172 +1128,90 @@
             grid.appendChild(fragment); 
         }
 
-        // --- CORRECCIÓN SELECCIÓN SLOT (DE V22.2) ---
         function smartSelectETF(symbol, price) { 
             triggerHaptic(); 
             let cleanName = symbol.replace('_USDT','').replace('USDT',''); 
-            
             const dupSlot = slots.findIndex(s => s.name === cleanName); 
-            if (dupSlot !== -1) { 
-                showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); 
-                return; 
-            } 
-            
+            if (dupSlot !== -1) { showToast("⛔ " + cleanName + " YA EXISTE EN SLOT " + (dupSlot + 1)); return; } 
             let targetIdx = -1;
-            // 1. Prioridad: Usar el slot actual si está vacío
-            if (!slots[activeIdx].name || slots[activeIdx].name === '') {
-                targetIdx = activeIdx;
-            } else {
-                // 2. Si no, buscar el primero vacío
-                targetIdx = slots.findIndex(s => !s.name || s.name === '');
-            }
-
-            if(targetIdx === -1) { 
-                showToast("⚠️ No hay slots disponibles"); 
-                return; 
-            } 
-            
-            slots[targetIdx].name = cleanName; 
-            slots[targetIdx].price = price; 
-            slots[targetIdx].buys = []; 
-            slots[targetIdx].locked = true; 
-            slots[targetIdx].note = ''; 
-            
-            save(); 
-            updateBodyMode(cleanName); 
-            selectSlot(targetIdx); 
-            switchView('operate', false); 
-            showToast("✅ Agregado al Slot " + (targetIdx + 1)); 
-            
-            // NUEVO: Mostrar info de volatilidad ETF
-            showETFVolatilityInfo(cleanName);
+            if (!slots[activeIdx].name || slots[activeIdx].name === '') { targetIdx = activeIdx; } else { targetIdx = slots.findIndex(s => !s.name || s.name === ''); }
+            if(targetIdx === -1) { showToast("⚠️ No hay slots disponibles"); return; } 
+            slots[targetIdx].name = cleanName; slots[targetIdx].price = price; slots[targetIdx].buys = []; slots[targetIdx].locked = true; slots[targetIdx].note = ''; 
+            save(); updateBodyMode(cleanName); selectSlot(targetIdx); switchView('operate', false); showToast("✅ Agregado al Slot " + (targetIdx + 1)); showETFVolatilityInfo(cleanName);
         }
         
-        // NUEVA FUNCIÓN: Mostrar información de volatilidad del ETF
         function showETFVolatilityInfo(symbol) {
             const panel = document.getElementById('etfVolatilityPanel');
-            
-            // Detectar tipo de ETF
             const leverage = symbol.match(/5[LS]/) ? 5 : symbol.match(/3[LS]/) ? 3 : 0;
             const isLong = symbol.includes('L');
             const isShort = symbol.includes('S');
-            
-            if (leverage === 0) {
-                if(panel) panel.style.display = 'none';
-                return;
-            }
-            
-            // Buscar datos del ETF en allGateETFs
+            if (leverage === 0) { if(panel) panel.style.display = 'none'; return; }
             const etfData = allGateETFs.find(e => e.currency_pair.replace('_USDT', '') === symbol);
-            
             if (!etfData || !panel) return;
-            
-            // Calcular métricas
             const expectedRange = leverage === 3 ? '±15-35%' : '±25-60%';
             const high24h = parseFloat(etfData.high);
             const current = parseFloat(etfData.last);
             const dropFromHigh = ((current - high24h) / high24h * 100).toFixed(1);
-            
-            // Determinar zona
             const isOpportunity = dropFromHigh < -20;
             const zoneText = isOpportunity ? '✅ ACTIVA' : '⏳ ESPERAR';
             const zoneColor = isOpportunity ? 'var(--long)' : 'var(--text-tertiary)';
-            
-            // Actualizar UI
             document.getElementById('etfLeverage').textContent = `${leverage}x ${isLong ? 'LONG' : 'SHORT'}`;
             document.getElementById('etfRange').textContent = expectedRange;
             document.getElementById('etfDrop').textContent = `${dropFromHigh}%`;
             document.getElementById('etfDrop').style.color = dropFromHigh < -30 ? 'var(--zone-gold)' : 'var(--short)';
             document.getElementById('etfZone').textContent = zoneText;
             document.getElementById('etfZone').style.color = zoneColor;
-            
             panel.style.display = 'block';
         }
 
         function viewTickerChart(e) { if(e) e.stopPropagation(); chartSymbol = currentTickerSymbol.toUpperCase(); loadChart(chartSymbol); if(currentSection !== 'operate') switchView('operate', false); }
         function updateTF(tf, btn) { triggerHaptic(); activeTF = tf; localStorage.setItem('c5x_last_tf', tf); document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadChart(chartSymbol); }
-        let tvWidget = null; // Variable global para el widget de TradingView
+        let tvWidget = null; 
         
         function loadChart(coin) { 
             chartSymbol = (coin || 'BTC3L').toUpperCase(); 
-            
             tvWidget = new TradingView.widget({ 
-                "autosize": true, 
-                "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, 
-                "interval": activeTF, 
-                "theme": isLight ? "light" : "dark", 
-                "container_id": "tv_chart", 
-                "hide_top_toolbar": true, 
-                "backgroundColor": isLight ? "#F2F0E9" : "#0b0e11", 
-                "locale": "es",
-                "disabled_features": ["use_localstorage_for_settings"],
-                "enabled_features": ["study_templates"]
+                "autosize": true, "symbol": `GATEIO:${chartSymbol.replace('USDT','') }USDT`, "interval": activeTF, "theme": isLight ? "light" : "dark", "container_id": "tv_chart", "hide_top_toolbar": true, "backgroundColor": isLight ? "#F2F0E9" : "#0b0e11", "locale": "es", "disabled_features": ["use_localstorage_for_settings"], "enabled_features": ["study_templates"]
             }); 
-            
-            // Actualizar líneas después de un pequeño delay para asegurar que el gráfico se cargó
-            setTimeout(() => {
-                addTradingLevelsToChart();
-            }, 500);
+            setTimeout(() => { addTradingLevelsToChart(); }, 500);
         }
         
-        // Función para mostrar líneas de trading en overlay HTML sobre el gráfico
         function addTradingLevelsToChart() {
             const overlay = document.getElementById('priceLinesOverlay');
             if (!overlay) return;
-            
-            // Limpiar líneas anteriores
             overlay.innerHTML = '';
-            
             const s = slots[activeIdx];
             const avg = calculateAvgPriceForSlot(s);
-            
-            if (avg <= 0 || !s.buys || s.buys.length === 0 || !s.price) {
-                return; // No hay datos para mostrar
-            }
-            
+            if (avg <= 0 || !s.buys || s.buys.length === 0 || !s.price) { return; }
             const targetPrice = avg * (1 + (s.roi / 100));
-            
-            // Obtener rango de precios del gráfico basado en los niveles
             const descPct = parseFloat(document.getElementById('descInput').value) || 66;
             const incPct = parseFloat(document.getElementById('incInput').value) || 7;
-            
-            // Calcular el precio más bajo (último nivel)
             let lowestPrice = s.price;
             const maxLevel = Math.max(...s.buys);
             for(let i = 1; i <= maxLevel; i++) {
                 let step = (s.strat === "normal") ? (i === 1 ? 17 : incPct) : descPct;
                 lowestPrice = lowestPrice * (1 - (step / 100));
             }
-            
-            // Rango del gráfico (con margen)
             const priceRange = targetPrice - lowestPrice;
             const minPrice = lowestPrice - (priceRange * 0.1);
             const maxPrice = targetPrice + (priceRange * 0.1);
             const totalRange = maxPrice - minPrice;
-            
-            // Función para calcular posición Y (en porcentaje desde abajo)
             function getPricePosition(price) {
                 const percentage = ((price - minPrice) / totalRange) * 100;
-                return 100 - percentage; // Invertir porque top:0 está arriba
+                return 100 - percentage; 
             }
-            
-            // Agregar línea de PRECIO PROMEDIO
             const avgPos = getPricePosition(avg);
             const avgLine = document.createElement('div');
             avgLine.className = 'price-line avg-line';
             avgLine.style.top = avgPos + '%';
             avgLine.innerHTML = `<div class="price-label avg">📊 PROM: $${avg.toFixed(avg < 1 ? 6 : 4)}</div>`;
             overlay.appendChild(avgLine);
-            
-            // Agregar línea de OBJETIVO DE VENTA
             const targetPos = getPricePosition(targetPrice);
             const targetLine = document.createElement('div');
             targetLine.className = 'price-line target-line';
             targetLine.style.top = targetPos + '%';
             targetLine.innerHTML = `<div class="price-label target">🎯 +${s.roi}%: $${targetPrice.toFixed(targetPrice < 1 ? 6 : 4)}</div>`;
             overlay.appendChild(targetLine);
-            
-            // Agregar líneas de compra
             let lastPrice = s.price;
             s.buys.forEach((levelIdx) => {
                 let pLevel = s.price;
@@ -1614,7 +1219,6 @@
                     let step = (s.strat === "normal") ? (i === 1 ? 17 : incPct) : descPct;
                     pLevel = pLevel * (1 - (step / 100));
                 }
-                
                 const buyPos = getPricePosition(pLevel);
                 const buyLine = document.createElement('div');
                 buyLine.className = 'price-line buy-line';
@@ -1629,27 +1233,17 @@
             activeIdx = i; 
             localStorage.setItem('c5x_last_slot', i); 
             const s = slots[i]; 
-            
-            // --- UI Updates con Bloqueo de Input (DE V22.2) ---
             const cInput = document.getElementById('coinInput');
             cInput.value = s.name;
             cInput.setAttribute('readonly', true); 
             cInput.classList.remove('editing-mode');
             cInput.classList.add('locked-input');
-
             document.getElementById('baseInput').value = s.price || ''; 
             document.getElementById('capitalInput').value = s.capital; 
             renderNav(); 
             loadChart(s.name); 
             updateDashUI(); 
-            
-            // NUEVO: Mostrar info de volatilidad
-            if (s.name) {
-                showETFVolatilityInfo(s.name);
-            } else {
-                const p = document.getElementById('etfVolatilityPanel');
-                if(p) p.style.display = 'none';
-            }
+            if (s.name) { showETFVolatilityInfo(s.name); } else { const p = document.getElementById('etfVolatilityPanel'); if(p) p.style.display = 'none'; }
         }
 
         function updateCoin() { const el = document.getElementById('coinInput'); let val = el.value.toUpperCase().replace('USDT','').trim(); if (val && slots.some((s, i) => s.name === val && i !== activeIdx)) { showToast("⛔ DUPLICADO"); el.value = slots[activeIdx].name; return; } el.value = val; slots[activeIdx].name = val; save(); renderNav(); loadChart(val); calculate(); }
@@ -1666,7 +1260,7 @@
             if(isNormal) { elBadge.classList.remove('aggressive'); elCard.style.borderColor = "var(--border)"; } else { elBadge.classList.add('aggressive'); elCard.style.borderColor = "var(--warning)"; } 
             if(s.locked) { btnLock.classList.add('locked'); btnLock.innerHTML = '<svg width="24" height="24"><path d="M19 21H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2z"/><path d="M12 11v4"/><path d="M8 7v-2a4 4 0 0 1 8 0v2"/></svg>'; } else { btnLock.classList.remove('locked'); btnLock.innerHTML = '<svg width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>'; } 
             document.getElementById('capitalInput').value = s.capital; 
-            updateBodyMode(s.name); // Asegurar color correcto al renderizar
+            updateBodyMode(s.name); 
             calculate(); 
         }
         function calculate() { const s = slots[activeIdx]; const inputVal = parseFloat(document.getElementById('baseInput').value); s.price = isNaN(inputVal) ? 0 : inputVal; save(); renderLevels(); }
@@ -1674,6 +1268,10 @@
         function renderLevels() { 
             const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; 
             updateBodyMode(s.name); 
+            
+            // Determinar color de índice basado en la moneda activa
+            const indexColor = getCoinColor(s.name);
+
             if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } 
             
             let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; 
@@ -1694,7 +1292,7 @@
                 if(pLevel < 0.0001) { displayPrice = pLevel.toFixed(10).replace(/\.?0+$/, ""); } else if (pLevel < 1) { displayPrice = pLevel.toFixed(6); } else { displayPrice = pLevel.toFixed(4); }
 
                 html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                            <div class="u-index">${i+1}</div>
+                            <div class="u-index" style="color:${indexColor}; border-color:${indexColor}">${i+1}</div>
                             <div class="u-center">
                                 <div class="u-title">${displayPrice}</div>
                             </div>
@@ -1715,10 +1313,7 @@
             document.getElementById('resTarget').textContent = (targetPrice < 0.0001 && targetPrice > 0) ? targetPrice.toFixed(10).replace(/\.?0+$/, "") : ((targetPrice < 1) ? targetPrice.toFixed(6) : targetPrice.toFixed(4)); 
             document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
             
-            // Actualizar gráfico con las nuevas líneas
-            if (tvWidget) {
-                addTradingLevelsToChart();
-            }
+            if (tvWidget) { addTradingLevelsToChart(); }
         }
 
         let currentTrade = { level: 0, amount: 0, price: 0, pair: '' };
@@ -1728,51 +1323,28 @@
             const s = slots[activeIdx]; 
             
             if (!s.buys.includes(idx)) { 
-                // --- COMPRA ---
                 let pLevel;
                 const descPct = parseFloat(document.getElementById('descInput').value) || 66;
                 const incPct = parseFloat(document.getElementById('incInput').value) || 7;
                 let lastPrice = s.price;
-
-                for(let i=0; i<=idx; i++) {
-                     if(i===0) pLevel = s.price; 
-                     else { 
-                         let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct;
-                         pLevel = lastPrice * (1 - (step/100)); 
-                     }
-                     lastPrice = pLevel;
-                }
-
-                // SI ESTAMOS EN MODO PRIVADO (CONECTADO), PEDIR CONFIRMACIÓN
+                for(let i=0; i<=idx; i++) { if(i===0) pLevel = s.price; else { let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; pLevel = lastPrice * (1 - (step/100)); } lastPrice = pLevel; }
                 if (isPrivateMode && apiConfig.key) {
                     const multiplier = customMultipliers[idx] || 1;
                     const usdAmount = s.capital * multiplier;
                     const coinAmount = usdAmount / pLevel;
-
-                    currentTrade = {
-                        level: idx,
-                        pair: s.name + "_USDT",
-                        price: pLevel,
-                        amount: coinAmount,
-                        usd: usdAmount
-                    };
-
+                    currentTrade = { level: idx, pair: s.name + "_USDT", price: pLevel, amount: coinAmount, usd: usdAmount };
                     document.getElementById('trade-pair').textContent = currentTrade.pair;
                     document.getElementById('trade-price').textContent = currentTrade.price.toFixed(6);
                     document.getElementById('trade-amount').textContent = currentTrade.amount.toFixed(4);
                     document.getElementById('trade-total').textContent = "$" + currentTrade.usd.toFixed(2);
                     document.getElementById('tradeModal').style.display = 'flex';
                 } else {
-                    // MODO SIMULADO: COPIA PRECIO LIMPIO Y MARCA EL NIVEL
                     let rawPrice = pLevel.toFixed(10); 
-                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); // Limpieza total de ceros
-                    
+                    let cleanPrice = rawPrice.replace(/\.?0+$/, ""); 
                     Core.UI.forceCopy(cleanPrice);
                     simulatedBuy(idx);
                 }
-
             } else { 
-                // --- ELIMINAR NIVEL (Siempre instantáneo) ---
                 s.buys = s.buys.filter(val => val < idx); 
                 calculate();
             }
@@ -1780,97 +1352,16 @@
 
         async function executeGateOrder() {
             closeModals();
-            
-            if(!isPrivateMode || !apiConfig.key || !apiConfig.secret) {
-                simulatedBuy(currentTrade.level);
-                return;
-            }
-
+            if(!isPrivateMode || !apiConfig.key || !apiConfig.secret) { simulatedBuy(currentTrade.level); return; }
             showToast("⏳ Enviando Orden a Gate.io...");
-
-            const body = {
-                "currency_pair": currentTrade.pair,
-                "side": "buy",
-                "amount": currentTrade.amount.toFixed(4), 
-                "price": currentTrade.price.toFixed(6),   
-                "type": "limit", 
-                "account": "spot",
-                "time_in_force": "gtc" 
-            };
-
+            const body = { "currency_pair": currentTrade.pair, "side": "buy", "amount": currentTrade.amount.toFixed(4), "price": currentTrade.price.toFixed(6), "type": "limit", "account": "spot", "time_in_force": "gtc" };
             try {
                 const result = await callGateApi("POST", "/spot/orders", body, true);
-                if (result && result.id) {
-                    showToast(`✅ ORDEN EXITOSA ID: ${result.id}`, 4000, false, true);
-                    simulatedBuy(currentTrade.level);
-                    setTimeout(fetchWalletBalance, 1500);
-                } else {
-                    throw new Error("Respuesta inválida de Gate.io");
-                }
-            } catch (e) {
-                console.warn("❌ Error creando orden:", e.message); 
-                showToast("⚠️ Error en Orden - Marcado Local", 2000);
-                simulatedBuy(currentTrade.level);
-            }
+                if (result && result.id) { showToast(`✅ ORDEN EXITOSA ID: ${result.id}`, 4000, false, true); simulatedBuy(currentTrade.level); setTimeout(fetchWalletBalance, 1500); } else { throw new Error("Respuesta inválida de Gate.io"); }
+            } catch (e) { console.warn("❌ Error creando orden:", e.message); showToast("⚠️ Error en Orden - Marcado Local", 2000); simulatedBuy(currentTrade.level); }
         }
 
-        function simulatedBuy(idx) {
-            const s = slots[activeIdx];
-            for(let i=0; i<=idx; i++) { 
-                if(!s.buys.includes(i)) s.buys.push(i); 
-            }
-            calculate();
-        }
-
-        function renderLevels() { 
-            const grid = document.getElementById('levelsGrid'), s = slots[activeIdx], descPct = parseFloat(document.getElementById('descInput').value) || 66, incPct = parseFloat(document.getElementById('incInput').value) || 7; 
-            updateBodyMode(s.name); 
-            if(!s.price || s.price <= 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Ingresa precio base</div>'; return; } 
-            
-            let totalSpent = 0, totalQty = 0, lastPrice = s.price, currentStepDrop = 0, html = ''; 
-            const maxLevels = customMultipliers ? customMultipliers.length : 12; 
-            
-            for(let i=0; i < maxLevels; i++){ 
-                let pLevel; 
-                if(i === 0) { pLevel = s.price; currentStepDrop = 0; } 
-                else { 
-                    if(s.strat === "normal") { if(i === 1) currentStepDrop = 17; else currentStepDrop += incPct; } else { currentStepDrop = descPct; } 
-                    pLevel = lastPrice * (1 - (currentStepDrop / 100)); 
-                } 
-                
-                const mUSD = (customMultipliers[i] || 1) * s.capital, on = s.buys.includes(i); 
-                if(on) { totalSpent += mUSD; totalQty += (mUSD/pLevel); } 
-                
-                let displayPrice;
-                if(pLevel < 0.0001) { displayPrice = pLevel.toFixed(10).replace(/\.?0+$/, ""); } else if (pLevel < 1) { displayPrice = pLevel.toFixed(6); } else { displayPrice = pLevel.toFixed(4); }
-
-                html += `<div class="unified-card ${on ? 'active' : ''}" onclick="toggleLvl(${i})">
-                            <div class="u-index">${i+1}</div>
-                            <div class="u-center">
-                                <div class="u-title">${displayPrice}</div>
-                            </div>
-                            <div class="u-right">
-                                <div class="u-val-primary anim-click" onclick="Core.UI.handleAmountTap(${i}, ${mUSD})">$${mUSD.toFixed(1)}</div>
-                                <div class="u-val-secondary" style="${i>0?'color:var(--short)':''}">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
-                            </div>
-                        </div>`; 
-                lastPrice = pLevel; 
-            } 
-            html += `<div class="liquidate-card anim-click" onclick="openLiquidateConfirm()"><svg width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg> LIQUIDAR POSICIÓN</div>`; 
-            grid.innerHTML = html; 
-            
-            const avg = totalQty > 0 ? totalSpent/totalQty : 0; 
-            const targetPrice = avg * (1 + (s.roi / 100)); 
-            document.getElementById('resInv').textContent = `$${totalSpent.toFixed(2)}`; 
-            document.getElementById('resAvg').textContent = (avg < 0.0001 && avg > 0) ? avg.toFixed(10).replace(/\.?0+$/, "") : ((avg < 1) ? avg.toFixed(6) : avg.toFixed(4)); 
-            document.getElementById('resTarget').textContent = (targetPrice < 0.0001 && targetPrice > 0) ? targetPrice.toFixed(10).replace(/\.?0+$/, "") : ((targetPrice < 1) ? targetPrice.toFixed(6) : targetPrice.toFixed(4)); 
-            document.getElementById('resProfit').textContent = `$${totalSpent.toFixed(2)}`;
-            
-            // Actualizar gráfico con las nuevas líneas
-            if (tvWidget) {
-                addTradingLevelsToChart();
-            }
-        }
+        function simulatedBuy(idx) { const s = slots[activeIdx]; for(let i=0; i<=idx; i++) { if(!s.buys.includes(i)) s.buys.push(i); } calculate(); }
 
         function openLiquidateConfirm() { triggerHaptic(); const s = slots[activeIdx]; if(!s.name || s.price <= 0) return showToast("⚠️ Slot Vacío"); document.getElementById('confirmModal').style.display = 'flex'; }
         function executeRelease() { 
@@ -1886,14 +1377,22 @@
                 const totalFees = entryFee + exitFee;
                 const grossProfit = grossExitValue - totalInv;
                 const netProfit = grossProfit - totalFees;
-
                 const logEntry = { date: new Date().toLocaleDateString(), time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), coin: s.name || 'S/N', strategy: s.strat.toUpperCase(), basePrice: s.price, avgPrice: avgPrice, exitPrice: targetPrice, qty: (avgPrice > 0 ? totalInv/avgPrice : 0).toFixed(8), totalInv: totalInv.toFixed(2), profit: grossProfit.toFixed(2), netProfit: netProfit.toFixed(2), fees: totalFees.toFixed(2), roi: s.roi + '%', levelsUsed: s.buys ? s.buys.length : 0 }; 
                 if(!history) history = []; history.push(logEntry); localStorage.setItem('c5x_history', JSON.stringify(history)); 
                 renderHistory(); slots[activeIdx] = { name:'', price:0, capital:5, buys:[], strat:'normal', locked: true, roi: 100, note: '', alerted: false }; sortSlots(); save(); selectSlot(0); showToast(`✅ Cerrada. Neta: $${netProfit.toFixed(2)}`); switchView('log', false); calculateGlobalStats(); 
             } catch(e) { showToast("❌ Error al liquidar"); } 
         }
 
-        function updateBodyMode(n) { const r = document.querySelector(':root'); if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } else { r.style.setProperty('--brand', '#3b82f6'); } }
+        function updateBodyMode(n) { 
+            const r = document.querySelector(':root'); 
+            if(!n) { r.style.setProperty('--brand', '#3b82f6'); return; } 
+            
+            // Lógica para color de Marca (Botones principales, gráficos, etc)
+            if(n.includes('3S') || n.includes('5S') || n.endsWith('S')) { r.style.setProperty('--brand', 'var(--short)'); } 
+            else if (n.includes('3L') || n.includes('5L') || n.endsWith('L')) { r.style.setProperty('--brand', 'var(--long)'); } 
+            else { r.style.setProperty('--brand', '#3b82f6'); } 
+        }
+        
         function renderHistory() { 
             const grid = document.getElementById('logGrid'); 
             if(!history || history.length === 0) { grid.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text-secondary)">Sin registros</div>'; return; } 
@@ -1901,9 +1400,13 @@
                 const hasNet = h.netProfit !== undefined;
                 const finalProfit = hasNet ? parseFloat(h.netProfit) : parseFloat(h.profit);
                 const isWin = finalProfit >= 0; 
+                
+                // Color Nombre en Historial
+                const nameColor = getCoinColor(h.coin);
+
                 return `<div class="unified-card">
                             <div class="u-index" style="color:var(--brand); border-color:var(--brand)">${h.coin.substring(0,3)}</div>
-                            <div class="u-center"><div class="u-title">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div>
+                            <div class="u-center"><div class="u-title" style="color:${nameColor}">${h.coin}</div><div class="u-sub">${h.date} - ${h.time}</div></div>
                             <div class="u-right"><div class="u-val-primary" style="color:${isWin?'var(--long)':'var(--short)'}">${isWin?'+':''}$${finalProfit.toFixed(2)}</div><div class="u-val-secondary">${hasNet ? 'NETO' : 'BRUTO'} ${h.roi}</div></div>
                         </div>`; 
             }).reverse().join('');
@@ -1920,31 +1423,22 @@
         function loadSettingsValues() { 
             try {
                 const s = slots[activeIdx]; 
-                
-                // Cargar valores con verificaciones de seguridad
                 const elCap = document.getElementById('setCapital'); if(elCap) elCap.value = s.capital;
                 const elInc = document.getElementById('setInc'); if(elInc) elInc.value = document.getElementById('incInput').value;
                 const elDesc = document.getElementById('setDesc'); if(elDesc) elDesc.value = document.getElementById('descInput').value;
                 const elRoi = document.getElementById('setRoi'); if(elRoi) elRoi.value = s.roi || 100;
                 const elGlobCap = document.getElementById('setGlobalCapital'); if(elGlobCap) elGlobCap.value = globalCapital;
                 const elFee = document.getElementById('setFee'); if(elFee) elFee.value = exchangeFee;
-                
                 const elRadarLim = document.getElementById('setRadarLimit'); if(elRadarLim) elRadarLim.value = radarLimit;
                 const elRadarSpd = document.getElementById('setRadarSpeed'); if(elRadarSpd) elRadarSpd.value = radarSpeed;
                 const elTickSpd = document.getElementById('setTickerSpeed'); if(elTickSpd) elTickSpd.value = tickerSpeed;
                 const elDD = document.getElementById('setDD'); if(elDD) elDD.value = appConfig.dd;
-                
                 const elPass = document.getElementById('setNewPass'); if(elPass) elPass.value = ''; 
                 const elProxy = document.getElementById('setProxy'); if(elProxy) elProxy.value = customProxy;
-
-                // Load API Keys (masked)
                 if(apiConfig.key) document.getElementById('apiKey').value = apiConfig.key;
                 if(apiConfig.secret) document.getElementById('apiSecret').value = apiConfig.secret;
-
                 const grid = document.getElementById('multiGrid'); 
-                if(grid) {
-                    grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join('');
-                }
+                if(grid) { grid.innerHTML = customMultipliers.map((val, i) => `<div class="multi-item"><span class="multi-lbl">N${i+1}</span><input type="number" class="multi-inp" value="${val}" step="0.1"></div>`).join(''); }
                 calcMonthlyPerformance(); 
             } catch(e) { console.warn("Error cargando ajustes", e); }
         }
@@ -1967,223 +1461,64 @@
         function exportData() { const dataStr = JSON.stringify({ slots, history, tickerAssets, customMultipliers, etfFavorites, globalCapital, appConfig }); const blob = new Blob([dataStr], {type: "application/json"}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "C5X_Backup.json"; document.body.appendChild(a); a.click(); }
         function importData(input) { const file = input.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const data = JSON.parse(e.target.result); if(data.slots) slots = data.slots; if(data.history) history = data.history; if(data.customMultipliers) { customMultipliers = data.customMultipliers; localStorage.setItem('c5x_multipliers', JSON.stringify(customMultipliers)); } if(data.etfFavorites) { etfFavorites = data.etfFavorites; localStorage.setItem('c5x_etf_favorites', JSON.stringify(etfFavorites)); } if(data.globalCapital) { globalCapital = data.globalCapital; localStorage.setItem('c5x_global_capital', globalCapital); } if(data.appConfig) { appConfig = data.appConfig; localStorage.setItem('c5x_config', JSON.stringify(appConfig)); } save(); localStorage.setItem('c5x_history', JSON.stringify(history)); location.reload(); } catch(err) { showToast("❌ Error al leer archivo"); } }; reader.readAsText(file); }
     
-        // -------------------------------------------------------------------------
         // --- MOTOR DE CONEXIÓN HÍBRIDO (TANQUE V20.2) ---
-        // -------------------------------------------------------------------------
-
         let serverTimeOffset = 0;
         let currentProxyIndex = 0;
-        
-        // CORRECCIÓN: Lista de proxies actualizada y más robusta para evitar CORS
-        let proxies = [
-            'https://corsproxy.io/?',
-            'https://api.allorigins.win/raw?url=',
-            '', // Intento directo (fallback final)
-            'https://api.codetabs.com/v1/proxy?quest='
-        ];
+        let proxies = [ 'https://corsproxy.io/?', 'https://api.allorigins.win/raw?url=', '', 'https://api.codetabs.com/v1/proxy?quest=' ];
 
-        // FUNCIÓN PRINCIPAL DE CONEXIÓN A GATE.IO
         async function callGateApi(method, endpoint, params = {}, requireAuth = false) {
             const baseUrl = 'https://api.gateio.ws/api/v4';
             let url = baseUrl + endpoint;
-            
             console.log(`🔵 API Call: ${method} ${endpoint}`, {requireAuth, params});
-            
-            const headers = {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            };
-
-            // Construir query string
+            const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };
             let queryString = '';
-            if (method === 'GET' && Object.keys(params).length > 0) {
-                queryString = new URLSearchParams(params).toString();
-                url += '?' + queryString;
-            }
-
-            // Si requiere autenticación (para órdenes y saldo)
+            if (method === 'GET' && Object.keys(params).length > 0) { queryString = new URLSearchParams(params).toString(); url += '?' + queryString; }
             if (requireAuth) {
-                if (!apiConfig.key || !apiConfig.secret) {
-                    console.error("❌ No hay API Keys");
-                    showToast("❌ Configura API Keys en Ajustes");
-                    return null;
-                }
-
+                if (!apiConfig.key || !apiConfig.secret) { console.error("❌ No hay API Keys"); showToast("❌ Configura API Keys en Ajustes"); return null; }
                 const timestamp = Math.floor((Date.now() + serverTimeOffset) / 1000);
                 const bodyPayload = method === 'POST' ? JSON.stringify(params) : '';
                 const hashedPayload = CryptoJS.SHA512(bodyPayload || '').toString();
-                
                 const signString = `${method}\n${endpoint}\n${queryString}\n${hashedPayload}\n${timestamp}`;
                 const signature = CryptoJS.HmacSHA512(signString, apiConfig.secret).toString();
-
-                headers['KEY'] = apiConfig.key;
-                headers['Timestamp'] = timestamp.toString();
-                headers['SIGN'] = signature;
+                headers['KEY'] = apiConfig.key; headers['Timestamp'] = timestamp.toString(); headers['SIGN'] = signature;
             }
-
-            // Intentar con cada proxy (incluido intento directo)
             for (let i = 0; i < proxies.length; i++) {
                 const proxyIndex = (currentProxyIndex + i) % proxies.length;
                 const proxy = proxies[proxyIndex];
-                
-                // Si proxy está vacío, es intento directo
                 const finalUrl = proxy === '' ? url : proxy + encodeURIComponent(url);
                 const proxyName = proxy === '' ? 'DIRECTO' : proxy.substring(0, 25);
-                
                 console.log(`🔄 [${i + 1}/${proxies.length}] ${proxyName}...`);
-                
                 try {
-                    const response = await fetch(finalUrl, {
-                        method: method,
-                        headers: headers,
-                        body: method === 'POST' ? JSON.stringify(params) : undefined,
-                        signal: AbortSignal.timeout(12000)
-                    });
-
-                    if (!response.ok) {
-                        console.warn(`⚠️ Status ${response.status}`);
-                        continue;
-                    }
-
+                    const response = await fetch(finalUrl, { method: method, headers: headers, body: method === 'POST' ? JSON.stringify(params) : undefined, signal: AbortSignal.timeout(12000) });
+                    if (!response.ok) { console.warn(`⚠️ Status ${response.status}`); continue; }
                     const text = await response.text();
                     let data;
-                    
-                    try {
-                        data = JSON.parse(text);
-                    } catch(e) {
-                        // Algunos proxies devuelven HTML en error
-                        console.error("❌ No es JSON:", text.substring(0, 100));
-                        continue;
-                    }
-                    
-                    // Éxito
-                    currentProxyIndex = proxyIndex;
-                    console.log(`✅ OK con ${proxyName}`);
-                    return data;
-                    
-                } catch (err) {
-                    console.warn(`❌ ${proxyName}: ${err.message}`);
-                    continue;
-                }
+                    try { data = JSON.parse(text); } catch(e) { console.error("❌ No es JSON:", text.substring(0, 100)); continue; }
+                    currentProxyIndex = proxyIndex; console.log(`✅ OK con ${proxyName}`); return data;
+                } catch (err) { console.warn(`❌ ${proxyName}: ${err.message}`); continue; }
             }
-
-            // Todos fallaron
-            console.error("❌ TODOS los intentos fallaron");
-            showToast("❌ Sin conexión a Gate.io");
-            return null;
+            console.error("❌ TODOS los intentos fallaron"); showToast("❌ Sin conexión a Gate.io"); return null;
         }
 
-        async function syncTimeAndBalance() {
-            try {
-                // Sincronizar hora (Petición PÚBLICA)
-                const start = Date.now();
-                const res = await callGateApi("GET", "/spot/time"); 
-                if(res && res.server_time) {
-                    const serverTime = res.server_time * 1000;
-                    serverTimeOffset = serverTime - (start + ((Date.now() - start) / 2));
-                    console.log("✅ Hora sincronizada con Gate.io");
-                }
-            } catch(e) { 
-                console.warn("⚠️ Time sync fail (usando local)", e); 
-            }
-            
-            fetchWalletBalance();
-        }
+        async function syncTimeAndBalance() { try { const start = Date.now(); const res = await callGateApi("GET", "/spot/time"); if(res && res.server_time) { const serverTime = res.server_time * 1000; serverTimeOffset = serverTime - (start + ((Date.now() - start) / 2)); console.log("✅ Hora sincronizada con Gate.io"); } } catch(e) { console.warn("⚠️ Time sync fail (usando local)", e); } fetchWalletBalance(); }
 
-        // FUNCIÓN DE PRUEBA DE CONEXIÓN
         async function testApiConnection() {
             const resultDiv = document.getElementById('apiTestResult');
             resultDiv.innerHTML = '⏳ Probando conexión...<br>';
-            
-            // Test 1: Endpoint público (sin autenticación)
             resultDiv.innerHTML += '<br>📡 TEST 1: Endpoint Público (/spot/time)<br>';
-            try {
-                const timeRes = await callGateApi("GET", "/spot/time");
-                if (timeRes && timeRes.server_time) {
-                    resultDiv.innerHTML += `✅ OK - Hora servidor: ${new Date(timeRes.server_time * 1000).toLocaleTimeString()}<br>`;
-                } else {
-                    resultDiv.innerHTML += `❌ FAIL - No data<br>`;
-                }
-            } catch(e) {
-                resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`;
-            }
-            
-            // Test 2: Tickers (público)
+            try { const timeRes = await callGateApi("GET", "/spot/time"); if (timeRes && timeRes.server_time) { resultDiv.innerHTML += `✅ OK - Hora servidor: ${new Date(timeRes.server_time * 1000).toLocaleTimeString()}<br>`; } else { resultDiv.innerHTML += `❌ FAIL - No data<br>`; } } catch(e) { resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`; }
             resultDiv.innerHTML += '<br>📊 TEST 2: Tickers Públicos<br>';
-            try {
-                const tickersRes = await callGateApi("GET", "/spot/tickers");
-                if (tickersRes && Array.isArray(tickersRes)) {
-                    resultDiv.innerHTML += `✅ OK - ${tickersRes.length} pares encontrados<br>`;
-                } else {
-                    resultDiv.innerHTML += `❌ FAIL - Respuesta inválida<br>`;
-                }
-            } catch(e) {
-                resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`;
-            }
-            
-            // Test 3: Balance (privado - solo si hay keys)
-            if (apiConfig.key && apiConfig.secret) {
-                resultDiv.innerHTML += '<br>🔐 TEST 3: Balance (Autenticado)<br>';
-                try {
-                    const balanceRes = await callGateApi("GET", "/spot/accounts", {currency: "USDT"}, true);
-                    if (balanceRes && Array.isArray(balanceRes) && balanceRes.length > 0) {
-                        resultDiv.innerHTML += `✅ OK - Balance: $${parseFloat(balanceRes[0].available).toFixed(2)}<br>`;
-                    } else {
-                        resultDiv.innerHTML += `❌ FAIL - Sin balance o respuesta inválida<br>`;
-                    }
-                } catch(e) {
-                    resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`;
-                }
-            } else {
-                resultDiv.innerHTML += '<br>⚠️ TEST 3: OMITIDO - No hay API Keys<br>';
-            }
-            
-            resultDiv.innerHTML += '<br>✅ Diagnóstico completo';
-            resultDiv.scrollTop = resultDiv.scrollHeight;
+            try { const tickersRes = await callGateApi("GET", "/spot/tickers"); if (tickersRes && Array.isArray(tickersRes)) { resultDiv.innerHTML += `✅ OK - ${tickersRes.length} pares encontrados<br>`; } else { resultDiv.innerHTML += `❌ FAIL - Respuesta inválida<br>`; } } catch(e) { resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`; }
+            if (apiConfig.key && apiConfig.secret) { resultDiv.innerHTML += '<br>🔐 TEST 3: Balance (Autenticado)<br>'; try { const balanceRes = await callGateApi("GET", "/spot/accounts", {currency: "USDT"}, true); if (balanceRes && Array.isArray(balanceRes) && balanceRes.length > 0) { resultDiv.innerHTML += `✅ OK - Balance: $${parseFloat(balanceRes[0].available).toFixed(2)}<br>`; } else { resultDiv.innerHTML += `❌ FAIL - Sin balance o respuesta inválida<br>`; } } catch(e) { resultDiv.innerHTML += `❌ ERROR: ${e.message}<br>`; } } else { resultDiv.innerHTML += '<br>⚠️ TEST 3: OMITIDO - No hay API Keys<br>'; }
+            resultDiv.innerHTML += '<br>✅ Diagnóstico completo'; resultDiv.scrollTop = resultDiv.scrollHeight;
         }
 
-        // --- LÓGICA DE EDICIÓN SEGURA DE MONEDA (LONG PRESS - V22.2) ---
         let coinPressTimer = null;
         const coinInputEl = document.getElementById('coinInput');
-
-        function startCoinPress() {
-            const el = document.getElementById('coinInput');
-            if(!el.hasAttribute('readonly')) return; // Ya está editando
-            
-            // Iniciar temporizador de 800ms
-            coinPressTimer = setTimeout(() => {
-                unlockCoinInput();
-            }, 800);
-        }
-
-        function cancelCoinPress() {
-            if(coinPressTimer) {
-                clearTimeout(coinPressTimer);
-                coinPressTimer = null;
-            }
-        }
-
-        function unlockCoinInput() {
-            const el = document.getElementById('coinInput');
-            triggerHaptic(); // Vibración para confirmar desbloqueo
-            el.removeAttribute('readonly');
-            el.classList.remove('locked-input');
-            el.classList.add('editing-mode');
-            el.focus();
-            el.select(); // Seleccionar texto para reemplazar rápido
-            showToast("🔓 EDICIÓN HABILITADA");
-        }
-
-        function finishEditingCoin() {
-            // Esta función reemplaza al antiguo onblur="updateCoin()"
-            const el = document.getElementById('coinInput');
-            updateCoin(); // Guardar lógica original
-            
-            // Volver a bloquear
-            el.setAttribute('readonly', true);
-            el.classList.remove('editing-mode');
-            el.classList.add('locked-input');
-        }
+        function startCoinPress() { const el = document.getElementById('coinInput'); if(!el.hasAttribute('readonly')) return; coinPressTimer = setTimeout(() => { unlockCoinInput(); }, 800); }
+        function cancelCoinPress() { if(coinPressTimer) { clearTimeout(coinPressTimer); coinPressTimer = null; } }
+        function unlockCoinInput() { const el = document.getElementById('coinInput'); triggerHaptic(); el.removeAttribute('readonly'); el.classList.remove('locked-input'); el.classList.add('editing-mode'); el.focus(); el.select(); showToast("🔓 EDICIÓN HABILITADA"); }
+        function finishEditingCoin() { const el = document.getElementById('coinInput'); updateCoin(); el.setAttribute('readonly', true); el.classList.remove('editing-mode'); el.classList.add('locked-input'); }
     </script>
 </body>
 </html>
