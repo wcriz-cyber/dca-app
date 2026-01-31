@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V24.3 PASTEL ENGINE</title>
+    <title>C5X - V24.4 FINAL</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -77,7 +77,7 @@
             
             /* --- NUEVA PALETA: TERRACOTA & SALVIA --- */
             
-            /* Rojo -> Terracotta (Ladrillo suave del botón Cloud AI) */
+            /* Rojo -> Terracotta (Ladrillo suave) */
             --short: #C87965;
             --danger: #C87965;
             
@@ -425,24 +425,6 @@
 
         <div id="section-settings" class="app-section">
             
-            <div class="setting-section-title"><svg width="14" height="14"><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/></svg> APARIENCIA</div>
-            <div class="settings-grid">
-                <div class="setting-card-item">
-                    <div class="setting-label" style="margin-bottom:10px;">MODO DE TEMA</div>
-                    <div style="display:flex; gap:10px; justify-content:center;">
-                        <button onclick="setLightMode(false)" id="btnDark" class="btn-data" style="flex:1; background:var(--bg); border:2px solid var(--brand);">
-                            🌙 OSCURO
-                        </button>
-                        <button onclick="setLightMode(true)" id="btnLight" class="btn-data" style="flex:1;">
-                            ☀️ CLARO
-                        </button>
-                    </div>
-                    <div style="font-size:10px; color:var(--text-tertiary); margin-top:8px; text-align:center;">
-                        También puedes cambiar desde el botón en el header
-                    </div>
-                </div>
-            </div>
-
             <div class="setting-section-title"><svg width="14" height="14"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> API & TRADING (GATE.IO)</div>
             <div class="settings-grid">
                 <div class="setting-card-item">
@@ -586,26 +568,9 @@
                     let text = s.name || '';
                     if(text) Core.UI.forceCopy(text);
                 },
-                handleAmountTap: function(idx, amount) {
-                    if(isPrivateMode) return; 
-                    const s = slots[activeIdx];
-                    let pLevel;
-                    const descPct = parseFloat(document.getElementById('descInput').value) || 66; 
-                    const incPct = parseFloat(document.getElementById('incInput').value) || 7; 
-                    let lastPrice = s.price;
-                    for(let i=0; i<=idx; i++){ 
-                        if(i===0) pLevel = s.price; 
-                        else { 
-                            let step = (s.strat === "normal") ? (i===1 ? 17 : incPct) : descPct; 
-                            pLevel = lastPrice * (1 - (step/100)); 
-                        } 
-                        lastPrice = pLevel; 
-                    }
-                    let qty = amount / pLevel;
-                    let cleanQty = parseFloat(qty.toFixed(8)).toString(); 
-                    Core.UI.forceCopy(cleanQty);
-                    window.event.stopPropagation();
-                },
+                // --- ELIMINADA LA FUNCIÓN DE COPIAR CANTIDADES ---
+                // handleAmountTap: function(idx, amount) { ... }
+                
                 forceCopy: function(text) {
                     const textArea = document.createElement("textarea");
                     textArea.value = text;
@@ -679,7 +644,7 @@
                 if(savedParams) { document.getElementById('incInput').value = savedParams.inc; document.getElementById('descInput').value = savedParams.desc; document.getElementById('setInc').value = savedParams.inc; document.getElementById('setDesc').value = savedParams.desc; }
                 if(isLight) { document.body.classList.add('light-mode'); }
                 updateThemeIcon();
-                if(document.getElementById('btnLight') && document.getElementById('btnDark')) { setLightMode(isLight); }
+                // Eliminado control de tema en settings
                 slots.forEach(s => { if(typeof s.roi === 'undefined') s.roi = 100; if(typeof s.note === 'undefined') s.note = ''; if(typeof s.alerted === 'undefined') s.alerted = false; if(typeof s.locked === 'undefined') s.locked = true; });
                 if(!customMultipliers || customMultipliers.length === 0) customMultipliers = [1.0, 1.0, 1.5, 1.5, 2.0, 2.0, 5.0, 5.0, 8.0, 8.0, 16.0, 16.0];
                 window.history.replaceState({page: 'operate'}, '', '');
@@ -746,16 +711,8 @@
             isLight = isLightMode;
             if(isLight) {
                 document.body.classList.add('light-mode');
-                document.getElementById('btnLight').style.borderColor = 'var(--brand)';
-                document.getElementById('btnLight').style.background = 'var(--bg)';
-                document.getElementById('btnDark').style.borderColor = 'var(--border)';
-                document.getElementById('btnDark').style.background = 'transparent';
             } else {
                 document.body.classList.remove('light-mode');
-                document.getElementById('btnDark').style.borderColor = 'var(--brand)';
-                document.getElementById('btnDark').style.background = 'var(--bg)';
-                document.getElementById('btnLight').style.borderColor = 'var(--border)';
-                document.getElementById('btnLight').style.background = 'transparent';
             }
             updateThemeIcon();
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
@@ -1297,7 +1254,7 @@
                                 <div class="u-title">${displayPrice}</div>
                             </div>
                             <div class="u-right">
-                                <div class="u-val-primary anim-click" onclick="Core.UI.handleAmountTap(${i}, ${mUSD})">$${mUSD.toFixed(1)}</div>
+                                <div class="u-val-primary">$${mUSD.toFixed(1)}</div>
                                 <div class="u-val-secondary" style="${i>0?'color:var(--short)':''}">${i===0 ? '---' : '-'+currentStepDrop.toFixed(1)+'%'}</div>
                             </div>
                         </div>`; 
@@ -1341,7 +1298,7 @@
                 } else {
                     let rawPrice = pLevel.toFixed(10); 
                     let cleanPrice = rawPrice.replace(/\.?0+$/, ""); 
-                    Core.UI.forceCopy(cleanPrice);
+                    Core.UI.forceCopy(cleanPrice); // COPIA EL PRECIO (CORRECTO)
                     simulatedBuy(idx);
                 }
             } else { 
