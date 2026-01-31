@@ -25,7 +25,7 @@
     <style>
         /* C5X V25.0 - TEMA PROFESIONAL ÚNICO */
         :root { 
-            /* Backgrounds - Dark Mode */
+            /* Backgrounds - Dark Mode (Original) */
             --bg: #0a0e13; 
             --surface: #141922; 
             --surface-glass: #0a0e13; 
@@ -65,24 +65,38 @@
             --font-head: 'Orbitron', sans-serif; 
         }
         
-        /* Light Mode */
+        /* Light Mode - "PAPER MODE" (Actualizado según captura) */
         body.light-mode { 
-            --bg: #ffffff; 
-            --surface: #f8fafc; 
-            --surface-glass: #ffffff; 
-            --card-bg: #f1f5f9; 
-            --border: #e2e8f0; 
-            --border-strong: #cbd5e1;
-            --text-primary: #1e293b; 
-            --text-secondary: #475569; 
-            --text-tertiary: #94a3b8; 
-            --chart-bg: #ffffff; 
-            --skeleton: rgba(0,0,0,0.05); 
-            /* Trading colors permanecen */
+            /* Fondo tipo papel cálido */
+            --bg: #E8E6E1; 
+            
+            /* Superficies ligeramente más oscuras (tipo cartón suave) */
+            --surface: #E2E0DB; 
+            --surface-glass: #E8E6E1; 
+            
+            /* Tarjetas con sutil oscurecimiento para contraste */
+            --card-bg: rgba(0, 0, 0, 0.04); 
+            
+            /* Bordes suaves en tono tierra/gris */
+            --border: #D1CEC7; 
+            --border-strong: #B8B5B0;
+            
+            /* Textos optimizados para descanso visual (Gris Carbón Cálido) */
+            --text-primary: #2A2A2A; 
+            --text-secondary: #595550; 
+            --text-tertiary: #85807A; 
+            
+            /* Gráfico integrado al papel */
+            --chart-bg: #E8E6E1; 
+            
+            --skeleton: rgba(0,0,0,0.06); 
+            
+            /* Trading colors ajustados ligeramente para el fondo papel */
             --long: #059669;
-            --short: #dc2626;
+            --short: #cc2929;
             --warning: #d97706;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: var(--font-main); font-weight: 600; background: var(--bg); color: var(--text-primary); padding-top: var(--safe-top); padding-bottom: calc(20px + var(--safe-bottom)); overflow-x: hidden; user-select: none; font-size: 16px; overscroll-behavior-y: none; transition: background 0.3s ease, color 0.3s ease; }
         .brand-text, .nav-title, .setting-section-title, .theme-name-label { font-family: var(--font-head); }
