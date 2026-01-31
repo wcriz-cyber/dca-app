@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>C5X - V23.5 DIRECT TOUCH</title>
+    <title>C5X - V23.7 FAST COPY</title>
     <meta name="theme-color" content="#0b0e11">
     
     <link rel="manifest" href="manifest.json">
@@ -299,6 +299,7 @@
                     <input type="text" id="coinInput" class="input-field locked-input" 
                            placeholder="---" 
                            readonly 
+                           onclick="Core.UI.handleCoinTap()" 
                            oninput="forceCaps(this)" 
                            onblur="finishEditingCoin()"
                            onmousedown="startCoinPress()" 
@@ -496,7 +497,7 @@
                 <div class="setting-info" style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-secondary);"><p>Restablecer la aplicación borrará TODOS los datos, slots y configuraciones.</p></div>
                 <button class="btn-reset anim-click" onclick="resetApp()"><svg width="14" height="14"><path d="M2.5 2v6h6M21.5 22v-6h-6"/><path d="M22 11.5A10 10 0 0 0 3.2 7.2M2 12.5a10 10 0 0 0 18.8 4.2"/></svg> RESTABLECER DE FÁBRICA</button>
             </div>
-            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.5 DIRECT TOUCH</div>
+            <div style="text-align:center; font-size:10px; color:var(--text-tertiary); margin-top:20px; font-weight:700; letter-spacing:1px; margin-bottom:40px;">C5X V23.7 FAST COPY</div>
         </div>
     </div>
 
@@ -522,6 +523,31 @@
     <input type="hidden" id="incInput" value="7"><input type="hidden" id="descInput" value="66">
 
     <script>
+        // --- NAMESPACE "Core" PARA LÓGICA COPIA ---
+        const Core = {
+            UI: {
+                handleCoinTap: function() {
+                    if(!coinInputEl.hasAttribute('readonly')) return; // Editando
+                    if(coinPressTimer) return; // Esperando long press
+                    if(isPrivateMode) {
+                        showToast("🔒 Modo Operativo (No Copiar)");
+                        return;
+                    }
+                    
+                    // COPIAR NOMBRE MONEDA (SOLO EL NOMBRE)
+                    const s = slots[activeIdx];
+                    let text = s.name || '';
+                    
+                    if(text) {
+                        navigator.clipboard.writeText(text).then(() => {
+                            showToast("📋 " + text + " Copiado");
+                            if(navigator.vibrate) navigator.vibrate(50);
+                        }).catch(err => {});
+                    }
+                }
+            }
+        };
+        
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
@@ -620,7 +646,7 @@
         }
 
         // ==========================================
-        // 🚀 MOTOR V23.5: DIRECT TOUCH
+        // 🚀 MOTOR V23.6: SMART COPY
         // ==========================================
 
         async function callGateApi(method, path, queryParams = "", body = null) {
@@ -1269,7 +1295,11 @@
                     document.getElementById('trade-total').textContent = "$" + currentTrade.usd.toFixed(2);
                     document.getElementById('tradeModal').style.display = 'flex';
                 } else {
-                    // MODO SIMULADO: EJECUCIÓN INSTANTÁNEA SILENCIOSA
+                    // MODO SIMULADO: COPIA PRECIO Y EJECUTA SIN MODAL
+                    const displayPrice = (pLevel < 1) ? pLevel.toFixed(6) : pLevel.toFixed(4);
+                    navigator.clipboard.writeText(displayPrice).then(() => {
+                        showToast(`📋 Precio Copiado: $${displayPrice}`);
+                    });
                     simulatedBuy(idx);
                 }
 
